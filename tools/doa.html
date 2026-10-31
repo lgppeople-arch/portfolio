@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>위임전결 기준 점검 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="업무 항목별 결재권자 한도가 이사회규정 부의 기준과 상법상 이사회 결의 사항에 어긋나지 않는지 점검하는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="위임전결 기준 점검 · 이기표">
+<meta property="og:description" content="업무 항목별 결재권자 한도가 이사회규정 부의 기준과 상법상 이사회 결의 사항에 어긋나지 않는지 점검하는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/doa.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 18px; }
+  .two > * { min-width: 0; }
+  @media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 12px; align-content: start; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; margin: 0; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .card .field input, .card .field select { background: var(--surface); }
+  .card .field select { font: inherit; font-size: var(--s-2); padding: 6px 8px; border: 1px solid var(--rule); border-radius: 4px; color: var(--input); width: 100%; }
+  .bigline { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .bigline b { font-family: var(--f-display); font-weight: 800; font-size: 34px; letter-spacing: -0.02em; line-height: 1.1; }
+  .bigline span { color: var(--muted); font-size: var(--s-1); }
+  .why { font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; margin: 0; }
+  .lvl-0 { color: var(--muted); } .lvl-1 { color: var(--input); } .lvl-2 { color: var(--input); } .lvl-3 { color: var(--accent); }
+  table.etable.doa { min-width: 720px; }
+  table.etable.doa td.st { font-size: 12px; white-space: nowrap; }
+  table.etable.doa td.st.ok { color: var(--pos); }
+  table.etable.doa td.st.bad { color: var(--neg-ink); font-weight: 600; }
+  table.etable.doa .law { font-size: 11px; color: var(--muted); margin-left: 6px; }
+  .flags { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: var(--s-1); }
+  .flags li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; line-height: 1.6; color: var(--ink-2); }
+  .flags li::before { content: "✕"; color: var(--neg-ink); font-weight: 700; }
+  .flags li.ok::before { content: "✓"; color: var(--pos); }
+  .flags b { color: var(--ink); }
+  .keys { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--s-1); color: var(--ink-2); }
+  .keys span { display: inline-flex; align-items: center; gap: 6px; }
+  .keys i { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+  svg.plot text.rowlab { fill: var(--ink-2); font-size: 12px; }
+  svg.plot .bline { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  svg.plot text.bl { fill: var(--accent); font-size: 11px; font-weight: 600; }
+  .switch-row { display: flex; align-items: center; justify-content: flex-start; gap: 10px; font-size: var(--s-1); color: var(--ink-2); }
+  table.etable.doa td input { width: 104px; max-width: 100%; }
+  .switch-row input { width: 16px; height: 16px; accent-color: var(--input); }
+  .notes4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  @media (max-width: 760px) { .notes4 { grid-template-columns: minmax(0, 1fr); } }
+  .notes4 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .notes4 b { font-size: var(--s-2); }
+  .notes4 p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="samsung.html">삼성전자</a>
+      <a href="reading.html">AI 인프라 노트</a>
+      <a href="fsa.html">재무제표</a>
+      <a href="semi-cycle.html">반도체 사이클</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="doa.html" aria-current="page">위임전결</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 위임전결 기준 점검</div>
+      <h1>위임전결 기준 점검</h1>
+      <p>업무 항목마다 누가 얼마까지 결재하는지 정한 위임전결 기준이 이사회규정의 부의 기준, 상법상 이사회 결의 사항과 어긋나지 않는지 점검합니다. 정관·이사회규정·위임전결규정을 함께 개정하면서 확인하던 항목을 도구로 옮겼습니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 단위 억원</span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 자기자본 4,000억원인 가상 제조사 · 법률 자문이 아니며 회사의 정관과 규정이 우선합니다</span>
+
+    <div class="two">
+      <div class="card">
+        <h3>이사회 부의 기준 <span class="pill" id="b-pill"></span></h3>
+        <div class="fs-grid">
+          <div class="field"><label for="equity">자기자본<small>억원</small></label><input id="equity" type="number" inputmode="decimal" step="100" min="0"></div>
+          <div class="field"><label for="bpct">부의 기준<small>자기자본 대비 %</small></label><input id="bpct" type="number" inputmode="decimal" step="0.5" min="0" max="100"></div>
+        </div>
+        <label class="switch-row"><input type="checkbox" id="bond-del">정관에 사채 발행 위임 근거가 있음 (상법 469조 4항)</label>
+        <p class="why" id="b-why"></p>
+      </div>
+      <div class="card">
+        <h3>이 금액은 누가 결재하나</h3>
+        <div class="fs-grid">
+          <div class="field"><label for="q-item">업무 항목</label><select id="q-item"></select></div>
+          <div class="field"><label for="q-amt">금액<small>억원</small></label><input id="q-amt" type="number" inputmode="decimal" step="1" min="0" value="120"></div>
+        </div>
+        <div class="bigline"><b id="q-who"></b><span id="q-sub"></span></div>
+        <p class="why" id="q-why"></p>
+      </div>
+    </div>
+
+    <section class="block2" style="margin-top: 26px">
+      <div class="chart-head"><h4>결재권자별 금액 구간</h4><div class="keys" id="keys"></div></div>
+      <div class="chart" id="c-matrix"><div class="plot-host"></div></div>
+      <p class="hint">가로축은 로그 눈금입니다. 세로 점선이 이사회 부의 기준이고, 막대의 주황 구간이 이사회로 가는 금액입니다. ✕ 표시가 있는 줄은 아래 표에서 이유를 볼 수 있습니다.</p>
+    </section>
+
+    <section class="block2" style="margin-top: 26px">
+      <div class="chart-head"><h4>위임전결 기준표</h4><span class="hint">각 결재권자가 승인할 수 있는 금액의 상한 · 0은 권한 없음 · 대표이사 한도를 넘으면 이사회</span></div>
+      <div class="etable-wrap"><table class="etable doa" id="tbl"></table></div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px">
+        <button type="button" class="btn ghost" id="reset">예시값으로 되돌리기</button>
+        <button type="button" class="btn ghost" id="break">흔한 실수 넣어 보기</button>
+      </div>
+    </section>
+
+    <section class="block2" style="margin-top: 26px">
+      <div class="chart-head"><h4>점검 결과</h4><span class="pill" id="r-pill"></span></div>
+      <ul class="flags" id="flags"></ul>
+    </section>
+
+    <section class="block2" style="margin-top: 30px">
+      <div class="chart-head"><h4>무엇을 점검하나</h4></div>
+      <div class="notes4">
+        <div><b>1. 구간이 꼬이지 않았나</b><p>상위 결재권자의 한도가 하위보다 작으면, 그 사이 금액은 하위 결재권자만 승인할 수 있는 이상한 구간이 생깁니다. 규정을 여러 번 고치다 보면 흔히 생깁니다.</p></div>
+        <div><b>2. 이사회 부의 기준과 맞나</b><p>이사회규정이 "자기자본의 몇 % 이상"을 이사회 부의 안건으로 정했다면, 대표이사 전결 한도는 그보다 작아야 합니다. 두 규정을 따로 고치면 쉽게 어긋납니다.</p></div>
+        <div><b>3. 법이 정한 이사회 사항인가</b><p>중요한 자산의 처분·양도와 대규모 재산의 차입(상법 393조), 이사 등과 회사 간 거래(398조), 사채 발행(469조)은 이사회 결의 사항입니다. 무엇이 "중요"하고 "대규모"인지는 이사회규정의 기준으로 정합니다.</p></div>
+        <div><b>4. 정관에 위임 근거가 있나</b><p>사채 발행은 정관에 근거가 있을 때만 이사회가 대표이사에게, 금액과 종류를 정해 1년 이내 기간으로 위임할 수 있습니다. 공정거래법상 대규모내부거래처럼 다른 법령의 이사회 의결 기준은 회사 상황에 맞춰 따로 확인합니다.</p></div>
+      </div>
+      <p class="hint" style="margin-top: 12px">계산 기준: 금액이 팀장 한도 이하면 팀장, 본부장 한도 이하면 본부장, 대표이사 한도 이하면 대표이사, 그보다 크면 이사회가 결재합니다(한도가 0인 결재권자는 건너뜀). 부의 기준 = 자기자본 × 부의 기준 %. 이 도구는 규정 정합성을 스스로 점검하기 위한 예시이며 법률 자문이 아닙니다. 예시 수치는 모두 가상입니다.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/doa.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.DoaEngine, $ = F.$;
+  let x = JSON.parse(JSON.stringify(E.DEFAULTS));
+  const COL = () => [F.css("--mark-muted"), "color-mix(in srgb, " + F.css("--input") + " 55%, transparent)", F.css("--input"), F.css("--accent")];
+  const num = (v) => F.num(v, v < 1 && v > 0 ? 1 : 0);
+
+  function buildInputs() {
+    $("equity").value = x.equity; $("bpct").value = x.boardPct; $("bond-del").checked = x.delegateBond;
+    const sel = $("q-item"); sel.textContent = "";
+    x.items.forEach((it, i) => sel.appendChild(F.el("option", { value: i, text: it.name })));
+    const t = $("tbl"); t.textContent = "";
+    const hr = F.el("tr"); ["업무 항목", "팀장", "본부장", "대표이사", "이사회로 가는 금액", "점검"].forEach((h, i) => hr.appendChild(F.el("th", { class: i > 0 && i < 5 ? "r" : "", text: h })));
+    t.appendChild(F.el("thead", null, [hr]));
+    const tb = F.el("tbody");
+    x.items.forEach((it, i) => {
+      const tr = F.el("tr");
+      tr.appendChild(F.el("td", null, [it.name, it.rule ? F.el("span", { class: "law", text: "상법 " + it.rule + "조" }) : null]));
+      it.limits.forEach((v, k) => {
+        const inp = F.el("input", { type: "number", inputmode: "decimal", step: "any", min: "0", value: v, "aria-label": it.name + " " + E.LEVELS[k] + " 한도" });
+        inp.addEventListener("input", () => { x.items[i].limits[k] = F.readNum(inp, 0); render(); });
+        tr.appendChild(F.el("td", { class: "r" }, [inp]));
+      });
+      tr.appendChild(F.el("td", { class: "r", id: "bf-" + i }));
+      tr.appendChild(F.el("td", { class: "st", id: "st-" + i }));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+  }
+
+  function render() {
+    const r = E.run(x), cols = COL();
+    $("b-pill").textContent = num(r.board) + "억 이상";
+    $("b-why").textContent = "자기자본 " + F.num(x.equity, 0) + "억원의 " + F.num(x.boardPct, 1) + "%인 " + num(r.board) + "억원 이상은 이사회 부의 안건입니다. 대표이사 전결 한도는 모든 항목에서 이보다 작아야 합니다.";
+    /* 표 상태 */
+    r.items.forEach((it, i) => {
+      const L = it.limits, top = L[2] > 0 ? L[2] : L[1] > 0 ? L[1] : L[0];
+      $("bf-" + i).textContent = top > 0 ? num(top) + "억 초과" : "금액과 관계없이";
+      const st = $("st-" + i);
+      st.className = "st " + (it.issues.length ? "bad" : "ok");
+      st.textContent = it.issues.length ? "✕ " + it.issues.length + "건" : "✓ 맞음";
+      $("tbl").querySelectorAll("tbody tr")[i].querySelectorAll("input").forEach((inp) => inp.setAttribute("aria-invalid", String(it.issues.length > 0)));
+    });
+    /* 점검 결과 */
+    const fl = $("flags"); fl.textContent = "";
+    if (!r.issueCount) fl.appendChild(F.el("li", { class: "ok", text: "모든 항목이 구간 순서, 이사회 부의 기준, 법정 이사회 사항과 맞습니다." }));
+    r.items.forEach((it) => it.issues.forEach((s) => fl.appendChild(F.el("li", null, [F.el("b", { text: it.name + ": " }), s.text]))));
+    $("r-pill").textContent = r.issueCount ? r.issueCount + "건 확인 필요" : "문제 없음";
+    $("r-pill").className = "pill " + (r.issueCount ? "warn" : "ok");
+    lookup(); drawMatrix(r, cols);
+    const ks = $("keys"); ks.textContent = "";
+    E.LEVELS.forEach((l, k) => ks.appendChild(F.el("span", null, [F.el("i", { style: "background: " + cols[k] }), l])));
+  }
+
+  function lookup() {
+    const i = Number($("q-item").value) || 0, it = x.items[i], amt = F.readNum($("q-amt"), 0);
+    const lv = E.approver(it, amt), L = it.limits;
+    $("q-who").textContent = E.LEVELS[lv]; $("q-who").className = "lvl-" + lv;
+    $("q-sub").textContent = it.name + " " + num(amt) + "억원";
+    let why;
+    if (it.rule === "398") why = E.LAW["398"] + ".";
+    else if (it.rule === "469" && lv === 3) why = E.LAW["469"] + ".";
+    else if (lv === 3) why = "대표이사 한도 " + num(L[2]) + "억원을 넘거나 대표이사 이하에 권한이 없어 이사회 결의가 필요합니다." + (amt >= E.boardLine(x) ? " 이사회 부의 기준 " + num(E.boardLine(x)) + "억원 이상이기도 합니다." : "");
+    else why = E.LEVELS[lv] + " 한도 " + num(L[lv]) + "억원 안에 있습니다." + (lv > 0 && L[lv - 1] > 0 ? " " + E.LEVELS[lv - 1] + " 한도(" + num(L[lv - 1]) + "억원)는 넘습니다." : "");
+    $("q-why").textContent = why;
+  }
+
+  function drawMatrix(r, cols) {
+    const rows = r.items, H = 34 * rows.length + 40, padR = 18, padT = 22, padB = 22;
+    const fr = F.plotFrame($("c-matrix"), H, "업무 항목별 결재권자 금액 구간"), svg = fr.svg, W = fr.W, padL = W < 560 ? 128 : 168;
+    const lo = 0.05, hi = Math.max(1000, r.board * 3), lg = (v) => Math.log10(Math.max(lo, Math.min(hi, v)));
+    const X = (v) => padL + (lg(v) - lg(lo)) / (lg(hi) - lg(lo)) * (W - padL - padR), row = (H - padT - padB) / rows.length;
+    [0.1, 1, 10, 100, 1000, 10000].filter((t) => t <= hi).forEach((t) => {
+      F.svgEl("line", { class: "grid", x1: X(t), x2: X(t), y1: padT, y2: H - padB }, svg);
+      F.svgText(svg, X(t), H - 6, F.num(t, t < 1 ? 1 : 0) + "억", { "text-anchor": "middle" });
+    });
+    const tip = F.makeTip(fr.plot);
+    rows.forEach((it, i) => {
+      const y = padT + row * i, bh = Math.min(16, row * 0.5), L = it.limits;
+      F.svgText(svg, padL - 10, y + row / 2 + 4, (it.issues.length ? "✕ " : "") + it.name, { "text-anchor": "end", class: "rowlab", style: it.issues.length ? "fill: var(--neg-ink)" : null });
+      let start = lo; const segs = [];
+      for (let k = 0; k < 3; k++) if (L[k] > 0 && L[k] > start) { segs.push([k, start, L[k]]); start = L[k]; }
+      segs.push([3, start, hi]);
+      segs.forEach((s) => F.svgEl("rect", { x: X(s[1]), y: y + (row - bh) / 2, width: Math.max(1, X(s[2]) - X(s[1])), height: bh, fill: cols[s[0]] }, svg));
+      const hit = F.svgEl("rect", { class: "hit", x: padL, y: y, width: W - padL - padR, height: row }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: it.name, rows: segs.map((s) => [E.LEVELS[s[0]], s[0] === 3 ? num(s[1] === lo ? 0 : s[1]) + "억 초과" : "~ " + num(s[2]) + "억", cols[s[0]]]).concat(it.issues.length ? [["확인 필요", it.issues.length + "건"]] : []) }));
+    });
+    F.svgEl("line", { class: "bline", x1: X(r.board), x2: X(r.board), y1: padT - 6, y2: H - padB }, svg);
+    const right = X(r.board) > W - padR - 110;
+    F.svgText(svg, X(r.board) + (right ? -4 : 4), padT - 8, "부의 기준 " + num(r.board) + "억", { class: "bl", "text-anchor": right ? "end" : "start" });
+  }
+
+  function bind() {
+    $("equity").addEventListener("input", () => { x.equity = F.readNum($("equity"), 0); render(); });
+    $("bpct").addEventListener("input", () => { x.boardPct = F.readNum($("bpct"), 0); render(); });
+    $("bond-del").addEventListener("change", () => { x.delegateBond = $("bond-del").checked; render(); });
+    $("q-item").addEventListener("change", lookup); $("q-amt").addEventListener("input", lookup);
+    $("reset").addEventListener("click", () => { x = JSON.parse(JSON.stringify(E.DEFAULTS)); buildInputs(); render(); });
+    $("break").addEventListener("click", () => {
+      x = JSON.parse(JSON.stringify(E.DEFAULTS));
+      x.items[1].limits = [5, 3, 150];      /* 본부장 한도가 팀장보다 작음 */
+      x.items[6].limits = [0, 0, 300];      /* 차입 대표이사 한도가 부의 기준 이상 */
+      x.items[8].limits = [0, 0, 10];       /* 이사 등과의 거래를 대표이사가 결재 */
+      buildInputs(); render();
+    });
+  }
+  buildInputs(); bind(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

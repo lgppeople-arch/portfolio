@@ -13,7 +13,8 @@
     Pl: require("./engines/pl.js"),
     Three: require("./engines/three.js"),
     Cycle: require("./engines/cycle.js"),
-    Samsung: require("./data/samsung.js")
+    Samsung: require("./data/samsung.js"),
+    Doa: require("./engines/doa.js")
   } : null;
   const api = factory();
   if (node) {
@@ -60,7 +61,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -321,6 +322,25 @@
         eq.treasury["2025"].common + mv.bought - mv.granted - mv.cancelledCommon === eq.treasury["2026H1"].common &&
         eq.outstanding["2025"].pref === eq.outstanding["2026H1"].pref && eq.treasury["2025"].pref - mv.cancelledPref === eq.treasury["2026H1"].pref;
       add("삼성전자 공시", "주식 수: 유통주식·자기주식 변동(취득·지급·소각)이 맞는다", shOk, "소각 보통주 " + Fin.num(mv.cancelledCommon / 1e6, 1) + "백만 주");
+    }
+
+    /* ---------- 위임전결 기준 점검 ---------- */
+    if (Doa) {
+      const D0 = clone(Doa.DEFAULTS), r0 = Doa.run(D0);
+      add("위임전결", "예시 기준표는 구간 순서·부의 기준·법정 이사회 사항을 모두 지킨다", r0.issueCount === 0, "부의 기준 " + Fin.num(r0.board, 0) + "억원");
+      /* 금액이 커질수록 결재권자가 낮아지지 않고, 모든 금액이 정확히 한 결재권자에게 간다 */
+      const amts = []; for (let e = -2; e <= 4; e += 0.05) amts.push(Math.pow(10, e));
+      const mono = D0.items.every((it) => amts.every((a, i) => i === 0 || Doa.approver(it, a) >= Doa.approver(it, amts[i - 1])));
+      const cover = D0.items.every((it) => amts.every((a) => { const l = Doa.approver(it, a); return l >= 0 && l <= 3; }));
+      add("위임전결", "금액이 커질수록 결재권자가 낮아지지 않고, 모든 금액에 결재권자가 정확히 하나", mono && cover, amts.length + "개 금액 × " + D0.items.length + "개 항목");
+      const b1 = clone(D0); b1.items[0].limits = [10, 5, 100];
+      const b2 = clone(D0); b2.items[0].limits = [1, 10, r0.board];
+      const b3 = clone(D0); b3.items[8].limits = [0, 0, 1];
+      const b4 = clone(D0); b4.items[7].limits = [0, 0, 50];
+      const b5 = clone(b4); b5.delegateBond = true;
+      const kinds = (x, i) => Doa.run(x).items[i].issues.map((z) => z.kind);
+      add("위임전결", "꼬인 구간, 부의 기준 이상 대표이사 한도, 398조·469조 위반을 각각 잡아내고, 정관 위임 근거가 있으면 사채 대표이사 위임은 허용한다",
+        kinds(b1, 0).indexOf("order") >= 0 && kinds(b2, 0).indexOf("board") >= 0 && kinds(b3, 8).indexOf("law") >= 0 && kinds(b4, 7).indexOf("law") >= 0 && kinds(b5, 7).length === 0, "");
     }
 
     /* ---------- 13주 자금수지 ---------- */

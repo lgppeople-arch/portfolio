@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>AI 인프라 읽기 노트 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Situational Awareness, SemiAnalysis, Sequoia, Epoch AI, IEA 등 AI 인프라에 관한 대표적인 글 여덟 편을 출처와 함께 요약하고 재무기획 관점의 인사이트를 정리한 노트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="AI 인프라 읽기 노트 · 이기표">
+<meta property="og:description" content="AI 인프라에 관한 대표적인 글 여덟 편을 출처와 함께 요약하고 재무기획 관점의 인사이트를 정리한 노트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/reading.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og-reading.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 470px; }
+  .chain2 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin: 16px 0 6px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .chain2 > div { padding: 14px 14px 16px; border-left: 1px solid var(--rule-soft); display: grid; gap: 6px; align-content: start; position: relative; }
+  .chain2 > div:first-child { border-left: 0; }
+  .chain2 > div:not(:last-child)::after { content: "→"; position: absolute; right: -9px; top: 14px; width: 18px; height: 18px; border-radius: 50%; background: var(--paper); border: 1px solid var(--rule); display: grid; place-items: center; font-size: 11px; color: var(--accent); z-index: 1; }
+  .chain2 .k { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .chain2 b { font-size: var(--s-2); line-height: 1.4; }
+  .chain2 .n { font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; line-height: 1.15; }
+  .chain2 .n small { font-family: var(--f-body); font-size: 11.5px; font-weight: 500; color: var(--muted); display: block; letter-spacing: 0; margin-top: 2px; }
+  .chain2 .who { font-size: 11.5px; color: var(--muted); }
+  @media (max-width: 1000px) { .chain2 { grid-template-columns: minmax(0, 1fr); } .chain2 > div { border-left: 0; border-top: 1px solid var(--rule-soft); } .chain2 > div:first-child { border-top: 0; } .chain2 > div:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -9px; transform: translateX(-50%); } }
+  .note { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 20px 22px; margin: 16px 0; display: grid; gap: 12px; }
+  .note .src { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); align-items: baseline; }
+  .note .src b { color: var(--ink-2); font-weight: 600; }
+  .note .src a { font-weight: 600; }
+  .note h3 { margin: 0; font-size: var(--s-4); font-family: var(--f-display); font-weight: 800; letter-spacing: -0.01em; line-height: 1.3; }
+  .note .one { font-size: var(--s-2); color: var(--ink); line-height: 1.7; margin: 0; max-width: none; }
+  .note .cols { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px 26px; }
+  @media (max-width: 860px) { .note .cols { grid-template-columns: minmax(0, 1fr); } }
+  .note h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--accent); }
+  .note ul { margin: 0; padding-left: 1.05em; display: grid; gap: 5px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
+  .note .ins { background: color-mix(in srgb, var(--input) 6%, var(--surface)); border: 1px solid color-mix(in srgb, var(--input) 22%, var(--rule)); border-radius: var(--radius); padding: 12px 14px; }
+  .note .ins h4 { color: var(--input); }
+  .note .ins ul { color: var(--ink); }
+  .note .nums { display: flex; flex-wrap: wrap; gap: 8px; }
+  .note .nums span { font-size: 12.5px; border: 1px solid var(--rule); border-radius: 999px; padding: 3px 10px; color: var(--ink); background: var(--paper); }
+  .note .nums span b { font-family: var(--f-num); font-weight: 600; }
+  .note .to { font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .note .to::before { content: "이 사이트에서"; color: var(--muted); }
+  .take { list-style: none; margin: 10px 0; padding: 0; counter-reset: t; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+  .take li { counter-increment: t; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--rule-soft); font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); }
+  .take li::before { content: counter(t, decimal-leading-zero); font-family: var(--f-display); font-weight: 800; font-size: 20px; color: var(--accent); }
+  .take b { color: var(--ink); display: block; margin-bottom: 2px; }
+  .biblio { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 8px; font-size: var(--s-1); color: var(--ink-2); line-height: 1.6; }
+  .biblio li { padding-left: 14px; position: relative; }
+  .biblio li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 6px; height: 1px; background: var(--muted); }
+  svg.plot text.lab { fill: var(--ink-2); font-size: 11.5px; }
+  svg.plot text.val { fill: var(--ink); font-size: 11px; font-family: var(--f-num); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="samsung.html">삼성전자</a>
+      <a href="reading.html" aria-current="page">AI 인프라 노트</a>
+      <a href="fsa.html">재무제표</a>
+      <a href="semi-cycle.html">반도체 사이클</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="doa.html">위임전결</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / AI 인프라 읽기 노트</div>
+      <div class="rpt-tag">Reading notes · 04</div>
+      <h1>AI 인프라를 읽는<br>여덟 편의 글</h1>
+      <p class="dek">반도체 업황을 따라가며 읽어 온 글 가운데 자주 인용되는 여덟 편을 골라, 출처를 밝히고 제 말로 요약했습니다. 각 글에서 재무기획자가 가져갈 숫자와 질문을 뽑고, 삼성전자 리포트와 반도체 사이클 노트에 연결했습니다.</p>
+      <div class="rpt-meta"><span>정리<b>이기표</b></span><span>기준<b>공개된 원문과 요약 (일부 유료 글은 공개 부분)</b></span><span>방식<b>요약은 직접 다시 씀 · 인용 없음</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>병목은 옮겨 다닙니다</b><p>GPU에서 메모리(HBM)와 패키징으로, 다시 전력과 부지로. 병목을 쥔 공급자가 가격을 정합니다. 2026년 삼성전자 메모리 가격이 그 사례입니다.</p></div>
+      <div><b>투자는 결국 매출로 회수돼야 합니다</b><p>설비투자와 AI 매출 사이의 간극을 묻는 질문은 재무기획의 투자 회수 분석과 같은 틀입니다. 공급자는 선수금과 장기계약으로 그 위험을 고객에게 넘깁니다.</p></div>
+      <div><b>상단과 기준 전망의 차이가 곧 불확실성입니다</b><p>같은 2030년을 두고 한 글은 단일 클러스터 100GW를, 국제기구 전망은 세계 데이터센터 전체 평균 약 108GW를 말합니다. 계획은 한 숫자가 아니라 범위로 세웁니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-chain">
+          <h2>여덟 편이 이어지는 하나의 고리</h2>
+          <p>각 글은 서로 다른 질문을 던지지만, 늘어놓으면 하나의 사슬이 됩니다. 성능을 위해 연산을 늘리고, 연산은 메모리와 전력에 막히며, 그 투자는 매출로 회수돼야 합니다.</p>
+          <div class="chain2" data-rv>
+            <div><span class="k">1 · 수요</span><b>성능은 연산량을 따라간다</b><span class="n">2e29 FLOP<small>2030년 가능한 학습 규모 (Epoch)</small></span><span class="who">The Bitter Lesson · Epoch AI</span></div>
+            <div><span class="k">2 · 칩</span><b>연산은 메모리에 막힌다</b><span class="n">50%+<small>H100 제조원가 중 HBM 비중 추정 (SemiAnalysis)</small></span><span class="who">SemiAnalysis · Memory Wall</span></div>
+            <div><span class="k">3 · 전력</span><b>데이터센터는 전력에 막힌다</b><span class="n">945TWh<small>2030년 데이터센터 전력 소비 (IEA)</small></span><span class="who">SemiAnalysis · IEA</span></div>
+            <div><span class="k">4 · 회수</span><b>투자는 매출로 돌아와야 한다</b><span class="n">$600B<small>AI가 벌어야 할 연 매출 (Sequoia)</small></span><span class="who">Sequoia Capital</span></div>
+            <div><span class="k">5 · 상단</span><b>어디까지 갈 수 있나</b><span class="n">100GW<small>2030년 단일 클러스터 전망 (Aschenbrenner)</small></span><span class="who">Situational Awareness · AI 2027</span></div>
+          </div>
+        </section>
+
+        <section id="s-power">
+          <h2>같은 단위로 놓고 본 전력 전망</h2>
+          <p>글마다 전력을 다른 기준으로 말합니다. 국제에너지기구는 1년 소비량(TWh), SemiAnalysis는 데이터센터 IT 설비 용량, Situational Awareness는 학습 클러스터 하나의 전력입니다. 개념이 달라 정확히 비교할 수는 없지만, 소비량을 1년 평균 전력(GW)으로 바꿔 나란히 놓으면 전망의 폭이 보입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>전망별 전력 규모 (GW, 로그 눈금)</h4><div class="legend"><span><i class="key-bar" style="background: var(--mark-muted)"></i>세계 데이터센터 전체</span><span><i class="key-bar" style="background: var(--input)"></i>데이터센터 IT 용량</span><span><i class="key-bar" style="background: var(--accent)"></i>단일 학습 클러스터·캠퍼스</span></div></div>
+            <div class="fig-b"><div class="chart" id="c-power"><div class="plot-host"></div></div></div>
+            <div class="fig-s">IEA 소비량은 ÷ 8,760시간으로 평균 전력으로 바꿨습니다(415TWh → 47GW, 945TWh → 108GW). 2030년 단일 클러스터 상단 시나리오(100GW)가 기준 전망의 세계 데이터센터 평균 전력(약 108GW)과 맞먹습니다.</div>
+          </div>
+        </section>
+
+        <section id="s-notes">
+          <h2>글별 노트</h2>
+          <p>각 노트는 출처, 한 줄 요약, 핵심 내용, 숫자, 재무기획 인사이트 순서입니다. 요약과 인사이트는 제 해석이며, 숫자는 원문 또는 원문을 인용한 공개 요약 기준입니다.</p>
+
+          <article class="note" id="n-bitter">
+            <div class="src"><b>Rich Sutton</b><span>개인 블로그 (incompleteideas.net)</span><span>2019.3.13</span><a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank" rel="noopener">원문 →</a></div>
+            <h3>The Bitter Lesson</h3>
+            <p class="one">70년 AI 연구의 쓴 교훈: 사람의 지식을 정교하게 넣은 방법보다, 계산이 늘수록 함께 좋아지는 일반적인 방법이 결국 이깁니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>체스, 바둑, 음성 인식, 컴퓨터 비전에서 사람의 지식을 넣은 방법은 단기적으로 앞서다가, 계산량을 늘린 탐색과 학습에 추월당했습니다.</li><li>연산 비용은 계속 싸지므로, 연산에 올라타는 방법이 장기적으로 유리합니다.</li><li>연구자는 사람이 생각하는 방식을 넣고 싶어 하지만, 그 유혹이 장기 성과를 막습니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>"연산을 늘리면 성능이 오른다"는 믿음이 AI 설비투자의 출발점입니다. 이 믿음이 흔들리면 수요가 가장 먼저 바뀝니다.</li><li>그래서 반도체 수요 전망에는 이 가정을 명시하고, 효율 개선으로 같은 성능에 필요한 연산이 줄어드는 시나리오를 함께 둡니다.</li></ul></div>
+            </div>
+            <div class="to"><a href="semi-cycle.html">반도체 사이클</a></div>
+          </article>
+
+          <article class="note" id="n-sa">
+            <div class="src"><b>Leopold Aschenbrenner</b><span>situational-awareness.ai</span><span>2024.6</span><a href="https://situational-awareness.ai/" target="_blank" rel="noopener">원문 →</a></div>
+            <h3>Situational Awareness: The Decade Ahead</h3>
+            <p class="one">연산과 알고리즘 효율의 증가를 "자릿수(OOM)"로 세면 2027년 무렵 사람 수준의 AI가 그럴듯하고, 이를 위해 조 달러 규모의 데이터센터 경쟁이 벌어진다는 긴 에세이입니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>GPT-2에서 GPT-4까지의 발전을 실효 연산의 자릿수 증가로 설명하고, 같은 추세가 이어진다고 봅니다.</li><li>학습 클러스터가 2022년 약 10MW(약 5억 달러)에서 2026년 무렵 1GW, 2028년 10GW, 2030년 약 100GW·1조 달러로 커진다고 전망합니다. 2030년 수치는 미국 발전량의 20%가 넘는 규모입니다.</li><li>연구소 보안, 정렬(alignment), 국가 차원의 개입을 핵심 과제로 꼽습니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>가장 공격적인 수요 시나리오입니다. 메모리·장비 수요의 상단을 잡을 때 기준점이 되고, 실제 투자 집행 속도를 이 경로와 비교해 보면 시장 기대가 어디쯤인지 보입니다.</li><li>저자도 제약을 전력과 칩 생산에서 찾습니다. 공급망 투자 판단은 "수요가 있나"보다 "어디가 막히나"에서 출발해야 합니다.</li></ul></div>
+            </div>
+            <div class="nums"><span>2026 클러스터 <b>1GW</b></span><span>2028 <b>10GW</b></span><span>2030 <b>100GW · $1T</b></span></div>
+            <div class="to"><a href="#s-power">전력 전망 비교</a><a href="semi-cycle.html#s-model">사이클 모형</a></div>
+          </article>
+
+          <article class="note" id="n-memwall">
+            <div class="src"><b>Dylan Patel 외</b><span>SemiAnalysis</span><span>2024.9</span><a href="https://newsletter.semianalysis.com/p/the-memory-wall" target="_blank" rel="noopener">원문 →</a><span>일부 유료</span></div>
+            <h3>The Memory Wall: Past, Present, and Future of DRAM</h3>
+            <p class="one">연산 성능은 빠르게 느는데 D램 집적도는 그만큼 따라오지 못해, 메모리가 AI 가속기의 병목이자 원가의 큰 몫이 됐다는 분석입니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>D램 집적도는 지난 10년간 약 2배 늘어나는 데 그쳐, 과거의 빠른 미세화가 사실상 멈췄습니다.</li><li>H100 제조원가의 50% 이상, Blackwell은 60% 이상이 HBM이라고 추정합니다.</li><li>연산 성능의 개선이 느려지고 있지만 메모리보다는 훨씬 빠르다는 점, 그리고 3D D램 같은 해법 후보를 다룹니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>가속기 원가에서 메모리 비중이 크다는 것은 메모리 공급자의 가격 결정력으로 이어집니다. 삼성전자 2026년 상반기 메모리 평균판매가격 +220%, 이익의 97%가 DS 부문이라는 숫자와 같은 방향입니다.</li><li>미세화가 둔해지면 같은 비트를 늘리는 데 더 많은 설비가 필요합니다. 메모리 업체의 설비투자 ÷ 감가상각이 구조적으로 높아질 수 있습니다.</li></ul></div>
+            </div>
+            <div class="nums"><span>10년간 D램 집적도 <b>약 2배</b></span><span>H100 원가 중 HBM <b>50%+</b></span></div>
+            <div class="to"><a href="samsung.html#s-seg">삼성전자: 이익은 어디서</a><a href="semi-cycle.html#s-chain">밸류체인 지도</a></div>
+          </article>
+
+          <article class="note" id="n-energy">
+            <div class="src"><b>Dylan Patel, Daniel Nishball, Jeremie Eliahou Ontiveros</b><span>SemiAnalysis</span><span>2024.3.13</span><a href="https://newsletter.semianalysis.com/p/ai-datacenter-energy-dilemma-race" target="_blank" rel="noopener">원문 →</a><span>일부 유료</span></div>
+            <h3>AI Datacenter Energy Dilemma: Race for AI Datacenter Space</h3>
+            <p class="one">AI 데이터센터의 진짜 병목은 칩이 아니라 전력이며, 전력과 부지를 먼저 확보하는 경쟁이 시작됐다는 분석입니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>세계 데이터센터 IT 전력 수요가 2023년 49GW에서 2026년 96GW로 늘고, 그중 AI가 약 40GW를 차지한다고 봅니다.</li><li>데이터센터 전력 용량 증가율이 연 12~15%에서 25% 수준으로 빨라진다고 전망합니다.</li><li>2030년에는 데이터센터가 세계 발전량의 약 4.5%를 쓸 것으로 봅니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>전력과 인허가가 증설의 리드타임을 정합니다. 반도체 사이클 모형에서 투자 시차가 길수록 사이클이 깊어지는 것과 같은 구조입니다.</li><li>병목이 전력으로 옮겨 가면 변압기, 냉각, 발전 설비 공급망이 다음 수혜자가 됩니다. 고객사 투자계획을 볼 때 전력 확보 여부를 함께 봅니다.</li></ul></div>
+            </div>
+            <div class="nums"><span>IT 전력 2023 <b>49GW</b></span><span>2026 <b>96GW</b> (AI 약 40GW)</span><span>2030 세계 발전량의 <b>4.5%</b></span></div>
+            <div class="to"><a href="semi-cycle.html#s-model">사이클 모형: 투자 시차</a></div>
+          </article>
+
+          <article class="note" id="n-600b">
+            <div class="src"><b>David Cahn</b><span>Sequoia Capital</span><span>2024.6.20</span><a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener">원문 →</a></div>
+            <h3>AI's $600B Question</h3>
+            <p class="one">AI 인프라에 들어간 돈을 회수하려면 AI가 연 6,000억 달러를 벌어야 하는데, 실제 매출과의 간극이 크다는 질문입니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>엔비디아 데이터센터 매출 전망(연환산)에 2를 곱해 데이터센터 총비용을 구하고(GPU는 총비용의 절반), 최종 사용자의 마진 50%를 감안해 다시 2를 곱합니다.</li><li>2023년 9월의 "2,000억 달러 질문"을 갱신한 글이며, 빅테크의 AI 매출을 넉넉히 잡아도 약 5,000억 달러의 간극이 남는다고 봅니다.</li><li>가격 결정력 부족, 다음 세대 칩이 나오면 빠르게 떨어지는 기존 칩의 가치(감가상각) 같은 위험을 짚습니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>계산 방식이 투자 회수 분석 그대로입니다. 장비값을 총소유비용으로 바꾸고, 필요한 마진을 얹어 회수에 필요한 매출을 거꾸로 구합니다. 설비투자 키트의 회수기간·손익분기와 같은 질문입니다.</li><li>공급자는 이 위험을 선수금과 장기계약으로 고객에게 넘깁니다. 삼성전자의 계약부채가 14.0조원에서 23.6조원으로 늘어난 것이 그 흔적입니다.</li></ul></div>
+            </div>
+            <div class="nums"><span>필요 매출 <b>$600B</b></span><span>남는 간극 <b>약 $500B</b></span></div>
+            <div class="to"><a href="capex-kit.html">설비투자 키트</a><a href="samsung.html#s-notes">삼성전자: 계약부채</a></div>
+          </article>
+
+          <article class="note" id="n-epoch">
+            <div class="src"><b>Jaime Sevilla 외</b><span>Epoch AI</span><span>2024.8</span><a href="https://epoch.ai/blog/can-ai-scaling-continue-through-2030" target="_blank" rel="noopener">원문 →</a></div>
+            <h3>Can AI Scaling Continue Through 2030?</h3>
+            <p class="one">2030년까지 AI 학습 규모를 키울 수 있는지를 전력, 칩 생산, 데이터, 지연 네 가지 제약으로 나눠 계산한 보고서입니다. 결론은 2e29 FLOP 규모의 학습이 가능하다는 것입니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>2e29 FLOP은 GPT-4(약 2e25 FLOP 추정)의 약 1만 배입니다.</li><li>전력: 1~5GW 캠퍼스면 1e28~3e29 FLOP, 여러 지역에 나눈 2~45GW 네트워크면 2e28~2e30 FLOP까지 가능합니다.</li><li>칩: H100 환산 2천만~4억 개(1e29~5e30 FLOP)로 불확실성이 크고, 첨단 패키징과 HBM이 제약입니다. 데이터는 400조~2경 토큰, 지연은 3e30~1e32 FLOP에서 한계가 옵니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>제약을 하나씩 숫자로 나눠 가장 빡빡한 것을 찾는 방식은 사업계획의 병목 분석과 같습니다. 생산능력 계획도 설비, 원재료, 인력, 전력 중 가장 작은 값이 상한입니다.</li><li>칩 생산 제약의 핵심이 패키징과 HBM이라는 점은 메모리·후공정 투자 확대의 근거입니다.</li></ul></div>
+            </div>
+            <div class="nums"><span>2030 학습 규모 <b>2e29 FLOP</b></span><span>GPT-4 대비 <b>약 1만 배</b></span></div>
+            <div class="to"><a href="semi-cycle.html#s-chain">밸류체인 지도</a></div>
+          </article>
+
+          <article class="note" id="n-iea">
+            <div class="src"><b>International Energy Agency</b><span>Energy and AI 보고서</span><span>2025.4</span><a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">원문 →</a></div>
+            <h3>Energy and AI</h3>
+            <p class="one">세계 데이터센터 전력 소비가 2030년까지 두 배 넘게 늘어난다는 국제기구의 기준 전망입니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>데이터센터는 2024년 세계 전력의 약 1.5%인 415TWh를 썼습니다.</li><li>2030년에는 약 945TWh로 늘어 지금의 일본 전체 소비와 비슷해진다고 봅니다. 증가를 이끄는 것은 AI용 가속 서버입니다.</li><li>2035년 기준 시나리오는 약 1,200TWh, 시나리오 범위는 700~1,700TWh로 불확실성이 큽니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>공격적인 시나리오(Situational Awareness)와 기준 전망(IEA)을 나란히 놓으면 불확실성의 폭이 보입니다. 사업계획과 투자심의는 한 숫자가 아니라 범위와 시나리오로 세웁니다.</li><li>2035년 범위가 두 배 넘게 벌어진다는 것은, 장기 증설일수록 단계별 투자와 중단 조건이 중요하다는 뜻입니다.</li></ul></div>
+            </div>
+            <div class="nums"><span>2024 <b>415TWh</b></span><span>2030 <b>약 945TWh</b></span><span>2035 범위 <b>700~1,700TWh</b></span></div>
+            <div class="to"><a href="#s-power">전력 전망 비교</a></div>
+          </article>
+
+          <article class="note" id="n-2027">
+            <div class="src"><b>Daniel Kokotajlo, Scott Alexander 외</b><span>AI Futures Project</span><span>2025.4</span><a href="https://ai-2027.com/" target="_blank" rel="noopener">원문 →</a></div>
+            <h3>AI 2027</h3>
+            <p class="one">2027년까지를 달 단위로 쓴 시나리오입니다. 가상의 선도 AI 기업이 코딩과 AI 연구 자체를 자동화하면서 발전 속도가 급격히 빨라지는 과정을 그립니다.</p>
+            <div class="cols">
+              <div><h4>핵심 내용</h4><ul><li>가상의 회사 "OpenBrain"이 점점 강한 AI 에이전트를 만들고, AI가 AI 연구를 돕기 시작하면서 진전이 가속됩니다.</li><li>미국과 중국의 경쟁, 모델 유출, 정렬 실패 위험 같은 정책·안보 변수를 함께 다룹니다.</li><li>경쟁을 이어 가는 결말과 속도를 늦추는 결말, 두 갈래로 끝납니다.</li></ul></div>
+              <div class="ins"><h4>재무기획 인사이트</h4><ul><li>정답을 맞히는 예측보다, 갈림길과 그 조건을 미리 적어 두는 시나리오 계획의 좋은 예입니다. 사업계획에서도 "무엇이 보이면 어느 시나리오로 가는가"를 정해 둡니다.</li><li>수출 통제 같은 정책 변수는 반도체 공급망의 수요와 가격을 단번에 바꿉니다. 고객별·지역별 매출 집중도를 함께 봅니다.</li></ul></div>
+            </div>
+            <div class="to"><a href="samsung.html#s-watch">삼성전자: 다음 공시에서 볼 것</a></div>
+          </article>
+        </section>
+
+        <section id="s-take">
+          <h2>재무기획자의 정리</h2>
+          <ol class="take">
+            <li><span><b>수요의 원천은 "연산이 곧 성능"이라는 믿음입니다.</b>그 믿음을 흔드는 효율 개선 뉴스가 나오면 투자 속도가 먼저 바뀝니다. 수요 전망에는 이 가정을 드러내 두고, 효율 개선 시나리오를 따로 둡니다.</span></li>
+            <li><span><b>병목은 GPU에서 메모리와 패키징으로, 다시 전력으로 옮겨 갑니다.</b>병목을 쥔 공급자가 가격을 정합니다. 2026년 삼성전자의 메모리 가격과 계약부채가 그 증거입니다.</span></li>
+            <li><span><b>고객의 설비투자는 공급망의 매출입니다.</b>고객이 회수에 의문을 품으면 장비·부품 회사의 매출이 가장 크게 흔들립니다. 반도체 사이클 모형에서 설비투자가 매출보다 몇 배 크게 출렁인 이유입니다.</span></li>
+            <li><span><b>리드타임이 사이클의 깊이를 정합니다.</b>전력·부지·인허가로 증설 시차가 길어지면, 호황기에 결정한 투자가 한꺼번에 들어오는 위험도 커집니다.</span></li>
+            <li><span><b>계획은 범위로 세웁니다.</b>같은 2030년을 두고 전망이 몇 배씩 갈립니다. 기준 전망과 상단 시나리오를 나란히 두고, 어느 신호에서 어느 쪽으로 옮겨 갈지 미리 정해 둡니다.</span></li>
+          </ol>
+        </section>
+
+        <section id="s-src">
+          <h2>출처</h2>
+          <ul class="biblio">
+            <li>Rich Sutton, "The Bitter Lesson", 2019.3.13. <a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank" rel="noopener">incompleteideas.net</a></li>
+            <li>Leopold Aschenbrenner, "Situational Awareness: The Decade Ahead", 2024.6. <a href="https://situational-awareness.ai/" target="_blank" rel="noopener">situational-awareness.ai</a></li>
+            <li>Dylan Patel 외, "The Memory Wall: Past, Present, and Future of DRAM", SemiAnalysis, 2024.9. <a href="https://newsletter.semianalysis.com/p/the-memory-wall" target="_blank" rel="noopener">newsletter.semianalysis.com</a></li>
+            <li>Dylan Patel, Daniel Nishball, Jeremie Eliahou Ontiveros, "AI Datacenter Energy Dilemma – Race for AI Datacenter Space", SemiAnalysis, 2024.3.13. <a href="https://newsletter.semianalysis.com/p/ai-datacenter-energy-dilemma-race" target="_blank" rel="noopener">newsletter.semianalysis.com</a></li>
+            <li>David Cahn, "AI's $600B Question", Sequoia Capital, 2024.6.20. <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener">sequoiacap.com</a></li>
+            <li>Jaime Sevilla 외, "Can AI Scaling Continue Through 2030?", Epoch AI, 2024.8. <a href="https://epoch.ai/blog/can-ai-scaling-continue-through-2030" target="_blank" rel="noopener">epoch.ai</a></li>
+            <li>International Energy Agency, "Energy and AI", 2025.4. <a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">iea.org</a></li>
+            <li>Daniel Kokotajlo, Scott Alexander, Thomas Larsen, Eli Lifland, Romeo Dean, "AI 2027", 2025.4. <a href="https://ai-2027.com/" target="_blank" rel="noopener">ai-2027.com</a></li>
+          </ul>
+          <p class="rpt-end">요약과 인사이트는 원문을 읽고 제 말로 다시 쓴 것이며, 원문 문장을 옮기지 않았습니다. SemiAnalysis 글은 일부가 유료라 공개된 부분과 공개 요약을 기준으로 정리했습니다. 숫자는 각 원문 또는 원문을 인용한 공개 자료 기준이고, 전력 비교 그래프의 GW 환산은 제가 계산했습니다. 각 저자의 견해이며 이 사이트의 투자 의견이 아닙니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>다른 리포트: <a href="samsung.html">삼성전자 재무 분석</a> · <a href="semi-cycle.html">반도체 사이클</a></span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, $ = F.$;
+  /* 전력 전망 비교: [묶음, 이름, 값(GW), 범위 상단(선택), 출처] */
+  const ROWS = [
+    ["all", "세계 데이터센터 2024 (IEA)", 415 / 8.76, null, "415TWh ÷ 8,760시간", "IEA 2024"],
+    ["all", "세계 데이터센터 2030 (IEA)", 945 / 8.76, null, "945TWh ÷ 8,760시간", "IEA 2030"],
+    ["it", "데이터센터 IT 용량 2023 (SemiAnalysis)", 49, null, "설비 용량", "SemiAnalysis 2023"],
+    ["it", "데이터센터 IT 용량 2026 (SemiAnalysis)", 96, null, "AI 약 40GW 포함", "SemiAnalysis 2026"],
+    ["one", "단일 캠퍼스 2030 (Epoch AI)", 1, 5, "1~5GW 계획", "Epoch 2030"],
+    ["one", "단일 클러스터 2026 (Aschenbrenner)", 1, null, "상단 시나리오", "Aschenbrenner 2026"],
+    ["one", "단일 클러스터 2028 (Aschenbrenner)", 10, null, "상단 시나리오", "Aschenbrenner 2028"],
+    ["one", "단일 클러스터 2030 (Aschenbrenner)", 100, null, "상단 시나리오", "Aschenbrenner 2030"]
+  ];
+  function drawPower() {
+    const H = 30 * ROWS.length + 40, padR = 64, padT = 8, padB = 26;
+    const fr = F.plotFrame($("c-power"), H, "전망별 전력 규모 비교"), svg = fr.svg, W = fr.W, narrow = W < 620, padL = narrow ? 118 : 250;
+    const lo = 0.5, hi = 200, lg = (v) => Math.log10(v), X = (v) => padL + (lg(v) - lg(lo)) / (lg(hi) - lg(lo)) * (W - padL - padR);
+    const row = (H - padT - padB) / ROWS.length, col = { all: F.css("--mark-muted"), it: F.css("--input"), one: F.css("--accent") };
+    [1, 10, 100].forEach((t) => { F.svgEl("line", { class: "grid", x1: X(t), x2: X(t), y1: padT, y2: H - padB }, svg); F.svgText(svg, X(t), H - 8, t + "GW", { "text-anchor": "middle" }); });
+    const tip = F.makeTip(fr.plot);
+    ROWS.forEach((r, i) => {
+      const y = padT + row * i, bh = Math.min(14, row * 0.55), x0 = X(lo);
+      F.svgText(svg, padL - 8, y + row / 2 + 4, narrow ? r[5] : r[1], { "text-anchor": "end", class: "lab" });
+      F.svgEl("rect", { class: "rv-barx", x: x0, y: y + (row - bh) / 2, width: Math.max(1, X(r[2]) - x0), height: bh, rx: 2, fill: col[r[0]] }, svg);
+      if (r[3]) F.svgEl("rect", { x: X(r[2]), y: y + (row - bh) / 2, width: X(r[3]) - X(r[2]), height: bh, rx: 2, fill: col[r[0]], "fill-opacity": 0.35 }, svg);
+      const vEnd = r[3] || r[2];
+      F.svgText(svg, X(vEnd) + 6, y + row / 2 + 4, r[3] ? F.num(r[2], 0) + "~" + F.num(r[3], 0) : F.num(r[2], 0), { class: "val" });
+      const hit = F.svgEl("rect", { class: "hit", x: padL, y: y, width: W - padL - padR, height: row }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: r[1], rows: [["규모", (r[3] ? F.num(r[2], 0) + "~" + F.num(r[3], 0) : F.num(r[2], 1)) + "GW", col[r[0]]], ["기준", r[4]]] }));
+    });
+  }
+  drawPower();
+  F.onRedraw(drawPower);
+  Report.flows($("hero-art"), {
+    area: { span: 0.44, max: 600, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.10, y: 0.30, label: "연산", ly: -30 }, { x: 0.52, y: 0.16, label: "메모리", ly: -26 }, { x: 0.92, y: 0.40, label: "전력", ly: -30 }, { x: 0.70, y: 0.84, label: "자본" }, { x: 0.22, y: 0.80, label: "매출" }],
+    links: [
+      { from: 0, to: 1, bend: -0.14, c: 0, n: 22 }, { from: 1, to: 2, bend: -0.14, c: 1, n: 22 }, { from: 2, to: 3, bend: -0.14, c: 2, n: 22 },
+      { from: 3, to: 4, bend: -0.14, c: 0, n: 22 }, { from: 4, to: 0, bend: -0.14, c: 1, n: 22 }, { from: 3, to: 1, bend: 0.12, c: 2, n: 12 }
+    ]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>

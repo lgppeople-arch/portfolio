@@ -178,6 +178,7 @@ body::before { background: var(--paper); }
 .site-nav { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; scrollbar-width: none; min-width: 0; }
 .site-nav::-webkit-scrollbar { display: none; }
 .site-nav a { flex: none; color: var(--ink-2); text-decoration: none; font-size: var(--s-1); font-weight: 500; padding: 6px 10px; border-radius: 4px; }
+@media (max-width: 1500px) { .site-nav { gap: 0; } .site-nav a { padding: 6px 7px; font-size: 12.5px; } }
 .site-nav a:hover { background: var(--rule-soft); color: var(--ink); }
 .site-nav a[aria-current="page"], .site-nav a[aria-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); border-radius: 0; }
 @media (max-width: 640px) { .brand span { display: none; } }
@@ -517,8 +518,8 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 @media (max-width: 1400px) { .brand span:not(.mono) { display: none; } }
 
 /* ---------- 홈: 분석 리포트 카드 ---------- */
-.reports { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-@media (max-width: 860px) { .reports { grid-template-columns: minmax(0, 1fr); } }
+.reports { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 1100px) { .reports { grid-template-columns: minmax(0, 1fr); } }
 .rcard { display: grid; grid-template-rows: auto 1fr; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--surface); color: inherit; text-decoration: none; transition: transform .2s, box-shadow .2s, border-color .2s; }
 .rcard:hover { transform: translateY(-2px); border-color: var(--ink-2); box-shadow: 0 10px 28px -18px rgba(0, 0, 0, 0.45); }
 .rcard:focus-visible { outline: 2px solid var(--input); outline-offset: 2px; }
@@ -541,8 +542,10 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 .feat { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 22px; border-top: 1px solid var(--rule); padding-top: 14px; }
 .feat h4 { font-size: var(--s-1); font-weight: 700; color: var(--accent); margin: 0 0 6px; }
 .feat ul { margin: 0; padding-left: 1.05em; display: grid; gap: 4px; font-size: var(--s-1); color: var(--ink-2); line-height: 1.6; }
-@media (max-width: 1100px) { .feat { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .feat { grid-template-columns: minmax(0, 1fr); } }
+.feat.feat3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.feat .ev { display: inline-block; margin-top: 8px; font-size: var(--s-1); }
+@media (max-width: 1100px) { .feat, .feat.feat3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .feat, .feat.feat3 { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- 인쇄: 홈을 A4 이력서처럼 (밝은 색 고정, 조작 요소 숨김) ---------- */
 @media print {
