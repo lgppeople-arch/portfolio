@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>설비투자 분석 키트 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body class="tools-page">
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="사이트">
+      <a href="../index.html#cycle">하는 일</a>
+      <a href="capex-kit.html" aria-current="page">설비투자 분석</a>
+      <a href="../index.html#career">경력</a>
+      <a href="../index.html#contact">연락</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="tool-hero">
+    <div class="wrap">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 설비투자 분석 키트</div>
+      <h1>설비투자 분석 키트</h1>
+      <p>생산라인 증설 하나를 놓고 원가 구조를 보고, 투자 타당성을 따지고, 실적이 나온 뒤 차이를 나눠 보는 세 가지 계산입니다. 입력값을 바꾸면 결과가 바로 다시 계산됩니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span></div>
+    </div>
+  </div>
+  <section id="tools">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sheet">Sheet 4</div>
+        <div><h2>업무 도구</h2><p>투자 검토와 손익관리에서 쓰는 계산을 브라우저에서 바로 돌려 볼 수 있게 만들었습니다. 입력값을 바꾸면 결과가 곧바로 다시 계산됩니다.</p></div>
+      </div>
+      <div class="flow" aria-label="세 도구의 관계">
+        <span>계획 단계에서 원가 구조를 보고</span><span class="arrow">→</span>
+        <span>투자를 검토하고</span><span class="arrow">→</span>
+        <span>실적이 나오면 차이를 나눠 봅니다</span>
+      </div>
+
+      <div class="tooltabs" role="tablist" aria-label="업무 도구">
+        <button role="tab" id="tab-npv" aria-controls="panel-npv" aria-selected="true">투자 타당성</button>
+        <button role="tab" id="tab-bep" aria-controls="panel-bep" aria-selected="false" tabindex="-1">가동률과 원가</button>
+        <button role="tab" id="tab-var" aria-controls="panel-var" aria-selected="false" tabindex="-1">계획 대비 실적</button>
+      </div>
+
+      <!-- ===== 투자 타당성 ===== -->
+      <div class="toolpanel" role="tabpanel" id="panel-npv" aria-labelledby="tab-npv">
+        <span class="sample">예시: 가상의 정밀부품 생산라인 1개 증설 · 모든 수치는 가상</span>
+        <div class="tool-grid">
+          <form class="inputs" id="npv-form" novalidate>
+            <fieldset>
+              <legend>투자와 기간</legend>
+              <div class="field"><label for="i-capex">초기 투자비<small>억원, 0년차 집행</small></label><input id="i-capex" type="number" inputmode="decimal" step="10" min="1" value="300"></div>
+              <div class="field"><label for="i-years">평가기간<small>년</small></label><select id="i-years"></select></div>
+              <div class="field"><label for="i-taxlife">세법 내용연수<small>년, 정액법</small></label><input id="i-taxlife" type="number" inputmode="numeric" step="1" min="1" max="40" value="8"></div>
+              <div class="field"><label for="i-maint">유지보수 투자<small>투자비 대비 %/년</small></label><input id="i-maint" type="number" inputmode="decimal" step="0.5" min="0" value="1.5"></div>
+              <div class="field"><label for="i-salvage">잔존가치<small>투자비 대비 %</small></label><input id="i-salvage" type="number" inputmode="decimal" step="1" min="0" value="10"></div>
+            </fieldset>
+            <fieldset>
+              <legend>물량과 가격</legend>
+              <div class="field"><label for="i-capa">연간 CAPA<small>천 개</small></label><input id="i-capa" type="number" inputmode="decimal" step="10" min="1" value="200"></div>
+              <div class="field"><label for="i-util">정상 가동률<small>3년차부터, %</small></label><input id="i-util" type="number" inputmode="decimal" step="1" min="0" max="100" value="85"></div>
+              <div class="field"><label for="i-ramp1">1년차 가동률<small>%</small></label><input id="i-ramp1" type="number" inputmode="decimal" step="1" min="0" max="100" value="50"></div>
+              <div class="field"><label for="i-ramp2">2년차 가동률<small>%</small></label><input id="i-ramp2" type="number" inputmode="decimal" step="1" min="0" max="100" value="75"></div>
+              <div class="field"><label for="i-asp">판매단가<small>천원/개, 1년차</small></label><input id="i-asp" type="number" inputmode="decimal" step="1" min="0" value="130"></div>
+              <div class="field"><label for="i-cr">연간 단가 인하율<small>%</small></label><input id="i-cr" type="number" inputmode="decimal" step="0.5" min="0" max="50" value="2"></div>
+            </fieldset>
+            <fieldset>
+              <legend>원가와 운전자본</legend>
+              <div class="field"><label for="i-uvc">단위 변동비<small>천원/개</small></label><input id="i-uvc" type="number" inputmode="decimal" step="1" min="0" value="58"></div>
+              <div class="field"><label for="i-fixed">증분 고정비<small>억원/년, 감가상각 제외</small></label><input id="i-fixed" type="number" inputmode="decimal" step="1" min="0" value="34"></div>
+              <div class="field"><label for="i-wc">운전자본<small>매출 대비 %</small></label><input id="i-wc" type="number" inputmode="decimal" step="1" min="0" value="15"></div>
+            </fieldset>
+            <fieldset>
+              <legend>세금과 할인율</legend>
+              <div class="field"><label for="i-tax">법인세율<small>지방소득세 포함 %</small></label><input id="i-tax" type="number" inputmode="decimal" step="0.1" min="0" max="60" value="24.2"></div>
+              <div class="field"><label for="i-rate">할인율<small>WACC 또는 사내 기준 %</small></label><input id="i-rate" type="number" inputmode="decimal" step="0.5" min="0" max="40" value="8"></div>
+            </fieldset>
+            <div class="form-actions"><button type="button" class="btn" id="npv-reset">예시값으로 되돌리기</button></div>
+          </form>
+
+          <div class="results" aria-live="polite">
+            <p class="verdict" id="npv-verdict"></p>
+            <div class="kpis">
+              <div class="kpi"><div class="label">NPV</div><div class="v" id="k-npv"></div></div>
+              <div class="kpi"><div class="label">IRR</div><div class="v" id="k-irr"></div></div>
+              <div class="kpi"><div class="label">회수기간</div><div class="v" id="k-pb"></div></div>
+              <div class="kpi"><div class="label">할인 회수기간</div><div class="v" id="k-dpb"></div></div>
+              <div class="kpi"><div class="label">수익성지수 PI</div><div class="v" id="k-pi"></div></div>
+            </div>
+            <div class="bep">
+              <div>
+                <div class="line"><span>손익분기 정상 가동률</span><b class="num" id="be-u"></b></div>
+                <div class="meter" id="be-u-meter" aria-hidden="true"></div>
+                <div class="line"><span id="be-u-note"></span></div>
+              </div>
+              <div>
+                <div class="line"><span>손익분기 판매단가</span><b class="num" id="be-a"></b></div>
+                <div class="meter" id="be-a-meter" aria-hidden="true"></div>
+                <div class="line"><span id="be-a-note"></span></div>
+              </div>
+            </div>
+            <p class="warn" id="npv-warn" hidden></p>
+
+            <div class="chart" id="fcf-chart">
+              <div class="chart-head">
+                <h4>연도별 잉여현금흐름 <span class="muted">(억원)</span></h4>
+                <div class="legend"><span><i class="key-bar" style="background: var(--pos)"></i>FCF 유입</span><span><i class="key-bar" style="background: var(--neg)"></i>FCF 유출</span><span><i class="key-line" style="background: var(--ink-2)"></i>누적 FCF</span></div>
+              </div>
+              <div class="plot-host"></div>
+            </div>
+
+            <div class="subtabs" role="tablist" aria-label="상세 보기">
+              <button role="tab" id="st-cf" aria-selected="true" aria-controls="sp-cf">연도별 현금흐름</button>
+              <button role="tab" id="st-sens" aria-selected="false" aria-controls="sp-sens" tabindex="-1">민감도 표</button>
+              <button role="tab" id="st-tor" aria-selected="false" aria-controls="sp-tor" tabindex="-1">영향이 큰 가정</button>
+            </div>
+            <div id="sp-cf" role="tabpanel" aria-labelledby="st-cf">
+              <div class="scroll"><table class="ledger" id="cf-table"></table></div>
+            </div>
+            <div id="sp-sens" role="tabpanel" aria-labelledby="st-sens" hidden>
+              <div class="subtabs" style="margin-bottom: 10px" role="radiogroup" aria-label="민감도 축">
+                <button type="button" role="radio" id="sx-ua" aria-checked="true">가동률 × 판매단가</button>
+                <button type="button" role="radio" id="sx-cr" aria-checked="false">투자비 × 할인율</button>
+              </div>
+              <div class="scroll" style="border: 0"><table class="sens" id="sens-table"></table></div>
+              <p class="check" id="sens-check" style="margin-top: 8px"></p>
+            </div>
+            <div id="sp-tor" role="tabpanel" aria-labelledby="st-tor" hidden>
+              <p class="check" id="tor-note" style="margin-bottom: 6px"></p>
+              <div class="chart" id="tor-chart"><div class="plot-host"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="method">
+          <h4>계산 기준</h4>
+          <ul>
+            <li>단위는 금액 억원, 물량 천 개, 단가와 원가 천원/개입니다. 매출 = CAPA × 가동률 × 판매단가이고, 판매단가는 매년 인하율만큼 낮아집니다.</li>
+            <li>변동비는 판매량 × 단위 변동비로 잡습니다. 고정비에는 투자로 실제 늘어나는 금액만 넣고 본사 배부비는 넣지 않습니다.</li>
+            <li>FCF = 영업이익 − 법인세 + 감가상각 − 유지보수 투자 − 운전자본 증가. 마지막 해에 세후 잔존가치와 운전자본을 회수합니다. 이자비용은 할인율에 반영돼 있어 현금흐름에서 빼지 않습니다.</li>
+            <li>감가상각은 세법 내용연수 정액법입니다. 초기 적자의 법인세 효과는 회사 전체 이익과 상계된다고 봅니다. 유지보수 투자의 상각 효과는 보수적으로 넣지 않았습니다.</li>
+            <li>투자비는 0년차, 이후 현금흐름은 연말 기준으로 할인합니다. IRR은 이분법으로 찾습니다.</li>
+            <li>손익분기 가동률은 1·2년차 램프업 비율을 유지한 채 NPV가 0이 되는 정상 가동률입니다. 손익분기 판매단가도 같은 방식입니다. 민감도 표의 각 칸은 근사치가 아니라 전체를 다시 계산한 값입니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ===== 가동률과 원가 ===== -->
+      <div class="toolpanel" role="tabpanel" id="panel-bep" aria-labelledby="tab-bep" hidden>
+        <span class="sample">예시: 위와 같은 가상 생산라인의 1년차 원가 구조</span>
+        <div class="tool-grid">
+          <form class="inputs" id="bep-form" novalidate>
+            <div class="range-row">
+              <div class="top"><label for="b-util">가동률</label><b id="b-util-out">85%</b></div>
+              <input id="b-util" type="range" min="20" max="100" step="1" value="85">
+            </div>
+            <fieldset>
+              <legend>원가 구조</legend>
+              <div class="field"><label for="b-capa">연간 CAPA<small>천 개</small></label><input id="b-capa" type="number" inputmode="decimal" step="10" min="1" value="200"></div>
+              <div class="field"><label for="b-asp">판매단가<small>천원/개</small></label><input id="b-asp" type="number" inputmode="decimal" step="1" min="0" value="130"></div>
+              <div class="field"><label for="b-uvc">단위 변동비<small>천원/개</small></label><input id="b-uvc" type="number" inputmode="decimal" step="1" min="0" value="58"></div>
+              <div class="field"><label for="b-fixed">고정비<small>억원/년, 감가상각 포함</small></label><input id="b-fixed" type="number" inputmode="decimal" step="0.5" min="0" value="71.5"></div>
+            </fieldset>
+            <div class="form-actions"><button type="button" class="btn" id="bep-reset">예시값으로 되돌리기</button></div>
+          </form>
+          <div class="results" aria-live="polite">
+            <p class="verdict" id="bep-verdict"></p>
+            <div class="kpis">
+              <div class="kpi"><div class="label">매출</div><div class="v" id="b-rev"></div></div>
+              <div class="kpi"><div class="label">영업이익</div><div class="v" id="b-op"></div></div>
+              <div class="kpi"><div class="label">원가율</div><div class="v" id="b-cr"></div></div>
+              <div class="kpi"><div class="label">단위당 원가</div><div class="v" id="b-uc"></div></div>
+              <div class="kpi"><div class="label">손익분기 가동률</div><div class="v" id="b-be"></div></div>
+            </div>
+            <div class="chart" id="bep-chart">
+              <div class="chart-head">
+                <h4>가동률에 따른 단위당 원가 <span class="muted">(천원/개)</span></h4>
+                <div class="legend"><span><i class="key-line" style="background: var(--pos)"></i>단위당 총원가</span><span><i class="key-line" style="background: var(--ink)"></i>판매단가</span><span><i class="key-line" style="background: var(--mark-muted)"></i>단위 변동비</span></div>
+              </div>
+              <div class="plot-host"></div>
+            </div>
+            <p class="check">가동률이 낮아지면 같은 고정비를 더 적은 수량이 나눠 지게 되어 단위당 원가가 빠르게 올라갑니다. 단위당 총원가 곡선이 판매단가 선 아래로 내려오는 지점이 손익분기 가동률입니다.</p>
+          </div>
+        </div>
+        <div class="method">
+          <h4>계산 기준</h4>
+          <ul>
+            <li>단위당 원가 = 단위 변동비 + 고정비 ÷ 판매량. 이 도구의 고정비에는 감가상각을 포함합니다.</li>
+            <li>손익분기 가동률 = 고정비 ÷ (CAPA × (판매단가 − 단위 변동비)). 생산량과 판매량이 같다고 봅니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ===== 계획 대비 실적 ===== -->
+      <div class="toolpanel" role="tabpanel" id="panel-var" aria-labelledby="tab-var" hidden>
+        <span class="sample">예시: 가상 생산라인의 연간 계획과 실적</span>
+        <div class="tool-grid">
+          <form class="inputs" id="var-form" novalidate>
+            <div class="vtable">
+              <span></span><span class="h">계획</span><span class="h">실적</span>
+              <label for="v-qp">판매량<br><small class="muted">천 개</small></label><input id="v-qp" type="number" inputmode="decimal" step="1" value="170" aria-label="계획 판매량"><input id="v-qa" type="number" inputmode="decimal" step="1" value="152" aria-label="실적 판매량">
+              <label for="v-pp">판매단가<br><small class="muted">천원/개</small></label><input id="v-pp" type="number" inputmode="decimal" step="0.5" value="130" aria-label="계획 판매단가"><input id="v-pa" type="number" inputmode="decimal" step="0.5" value="126" aria-label="실적 판매단가">
+              <label for="v-vp">단위 변동비<br><small class="muted">천원/개</small></label><input id="v-vp" type="number" inputmode="decimal" step="0.5" value="58" aria-label="계획 단위 변동비"><input id="v-va" type="number" inputmode="decimal" step="0.5" value="59.5" aria-label="실적 단위 변동비">
+              <label for="v-fp">고정비<br><small class="muted">억원</small></label><input id="v-fp" type="number" inputmode="decimal" step="0.5" value="71.5" aria-label="계획 고정비"><input id="v-fa" type="number" inputmode="decimal" step="0.5" value="70" aria-label="실적 고정비">
+            </div>
+            <div class="form-actions"><button type="button" class="btn" id="var-reset">예시값으로 되돌리기</button></div>
+          </form>
+          <div class="results" aria-live="polite">
+            <p class="verdict" id="var-verdict"></p>
+            <div class="chart" id="var-chart">
+              <div class="chart-head">
+                <h4>영업이익 차이 분해 <span class="muted">(억원)</span></h4>
+                <div class="legend"><span><i class="key-bar" style="background: var(--total)"></i>영업이익</span><span><i class="key-bar" style="background: var(--pos)"></i>증가 요인</span><span><i class="key-bar" style="background: var(--neg)"></i>감소 요인</span></div>
+              </div>
+              <div class="plot-host"></div>
+            </div>
+            <div class="effects" id="var-list"></div>
+            <p class="check" id="var-check"></p>
+          </div>
+        </div>
+        <div class="method">
+          <h4>계산 기준</h4>
+          <ul>
+            <li>물량 효과 = (실적 판매량 − 계획 판매량) × (계획 단가 − 계획 단위 변동비)</li>
+            <li>가격 효과 = (실적 단가 − 계획 단가) × 실적 판매량</li>
+            <li>원가 효과 = (계획 단위 변동비 − 실적 단위 변동비) × 실적 판매량</li>
+            <li>고정비 효과 = 계획 고정비 − 실적 고정비. 네 효과의 합은 영업이익 차이와 정확히 같습니다.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-foot">
+  <div class="wrap"><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+<script>
+(function () {
+  "use strict";
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const $ = (id) => document.getElementById(id);
+  const nf1 = new Intl.NumberFormat("ko-KR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const nf0 = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 });
+
+  /* 음수는 괄호로 표기 (회계 관행) */
+  function money(x, digits) {
+    if (x === null || !isFinite(x)) return "–";
+    const f = digits === 0 ? nf0 : nf1;
+    const v = Math.abs(x) < 0.05 ? 0 : x;
+    return v < 0 ? "(" + f.format(-v) + ")" : f.format(v);
+  }
+  function signed(x) {
+    const v = Math.abs(x) < 0.05 ? 0 : x;
+    return v < 0 ? "(" + nf1.format(-v) + ")" : "+" + nf1.format(v);
+  }
+  function setText(el, txt, isNeg) {
+    el.textContent = txt;
+    el.classList.toggle("neg", !!isNeg);
+  }
+  function setValue(el, main, unit, isNeg) {
+    el.textContent = "";
+    const s = document.createElement("span");
+    s.textContent = main;
+    if (isNeg) s.className = "neg";
+    el.appendChild(s);
+    if (unit) { const u = document.createElement("small"); u.textContent = unit; el.appendChild(u); }
+  }
+
+  /* ---------- 경력 기간 자동 계산 ---------- */
+  try {
+    const now = new Date();
+    const months = (now.getFullYear() - 2020) * 12 + (now.getMonth() + 1 - 6);
+    if (months >= 76) {
+      $("tenure").textContent = Math.floor(months / 12) + "년 " + (months % 12) + "개월";
+      $("tenure-asof").textContent = now.getFullYear() + "년 " + (now.getMonth() + 1) + "월 기준";
+    }
+  } catch (e) { /* 정적 문구 유지 */ }
+
+  /* ---------- 시트 탭: 현재 구역 표시 ---------- */
+  const navLinks = Array.from(document.querySelectorAll(".tabs a"));
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          navLinks.forEach((a) => a.setAttribute("aria-current", a.dataset.sec === en.target.id ? "true" : "false"));
+        }
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    document.querySelectorAll("main section").forEach((s) => io.observe(s));
+  }
+
+  /* ---------- 탭 위젯 ---------- */
+  function tabs(buttonIds, onChange) {
+    const btns = buttonIds.map($);
+    function select(i, focus) {
+      btns.forEach((b, j) => {
+        const on = i === j;
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+        const panel = b.getAttribute("aria-controls") ? $(b.getAttribute("aria-controls")) : null;
+        if (panel) panel.hidden = !on;
+      });
+      if (focus) btns[i].focus();
+      if (onChange) onChange(i);
+    }
+    btns.forEach((b, i) => {
+      b.addEventListener("click", () => select(i));
+      b.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") { e.preventDefault(); select((i + 1) % btns.length, true); }
+        if (e.key === "ArrowLeft") { e.preventDefault(); select((i - 1 + btns.length) % btns.length, true); }
+      });
+    });
+    return select;
+  }
+
+  /* ---------- SVG 도우미 ---------- */
+  function svgEl(tag, attrs, parent) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function niceTicks(min, max, count) {
+    if (min === max) { min -= 1; max += 1; }
+    const span = max - min;
+    const step0 = span / Math.max(1, count);
+    const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const norm = step0 / mag;
+    const step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+    const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step;
+    const ticks = [];
+    for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v / step) * step);
+    return { lo, hi, ticks };
+  }
+  /* 데이터 끝만 둥근 막대 (기준선 쪽은 직각) */
+  function barPath(x, w, y0, y1, r) {
+    const h = Math.abs(y1 - y0);
+    r = Math.min(r, h, w / 2);
+    if (h < 0.5) return "M" + x + "," + y0 + "H" + (x + w);
+    if (y1 < y0) {
+      return "M" + x + "," + y0 + "V" + (y1 + r) + "Q" + x + "," + y1 + " " + (x + r) + "," + y1 + "H" + (x + w - r) + "Q" + (x + w) + "," + y1 + " " + (x + w) + "," + (y1 + r) + "V" + y0 + "Z";
+    }
+    return "M" + x + "," + y0 + "V" + (y1 - r) + "Q" + x + "," + y1 + " " + (x + r) + "," + y1 + "H" + (x + w - r) + "Q" + (x + w) + "," + y1 + " " + (x + w) + "," + (y1 - r) + "V" + y0 + "Z";
+  }
+  function makeTip(host) {
+    let tip = host.querySelector(".tip");
+    if (!tip) { tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; host.appendChild(tip); }
+    return {
+      show(title, rows, x, y) {
+        tip.textContent = "";
+        const t = document.createElement("div"); t.className = "t"; t.textContent = title; tip.appendChild(t);
+        rows.forEach(([label, value, color]) => {
+          const r = document.createElement("div"); r.className = "row";
+          const l = document.createElement("span");
+          if (color) { const k = document.createElement("i"); k.className = "key-line"; k.style.background = color; k.style.marginRight = "6px"; k.style.verticalAlign = "middle"; l.appendChild(k); }
+          l.appendChild(document.createTextNode(label));
+          const v = document.createElement("b"); v.textContent = value;
+          r.appendChild(l); r.appendChild(v); tip.appendChild(r);
+        });
+        tip.hidden = false;
+        const hw = host.clientWidth, tw = tip.offsetWidth, th = tip.offsetHeight;
+        let left = x + 12; if (left + tw > hw) left = Math.max(0, x - tw - 12);
+        let top = y - th - 10; if (top < 0) top = y + 14;
+        tip.style.left = left + "px"; tip.style.top = top + "px";
+      },
+      hide() { tip.hidden = true; }
+    };
+  }
+  function wireHit(rect, host, tipApi, getContent) {
+    rect.setAttribute("tabindex", "0");
+    const show = (evt) => {
+      const c = getContent();
+      const hb = host.getBoundingClientRect();
+      let x, y;
+      if (evt && evt.clientX !== undefined && evt.type !== "focus") { x = evt.clientX - hb.left; y = evt.clientY - hb.top; }
+      else { const rb = rect.getBoundingClientRect(); x = rb.left - hb.left + rb.width / 2; y = rb.top - hb.top + 20; }
+      rect.classList.add("on");
+      tipApi.show(c.title, c.rows, x, y);
+    };
+    const hide = () => { rect.classList.remove("on"); tipApi.hide(); };
+    rect.addEventListener("pointermove", show);
+    rect.addEventListener("pointerleave", hide);
+    rect.addEventListener("focus", show);
+    rect.addEventListener("blur", hide);
+    rect.setAttribute("aria-label", (() => { const c = getContent(); return c.title + ", " + c.rows.map((r) => r[0] + " " + r[1]).join(", "); })());
+  }
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  /* 받침 유무에 따라 와/과 */
+  function josaWa(word) {
+    const c = word.charCodeAt(word.length - 1);
+    if (c < 0xAC00 || c > 0xD7A3) return "와";
+    return (c - 0xAC00) % 28 ? "과" : "와";
+  }
+
+  /* =====================================================
+     1. 투자 타당성
+     ===================================================== */
+  const NPV_DEFAULTS = { capex: 300, years: 10, taxlife: 8, maint: 1.5, salvage: 10, capa: 200, util: 85, ramp1: 50, ramp2: 75, asp: 130, cr: 2, uvc: 58, fixed: 34, wc: 15, tax: 24.2, rate: 8 };
+  const NPV_FIELDS = Object.keys(NPV_DEFAULTS);
+  const yearsSel = $("i-years");
+  for (let y = 5; y <= 15; y++) { const o = document.createElement("option"); o.value = y; o.textContent = y; yearsSel.appendChild(o); }
+  yearsSel.value = "10";
+
+  function runModel(p, k) {
+    k = k || {};
+    const ku = k.util ?? 1, ka = k.asp ?? 1, kv = k.uvc ?? 1, kc = k.capex ?? 1, kf = k.fixed ?? 1, ra = k.rateAdd ?? 0;
+    const N = Math.round(p.years), r = p.rate / 100 + ra, tax = p.tax / 100, capex = p.capex * kc;
+    const depY = capex / p.taxlife;
+    const rows = [], fcf = [-capex];
+    let wcPrev = 0;
+    for (let t = 1; t <= N; t++) {
+      const baseU = t === 1 ? p.ramp1 : t === 2 ? p.ramp2 : p.util;
+      const u = Math.min((baseU / 100) * ku, 1);
+      const units = p.capa * u;
+      const asp = p.asp * ka * Math.pow(1 - p.cr / 100, t - 1);
+      const rev = units * asp / 100;
+      const vc = units * p.uvc * kv / 100;
+      const fixed = p.fixed * kf;
+      const dep = t <= p.taxlife ? depY : 0;
+      const ebit = rev - vc - fixed - dep;
+      const taxv = ebit * tax;
+      const maint = capex * p.maint / 100;
+      const wc = rev * p.wc / 100;
+      const dwc = wc - wcPrev; wcPrev = wc;
+      let f = ebit - taxv + dep - maint - dwc;
+      let term = 0, wcRec = 0;
+      if (t === N) {
+        const book = Math.max(capex - depY * Math.min(N, p.taxlife), 0);
+        const salv = capex * p.salvage / 100;
+        term = salv - (salv - book) * tax;
+        wcRec = wc;
+        f += term + wcRec;
+      }
+      rows.push({ t, u, rev, vc, fixed, dep, ebit, tax: taxv, maint, dwc, term, wcRec, fcf: f });
+      fcf.push(f);
+    }
+    const npvAt = (x) => fcf.reduce((s, c, i) => s + c / Math.pow(1 + x, i), 0);
+    const npv = npvAt(r);
+    let irr = null;
+    let lo = -0.99, hi = 10;
+    if (npvAt(lo) * npvAt(hi) < 0) {
+      for (let i = 0; i < 300; i++) {
+        const mid = (lo + hi) / 2;
+        if (npvAt(lo) * npvAt(mid) <= 0) hi = mid; else lo = mid;
+      }
+      irr = (lo + hi) / 2;
+    }
+    const payback = (cfs) => {
+      let cum = 0;
+      for (let i = 0; i < cfs.length; i++) {
+        const prev = cum; cum += cfs[i];
+        if (i > 0 && prev < 0 && cum >= 0) return i - 1 + (-prev) / cfs[i];
+      }
+      return null;
+    };
+    const disc = fcf.map((c, i) => c / Math.pow(1 + r, i));
+    const pvIn = disc.slice(1).reduce((a, b) => a + b, 0);
+    const pvTerm = rows[rows.length - 1].term / Math.pow(1 + r, N);
+    return { npv, irr, pb: payback(fcf), dpb: payback(disc), pi: pvIn / capex, fcf, rows, termShare: pvIn > 0 ? pvTerm / pvIn : null, rate: r };
+  }
+  /* NPV는 물량·단가 계수에 대해 선형이므로 두 점으로 손익분기 계수를 구한다 */
+  function breakEven(p, key) {
+    const a = runModel(p, { [key]: 1 }).npv, b = runModel(p, { [key]: 0.5 }).npv;
+    if (Math.abs(a - b) < 1e-12) return null;
+    return 1 - (a * 0.5) / (a - b);
+  }
+
+  function readNpv() {
+    const p = {}; let ok = true;
+    NPV_FIELDS.forEach((f) => {
+      const el = $("i-" + f);
+      const v = parseFloat(el.value);
+      const min = el.min !== "" ? parseFloat(el.min) : -Infinity, max = el.max !== "" ? parseFloat(el.max) : Infinity;
+      const bad = !isFinite(v) || v < min || v > max;
+      if (el.tagName === "INPUT") el.setAttribute("aria-invalid", bad ? "true" : "false");
+      if (bad) ok = false; else p[f] = v;
+    });
+    if (ok && p.ramp1 > 100) ok = false;
+    return ok ? p : null;
+  }
+
+  let lastP = null, sensMode = 0;
+  function renderNpv() {
+    const p = readNpv();
+    if (!p) { $("npv-verdict").textContent = "빨간 테두리 칸의 값을 확인해 주세요. 비어 있거나 허용 범위를 벗어났습니다."; return; }
+    lastP = p;
+    const m = runModel(p);
+    // 판단 문장
+    const v = $("npv-verdict"); v.textContent = "";
+    const chip = document.createElement("span"); chip.className = "state " + (m.npv >= 0 ? "ok" : "bad"); chip.textContent = m.npv >= 0 ? "NPV 양수" : "NPV 음수";
+    v.appendChild(chip);
+    v.appendChild(document.createTextNode(" 할인율 " + nf1.format(p.rate) + "% 기준 NPV는 " + money(m.npv) + "억원입니다. "));
+    const ku = breakEven(p, "util");
+    if (ku !== null) {
+      const beU = ku * p.util;
+      if (beU > 100) v.appendChild(document.createTextNode("가동률을 100%까지 올려도 NPV가 0에 닿지 않아, 물량만으로는 손익분기를 맞출 수 없습니다."));
+      else if (m.npv >= 0) v.appendChild(document.createTextNode("정상 가동률이 " + nf1.format(beU) + "% 아래로 내려가면 NPV가 음수가 됩니다."));
+      else v.appendChild(document.createTextNode("정상 가동률이 " + nf1.format(beU) + "% 이상이어야 NPV가 0 이상이 됩니다."));
+    }
+    // KPI
+    setValue($("k-npv"), money(m.npv), "억원", m.npv < 0);
+    setValue($("k-irr"), m.irr === null ? "산출 불가" : nf1.format(m.irr * 100), m.irr === null ? "" : "%", m.irr !== null && m.irr < 0);
+    setValue($("k-pb"), m.pb === null ? "기간 내 미회수" : nf1.format(m.pb), m.pb === null ? "" : "년");
+    setValue($("k-dpb"), m.dpb === null ? "기간 내 미회수" : nf1.format(m.dpb), m.dpb === null ? "" : "년");
+    setValue($("k-pi"), (Math.round(m.pi * 100) / 100).toFixed(2), "배", m.pi < 1);
+    // 손익분기
+    const ka = breakEven(p, "asp");
+    drawBe("u", ku === null ? null : ku * p.util, p.util, 100, "%", (x) => nf1.format(x) + "%", "정상 가동률");
+    drawBe("a", ka === null ? null : ka * p.asp, p.asp, Math.max(p.asp * 1.5, (ka || 0) * p.asp * 1.1), "천원", (x) => nf1.format(x) + "천원", "판매단가");
+    // 잔존가치 경고
+    const w = $("npv-warn");
+    if (m.termShare !== null && m.termShare >= 0.5) { w.hidden = false; w.textContent = "잔존가치가 투자 이후 유입 현재가치의 " + nf0.format(m.termShare * 100) + "%를 차지합니다. 결론이 먼 미래 가정에 크게 기대고 있습니다."; }
+    else w.hidden = true;
+    drawFcf(m, p);
+    drawCfTable(m, p);
+    drawSens(p, m);
+    drawTornado(p, m);
+  }
+  function drawBe(which, be, cur, maxScale, unit, fmt, name) {
+    const out = $("be-" + which), meter = $("be-" + which + "-meter"), note = $("be-" + which + "-note");
+    meter.textContent = "";
+    if (be === null || !isFinite(be)) { out.textContent = "–"; note.textContent = "계산할 수 없습니다."; return; }
+    if (which === "u" && be > 100) { out.textContent = nf1.format(be) + "%"; note.textContent = "100%를 넘어 물량만으로는 맞출 수 없습니다."; out.classList.add("neg"); return; }
+    out.classList.remove("neg");
+    out.textContent = fmt(be);
+    const scale = which === "u" ? 100 : maxScale;
+    const pct = (x) => Math.max(0, Math.min(100, (x / scale) * 100));
+    const span = document.createElement("div"); span.className = "span";
+    const a = pct(Math.min(be, cur)), b = pct(Math.max(be, cur));
+    span.style.left = a + "%"; span.style.width = (b - a) + "%";
+    if (be > cur) span.style.background = "color-mix(in srgb, var(--neg) 30%, var(--rule-soft))";
+    meter.appendChild(span);
+    const i1 = document.createElement("i"); i1.className = "be"; i1.style.left = "calc(" + pct(be) + "% - 1px)"; meter.appendChild(i1);
+    const i2 = document.createElement("i"); i2.className = "cur"; i2.style.left = "calc(" + pct(cur) + "% - 1px)"; meter.appendChild(i2);
+    const gap = cur - be;
+    const rel = gap / cur * 100;
+    note.textContent = gap >= 0
+      ? "현재 " + fmt(cur) + "보다 " + nf1.format(Math.abs(rel)) + "% 낮은 수준까지 여유가 있습니다."
+      : "현재 " + fmt(cur) + "보다 " + nf1.format(Math.abs(rel)) + "% 높아야 합니다.";
+  }
+
+  function drawFcf(m, p) {
+    const host = $("fcf-chart"), plot = host.querySelector(".plot-host");
+    plot.textContent = "";
+    const W = Math.max(280, plot.clientWidth || 600), H = 240;
+    const padL = 48, padR = 12, padT = 14, padB = 30;
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "연도별 FCF와 누적 FCF 막대·선 그래프" }, plot);
+    const cum = []; m.fcf.reduce((s, c, i) => (cum[i] = s + c, s + c), 0);
+    const vals = m.fcf.concat(cum, [0]);
+    const t = niceTicks(Math.min(...vals), Math.max(...vals), 5);
+    const y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    const n = m.fcf.length, band = (W - padL - padR) / n;
+    const x = (i) => padL + band * i;
+    t.ticks.forEach((tv) => {
+      svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: y(tv), y2: y(tv) }, svg);
+      const lab = svgEl("text", { x: padL - 6, y: y(tv) + 4, "text-anchor": "end" }, svg); lab.textContent = money(tv, 0);
+    });
+    const bw = Math.min(24, band * 0.56);
+    const pos = css("--pos"), neg = css("--neg"), ink2 = css("--ink-2"), surface = css("--surface");
+    m.fcf.forEach((c, i) => {
+      svgEl("path", { d: barPath(x(i) + (band - bw) / 2, bw, y(0), y(c), 4), fill: c >= 0 ? pos : neg }, svg);
+      if (n <= 16 || i % 2 === 0) { const lab = svgEl("text", { x: x(i) + band / 2, y: H - 10, "text-anchor": "middle" }, svg); lab.textContent = i + "년"; }
+    });
+    const pts = cum.map((c, i) => [x(i) + band / 2, y(c)]);
+    svgEl("path", { d: "M" + pts.map((q) => q.join(",")).join("L"), fill: "none", stroke: ink2, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    const last = pts[pts.length - 1];
+    svgEl("circle", { cx: last[0], cy: last[1], r: 4.5, fill: ink2, stroke: surface, "stroke-width": 2 }, svg);
+    const tipApi = makeTip(plot);
+    m.fcf.forEach((c, i) => {
+      const r = svgEl("rect", { class: "hit", x: x(i), y: padT, width: band, height: H - padT - padB }, svg);
+      wireHit(r, plot, tipApi, () => ({ title: i + "년차", rows: [["FCF", money(c) + "억원", c >= 0 ? pos : neg], ["누적 FCF", money(cum[i]) + "억원", ink2]] }));
+    });
+  }
+
+  function drawCfTable(m, p) {
+    const tbl = $("cf-table"); tbl.textContent = "";
+    const thead = tbl.createTHead(), hr = thead.insertRow();
+    const h0 = document.createElement("th"); h0.textContent = "억원"; h0.style.textAlign = "left"; hr.appendChild(h0);
+    for (let i = 0; i <= m.rows.length; i++) { const th = document.createElement("th"); th.textContent = i + "년"; hr.appendChild(th); }
+    const body = tbl.createTBody();
+    const cum = []; m.fcf.reduce((s, c, i) => (cum[i] = s + c, s + c), 0);
+    const spec = [
+      ["가동률", null, (r) => nf0.format(r.u * 100) + "%"],
+      ["매출", null, (r) => r.rev],
+      ["변동비", null, (r) => -r.vc],
+      ["증분 고정비", null, (r) => -r.fixed],
+      ["감가상각", null, (r) => -r.dep],
+      ["영업이익", null, (r) => r.ebit],
+      ["법인세", null, (r) => -r.tax],
+      ["감가상각 가산", null, (r) => r.dep],
+      ["투자비·유지보수 투자", -p.capex, (r) => -r.maint],
+      ["운전자본 증감", null, (r) => -r.dwc],
+      ["잔존가치·운전자본 회수", null, (r) => r.term + r.wcRec],
+      ["FCF", m.fcf[0], (r) => r.fcf, "sum"],
+      ["누적 FCF", cum[0], (r) => cum[r.t], "sum"]
+    ];
+    spec.forEach(([label, y0, fn, cls]) => {
+      const tr = body.insertRow(); if (cls) tr.className = cls;
+      const th = document.createElement("th"); th.scope = "row"; th.textContent = label; tr.appendChild(th);
+      const c0 = tr.insertCell();
+      if (y0 === null) c0.textContent = ""; else { c0.textContent = money(y0); if (y0 < 0) c0.classList.add("neg"); }
+      m.rows.forEach((r) => {
+        const v = fn(r), td = tr.insertCell();
+        if (typeof v === "string") td.textContent = v;
+        else { td.textContent = money(v); if (v < -0.049) td.classList.add("neg"); }
+      });
+    });
+  }
+
+  function drawSens(p, m) {
+    const tbl = $("sens-table"); tbl.textContent = "";
+    let rowsK, colsK, rowLab, colLab, corner, calc;
+    if (sensMode === 0) {
+      rowsK = [0.9, 0.95, 1, 1.05, 1.1]; colsK = [0.9, 0.95, 1, 1.05, 1.1];
+      rowLab = (k) => nf1.format(p.util * k) + "%"; colLab = (k) => nf1.format(p.asp * k);
+      corner = "정상 가동률 \\ 판매단가(천원)"; calc = (a, b) => runModel(p, { util: a, asp: b }).npv;
+    } else {
+      rowsK = [0.8, 0.9, 1, 1.1, 1.2]; colsK = [-0.02, -0.01, 0, 0.01, 0.02];
+      rowLab = (k) => nf0.format(p.capex * k) + "억"; colLab = (k) => nf1.format(p.rate + k * 100) + "%";
+      corner = "투자비 \\ 할인율"; calc = (a, b) => runModel(p, { capex: a, rateAdd: b }).npv;
+    }
+    const grid = rowsK.map((a) => colsK.map((b) => calc(a, b)));
+    const maxAbs = Math.max(1, ...grid.flat().map(Math.abs));
+    const hr = tbl.createTHead().insertRow();
+    const c = document.createElement("th"); c.className = "corner"; c.textContent = corner; hr.appendChild(c);
+    colsK.forEach((k) => { const th = document.createElement("th"); th.textContent = colLab(k); hr.appendChild(th); });
+    const body = tbl.createTBody();
+    grid.forEach((row, i) => {
+      const tr = body.insertRow();
+      const th = document.createElement("th"); th.scope = "row"; th.textContent = rowLab(rowsK[i]); tr.appendChild(th);
+      row.forEach((v, j) => {
+        const td = tr.insertCell(); td.textContent = money(v);
+        const share = Math.round(Math.min(1, Math.abs(v) / maxAbs) * 42);
+        td.style.background = "color-mix(in srgb, " + (v >= 0 ? "var(--pos)" : "var(--neg)") + " " + share + "%, var(--surface))";
+        if (i === 2 && j === 2) td.className = "base";
+        td.title = rowLab(rowsK[i]) + ", " + colLab(colsK[j]) + ": NPV " + money(v) + "억원";
+      });
+    });
+    const center = grid[2][2];
+    const okc = Math.abs(center - m.npv) < 1e-6;
+    const chk = $("sens-check"); chk.textContent = "";
+    chk.appendChild(document.createTextNode("단위 억원. 굵은 테두리 칸이 기준값이며 위 NPV(" + money(m.npv) + "억원)와 "));
+    const b = document.createElement("b"); b.textContent = okc ? "일치합니다." : "다릅니다. 계산을 확인해야 합니다."; chk.appendChild(b);
+  }
+
+  function drawTornado(p, m) {
+    const drivers = [
+      ["판매단가", { asp: 0.9 }, { asp: 1.1 }, "±10%"],
+      ["정상 가동률", { util: 0.9 }, { util: 1.1 }, "±10%"],
+      ["단위 변동비", { uvc: 0.9 }, { uvc: 1.1 }, "±10%"],
+      ["초기 투자비", { capex: 0.9 }, { capex: 1.1 }, "±10%"],
+      ["증분 고정비", { fixed: 0.9 }, { fixed: 1.1 }, "±10%"],
+      ["할인율", { rateAdd: -0.01 }, { rateAdd: 0.01 }, "±1%p"]
+    ].map(([name, kl, kh, step]) => {
+      const lo = runModel(p, kl).npv, hi = runModel(p, kh).npv;
+      return { name, lo, hi, step, range: Math.abs(hi - lo) };
+    }).sort((a, b) => b.range - a.range);
+    $("tor-note").textContent = "가정을 하나씩 움직였을 때 NPV가 얼마나 바뀌는지 보여 줍니다. 이 예시에서 결과를 가장 크게 흔드는 가정은 " + drivers[0].name + josaWa(drivers[0].name) + " " + drivers[1].name + "입니다.";
+    const plot = $("tor-chart").querySelector(".plot-host"); plot.textContent = "";
+    const W = Math.max(300, plot.clientWidth || 600), rowH = 34, padT = 8, padB = 26, labW = Math.min(150, W * 0.3), padR = 56;
+    const H = padT + padB + rowH * drivers.length;
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "가정별 NPV 민감도 토네이도 차트" }, plot);
+    const vals = drivers.flatMap((d) => [d.lo, d.hi]).concat([m.npv]);
+    const t = niceTicks(Math.min(...vals), Math.max(...vals), 4);
+    const x = (v) => labW + (v - t.lo) / (t.hi - t.lo) * (W - labW - padR);
+    t.ticks.forEach((tv) => {
+      svgEl("line", { class: tv === 0 ? "base" : "grid", x1: x(tv), x2: x(tv), y1: padT, y2: H - padB }, svg);
+      const lab = svgEl("text", { x: x(tv), y: H - 8, "text-anchor": "middle" }, svg); lab.textContent = money(tv, 0);
+    });
+    const pos = css("--pos"), neg = css("--neg"), ink = css("--ink");
+    const tipApi = makeTip(plot);
+    drivers.forEach((d, i) => {
+      const cy = padT + rowH * i + rowH / 2, bh = Math.min(16, rowH - 12);
+      const name = svgEl("text", { x: labW - 10, y: cy + 4, "text-anchor": "end", style: "fill: var(--ink-2)" }, svg); name.textContent = d.name + " " + d.step;
+      [[d.lo, "낮출 때"], [d.hi, "높일 때"]].forEach(([v]) => {
+        const x0 = x(m.npv), x1 = x(v);
+        const left = Math.min(x0, x1), w = Math.abs(x1 - x0);
+        if (w > 0.5) svgEl("rect", { x: left, y: cy - bh / 2, width: w, height: bh, rx: 2, fill: v >= m.npv ? pos : neg }, svg);
+      });
+      const right = Math.max(d.lo, d.hi), left = Math.min(d.lo, d.hi);
+      const vl = svgEl("text", { x: x(right) + 6, y: cy + 4, "text-anchor": "start" }, svg); vl.textContent = money(right, 0);
+      if (x(left) - 6 - labW > 34) { const vl2 = svgEl("text", { x: x(left) - 6, y: cy + 4, "text-anchor": "end" }, svg); vl2.textContent = money(left, 0); }
+      const hit = svgEl("rect", { class: "hit", x: 0, y: cy - rowH / 2, width: W, height: rowH }, svg);
+      wireHit(hit, plot, tipApi, () => ({ title: d.name + " " + d.step, rows: [["낮출 때 NPV", money(d.lo) + "억원", d.lo >= m.npv ? pos : neg], ["높일 때 NPV", money(d.hi) + "억원", d.hi >= m.npv ? pos : neg], ["기준 NPV", money(m.npv) + "억원", ink]] }));
+    });
+    svgEl("line", { x1: x(m.npv), x2: x(m.npv), y1: padT - 2, y2: H - padB, stroke: ink, "stroke-width": 1.5 }, svg);
+  }
+
+  function setNpvDefaults() {
+    NPV_FIELDS.forEach((f) => { $("i-" + f).value = String(NPV_DEFAULTS[f]); });
+    renderNpv();
+  }
+  NPV_FIELDS.forEach((f) => $("i-" + f).addEventListener("input", renderNpv));
+  $("npv-reset").addEventListener("click", setNpvDefaults);
+  $("npv-form").addEventListener("submit", (e) => e.preventDefault());
+  tabs(["st-cf", "st-sens", "st-tor"], () => { if (lastP) { const m = runModel(lastP); drawTornado(lastP, m); } });
+  ["sx-ua", "sx-cr"].forEach((id, i) => $(id).addEventListener("click", () => {
+    sensMode = i;
+    ["sx-ua", "sx-cr"].forEach((o, j) => { $(o).setAttribute("aria-checked", i === j ? "true" : "false"); });
+    if (lastP) drawSens(lastP, runModel(lastP));
+  }));
+
+  /* =====================================================
+     2. 가동률과 원가
+     ===================================================== */
+  const BEP_DEFAULTS = { util: 85, capa: 200, asp: 130, uvc: 58, fixed: 71.5 };
+  function readBep() {
+    const p = {}; let ok = true;
+    Object.keys(BEP_DEFAULTS).forEach((f) => {
+      const el = $("b-" + f), v = parseFloat(el.value);
+      const bad = !isFinite(v) || v < 0 || (f === "capa" && v <= 0);
+      if (el.type !== "range") el.setAttribute("aria-invalid", bad ? "true" : "false");
+      if (bad) ok = false; else p[f] = v;
+    });
+    return ok ? p : null;
+  }
+  function bepAt(p, util) {
+    const units = p.capa * util / 100;
+    const rev = units * p.asp / 100, vc = units * p.uvc / 100, op = rev - vc - p.fixed;
+    const uc = units > 0 ? p.uvc + p.fixed * 100 / units : Infinity;
+    return { units, rev, vc, op, uc, costRatio: rev > 0 ? (vc + p.fixed) / rev : Infinity };
+  }
+  function renderBep() {
+    const p = readBep();
+    $("b-util-out").textContent = $("b-util").value + "%";
+    if (!p) { $("bep-verdict").textContent = "빨간 테두리 칸의 값을 확인해 주세요."; return; }
+    const r = bepAt(p, p.util);
+    const margin = p.asp - p.uvc;
+    const be = margin > 0 ? p.fixed / (p.capa * margin / 100) * 100 : null;
+    setValue($("b-rev"), money(r.rev), "억원");
+    setValue($("b-op"), money(r.op), "억원", r.op < 0);
+    setValue($("b-cr"), isFinite(r.costRatio) ? nf1.format(r.costRatio * 100) : "–", "%", r.costRatio > 1);
+    setValue($("b-uc"), isFinite(r.uc) ? nf1.format(r.uc) : "–", "천원", r.uc > p.asp);
+    setValue($("b-be"), be === null ? "없음" : nf1.format(be), be === null ? "" : "%", be !== null && be > p.util);
+    const v = $("bep-verdict"); v.textContent = "";
+    const chip = document.createElement("span"); chip.className = "state " + (r.op >= 0 ? "ok" : "bad"); chip.textContent = r.op >= 0 ? "흑자" : "적자";
+    v.appendChild(chip);
+    v.appendChild(document.createTextNode(" "));
+    if (be === null) v.appendChild(document.createTextNode("판매단가가 단위 변동비보다 낮거나 같아 가동률을 올려도 손익분기에 닿지 않습니다."));
+    else if (be > 100) v.appendChild(document.createTextNode("손익분기 가동률이 " + nf1.format(be) + "%로 100%를 넘습니다. 물량만으로는 흑자를 낼 수 없어 단가나 원가를 바꿔야 합니다."));
+    else v.appendChild(document.createTextNode("가동률 " + nf0.format(p.util) + "%에서 영업이익률은 " + nf1.format(r.op / r.rev * 100) + "%입니다. 가동률이 " + nf1.format(be) + "% 아래로 내려가면 적자가 됩니다."));
+    drawBepChart(p, be);
+  }
+  function drawBepChart(p, be) {
+    const plot = $("bep-chart").querySelector(".plot-host"); plot.textContent = "";
+    const W = Math.max(280, plot.clientWidth || 600), H = 250, padL = 44, padR = 16, padT = 14, padB = 30;
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "가동률별 단위당 총원가, 판매단가, 단위 변동비 선 그래프" }, plot);
+    const xmin = 20, xmax = 100;
+    const yTop = Math.min(bepAt(p, xmin).uc, Math.max(p.asp, p.uvc) * 2.2);
+    const t = niceTicks(0, Math.max(yTop, p.asp * 1.15), 5);
+    const x = (u) => padL + (u - xmin) / (xmax - xmin) * (W - padL - padR);
+    const y = (v) => padT + (t.hi - Math.min(v, t.hi)) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => {
+      svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: y(tv), y2: y(tv) }, svg);
+      const lab = svgEl("text", { x: padL - 6, y: y(tv) + 4, "text-anchor": "end" }, svg); lab.textContent = nf0.format(tv);
+    });
+    [20, 40, 60, 80, 100].forEach((u) => { const lab = svgEl("text", { x: x(u), y: H - 10, "text-anchor": "middle" }, svg); lab.textContent = u + "%"; });
+    const pos = css("--pos"), ink = css("--ink"), mm = css("--mark-muted"), surface = css("--surface"), neg = css("--neg");
+    const curve = []; for (let u = xmin; u <= xmax; u += 0.5) curve.push([x(u), y(bepAt(p, u).uc)]);
+    const clip = svgEl("clipPath", { id: "bep-clip" }, svgEl("defs", {}, svg));
+    svgEl("rect", { x: padL, y: padT, width: W - padL - padR, height: H - padT - padB }, clip);
+    svgEl("line", { x1: x(xmin), x2: x(xmax), y1: y(p.uvc), y2: y(p.uvc), stroke: mm, "stroke-width": 2 }, svg);
+    svgEl("line", { x1: x(xmin), x2: x(xmax), y1: y(p.asp), y2: y(p.asp), stroke: ink, "stroke-width": 2 }, svg);
+    svgEl("path", { d: "M" + curve.map((q) => q.join(",")).join("L"), fill: "none", stroke: pos, "stroke-width": 2, "stroke-linejoin": "round", "clip-path": "url(#bep-clip)" }, svg);
+    if (be !== null && be >= xmin && be <= xmax) {
+      svgEl("circle", { cx: x(be), cy: y(p.asp), r: 5, fill: neg, stroke: surface, "stroke-width": 2 }, svg);
+      const l = svgEl("text", { x: x(be), y: y(p.asp) - 10, "text-anchor": be > 85 ? "end" : "middle", style: "fill: var(--ink)" }, svg); l.textContent = "손익분기 " + nf1.format(be) + "%";
+    }
+    const cu = bepAt(p, p.util).uc;
+    if (p.util >= xmin && isFinite(cu) && cu <= t.hi) {
+      svgEl("circle", { cx: x(p.util), cy: y(cu), r: 5, fill: pos, stroke: surface, "stroke-width": 2 }, svg);
+      const l = svgEl("text", { x: x(p.util), y: y(cu) + 20, "text-anchor": p.util > 85 ? "end" : "middle", style: "fill: var(--ink)" }, svg); l.textContent = "현재 " + nf0.format(p.util) + "%";
+    }
+    const tipApi = makeTip(plot);
+    for (let u = xmin; u <= xmax; u += 5) {
+      const r = svgEl("rect", { class: "hit", x: x(Math.max(xmin, u - 2.5)), y: padT, width: x(Math.min(xmax, u + 2.5)) - x(Math.max(xmin, u - 2.5)), height: H - padT - padB }, svg);
+      const s = bepAt(p, u);
+      wireHit(r, plot, tipApi, () => ({ title: "가동률 " + u + "%", rows: [["단위당 총원가", nf1.format(s.uc) + "천원", pos], ["판매단가", nf1.format(p.asp) + "천원", ink], ["영업이익", money(s.op) + "억원", null]] }));
+    }
+  }
+  Object.keys(BEP_DEFAULTS).forEach((f) => $("b-" + f).addEventListener("input", renderBep));
+  $("bep-reset").addEventListener("click", () => { Object.keys(BEP_DEFAULTS).forEach((f) => { $("b-" + f).value = String(BEP_DEFAULTS[f]); }); renderBep(); });
+  $("bep-form").addEventListener("submit", (e) => e.preventDefault());
+
+  /* =====================================================
+     3. 계획 대비 실적
+     ===================================================== */
+  const VAR_DEFAULTS = { qp: 170, qa: 152, pp: 130, pa: 126, vp: 58, va: 59.5, fp: 71.5, fa: 70 };
+  function renderVar() {
+    const d = {}; let ok = true;
+    Object.keys(VAR_DEFAULTS).forEach((f) => {
+      const el = $("v-" + f), v = parseFloat(el.value), bad = !isFinite(v) || v < 0;
+      el.setAttribute("aria-invalid", bad ? "true" : "false");
+      if (bad) ok = false; else d[f] = v;
+    });
+    if (!ok) { $("var-verdict").textContent = "빨간 테두리 칸의 값을 확인해 주세요."; return; }
+    const opP = d.qp * (d.pp - d.vp) / 100 - d.fp;
+    const opA = d.qa * (d.pa - d.va) / 100 - d.fa;
+    const eff = [
+      ["물량 효과", (d.qa - d.qp) * (d.pp - d.vp) / 100, "판매량 차이 × 계획 단위당 공헌이익"],
+      ["가격 효과", (d.pa - d.pp) * d.qa / 100, "단가 차이 × 실적 판매량"],
+      ["원가 효과", (d.vp - d.va) * d.qa / 100, "단위 변동비 차이 × 실적 판매량"],
+      ["고정비 효과", d.fp - d.fa, "계획 고정비 − 실적 고정비"]
+    ];
+    const sum = eff.reduce((s, e) => s + e[1], 0);
+    const diff = opA - opP;
+    const v = $("var-verdict"); v.textContent = "";
+    const chip = document.createElement("span"); chip.className = "state " + (diff >= 0 ? "ok" : "bad"); chip.textContent = diff >= 0 ? "계획 초과" : "계획 미달";
+    v.appendChild(chip);
+    const biggest = eff.slice().sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))[0];
+    v.appendChild(document.createTextNode(" 영업이익이 계획 " + money(opP) + "억원에서 실적 " + money(opA) + "억원으로 " + nf1.format(Math.abs(diff)) + "억원 " + (diff >= 0 ? "늘었습니다" : "줄었습니다") + ". 가장 큰 요인은 " + biggest[0] + "로, 영업이익을 " + nf1.format(Math.abs(biggest[1])) + "억원 " + (biggest[1] >= 0 ? "늘렸습니다." : "줄였습니다.")));
+    const list = $("var-list"); list.textContent = "";
+    const addRow = (label, val, cls) => {
+      const r = document.createElement("div"); if (cls) r.className = cls;
+      const l = document.createElement("span"); l.textContent = label;
+      const n = document.createElement("span"); n.className = "num" + (val < -0.049 ? " neg" : ""); n.textContent = typeof val === "number" ? signed(val) : val;
+      r.appendChild(l); r.appendChild(n); list.appendChild(r);
+    };
+    eff.forEach((e) => addRow(e[0] + " · " + e[2], e[1]));
+    addRow("효과 합계", sum, "sum");
+    const okSum = Math.abs(sum - diff) < 1e-9;
+    const chk = $("var-check"); chk.textContent = "";
+    chk.appendChild(document.createTextNode("영업이익 차이 " + signed(diff) + "억원과 효과 합계가 "));
+    const b = document.createElement("b"); b.textContent = okSum ? "일치합니다." : "다릅니다."; chk.appendChild(b);
+    drawWaterfall(opP, eff, opA);
+  }
+  function drawWaterfall(opP, eff, opA) {
+    const plot = $("var-chart").querySelector(".plot-host"); plot.textContent = "";
+    const W = Math.max(300, plot.clientWidth || 600), H = 260, padL = 44, padR = 10, padT = 22, padB = 34;
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "계획 영업이익에서 실적 영업이익까지의 워터폴 차트" }, plot);
+    const steps = [{ name: "계획", kind: "total", from: 0, to: opP }];
+    let run = opP;
+    eff.forEach((e) => { steps.push({ name: e[0].replace(" 효과", ""), kind: e[1] >= 0 ? "up" : "down", from: run, to: run + e[1], val: e[1], desc: e[2] }); run += e[1]; });
+    steps.push({ name: "실적", kind: "total", from: 0, to: opA });
+    const vals = steps.flatMap((s) => [s.from, s.to]).concat([0]);
+    const t = niceTicks(Math.min(...vals), Math.max(...vals), 5);
+    const y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    const band = (W - padL - padR) / steps.length, bw = Math.min(24, band * 0.6);
+    const x = (i) => padL + band * i + (band - bw) / 2;
+    t.ticks.forEach((tv) => {
+      svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: y(tv), y2: y(tv) }, svg);
+      const lab = svgEl("text", { x: padL - 6, y: y(tv) + 4, "text-anchor": "end" }, svg); lab.textContent = money(tv, 0);
+    });
+    const col = { total: css("--total"), up: css("--pos"), down: css("--neg") };
+    const tipApi = makeTip(plot);
+    steps.forEach((s, i) => {
+      const yA = y(s.from), yB = y(s.to);
+      if (s.kind === "total") svgEl("path", { d: barPath(x(i), bw, yA, yB, 4), fill: col.total }, svg);
+      else svgEl("rect", { x: x(i), y: Math.min(yA, yB), width: bw, height: Math.max(1, Math.abs(yB - yA)), rx: 2, fill: col[s.kind] }, svg);
+      if (i < steps.length - 1) {
+        svgEl("line", { x1: x(i) + bw, x2: x(i + 1), y1: y(s.to), y2: y(s.to), stroke: css("--mark-muted"), "stroke-width": 1 }, svg);
+      }
+      const value = s.kind === "total" ? s.to : s.val;
+      const top = Math.min(yA, yB);
+      const lab = svgEl("text", { x: x(i) + bw / 2, y: top - 6, "text-anchor": "middle", style: "fill: var(--ink)" }, svg);
+      lab.textContent = s.kind === "total" ? money(value) : signed(value);
+      const nm = svgEl("text", { x: x(i) + bw / 2, y: H - 12, "text-anchor": "middle" }, svg); nm.textContent = s.name;
+      const hit = svgEl("rect", { class: "hit", x: padL + band * i, y: padT - 16, width: band, height: H - padT - padB + 16 }, svg);
+      wireHit(hit, plot, tipApi, () => ({ title: s.kind === "total" ? s.name + " 영업이익" : s.name + " 효과", rows: s.kind === "total" ? [["영업이익", money(value) + "억원", col.total]] : [["영향", signed(value) + "억원", col[s.kind]], ["계산", s.desc, null]] }));
+    });
+  }
+  Object.keys(VAR_DEFAULTS).forEach((f) => $("v-" + f).addEventListener("input", renderVar));
+  $("var-reset").addEventListener("click", () => { Object.keys(VAR_DEFAULTS).forEach((f) => { $("v-" + f).value = String(VAR_DEFAULTS[f]); }); renderVar(); });
+  $("var-form").addEventListener("submit", (e) => e.preventDefault());
+
+  /* ---------- 도구 탭, 크기 변화, 테마 변화 ---------- */
+  tabs(["tab-npv", "tab-bep", "tab-var"], (i) => { [renderNpv, renderBep, renderVar][i](); });
+  let rz = null;
+  const redrawAll = () => { renderNpv(); renderBep(); renderVar(); };
+  window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(redrawAll, 120); });
+  if (window.matchMedia) {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", redrawAll);
+  }
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+
+  /* 첫 화면 */
+  renderNpv(); renderBep(); renderVar();
+  /* 웹폰트가 늦게 들어오면 차트 글자 폭이 달라지므로 다시 그림 */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(redrawAll);
+})();
+</script>
+<script>
+(function () {
+  var map = { "#bep": "tab-bep", "#var": "tab-var" };
+  var id = map[location.hash];
+  if (id && document.getElementById(id)) document.getElementById(id).click();
+})();
+</script>
+</body>
+</html>
