@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>삼성전자 재무 분석 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="삼성전자 2025 사업보고서와 2026 반기보고서의 재무제표와 주석을 원문 쪽수와 함께 옮기고 검산해, 메모리 호황이 손익·현금·재무상태표에 남긴 흔적을 분석한 리포트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="삼성전자 재무 분석 · 이기표">
+<meta property="og:description" content="2025 사업보고서와 2026 반기보고서의 재무제표·주석을 원문 쪽수와 함께 검산해 분석한 리포트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/samsung.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og-samsung.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 480px; }
+  .numband b span { font-size: inherit; color: inherit; }
+  .numband b small { font-size: 0.45em; font-weight: 700; margin-left: 2px; }
+  table.fs { border-collapse: collapse; width: 100%; min-width: 660px; font-size: var(--s-1); }
+  table.fs th, table.fs td { padding: 6px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule-soft); }
+  table.fs thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+  table.fs tbody th { text-align: left; font-weight: 500; color: var(--ink-2); }
+  table.fs td { font-family: var(--f-num); }
+  table.fs tr.grp th { font-size: 12px; font-weight: 600; color: var(--accent); padding-top: 14px; }
+  table.fs tr.tot th, table.fs tr.tot td { font-weight: 700; color: var(--ink); }
+  table.fs tr.chk td, table.fs tr.chk th { color: var(--pos); font-size: 12px; font-family: var(--f-body); }
+  table.fs td.neg { color: var(--neg-ink); }
+  table.fs .sub { color: var(--muted); font-size: 11.5px; }
+  table.fs th.hl, table.fs td.hl { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .src, .rpt-body p.src { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .src b { font-weight: 600; color: var(--ink-2); }
+  .ncards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 14px 0 8px; }
+  @media (max-width: 760px) { .ncards { grid-template-columns: minmax(0, 1fr); } }
+  .nc { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .nc .h { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .nc .h b { font-size: var(--s-2); }
+  .nc .h span { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .nc .big { font-family: var(--f-display); font-weight: 800; font-size: 24px; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .nc .big small { font-family: var(--f-body); font-size: 12.5px; font-weight: 500; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+  .rpt-body .nc p { margin: 0; max-width: none; font-size: var(--s-1); line-height: 1.7; }
+  .nc .so { color: var(--ink); border-top: 1px solid var(--rule-soft); padding-top: 8px; }
+  .nc .so::before { content: "읽기  "; font-weight: 700; color: var(--accent); white-space: pre; }
+  .pbr-ctl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; padding: 14px 18px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 12px 0; }
+  @media (max-width: 640px) { .pbr-ctl { grid-template-columns: minmax(0, 1fr); } }
+  .pbr-ctl label { display: grid; gap: 6px; font-size: var(--s-1); color: var(--ink-2); }
+  .pbr-ctl label span { display: flex; justify-content: space-between; }
+  .pbr-ctl label b { color: var(--input); font-weight: 600; }
+  svg.plot .cline { fill: none; stroke-width: 2; stroke-linejoin: round; }
+  svg.plot .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  svg.plot text.lab { fill: var(--ink-2); font-size: 11px; }
+  svg.plot text.val { fill: var(--ink); font-size: 11px; font-family: var(--f-num); }
+  svg.plot .conn { stroke: var(--mark-muted); stroke-width: 1; stroke-dasharray: 2 2; }
+  .watch { list-style: none; margin: 10px 0; padding: 0; border-top: 1px solid var(--rule); max-width: 86ch; }
+  .watch li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--rule-soft); font-size: var(--s-2); line-height: 1.65; color: var(--ink-2); counter-increment: w; }
+  .watch { counter-reset: w; }
+  .watch li::before { content: counter(w, decimal-leading-zero); font-family: var(--f-num); font-size: 12px; color: var(--accent); padding-top: 3px; }
+  .watch b { color: var(--ink); }
+  .checks-list { margin: 10px 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: var(--s-1); color: var(--ink-2); }
+  .checks-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; }
+  .checks-list li::before { content: "✓"; color: var(--pos); font-weight: 700; }
+  .checks-list li.bad::before { content: "✕"; color: var(--neg); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="samsung.html" aria-current="page">삼성전자</a>
+      <a href="fsa.html">재무제표</a>
+      <a href="semi-cycle.html">반도체 사이클</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 삼성전자 재무 분석</div>
+      <div class="rpt-tag">Company report · 03</div>
+      <h1>삼성전자,<br>메모리 호황의 재무</h1>
+      <p class="dek">2026년 상반기 영업이익 146.7조원은 2025년 한 해의 3.4배입니다. 이익의 97%가 DS 부문에서 나왔고, 현금이 쌓이는 동안 매출채권·재고·계약부채가 함께 불어났습니다. 공시 원문의 재무제표와 주석을 원문 쪽수와 함께 옮기고 검산해, 호황이 손익·현금·재무상태표 어디에 어떻게 찍혔는지 읽었습니다.</p>
+      <div class="rpt-meta"><span>자료<b>2025 사업보고서(2026.3.10) · 2026 반기보고서(2026.8.14)</b></span><span>단위<b>조원, 연결 기준</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>이익은 거의 전부 메모리에서</b><p>상반기 영업이익 146.7조원 중 DS 부문이 142.9조원(97.4%)입니다. 메모리 평균판매가격은 2025년 평균보다 약 220% 올랐고, 2분기 매출총이익률은 69.6%입니다.</p></div>
+      <div><b>현금과 함께 운전자본도 불었습니다</b><p>상반기 영업현금흐름은 145.4조원입니다. 같은 기간 매출채권이 45.3조원, 재고가 18.8조원, 계약부채가 9.6조원 늘었습니다. 다년 공급계약과 고객 선수금이 늘어난 흔적입니다.</p></div>
+      <div><b>주석에 먼저 나온 비용과 위험</b><p>상반기 급여는 36.1조원으로 전년 동기의 2배이고, 주식보상 적립금은 15.9조원으로 늘었습니다. 기술사용료 충당부채는 두 배가 됐고, 상위 5대 매출처 비중은 15%에서 25%로 올랐습니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-glance">
+          <h2>한눈에 보는 2026년 상반기</h2>
+          <div class="numband" data-rv>
+            <div><b><span data-count="305.4" data-dec="1">305.4</span><small>조원</small></b><span>매출 · 전년 동기 대비 +98.7%</span></div>
+            <div><b><span data-count="146.7" data-dec="1">146.7</span><small>조원</small></b><span>영업이익 · 전년 동기의 12.9배</span></div>
+            <div><b><span data-count="48.0" data-dec="1">48.0</span><small>%</small></b><span>영업이익률 · 2분기 52.2%</span></div>
+            <div><b><span data-count="145.4" data-dec="1">145.4</span><small>조원</small></b><span>영업활동현금흐름</span></div>
+          </div>
+          <p>2025년 매출은 333.6조원(+10.9%), 영업이익은 43.6조원(+33.2%)이었습니다. 2026년에는 숫자의 단위가 바뀌었습니다. 1분기 영업이익 57.2조원, 2분기 89.5조원으로 두 분기 만에 2025년 연간의 3.4배를 벌었습니다. 아래 그래프의 2026년 막대는 반기(6개월) 실적입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>연간 실적과 2026년 상반기</h4><div class="legend"><span><i class="key-bar" style="background: var(--mark-muted)"></i>매출</span><span><i class="key-bar" style="background: var(--accent)"></i>영업이익</span></div></div>
+            <div class="fig-b"><div class="chart" id="c-annual"><div class="plot-host"></div></div></div>
+            <div class="fig-s">출처: 사업보고서 82쪽(연결 손익계산서), 반기보고서 70쪽. 2026년은 1~6월 누적입니다.</div>
+          </div>
+        </section>
+
+        <section id="s-seg">
+          <h2>이익은 어디서 나왔나</h2>
+          <p>분기로 나누면 변화가 더 선명합니다. 2025년 2분기 DS 부문 영업이익은 0.35조원이었는데, 2026년 2분기에는 89.2조원입니다. 같은 기간 DX 부문(스마트폰·TV·가전)은 3.3조원 흑자에서 0.8조원 적자로 돌아섰습니다. 메모리 가격 급등이 DS에는 이익이지만, 메모리를 사서 쓰는 스마트폰과 PC에는 원가 부담입니다. 반기보고서도 2026년 스마트폰 시장이 부품 가격 상승으로 12.5억 대에서 11.2억 대로 줄 것으로 전망합니다(52쪽).</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>분기 영업이익: 부문별</h4><div class="legend" id="seg-legend"></div></div>
+            <div class="fig-b"><div class="chart" id="c-segq"><div class="plot-host"></div></div></div>
+            <div class="fig-s">1분기 숫자는 반기 누적에서 2분기를 빼서 구했습니다. 부문 합계와 연결 영업이익의 작은 차이는 별도로 표시하지 않은 기타 부문입니다. 출처: 반기보고서 127쪽(부문별 보고).</div>
+          </div>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs" id="t-seg"></table></div>
+          <p class="src" style="margin-top: 8px">출처: 사업보고서 181쪽, 반기보고서 127쪽. 부문 매출에는 부문 간 내부거래가 포함되어 있어 합계에서 내부거래를 뺍니다.</p>
+          <h3>제품과 가격</h3>
+          <p>메모리 매출은 2025년 상반기 40.2조원에서 2026년 상반기 195.6조원으로 늘어 전체 매출의 64%가 됐습니다. 사업보고서와 반기보고서가 밝힌 제품별 평균판매가격 변화가 그 이유를 보여 줍니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>제품별 평균판매가격 변화</h4><div class="legend"><span><i class="key-bar" style="background: var(--mark-muted)"></i>2025년 (전년 평균 대비)</span><span><i class="key-bar" style="background: var(--accent)"></i>2026년 상반기 (2025년 평균 대비)</span></div></div>
+            <div class="fig-b"><div class="chart" id="c-asp"><div class="plot-host"></div></div></div>
+            <div class="fig-s">출처: 사업보고서 32쪽, 반기보고서 23쪽(주요 제품 등의 가격변동). 회사가 밝힌 대략적인 변화율입니다.</div>
+          </div>
+        </section>
+
+        <section id="s-fs">
+          <h2>세 재무제표: 원문 그대로, 검산까지</h2>
+          <p>공시 PDF의 연결 재무제표를 프로그램으로 읽어 옮긴 뒤, 소계와 합계를 모두 다시 더해 원문 숫자와 맞는지 확인했습니다. 표의 마지막 줄이 그 결과입니다. 숫자는 조원으로 반올림해 보여 주지만, 검산은 백만원 단위 원문 숫자로 했습니다.</p>
+          <div class="fig">
+            <div class="fig-h"><h4>요약 손익계산서</h4><span class="hint">조원 · 연결</span></div>
+            <div class="fig-b"><div class="scroll" style="border: 0"><table class="fs" id="t-is"></table></div></div>
+            <div class="fig-s">출처: 사업보고서 82쪽, 반기보고서 70쪽</div>
+          </div>
+          <div class="fig">
+            <div class="fig-h"><h4>요약 재무상태표</h4><span class="hint">조원 · 기말 기준</span></div>
+            <div class="fig-b"><div class="scroll" style="border: 0"><table class="fs" id="t-bs"></table></div></div>
+            <div class="fig-s">출처: 사업보고서 80~81쪽, 반기보고서 68~69쪽. 차입금은 단기차입금, 유동성장기부채, 사채, 장기차입금의 합입니다.</div>
+          </div>
+          <div class="fig">
+            <div class="fig-h"><h4>요약 현금흐름표</h4><span class="hint">조원</span></div>
+            <div class="fig-b"><div class="scroll" style="border: 0"><table class="fs" id="t-cf"></table></div></div>
+            <div class="fig-s">출처: 사업보고서 86~87쪽, 반기보고서 73~74쪽</div>
+          </div>
+        </section>
+
+        <section id="s-cash">
+          <h2>번 현금은 어디로 갔나</h2>
+          <p>2026년 상반기 영업으로 145.4조원이 들어왔습니다. 설비투자보다 금융상품에 넣은 돈이 더 많았고, 배당과 자사주 매입으로 19.5조원을 주주에게 돌렸습니다. 남은 현금과 환율 효과로 현금은 35.1조원 늘었습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>2026년 상반기 현금의 흐름</h4><span class="hint">조원</span></div>
+            <div class="fig-b"><div class="chart" id="c-wf"><div class="plot-host"></div></div></div>
+            <div class="fig-s">금융상품은 단기금융상품 순증가와 장기금융상품 취득에서 처분을 뺀 금액입니다. 기타에는 지분증권 매매, 정부보조금 수취, 차입금 증감 등이 들어갑니다. 출처: 반기보고서 73~74쪽.</div>
+          </div>
+        </section>
+
+        <section id="s-notes">
+          <h2>주석에서 찾은 열두 가지</h2>
+          <p>본문 숫자가 왜 그렇게 나왔는지는 주석에 있습니다. 2025년 말과 2026년 6월 말을 비교해 의미 있는 변화만 골랐습니다.</p>
+          <div class="ncards" id="ncards"></div>
+        </section>
+
+        <section id="s-ratio">
+          <h2>비율로 다시 보기</h2>
+          <p>교육에서 배운 진단 비율로 같은 숫자를 다시 봤습니다. 2026년 상반기 손익 항목은 두 배 해서 1년으로 환산했습니다(표에 <span class="num">×2</span>로 표시). 호황의 정점을 1년으로 늘린 값이라 지속된다는 뜻은 아닙니다.</p>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs" id="t-ratio"></table></div>
+          <p class="src" style="margin-top: 8px">현금보유비율 = (현금 + 단기금융상품) ÷ 자산총계. 유·무형자산 회전율 = 매출 ÷ (유형자산 + 무형자산). 재고 개월수 = 재고자산 ÷ (매출원가 ÷ 12). ROE는 지배기업 소유주지분 기준이고 기초·기말 평균을 씁니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>ROE를 세 갈래로 나누기 (DuPont)</h4><span class="hint">순이익 ÷ 평균 자본총계 기준</span></div>
+            <div class="fig-b"><div class="chart" id="c-dupont"><div class="plot-host"></div></div></div>
+            <div class="fig-s">순이익률 × 총자산회전율 × 재무레버리지 = ROE. 2026년은 상반기 ×2 환산. 2026년 ROE를 끌어올린 것은 레버리지가 아니라 이익률입니다.</div>
+          </div>
+        </section>
+
+        <section id="s-cycle">
+          <h2>사이클의 어디쯤인가</h2>
+          <p><a href="semi-cycle.html">반도체 사이클 리포트</a>의 시계에 공시 숫자를 대 보면, 2026년 상반기는 가격 상승에서 이익 정점으로 가는 국면의 신호를 대부분 보여 줍니다. 동시에 다음 국면인 증설의 신호도 시작됐습니다.</p>
+          <ul class="watch">
+            <li><span><b>가격 상승 (국면 2):</b> 메모리 평균판매가격 +220%, 재고 평가충당금 비율 10.0% → 6.9%. 가격이 오르면 깎아 두었던 재고 가치가 되살아납니다.</span></li>
+            <li><span><b>이익 정점 신호 (국면 3):</b> 2분기 영업이익률 52.2%, 상반기 영업현금흐름 145.4조원, 순현금 100.6조원 → 167.5조원.</span></li>
+            <li><span><b>공급 부족과 선결제:</b> 계약부채 14.0조원 → 23.6조원, 여러 글로벌 고객과 메모리 다년 공급계약(반기보고서 103쪽). 회사는 하반기에도 수요가 공급을 웃돌 것으로 봅니다(57쪽).</span></li>
+            <li><span><b>증설의 시작 (국면 4):</b> 상반기 시설투자 28.0조원 중 DS 25.6조원, 유형·무형자산 취득 약정 30.5조원. 설비투자 ÷ 감가상각은 1.09배(2025년) → 1.32배.</span></li>
+          </ul>
+          <p>사이클 리포트의 모형이 보여 주듯, 호황 때 결정한 증설은 1~2년 뒤 한꺼번에 생산능력으로 들어옵니다. 그래서 다음 공시에서는 설비투자 속도, 재고 평가충당금의 방향, 계약부채가 줄기 시작하는지를 먼저 보겠습니다.</p>
+        </section>
+
+        <section id="s-val">
+          <h2>시장이 가격에 담은 기대</h2>
+          <p>반기보고서에 나온 6월 30일 보통주 종가 334,000원과 유통주식수로 시가총액을 구하면 약 2,098조원, 지배기업 소유주지분 대비 PBR은 3.7배입니다(우선주는 6월 평균 주가 214,976원 적용). 자기자본비용(COE)을 정하면, 성장이 없다고 가정할 때 이 PBR에 담긴 "오래 유지될 ROE"를 거꾸로 구할 수 있습니다. 교육에서 다룬 PBR·ROE·COE 관계를 그대로 적용한 것으로, 투자 판단을 위한 자료가 아닙니다.</p>
+          <div class="pbr-ctl">
+            <label><span>자기자본비용 (COE) <b id="v-coe"></b></span><input type="range" id="i-coe" min="6" max="14" step="0.5" value="10"></label>
+            <label><span>장기 성장률 <b id="v-g"></b></span><input type="range" id="i-g" min="0" max="4" step="0.5" value="0"></label>
+          </div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>ROE와 적정 PBR</h4><div class="legend"><span><i class="key-line" style="background: var(--input)"></i>적정 PBR = (ROE − g) ÷ (COE − g)</span><span><i class="key-line" style="background: var(--accent)"></i>시장 PBR</span></div></div>
+            <div class="fig-b"><div class="chart" id="c-pbr"><div class="plot-host"></div></div></div>
+            <div class="fig-s" id="pbr-note"></div>
+          </div>
+        </section>
+
+        <section id="s-watch">
+          <h2>다음 공시에서 볼 것</h2>
+          <ul class="watch">
+            <li><span><b>재고 평가충당금 비율이 다시 오르는지.</b> 가격 하락의 첫 신호는 손익계산서보다 재고자산 주석에 먼저 나옵니다.</span></li>
+            <li><span><b>계약부채와 다년 공급계약.</b> 고객 선결제가 줄기 시작하면 공급 부족이 풀리고 있다는 뜻일 수 있습니다.</span></li>
+            <li><span><b>설비투자 ÷ 감가상각과 건설중인자산.</b> 증설 속도가 업계 전체에서 빨라지면 다음 공급 과잉의 씨앗이 됩니다.</span></li>
+            <li><span><b>DX 부문 이익률.</b> 메모리 원가가 스마트폰·TV 수익성을 얼마나 더 누르는지, 판가 인상으로 넘길 수 있는지 봅니다.</span></li>
+            <li><span><b>인건비와 주식보상.</b> 이익에 연동된 성과급과 주식보상은 호황에 크게 늘고, 이익이 줄어도 일부는 남습니다.</span></li>
+            <li><span><b>기술사용료 충당부채와 소송.</b> 협상 중인 기술사용계약 관련 충당부채가 상반기에 2.0조원 순전입됐습니다.</span></li>
+            <li><span><b>매출처 집중과 유효세율.</b> 상위 5대 매출처 비중(25%)과 2026년 예상 유효세율 22.5%가 이익의 질에 미치는 영향을 봅니다.</span></li>
+          </ul>
+        </section>
+
+        <section id="s-check">
+          <h2>출처와 검산</h2>
+          <p>이 리포트의 숫자는 아래 두 공시에서 직접 옮겼습니다. 재무제표, 부문, 제품, 지역 표는 PDF 텍스트를 프로그램으로 읽었고, 주석 숫자는 쪽수를 붙여 옮긴 뒤 아래 항등식으로 확인했습니다. 같은 검산이 <a href="checks.html">검산 페이지</a>에서 이 브라우저로 다시 돌아갑니다.</p>
+          <ul class="checks-list" id="checks-list"></ul>
+          <p class="rpt-end">자료: 삼성전자 사업보고서(제57기, 2026년 3월 10일 공시), 삼성전자 반기보고서(제58기 반기, 2026년 8월 14일 공시), 전자공시시스템(dart.fss.or.kr). 쪽수는 각 공시 PDF 아래쪽에 표시된 쪽 번호입니다. 2026년 상반기를 1년으로 환산한 값은 단순히 두 배 한 것이며 전망이 아닙니다. 시가총액은 반기보고서의 6월 30일 보통주 종가와 우선주 6월 평균 주가로 계산한 근사치입니다. 이 리포트는 공시 분석 연습과 포트폴리오를 위해 만든 것으로 투자 권유가 아니며, 회사의 공식 견해와 관계없습니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/data/samsung.js"></script>
+<script src="../assets/checks.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, D = window.SamsungData, $ = F.$;
+  const I = D.is, B = D.bs, C = D.cf, S = D.seg, P = D.prod, N = D.notes;
+  const T = (v) => v / 1e6;                       /* 백만원 → 조원 */
+  const jo = (v, d) => F.money(T(v), d === undefined ? 1 : d);
+  const avg = (a, b) => (a + b) / 2;
+  const debt = (p) => B.std[p] + B.cltd[p] + B.bond[p] + B.ltd[p];
+  const q1 = (half, q2) => { const o = {}; Object.keys(half).forEach((k) => { o[k] = half[k] - (q2[k] || 0); }); return o; };
+
+  /* ---------- 표 공통 ---------- */
+  function fsTable(id, cols, rows, opt) {
+    opt = opt || {};
+    const t = $(id); t.textContent = "";
+    const hr = F.el("tr"); hr.appendChild(F.el("th", { text: "" }));
+    cols.forEach((c, i) => hr.appendChild(F.el("th", { class: i === (opt.hl === undefined ? cols.length - 1 : opt.hl) ? "hl" : "", html: null }, [c])));
+    t.appendChild(F.el("thead", null, [hr]));
+    const tb = F.el("tbody");
+    rows.forEach((r) => {
+      if (r.grp) { const tr = F.el("tr", { class: "grp" }); tr.appendChild(F.el("th", { colspan: cols.length + 1, text: r.grp })); tb.appendChild(tr); return; }
+      const tr = F.el("tr", { class: r.cls || null });
+      tr.appendChild(F.el("th", null, r.sub ? [r.label, F.el("span", { class: "sub", text: "  " + r.sub })] : [r.label]));
+      r.v.forEach((v, i) => {
+        const txt = r.fmt ? r.fmt(v) : (v === null || v === undefined ? "–" : jo(v));
+        const td = F.el("td", { text: txt, class: (i === (opt.hl === undefined ? cols.length - 1 : opt.hl) ? "hl " : "") + (typeof v === "number" && v < 0 && !r.fmt ? "neg" : "") });
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+  }
+
+  /* ---------- 1. 연간 그래프 ---------- */
+  function drawAnnual() {
+    const per = [["2023", "2023"], ["2024", "2024"], ["2025", "2025"], ["2026H1", "2026 상반기"]];
+    const H = 250, padL = 44, padR = 10, padT = 18, padB = 28;
+    const fr = F.plotFrame($("c-annual"), H, "연도별 매출과 영업이익"), svg = fr.svg, W = fr.W;
+    const t = F.niceTicks(0, 340, 5), band = (W - padL - padR) / per.length;
+    const Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
+    const bw = Math.min(34, band / 3.4), cR = F.css("--mark-muted"), cO = F.css("--accent");
+    const tip = F.makeTip(fr.plot);
+    per.forEach((p, i) => {
+      const x = padL + band * i + band / 2, rv = T(I.rev[p[0]]), op = T(I.op[p[0]]);
+      F.svgEl("path", { class: "rv-bar", d: F.barPath(x - bw - 2, bw, Y(0), Y(rv), 3), fill: cR }, svg);
+      F.svgEl("path", { class: "rv-bar", d: F.barPath(x + 2, bw, Y(0), Y(op), 3), fill: cO }, svg);
+      F.svgText(svg, x - bw / 2 - 2, Y(rv) - 5, F.num(rv, 1), { "text-anchor": "middle", class: "val" });
+      F.svgText(svg, x + bw / 2 + 2, Y(op) - 5, F.num(op, 1), { "text-anchor": "middle", class: "val" });
+      F.svgText(svg, x, H - 8, p[1], { "text-anchor": "middle", class: "lab" });
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: p[1], rows: [["매출", F.num(rv, 1) + "조원", cR], ["영업이익", F.num(op, 1) + "조원", cO], ["영업이익률", F.pct(op / rv, 1)]] }));
+    });
+  }
+
+  /* ---------- 2. 분기 부문 영업이익 ---------- */
+  const SEGS = [["DS", "DS 부문", "--accent"], ["DX", "DX 부문", "--input"], ["SDC", "SDC", "--pos"], ["Harman", "Harman", "--mark-muted"]];
+  function drawSegQ() {
+    const qs = [["1Q25", q1(S["2025H1"].op, S["2Q25"].op)], ["2Q25", S["2Q25"].op], ["1Q26", q1(S["2026H1"].op, S["2Q26"].op)], ["2Q26", S["2Q26"].op]];
+    const lg = $("seg-legend"); lg.textContent = "";
+    SEGS.forEach((s) => lg.appendChild(F.el("span", null, [F.el("i", { class: "key-bar", style: "background: var(" + s[2] + ")" }), s[1]])));
+    const H = 270, padL = 40, padR = 10, padT = 18, padB = 40;
+    const fr = F.plotFrame($("c-segq"), H, "분기별 부문 영업이익"), svg = fr.svg, W = fr.W;
+    let mx = 0, mn = 0;
+    qs.forEach((q) => { let pos = 0, neg = 0; SEGS.forEach((s) => { const v = T(q[1][s[0]]); if (v >= 0) pos += v; else neg += v; }); mx = Math.max(mx, pos); mn = Math.min(mn, neg); });
+    const t = F.niceTicks(mn, mx, 5), band = (W - padL - padR) / qs.length;
+    const Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
+    const bw = Math.min(64, band * 0.5), tip = F.makeTip(fr.plot);
+    qs.forEach((q, i) => {
+      const x = padL + band * i + band / 2; let pos = 0, neg = 0;
+      SEGS.forEach((s) => {
+        const v = T(q[1][s[0]]); if (!v) return;
+        const y0 = v >= 0 ? pos : neg, y1 = y0 + v;
+        F.svgEl("rect", { class: "rv-bar", x: x - bw / 2, y: Math.min(Y(y0), Y(y1)), width: bw, height: Math.max(1, Math.abs(Y(y1) - Y(y0))), fill: F.css(s[2]) }, svg);
+        if (v >= 0) pos = y1; else neg = y1;
+      });
+      const tot = T(q[1].total);
+      F.svgText(svg, x, Y(pos) - 6, F.num(tot, 1), { "text-anchor": "middle", class: "val" });
+      if (q[1].DX < 0) F.svgText(svg, x, Y(neg) + 14, "DX −" + F.num(-T(q[1].DX), 1), { "text-anchor": "middle", class: "val", style: "fill: var(--input)" });
+      F.svgText(svg, x, H - 22, "20" + q[0].slice(2) + "년", { "text-anchor": "middle", class: "lab" });
+      F.svgText(svg, x, H - 8, q[0][0] + "분기", { "text-anchor": "middle", class: "lab" });
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: q[0].replace(/(\d)Q(\d\d)/, "20$2년 $1분기"), rows: SEGS.map((s) => [s[1], F.money(T(q[1][s[0]]), 2) + "조원", F.css(s[2])]).concat([["연결 영업이익", F.num(tot, 2) + "조원"]]) }));
+    });
+  }
+
+  /* ---------- 부문 표 ---------- */
+  function segTable() {
+    const per = [["2024", "2024"], ["2025", "2025"], ["2025H1", "2025 상반기"], ["2026H1", "2026 상반기"]];
+    const rows = [{ grp: "매출" }];
+    SEGS.forEach((s) => rows.push({ label: s[1], v: per.map((p) => S[p[0]].rev[s[0]]) }));
+    rows.push({ label: "내부거래 제거", v: per.map((p) => S[p[0]].rev.elim) });
+    rows.push({ label: "연결 매출", cls: "tot", v: per.map((p) => S[p[0]].rev.total) });
+    rows.push({ grp: "영업이익" });
+    SEGS.forEach((s) => rows.push({ label: s[1], v: per.map((p) => S[p[0]].op[s[0]]) }));
+    rows.push({ label: "연결 영업이익", cls: "tot", v: per.map((p) => S[p[0]].op.total) });
+    rows.push({ grp: "영업이익률" });
+    SEGS.forEach((s) => rows.push({ label: s[1], v: per.map((p) => S[p[0]].op[s[0]] / S[p[0]].rev[s[0]]), fmt: (v) => F.pct(v, 1) }));
+    fsTable("t-seg", per.map((p) => p[1]), rows);
+  }
+
+  /* ---------- 가격 변화 ---------- */
+  function drawAsp() {
+    const items = Object.keys(N.asp["2026H1"]);
+    const H = 34 * items.length + 40, padL = 92, padR = 54, padT = 8, padB = 22;
+    const fr = F.plotFrame($("c-asp"), H, "제품별 평균판매가격 변화율"), svg = fr.svg, W = fr.W;
+    const vals = []; items.forEach((k) => vals.push(N.asp["2025"][k], N.asp["2026H1"][k]));
+    const t = F.niceTicks(Math.min(0, Math.min.apply(null, vals)), Math.max.apply(null, vals), 5);
+    const X = (v) => padL + (v - t.lo) / (t.hi - t.lo) * (W - padL - padR), row = (H - padT - padB) / items.length;
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: X(tv), x2: X(tv), y1: padT, y2: H - padB }, svg); F.svgText(svg, X(tv), H - 6, (tv > 0 ? "+" : tv < 0 ? "−" : "") + Math.abs(tv) + "%", { "text-anchor": "middle" }); });
+    const cA = F.css("--mark-muted"), cB = F.css("--accent"), bh = Math.min(11, row / 3.2);
+    items.forEach((k, i) => {
+      const y = padT + row * i + row / 2;
+      F.svgText(svg, padL - 8, y + 4, k, { "text-anchor": "end", class: "lab" });
+      [[N.asp["2025"][k], cA, -bh - 1], [N.asp["2026H1"][k], cB, 1]].forEach((b) => {
+        const x0 = X(0), x1 = X(b[0]);
+        F.svgEl("rect", { class: "rv-barx", x: Math.min(x0, x1), y: y + b[2], width: Math.max(1, Math.abs(x1 - x0)), height: bh, rx: 2, fill: b[1] }, svg);
+        F.svgText(svg, b[0] >= 0 ? x1 + 5 : x1 - 5, y + b[2] + bh - 2, (b[0] > 0 ? "+" : b[0] < 0 ? "−" : "") + Math.abs(b[0]) + "%", { "text-anchor": b[0] >= 0 ? "start" : "end", class: "val" });
+      });
+    });
+  }
+
+  /* ---------- 3. 세 재무제표 ---------- */
+  function fsTables(checks) {
+    const ip = [["2024", "2024"], ["2025", "2025"], ["2025H1", "2025 상반기"], ["2026H1", "2026 상반기"]];
+    const ir = (lab, k, cls, sign) => ({ label: lab, cls: cls, v: ip.map((p) => (sign || 1) * I[k][p[0]]) });
+    fsTable("t-is", ip.map((p) => p[1]), [
+      ir("매출", "rev", "tot"), ir("매출원가", "cogs", null, -1), ir("매출총이익", "gp", "tot"), ir("판매비와관리비", "sga", null, -1), ir("영업이익", "op", "tot"),
+      { label: "기타손익·지분법·금융손익", v: ip.map((p) => I.ebt[p[0]] - I.op[p[0]]) }, ir("법인세비용차감전순이익", "ebt", "tot"), ir("법인세비용", "tax", null, -1), ir("당기순이익", "ni", "tot"),
+      ir("지배기업 소유주지분", "nip"),
+      { label: "매출총이익률", v: ip.map((p) => I.gp[p[0]] / I.rev[p[0]]), fmt: (v) => F.pct(v, 1) },
+      { label: "영업이익률", v: ip.map((p) => I.op[p[0]] / I.rev[p[0]]), fmt: (v) => F.pct(v, 1) },
+      { label: "검산", cls: "chk", v: ip.map((p) => checks.is[p[0]]), fmt: (v) => v ? "✓ 소계 일치" : "✕" }
+    ]);
+    const bp = [["2024", "2024.12"], ["2025", "2025.12"], ["2026H1", "2026.6"]];
+    const br = (lab, f, cls) => ({ label: lab, cls: cls, v: bp.map((p) => f(p[0])) });
+    fsTable("t-bs", bp.map((p) => p[1]), [
+      { grp: "자산" },
+      br("현금및현금성자산", (p) => B.cash[p]), br("단기금융상품", (p) => B.stfi[p]), br("매출채권", (p) => B.ar[p]), br("재고자산", (p) => B.inv[p]),
+      br("기타 유동자산", (p) => B.ca[p] - B.cash[p] - B.stfi[p] - B.ar[p] - B.inv[p]), br("유동자산", (p) => B.ca[p], "tot"),
+      br("유형자산", (p) => B.ppe[p]), br("무형자산", (p) => B.intg[p]), br("관계기업 및 공동기업 투자", (p) => B.assoc[p]), br("기타포괄손익-공정가치금융자산", (p) => B.fvoci[p]),
+      br("기타 비유동자산", (p) => B.nca[p] - B.ppe[p] - B.intg[p] - B.assoc[p] - B.fvoci[p]), br("자산총계", (p) => B.ta[p], "tot"),
+      { grp: "부채와 자본" },
+      br("매입채무", (p) => B.ap[p]), br("차입금", (p) => debt(p)), br("당기법인세부채", (p) => B.taxp[p]), br("충당부채 (유동+비유동)", (p) => B.prov[p] + B.lprov[p]),
+      br("기타 부채", (p) => B.tl[p] - B.ap[p] - debt(p) - B.taxp[p] - B.prov[p] - B.lprov[p]), br("부채총계", (p) => B.tl[p], "tot"),
+      br("지배기업 소유주지분", (p) => B.pe[p]), br("비지배지분", (p) => B.nci[p]), br("자본총계", (p) => B.te[p], "tot"), br("부채와 자본총계", (p) => B.tle[p], "tot"),
+      { label: "검산", cls: "chk", v: bp.map((p) => checks.bs[p[0]]), fmt: (v) => v ? "✓ 대차 일치" : "✕" }
+    ]);
+    const cp = [["2024", "2024"], ["2025", "2025"], ["2025H1", "2025 상반기"], ["2026H1", "2026 상반기"]];
+    const cr = (lab, f, cls) => ({ label: lab, cls: cls, v: cp.map((p) => f(p[0])) });
+    fsTable("t-cf", cp.map((p) => p[1]), [
+      cr("당기순이익", (p) => C.ni[p]), cr("비현금 조정", (p) => C.adj[p]), cr("운전자본 변동", (p) => C.wc[p]), cr("이자·배당·법인세", (p) => C.intr[p] + C.intp[p] + C.divr[p] + C.taxpaid[p]),
+      cr("영업활동현금흐름", (p) => C.cfo[p], "tot"),
+      cr("유형·무형자산 취득", (p) => C.capex[p] + C.intg_out[p]), cr("금융상품 순투자", (p) => C.stfi[p] + C.ltfi_out[p] + C.ltfi_in[p]), cr("그 밖의 투자활동", (p) => C.cfi[p] - C.capex[p] - C.intg_out[p] - C.stfi[p] - C.ltfi_out[p] - C.ltfi_in[p]),
+      cr("투자활동현금흐름", (p) => C.cfi[p], "tot"),
+      cr("배당금 지급", (p) => C.div[p]), cr("자기주식 취득", (p) => C.buyback[p]), cr("차입금 증감 등", (p) => C.cff[p] - C.div[p] - C.buyback[p]),
+      cr("재무활동현금흐름", (p) => C.cff[p], "tot"),
+      cr("환율 효과 등", (p) => C.close[p] - C.open[p] - C.cfo[p] - C.cfi[p] - C.cff[p]), cr("현금 증감", (p) => C.close[p] - C.open[p], "tot"), cr("기말 현금", (p) => C.close[p]),
+      { label: "검산", cls: "chk", v: cp.map((p) => checks.cf[p[0]]), fmt: (v) => v ? "✓ 합계·현금 일치" : "✕" }
+    ]);
+  }
+
+  /* ---------- 4. 현금 폭포 ---------- */
+  function drawWaterfall() {
+    const p = "2026H1", fin = C.stfi[p] + C.ltfi_out[p] + C.ltfi_in[p];
+    const steps = [
+      ["기초 현금", C.open[p], "total"], ["영업활동", C.cfo[p]], ["설비·무형 투자", C.capex[p] + C.intg_out[p]], ["금융상품", fin],
+      ["기타 투자", C.cfi[p] - C.capex[p] - C.intg_out[p] - fin], ["배당", C.div[p]], ["자사주 매입", C.buyback[p]],
+      ["차입금 등", C.cff[p] - C.div[p] - C.buyback[p]], ["환율 효과", C.fx[p]], ["기말 현금", C.close[p], "total"]
+    ];
+    const H = 290, padL = 44, padR = 10, padT = 22, padB = 40;
+    const fr = F.plotFrame($("c-wf"), H, "2026년 상반기 현금 흐름 폭포"), svg = fr.svg, W = fr.W;
+    let run = 0; const bars = steps.map((s) => { let a, b; if (s[2] === "total") { a = 0; b = s[1]; run = s[1]; } else { a = run; b = run + s[1]; run = b; } return { s: s, a: T(a), b: T(b) }; });
+    const all = []; bars.forEach((x) => all.push(x.a, x.b));
+    const t = F.niceTicks(0, Math.max.apply(null, all), 5), band = (W - padL - padR) / bars.length;
+    const Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
+    const bw = Math.min(46, band * 0.62), tip = F.makeTip(fr.plot);
+    bars.forEach((x, i) => {
+      const cx = padL + band * i + band / 2, tot = x.s[2] === "total", up = x.b >= x.a;
+      const col = tot ? F.css("--ink-2") : up ? F.css("--pos") : F.css("--neg");
+      F.svgEl("rect", { class: "rv-bar", x: cx - bw / 2, y: Math.min(Y(x.a), Y(x.b)), width: bw, height: Math.max(1.5, Math.abs(Y(x.b) - Y(x.a))), rx: 2, fill: col }, svg);
+      if (i < bars.length - 1) F.svgEl("line", { class: "conn", x1: cx + bw / 2, x2: cx + band - bw / 2, y1: Y(x.b), y2: Y(x.b) }, svg);
+      const v = T(x.s[1]);
+      F.svgText(svg, cx, Math.min(Y(x.a), Y(x.b)) - 5, (tot ? "" : v > 0 ? "+" : "−") + F.num(Math.abs(v), 1), { "text-anchor": "middle", class: "val" });
+      const lab = x.s[0], parts = lab.length > 4 && lab.indexOf(" ") > 0 ? lab.split(" ") : [lab];
+      parts.forEach((pt, k) => F.svgText(svg, cx, H - padB + 15 + k * 12, pt, { "text-anchor": "middle", class: "lab" }));
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: lab, rows: [[tot ? "잔액" : "변동", F.money(v, 2) + "조원", col]] }));
+    });
+  }
+
+  /* ---------- 5. 주석 카드 ---------- */
+  function noteCards() {
+    const inv = N.inventory, pv = N.provisions, eq = N.equity, as = N.associates;
+    const dInv = (k) => T(inv["2026H1"][k][2] - inv["2025"][k][2]);
+    const mkt = (p) => Object.keys(as.market[p]).reduce((a, k) => a + as.market[p][k], 0);
+    const allowR = (p) => -inv[p].allow / inv[p].gross;
+    const cards = [
+      ["재고자산과 평가충당금", "반기 90쪽", jo(B.inv["2025"]) + " → " + jo(B.inv["2026H1"]), "조원",
+        "늘어난 18.8조원 중 원재료 " + F.num(dInv("raw"), 1) + "조원, 재공품 " + F.num(dInv("wip"), 1) + "조원, 제품 " + F.num(dInv("fg"), 1) + "조원입니다. 평가충당금 비율은 " + F.pct(allowR("2025"), 1) + "에서 " + F.pct(allowR("2026H1"), 1) + "로 내려갔습니다.",
+        "증산을 위한 원재료·재공품이 대부분입니다. 가격이 오르면서 깎아 두었던 재고 가치가 되살아나는 국면입니다."],
+      ["매출채권", "반기 68쪽", jo(B.ar["2025"]) + " → " + jo(B.ar["2026H1"]), "조원",
+        "88.6% 늘었습니다. 2분기 매출을 1년으로 환산하면 매출채권 회수기간은 약 " + F.num(B.ar["2026H1"] / (I.rev["2Q26"] * 4 / 365), 0) + "일로, 2025년 " + F.num(B.ar["2025"] / (I.rev["2025"] / 365), 0) + "일과 비슷합니다.",
+        "매출이 늘어난 만큼 늘었습니다. 회수가 늦어진 신호는 아직 없습니다."],
+      ["계약부채 (고객 선수금 등)", "반기 104쪽", jo(N.contractLiab["2025"]) + " → " + jo(N.contractLiab["2026H1"]), "조원",
+        "회사는 여러 글로벌 고객과 메모리 다년 공급계약을 맺었다고 약정 주석(103쪽)에 밝혔습니다. 기타비유동부채도 " + jo(B.oncl["2025"]) + "조원에서 " + jo(B.oncl["2026H1"]) + "조원으로 늘었습니다.",
+        "고객이 물량 확보를 위해 돈을 먼저 내는 구조입니다. 공급 부족이 풀리면 가장 먼저 줄어들 숫자입니다."],
+      ["유형자산과 설비투자", "사업 126쪽", jo(N.ppe["2025"].acq) + " vs " + jo(-N.ppe["2025"].dep), "조원 · 2025 취득 vs 감가상각",
+        "2025년 말 건설중인자산 " + jo(N.ppe["2025"].cip) + "조원, 기계장치는 취득원가의 " + F.pct(-N.ppe["2025"].mach_acc / N.ppe["2025"].mach_gross, 0) + "가 이미 감가상각됐습니다. 2026년 상반기 시설투자는 28.0조원(DS 25.6조원)입니다.",
+        "감가상각보다 많이 투자하는 증설 국면입니다. 감가상각이 끝난 오래된 장비가 많아 원가가 낮게 유지되는 효과도 있습니다."],
+      ["인건비와 주식보상", "반기 107·109쪽", jo(N.payroll["2025H1"]) + " → " + jo(N.payroll["2026H1"]), "조원 · 상반기 급여",
+        "주식기준보상 적립금은 " + F.num(T(eq.sbcReserve["2025"]), 2) + "조원에서 " + F.num(T(eq.sbcReserve["2026H1"]), 1) + "조원으로 늘었습니다. 성과연동 주식보상(PSU)을 운영하고, 성과급 일부를 자사주로 지급했습니다.",
+        "이익에 연동된 보상이 커지면서 인건비가 이익을 따라 움직입니다. 호황이 끝나도 일부 비용은 남습니다."],
+      ["충당부채: 기술사용료", "반기 101쪽", jo(pv["2025"].close[1]) + " → " + jo(pv["2026H1"].close[1]), "조원",
+        "협상 중인 기술사용계약에 따라 앞으로 낼 것으로 예상되는 기술사용료입니다. 상반기에만 " + jo(pv["2026H1"].add[1]) + "조원이 순전입됐습니다. 충당부채 전체는 " + jo(pv["2025"].close[4]) + "조원에서 " + jo(pv["2026H1"].close[4]) + "조원으로 늘었습니다.",
+        "특허 협상 결과에 따라 이익이 달라질 수 있는 항목입니다."],
+      ["관계기업: 장부가와 시장가", "반기 91쪽", jo(B.assoc["2026H1"]) + " vs " + jo(mkt("2026H1")), "조원 · 장부 vs 상장 관계기업 시장가",
+        "삼성전기, 삼성SDI, 삼성바이오로직스 같은 관계기업은 지분법으로 처리돼 영업이익에 들어가지 않습니다. 반기말 상장 관계기업 지분의 시장가치는 장부가의 약 " + F.num(mkt("2026H1") / B.assoc["2026H1"], 1) + "배입니다.",
+        "부문별 가치를 따로 더하는 방식(SOTP)으로 보면 연결 영업이익 밖에 숨은 가치입니다."],
+      ["법인세와 유효세율", "사업 153쪽, 반기 113쪽", F.pct(I.tax["2025"] / I.ebt["2025"], 1) + " → " + F.pct(N.tax.etr2026Expected, 1), "2025 유효세율 → 2026 예상",
+        "2025년에는 세액공제·감면 " + jo(-N.tax["2025"].credits) + "조원으로 유효세율이 낮았습니다. 2026년은 글로벌최저한세를 고려해 연간 22.5%로 추정했습니다.",
+        "세전이익이 같아도 순이익은 세율만큼 달라집니다. 2026년 순이익률이 영업이익률보다 덜 오른 이유 중 하나입니다."],
+      ["자사주와 배당", "반기 104·205쪽", jo(-C.buyback["2026H1"]) + " + " + jo(-C.div["2026H1"]), "조원 · 상반기 자사주 매입 + 배당",
+        "상반기에 보통주 " + F.num(eq.h1Moves.bought / 1e6, 1) + "백만 주를 매입했고, 보통주 " + F.num(eq.h1Moves.cancelledCommon / 1e6, 1) + "백만 주와 우선주 자기주식 " + F.num(eq.h1Moves.cancelledPref / 1e6, 1) + "백만 주를 소각했습니다. 분기배당은 1분기 372원, 2분기 374원입니다.",
+        "매입한 자사주는 소각과 임직원 보상에 함께 쓰입니다. 주주환원과 보상 재원이 섞여 있다는 점을 같이 봅니다."],
+      ["매출처 집중", "사업 44쪽, 반기 35쪽", "15% → 25%", "상위 5대 매출처 비중",
+        "2025년에는 Alphabet, Apple, Deutsche Telekom, Hong Kong Techtronics, Supreme Electronics였고, 2026년 상반기에는 Deutsche Telekom 대신 Amazon이 들어왔습니다.",
+        "데이터센터 고객의 비중이 커졌습니다. 소수 고객의 투자 계획이 실적을 더 크게 흔들 수 있습니다."],
+      ["환율 민감도", "사업 162쪽", "±" + jo(N.fx["2025"].USD, 2), "조원 · 달러 5% 변동 시 세전이익",
+        "외화로 표시된 금융자산·부채에 대해 달러가 5% 움직이면 세전이익이 약 " + jo(N.fx["2025"].USD, 2) + "조원, 유로는 " + jo(N.fx["2025"].EUR, 2) + "조원 움직입니다(2025년 말).",
+        "금융자산·부채만 따진 숫자입니다. 매출과 원가 전체의 환율 효과는 이보다 훨씬 큽니다."],
+      ["약정과 인수", "반기 103쪽, 사업 190쪽", jo(N.commitments.ppeIntgPurchase), "조원 · 유형·무형자산 취득 약정",
+        "Harman을 통한 ZF의 ADAS 사업 인수가 2026년 중 완료될 예정입니다. 2025년에는 레인보우로보틱스, Sound United, 플랙트그룹을 인수했습니다.",
+        "이미 약속한 투자와 인수는 앞으로의 현금 유출과 감가상각으로 이어집니다."]
+    ];
+    const box = $("ncards"); box.textContent = "";
+    cards.forEach((c) => box.appendChild(F.el("article", { class: "nc" }, [
+      F.el("div", { class: "h" }, [F.el("b", { text: c[0] }), F.el("span", { text: c[1] })]),
+      F.el("div", { class: "big" }, [c[2], F.el("small", { text: c[3] })]),
+      F.el("p", { text: c[4] }), F.el("p", { class: "so", text: c[5] })
+    ])));
+  }
+
+  /* ---------- 6. 비율 ---------- */
+  function ratioTable() {
+    const per = [["2024", "2024"], ["2025", "2025"], ["2026H1", "2026 상반기 ×2"]];
+    const prev = { "2024": "2023", "2025": "2024", "2026H1": "2025" };
+    const ann = (p, v) => p === "2026H1" ? v * 2 : v;
+    const r = (lab, f, fmt) => ({ label: lab, v: per.map((p) => f(p[0])), fmt: fmt });
+    const pct = (v) => F.pct(v, 1), x = (v) => F.num(v, 2) + "배", mo = (v) => F.num(v, 1) + "개월", dd = (v) => F.num(v, 0) + "일";
+    fsTable("t-ratio", per.map((p) => p[1]), [
+      { grp: "수익성" },
+      r("매출총이익률", (p) => I.gp[p] / I.rev[p], pct), r("영업이익률", (p) => I.op[p] / I.rev[p], pct), r("EBITDA 마진", (p) => (I.op[p] + S[p].dep.total + S[p].amort.total) / I.rev[p], pct),
+      r("ROE (지배주주)", (p) => ann(p, I.nip[p]) / avg(B.pe[prev[p]], B.pe[p]), pct), r("유효세율", (p) => I.tax[p] / I.ebt[p], pct),
+      { grp: "자산 효율과 운전자본" },
+      r("유·무형자산 회전율", (p) => ann(p, I.rev[p]) / (B.ppe[p] + B.intg[p]), x), r("재고 개월수 (매출원가 기준)", (p) => B.inv[p] / (ann(p, I.cogs[p]) / 12), mo),
+      r("매출채권 회수기간", (p) => B.ar[p] / (ann(p, I.rev[p]) / 365), dd), r("설비투자 ÷ 감가상각 (현금 기준)", (p) => -C.capex[p] / S[p].dep.total, x),
+      { grp: "재무 안정성" },
+      r("현금보유비율", (p) => (B.cash[p] + B.stfi[p]) / B.ta[p], pct), r("유·무형자산 비중", (p) => (B.ppe[p] + B.intg[p]) / B.ta[p], pct),
+      r("순현금 (조원)", (p) => T(B.cash[p] + B.stfi[p] - debt(p)), (v) => F.num(v, 1)), r("부채비율 (부채 ÷ 자본)", (p) => B.tl[p] / B.te[p], pct)
+    ]);
+  }
+  function drawDupont() {
+    const per = [["2024", "2024"], ["2025", "2025"], ["2026H1", "2026 상반기 ×2"]], prev = { "2024": "2023", "2025": "2024", "2026H1": "2025" };
+    const comp = per.map((p) => {
+      const k = p[0], ni = (k === "2026H1" ? 2 : 1) * I.ni[k], rev = (k === "2026H1" ? 2 : 1) * I.rev[k];
+      const aA = avg(B.ta[prev[k]], B.ta[k]), aE = avg(B.te[prev[k]], B.te[k]);
+      return { lab: p[1], m: ni / rev, t: rev / aA, l: aA / aE, roe: ni / aE };
+    });
+    const H = 54 * comp.length + 46, padL = 116, padR = 16, padT = 26, padB = 6;
+    const fr = F.plotFrame($("c-dupont"), H, "DuPont 분해"), svg = fr.svg, W = fr.W;
+    const cols = [["순이익률", "m", (v) => F.pct(v, 1)], ["총자산회전율", "t", (v) => F.num(v, 2) + "배"], ["재무레버리지", "l", (v) => F.num(v, 2) + "배"], ["ROE", "roe", (v) => F.pct(v, 1)]];
+    const cw = (W - padL - padR) / cols.length, row = (H - padT - padB) / comp.length;
+    cols.forEach((c, j) => F.svgText(svg, padL + cw * j + cw / 2, 14, c[0], { "text-anchor": "middle", class: "lab" }));
+    const maxv = { m: Math.max.apply(null, comp.map((c) => c.m)), t: Math.max.apply(null, comp.map((c) => c.t)), l: Math.max.apply(null, comp.map((c) => c.l)), roe: Math.max.apply(null, comp.map((c) => c.roe)) };
+    comp.forEach((c, i) => {
+      const y = padT + row * i;
+      F.svgText(svg, padL - 10, y + row / 2 + 4, c.lab, { "text-anchor": "end", class: "lab" });
+      cols.forEach((col, j) => {
+        const v = c[col[1]], w = (cw - 18) * v / maxv[col[1]];
+        F.svgEl("rect", { class: "rv-barx", x: padL + cw * j + 6, y: y + row * 0.22, width: Math.max(2, w), height: row * 0.5, rx: 3, fill: j === 3 ? F.css("--accent") : F.css("--input"), "fill-opacity": j === 3 ? 1 : 0.75 }, svg);
+        F.svgText(svg, padL + cw * j + 10, y + row * 0.22 + row * 0.5 / 2 + 4, col[2](v), { class: "val", fill: "#fff", style: "fill: var(--surface)" });
+      });
+    });
+  }
+
+  /* ---------- 7. PBR ---------- */
+  function market() {
+    const eq = N.equity, pr = N.price;
+    const cap = eq.outstanding["2026H1"].common * pr.close["2026H1"] + eq.outstanding["2026H1"].pref * pr.monthlyAvg2026.pref[5];
+    const pbr = cap / 1e6 / B.pe["2026H1"], roe = I.nip["2026H1"] * 2 / avg(B.pe["2025"], B.pe["2026H1"]);
+    return { cap: cap, pbr: pbr, roe: roe };
+  }
+  function drawPbr() {
+    const coe = Number($("i-coe").value) / 100, g = Number($("i-g").value) / 100, m = market();
+    $("v-coe").textContent = F.pct(coe, 1); $("v-g").textContent = F.pct(g, 1);
+    const H = 270, padL = 44, padR = 16, padT = 14, padB = 34;
+    const fr = F.plotFrame($("c-pbr"), H, "ROE에 따른 적정 PBR"), svg = fr.svg, W = fr.W;
+    const xs = { lo: 0, hi: 0.6 }, fair = (r) => (r - g) / (coe - g);
+    const yt = F.niceTicks(0, Math.max(fair(xs.hi), m.pbr) * 1.05, 5);
+    const X = (r) => padL + (r - xs.lo) / (xs.hi - xs.lo) * (W - padL - padR), Y = (v) => padT + (yt.hi - v) / (yt.hi - yt.lo) * (H - padT - padB);
+    yt.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0) + "배", { "text-anchor": "end" }); });
+    [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6].forEach((r) => F.svgText(svg, X(r), H - 12, F.pct(r, 0), { "text-anchor": "middle" }));
+    F.svgText(svg, W - padR, H - 0, "ROE", { "text-anchor": "end", class: "lab" });
+    let d = ""; for (let i = 0; i <= 60; i++) { const r = xs.lo + (xs.hi - xs.lo) * i / 60, v = Math.max(0, fair(r)); d += (i ? "L" : "M") + X(r).toFixed(1) + " " + Y(Math.min(v, yt.hi)).toFixed(1); }
+    F.svgEl("path", { class: "cline rv-line", d: d, stroke: F.css("--input") }, svg);
+    F.svgEl("line", { class: "ref", x1: padL, x2: W - padR, y1: Y(m.pbr), y2: Y(m.pbr), style: "stroke: var(--accent); stroke-dasharray: none" }, svg);
+    F.svgText(svg, padL + 6, Y(m.pbr) - 6, "시장 PBR " + F.num(m.pbr, 2) + "배", { class: "val" });
+    const implied = m.pbr * (coe - g) + g;
+    F.svgEl("line", { class: "ref", x1: X(implied), x2: X(implied), y1: Y(m.pbr), y2: Y(0) }, svg);
+    F.svgEl("circle", { cx: X(implied), cy: Y(m.pbr), r: 5, fill: F.css("--accent") }, svg);
+    F.svgEl("line", { class: "ref", x1: X(m.roe), x2: X(m.roe), y1: Y(Math.min(fair(m.roe), yt.hi)), y2: Y(0) }, svg);
+    F.svgEl("circle", { cx: X(m.roe), cy: Y(Math.min(fair(m.roe), yt.hi)), r: 5, fill: F.css("--input") }, svg);
+    F.svgText(svg, X(m.roe) - 6, Y(Math.min(fair(m.roe), yt.hi)) - 8, "상반기 ×2 ROE " + F.pct(m.roe, 1), { "text-anchor": "end", class: "val" });
+    $("pbr-note").textContent = "COE " + F.pct(coe, 1) + ", 성장률 " + F.pct(g, 1) + "이면 시장 PBR " + F.num(m.pbr, 2) + "배에 담긴 장기 ROE는 약 " + F.pct(implied, 1) + "입니다. 상반기를 1년으로 늘린 ROE " + F.pct(m.roe, 1) + "보다 낮습니다. 시장은 지금의 이익률이 사이클 내내 이어지지 않는다고 보고 있다는 뜻으로 읽을 수 있습니다. 시가총액 약 " + F.num(m.cap / 1e12, 0) + "조원 기준.";
+  }
+
+  /* ---------- 8. 검산 목록 ---------- */
+  function checkList() {
+    const res = window.Checks.run({ Fin: F, Samsung: D }).filter((r) => r.group === "삼성전자 공시");
+    const ul = $("checks-list"); ul.textContent = "";
+    res.forEach((r) => ul.appendChild(F.el("li", { class: r.ok ? "" : "bad", text: r.name + (r.detail ? " — " + r.detail : "") })));
+    const ok = (f) => f;
+    const is = {}, bs = {}, cf = {};
+    ["2024", "2025", "2025H1", "2026H1"].forEach((p) => { is[p] = I.gp[p] === I.rev[p] - I.cogs[p] && I.op[p] === I.gp[p] - I.sga[p] && I.ni[p] === I.ebt[p] - I.tax[p]; });
+    ["2024", "2025", "2026H1"].forEach((p) => { bs[p] = B.ta[p] === B.tl[p] + B.te[p] && B.ta[p] === B.ca[p] + B.nca[p]; });
+    ["2024", "2025", "2025H1", "2026H1"].forEach((p) => { cf[p] = C.close[p] - C.open[p] === C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] && (B.cash[p] === undefined || B.cash[p] === C.close[p]); });
+    return { is: is, bs: bs, cf: cf, all: res.every((r) => ok(r.ok)) };
+  }
+
+  function render() {
+    const checks = checkList();
+    drawAnnual(); drawSegQ(); segTable(); drawAsp(); fsTables(checks); drawWaterfall(); noteCards(); ratioTable(); drawDupont(); drawPbr();
+  }
+  render();
+  F.onRedraw(render);
+  $("i-coe").addEventListener("input", drawPbr); $("i-g").addEventListener("input", drawPbr);
+
+  /* 표지: 상반기 돈의 흐름 (DS·DX 이익 → 현금 → 설비투자·주주환원·금융상품). 입자 수는 금액에 비례 */
+  const nP = (v) => Math.max(6, Math.round(T(Math.abs(v)) / 3.2));
+  Report.flows($("hero-art"), {
+    area: { span: 0.44, max: 600, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.06, y: 0.26, label: "DS 부문", ly: -30 }, { x: 0.06, y: 0.80, label: "DX 부문" }, { x: 0.46, y: 0.52, label: "현금" },
+            { x: 0.90, y: 0.18, label: "설비투자", ly: -30 }, { x: 0.94, y: 0.52, label: "주주환원", ly: -28 }, { x: 0.90, y: 0.86, label: "금융상품" }],
+    links: [
+      { from: 0, to: 2, bend: -0.12, c: 0, label: "영업이익 142.9조", dy: -10, n: nP(S["2026H1"].op.DS) },
+      { from: 1, to: 2, bend: 0.12, c: 1, label: "2.1조", dy: 18, n: nP(S["2026H1"].op.DX) },
+      { from: 2, to: 3, bend: -0.10, c: 2, label: "33.0조", dy: -8, n: nP(C.capex["2026H1"] + C.intg_out["2026H1"]) },
+      { from: 2, to: 4, bend: 0.0, c: 0, label: "19.5조", dy: -8, n: nP(C.div["2026H1"] + C.buyback["2026H1"]) },
+      { from: 2, to: 5, bend: 0.10, c: 1, label: "57.5조", dy: 18, n: nP(C.stfi["2026H1"] + C.ltfi_out["2026H1"] + C.ltfi_in["2026H1"]) }
+    ]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>

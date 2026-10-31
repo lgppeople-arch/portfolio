@@ -295,6 +295,7 @@
             <li><div><b>분기마다 갱신</b><span>새 공시가 나오면 요약해 정기 보고하고 실적 변화를 추적</span></div></li>
             <li><div><b>책자로 엮어 배포</b><span>약 50쪽 리서치 책자로 편집해 본부장을 통해 경영진에 배포</span></div></li>
           </ol>
+          <p class="case-lede" style="font-size: var(--s-1)">회사 자료는 공개할 수 없어, 같은 방식으로 공시 원문을 읽고 검산한 공개 사례를 <a href="tools/samsung.html">삼성전자 재무 분석</a>으로 만들었습니다.</p>
         </article>
         <article class="case case-wide" id="iap">
           <div class="case-top">
@@ -316,9 +317,18 @@
     <div class="wrap wide">
       <div class="block-head">
         <div class="kicker">REPORTS</div>
-        <div><h2>분석 리포트</h2><p>기업과 산업을 분석할 때 쓰는 틀을 리포트 형식으로 정리했습니다. 그래프와 모형은 직접 움직여 볼 수 있고, 예시 수치는 모두 가상입니다.</p></div>
+        <div><h2>분석 리포트</h2><p>기업과 산업을 분석할 때 쓰는 틀과, 그 틀로 실제 공시를 읽은 리포트입니다. 그래프와 모형은 직접 움직여 볼 수 있습니다. 분석 틀의 예시 수치는 가상이고, 삼성전자 리포트는 공시 원문 숫자를 옮겨 검산했습니다.</p></div>
       </div>
       <div class="reports">
+        <a class="rcard feature" href="tools/samsung.html">
+          <div class="rcover" data-art="money" aria-hidden="true"></div>
+          <div class="rbody">
+            <span class="rtag">Company report · 03</span>
+            <h3>삼성전자, 메모리 호황의 재무</h3>
+            <p>2025 사업보고서와 2026 반기보고서의 재무제표·주석을 원문 쪽수와 함께 옮기고 검산했습니다. 상반기 영업이익 146.7조원 중 97%가 DS 부문에서 나온 호황이 매출채권·재고·계약부채, 인건비와 주식보상, 기술사용료 충당부채에 어떻게 찍혔는지 읽고, 사이클 위치와 시장이 가격에 담은 기대까지 봤습니다.</p>
+            <span class="rmeta">공시 원문 분석 · 재무제표·부문·주석 검산 통과 <span class="arr">→</span></span>
+          </div>
+        </a>
         <a class="rcard" href="tools/fsa.html">
           <div class="rcover" data-art="flows" aria-hidden="true"></div>
           <div class="rbody">
@@ -350,7 +360,7 @@
       <div class="method2">
         <div><span class="kicker">01</span><h3>계산 기준을 먼저 공개</h3><p>할인 시점, 세금 처리, 잔존가치 같은 가정을 도구 아래에 적어 둡니다. 숫자를 받는 사람이 기준을 보고 반박할 수 있어야 쓸 수 있는 도구라고 생각합니다.</p></div>
         <div><span class="kicker">02</span><h3>항등 테스트로 검증</h3><p>실적이 계획과 같으면 차이가 <code>0</code>이어야 하고, 효과를 다 더하면 총 차이와 정확히 같아야 합니다. 이런 검산이 통과해야 차이를 계산 오차가 아닌 실제 성과로 설명할 수 있습니다.</p></div>
-        <div><span class="kicker">03</span><h3>설치 없이 브라우저에서</h3><p>현업 부서장도 바로 열 수 있게 브라우저에서 바로 돌아가게 만들고, 입력한 데이터는 외부로 보내지 않습니다. 이 사이트의 예시 수치는 모두 가상입니다.</p></div>
+        <div><span class="kicker">03</span><h3>설치 없이 브라우저에서</h3><p>현업 부서장도 바로 열 수 있게 브라우저에서 바로 돌아가게 만들고, 입력한 데이터는 외부로 보내지 않습니다. 도구의 예시 수치는 모두 가상이고, 기업 분석 리포트에는 공개된 공시 숫자만 씁니다.</p></div>
       </div>
       <a class="live-check" href="tools/checks.html" id="live-check"><span class="pill ok" id="live-pill">검산</span><span id="live-text">이 사이트의 계산 엔진을 지금 이 브라우저에서 검산합니다</span><span class="arr">결과 보기 →</span></a>
     </div>
@@ -412,7 +422,7 @@
 <footer class="site-foot">
   <div class="wrap wide">
     <span>마지막 업데이트 2026년 10월</span>
-    <span>도구의 예시 수치는 모두 가상이며, 회사 내부 자료는 쓰지 않았습니다. <a href="tools/checks.html">계산 검산</a></span>
+    <span>도구의 예시 수치는 모두 가상이고 기업 분석은 공개 공시만 썼으며, 회사 내부 자료는 쓰지 않았습니다. <a href="tools/checks.html">계산 검산</a></span>
   </div>
 </footer>
 
@@ -465,7 +475,16 @@
     const svg = mk("svg", { viewBox: "0 0 400 170", preserveAspectRatio: "xMidYMid slice" }, box);
     for (let x = 0; x <= 400; x += 34) mk("line", { x1: x, x2: x, y1: 0, y2: 170, stroke: L, "stroke-width": 1, opacity: 0.6 }, svg);
     for (let y = 0; y <= 170; y += 34) mk("line", { x1: 0, x2: 400, y1: y, y2: y, stroke: L, "stroke-width": 1, opacity: 0.6 }, svg);
-    if (box.dataset.art === "flows") {
+    if (box.dataset.art === "money") {
+      const N = [[150, 50], [150, 128], [250, 88], [350, 34], [362, 88], [350, 142]], col = [A, B, C, C, A, B];
+      const curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1]; return [mx - dy * k, my + dx * k]; };
+      [[0, 2, -0.12, A, 14], [1, 2, 0.12, B, 3], [2, 3, -0.1, C, 5], [2, 4, 0, A, 4], [2, 5, 0.1, B, 7]].forEach((l) => {
+        const a = N[l[0]], b = N[l[1]], c = curve(a, b, l[2]);
+        mk("path", { d: "M" + a + " Q" + c + " " + b, fill: "none", stroke: l[3], "stroke-width": 1.4, opacity: 0.45 }, svg);
+        for (let i = 1; i <= l[4]; i++) { const u = i / (l[4] + 1) + (rnd() - 0.5) * 0.04, v = 1 - u; mk("circle", { cx: v * v * a[0] + 2 * v * u * c[0] + u * u * b[0], cy: v * v * a[1] + 2 * v * u * c[1] + u * u * b[1], r: 1 + rnd() * 1.6, fill: l[3], opacity: 0.4 + 0.6 * Math.sin(Math.PI * u) }, svg); }
+      });
+      N.forEach((n, i) => { mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 15 : 11, fill: "none", stroke: col[i], "stroke-width": 1.4, opacity: 0.55 }, svg); mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 5 : 4, fill: col[i] }, svg); });
+    } else if (box.dataset.art === "flows") {
       const N = [[210, 52], [292, 132], [352, 60]], col = [A, C, B];
       const curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1]; return [mx - dy * k, my + dx * k]; };
       [[0, 2, -0.25, A], [2, 0, -0.22, B], [0, 1, 0.3, C], [1, 2, 0.28, A], [2, 1, 0.2, B]].forEach((l) => {
@@ -498,12 +517,13 @@
 <script src="assets/engines/pl.js"></script>
 <script src="assets/engines/three.js"></script>
 <script src="assets/engines/cycle.js"></script>
+<script src="assets/data/samsung.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine });
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

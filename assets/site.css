@@ -523,6 +523,11 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 .rcard:hover { transform: translateY(-2px); border-color: var(--ink-2); box-shadow: 0 10px 28px -18px rgba(0, 0, 0, 0.45); }
 .rcard:focus-visible { outline: 2px solid var(--input); outline-offset: 2px; }
 .rcover { height: 170px; background: #0B1118; position: relative; overflow: hidden; }
+.rcard.feature { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: none; }
+.rcard.feature .rcover { height: auto; min-height: 220px; }
+.rcard.feature .rbody { padding: 22px 24px; align-content: center; }
+.rcard.feature .rbody h3 { font-size: var(--s-5); }
+@media (max-width: 860px) { .rcard.feature { grid-template-columns: minmax(0, 1fr); } .rcard.feature .rcover { min-height: 170px; } .rcard.feature .rbody h3 { font-size: var(--s-4); } }
 .rcover svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .rcover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #0B1118 0%, rgba(11, 17, 24, 0.55) 35%, transparent 70%); }
 .rbody { padding: 16px 18px 18px; display: grid; gap: 6px; align-content: start; }
@@ -576,6 +581,7 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
   .job2 { grid-template-columns: 120px minmax(0, 1fr); gap: 12pt; }
   .case { padding: 12pt; }
   .reports { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10pt; }
+  .rcard.feature { grid-template-columns: minmax(0, 1fr); }
   .rcard { box-shadow: none; transform: none; }
   .rbody { padding: 10pt; }
   .cycle, .stage, .job2, .case, .rcard, .kv > div, .dealflow li, .idcard, .figures > * { break-inside: avoid; }

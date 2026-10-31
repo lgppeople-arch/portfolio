@@ -12,7 +12,8 @@
     Mbo: require("./engines/mbo.js"),
     Pl: require("./engines/pl.js"),
     Three: require("./engines/three.js"),
-    Cycle: require("./engines/cycle.js")
+    Cycle: require("./engines/cycle.js"),
+    Samsung: require("./data/samsung.js")
   } : null;
   const api = factory();
   if (node) {
@@ -59,7 +60,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -77,7 +78,7 @@
     }
 
     /* ---------- 투자 사후관리 ---------- */
-    {
+    if (Post) {
       const R = rng(7);
       let worst = 0;
       for (let i = 0; i < 200; i++) {
@@ -108,7 +109,7 @@
     }
 
     /* ---------- M&A 가치평가 ---------- */
-    {
+    if (MA) {
       const x = clone(MA.DEFAULTS);
       const v = MA.value(x);
       add("M&A", "기업가치 → 지분가치 → 기업가치가 원래 값으로 돌아온다", near(MA.toEV(x, MA.toEquity(x, v.dcf.ev)), v.dcf.ev), v.dcf.ev.toFixed(2) + "억원");
@@ -142,7 +143,7 @@
     }
 
     /* ---------- 지주사 ---------- */
-    {
+    if (Holdco) {
       const x = clone(Holdco.DEFAULTS);
       const n = Holdco.nav(x.holdco, x.subs);
       const manual = Fin.sum(n.parts.map((p) => p.value)) + n.royaltyValue + x.holdco.other - x.holdco.netDebt;
@@ -282,8 +283,48 @@
       add("반도체 사이클", "감산하면 최대 재고 주수가 줄고, 저조업 비용은 가동률을 낮춘 분기에만 생긴다", b.summary.weeksMax < a.summary.weeksMax && idleOk, a.summary.weeksMax.toFixed(1) + "주 → " + b.summary.weeksMax.toFixed(1) + "주");
     }
 
+    /* ---------- 삼성전자 공시 원문 대조 (리포트 03) ---------- */
+    if (Samsung) {
+      const S = Samsung, I = S.is, B = S.bs, C = S.cf, N = S.notes;
+      const eqAll = (pairs) => pairs.every((p) => p[0] === p[1]);
+      const isP = ["2023", "2024", "2025", "2025H1", "2026H1", "2Q25", "2Q26"];
+      add("삼성전자 공시", "손익계산서 소계: 매출총이익·영업이익·세전이익·순이익 (7개 기간)", eqAll([].concat.apply([], isP.map((p) => [
+        [I.gp[p], I.rev[p] - I.cogs[p]], [I.op[p], I.gp[p] - I.sga[p]],
+        [I.ebt[p], I.op[p] + I.oi[p] - I.oexp[p] + I.eq[p] + I.fin[p] - I.fcost[p]],
+        [I.ni[p], I.ebt[p] - I.tax[p]], [I.ni[p], I.nip[p] + I.ninci[p]]]))), "백만원 단위 일치");
+      const bsP = ["2023", "2024", "2025", "2026H1"];
+      add("삼성전자 공시", "재무상태표: 자산 = 부채 + 자본, 유동 + 비유동 (4개 시점)", eqAll([].concat.apply([], bsP.map((p) => [
+        [B.ta[p], B.ca[p] + B.nca[p]], [B.tl[p], B.cl[p] + B.ncl[p]], [B.te[p], B.pe[p] + B.nci[p]], [B.ta[p], B.tl[p] + B.te[p]]]))), "2026.6월말 자산 " + F_(B.ta["2026H1"] / 1e6) + "조원");
+      const cfP = ["2023", "2024", "2025", "2025H1", "2026H1"];
+      const det = (p) => S.cfDetail[p.indexOf("H1") > 0 ? "h1" : "annual"], col = { "2025": 0, "2024": 1, "2023": 2, "2026H1": 0, "2025H1": 1 };
+      add("삼성전자 공시", "현금흐름표: 투자·재무활동 항목 합계, 영업활동 구성, 현금 증감 (5개 기간)", eqAll([].concat.apply([], cfP.map((p) => [
+        [C.cfi[p], Fin.sum(det(p).cfi_items.map((r) => r[1][col[p]]))], [C.cff[p], Fin.sum(det(p).cff_items.map((r) => r[1][col[p]]))],
+        [C.cfo[p], C.ni[p] + C.adj[p] + C.wc[p] + C.intr[p] + C.intp[p] + C.divr[p] + C.taxpaid[p]],
+        [C.close[p] - C.open[p], C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] + (p === "2023" ? -14153 : 0)]]))), "");
+      add("삼성전자 공시", "현금흐름표 기말현금 = 재무상태표 현금 (4개 시점)", eqAll(bsP.map((p) => [B.cash[p], C.close[p]])), "2026.6월말 " + F_(B.cash["2026H1"] / 1e6) + "조원");
+      const segP = Object.keys(S.seg);
+      add("삼성전자 공시", "부문 매출 합계 + 내부거래 = 연결 매출, 연결 영업이익과 일치 (" + segP.length + "개 기간)", segP.every((p) => {
+        const r = S.seg[p].rev;
+        return r.DX + r.DS + r.SDC + r.Harman + r.elim === r.total && (I.rev[p] === undefined || I.rev[p] === r.total) && (I.op[p] === undefined || I.op[p] === S.seg[p].op.total);
+      }), "2026 상반기 DS 영업이익 " + F_(S.seg["2026H1"].op.DS / 1e6) + "조원");
+      const inv = N.inventory, invOk = ["2024", "2025", "2026H1"].every((p) => {
+        const x = inv[p], cats = ["fg", "wip", "raw", "transit"];
+        return x.gross + x.allow === x.net && cats.every((c) => x[c][0] + x[c][1] === x[c][2]) && Fin.sum(cats.map((c) => x[c][2])) === x.net && x.net === B.inv[p];
+      });
+      add("삼성전자 공시", "재고자산 주석: 평가 전 금액 − 평가충당금 = 장부금액 = 재무상태표", invOk, "");
+      const pv = N.provisions, pvOk = ["2025", "2026H1"].every((p) => pv[p].close.every((v, i) => pv[p].open[i] + pv[p].add[i] + pv[p].use[i] + pv[p].other[i] === v) && pv[p].close[4] === B.prov[p] + B.lprov[p]);
+      add("삼성전자 공시", "충당부채 변동표: 기초 + 전입 + 사용 + 기타 = 기말 = 유동 + 비유동 충당부채", pvOk, "기술사용료 " + F_(pv["2025"].close[1] / 1e6) + " → " + F_(pv["2026H1"].close[1] / 1e6) + "조원");
+      const pp = N.ppe, ppOk = ["2024", "2025"].every((p) => { const x = pp[p]; return x.open + x.acq + x.bc + x.dep + x.disp + x.imp + x.other === x.close && x.close === B.ppe[p] && x.gross + x.acc === x.close && x.dep_cogs + x.dep_sga === -x.dep; });
+      add("삼성전자 공시", "유형자산 변동표와 감가상각비 배분이 재무상태표와 맞는다", ppOk && pp["2025"].dep === -S.seg["2025"].dep.total, "");
+      const eq = N.equity, mv = eq.h1Moves;
+      const shOk = eq.outstanding["2025"].common - mv.bought + mv.granted === eq.outstanding["2026H1"].common &&
+        eq.treasury["2025"].common + mv.bought - mv.granted - mv.cancelledCommon === eq.treasury["2026H1"].common &&
+        eq.outstanding["2025"].pref === eq.outstanding["2026H1"].pref && eq.treasury["2025"].pref - mv.cancelledPref === eq.treasury["2026H1"].pref;
+      add("삼성전자 공시", "주식 수: 유통주식·자기주식 변동(취득·지급·소각)이 맞는다", shOk, "소각 보통주 " + Fin.num(mv.cancelledCommon / 1e6, 1) + "백만 주");
+    }
+
     /* ---------- 13주 자금수지 ---------- */
-    {
+    if (Cash) {
       const x = clone(Cash.DEFAULTS);
       const base = Cash.forecast(x);
       add("자금수지", "기초현금 + 모든 입출금 = 기말현금", Math.abs(base.check) < 1e-9, "차이 " + fmt(base.check));
