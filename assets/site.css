@@ -478,3 +478,25 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 .live-check:hover { border-color: var(--ink); }
 .live-check .arr { margin-left: auto; font-size: var(--s-1); color: var(--ink-2); white-space: nowrap; }
 .live-check .pill { font-family: var(--f-num); }
+
+/* 홈: M&A 실무 단계표 */
+.case-wide { grid-column: 1 / -1; }
+.case-top { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 10px 32px; align-items: start; }
+.case-lede { color: var(--ink-2); font-size: var(--s-2); }
+@media (max-width: 860px) { .case-top { grid-template-columns: minmax(0, 1fr); } }
+.dealflow { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.dealflow li { display: grid; grid-template-columns: 30px minmax(0, 150px) minmax(0, 1fr) minmax(0, 1.7fr); gap: 6px 20px; padding: 13px 0; border-bottom: 1px solid var(--rule-soft); align-items: baseline; }
+.dealflow li.df-head { padding: 8px 0; font-size: 12px; color: var(--muted); font-family: var(--f-num); }
+.df-no { font-family: var(--f-num); font-size: 12px; color: var(--accent); }
+.df-stage { font-weight: 700; font-size: var(--s-2); }
+.df-adv { margin: 0; font-size: var(--s-1); color: var(--muted); line-height: 1.6; }
+.df-me { margin: 0; font-size: var(--s-2); color: var(--ink); line-height: 1.65; }
+.df-k { display: none; }
+.df-src { display: inline-block; font-family: var(--f-num); font-size: 11px; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 999px; padding: 0 8px; margin-left: 4px; white-space: nowrap; vertical-align: 1px; }
+@media (max-width: 760px) {
+  .dealflow li { grid-template-columns: 28px minmax(0, 1fr); }
+  .dealflow li.df-head { display: none; }
+  .df-adv, .df-me { grid-column: 2; }
+  .df-k { display: block; font-size: 11px; font-family: var(--f-num); letter-spacing: 0.04em; color: var(--muted); margin-bottom: 2px; }
+}
+.stage-more { font-size: var(--s-1); color: var(--ink-2); }

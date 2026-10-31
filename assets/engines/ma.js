@@ -187,5 +187,38 @@
     return out;
   }
 
-  return { YEARS, DEFAULTS, wacc, project, terminal, dcfAt, value, toEquity, toEV };
+  /* 재무실사(FDD) 결과를 가격에 반영 (완결 회계 방식).
+     정상화 EBITDA 조정은 제시가가 암시하는 EV/EBITDA 배수로 기업가치에 옮기고,
+     순차입금에 없는 부채성 항목은 빼고, 거래종결 시점 운전자본이 정상 수준(peg)과 다른 만큼 가감한다. */
+  const FDD_DEFAULTS = {
+    qoe: [
+      { label: "일회성 소송 합의금 가산", amount: 8 },
+      { label: "특수관계자 매출 단가 시가 조정", amount: -6 },
+      { label: "재고자산 평가손실 반영", amount: -4 }
+    ],
+    debtLike: [
+      { label: "퇴직급여 미적립분", amount: 25 },
+      { label: "리스부채", amount: 30 },
+      { label: "미지급 법인세·소송 충당", amount: 15 }
+    ],
+    nwcPeg: 216, nwcClose: 200
+  };
+
+  function fdd(x, v, f) {
+    const ltm = v.proj.ltm.ebitda, offerEv = v.offer.ev;
+    const qoe = Fin.sum(f.qoe.map((q) => q.amount || 0));
+    const multiple = offerEv / ltm;
+    const evAdj = qoe * multiple;
+    const debtLike = Fin.sum(f.debtLike.map((d) => d.amount || 0));
+    const nwcAdj = f.nwcClose - f.nwcPeg;
+    const price = x.offer.equity + evAdj - debtLike + nwcAdj;
+    return {
+      ltm: ltm, norm: ltm + qoe, qoe: qoe, multiple: multiple, offerEv: offerEv, evAdj: evAdj, ev2: offerEv + evAdj,
+      debtLike: debtLike, nwcAdj: nwcAdj, base: x.offer.equity, price: price, diff: price - x.offer.equity,
+      /* 같은 값을 기업가치 → 지분가치 브리지로 다시 계산 (검산용) */
+      viaBridge: toEquity(x, offerEv + evAdj) - debtLike + nwcAdj
+    };
+  }
+
+  return { YEARS, DEFAULTS, FDD_DEFAULTS, wacc, project, terminal, dcfAt, value, toEquity, toEV, fdd };
 });

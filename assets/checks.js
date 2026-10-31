@@ -126,6 +126,13 @@
       const x5 = clone(x); x5.offer.equity = v.equity;
       const v5 = MA.value(x5);
       add("M&A", "제시가가 DCF 지분가치와 같으면 필요 시너지는 0", Math.abs(v5.offer.synPre) < 1e-9 && Math.abs(v5.offer.premium) < 1e-12, "프리미엄 " + fmt(v5.offer.premium));
+
+      const f0 = clone(MA.FDD_DEFAULTS);
+      f0.qoe.forEach((q) => { q.amount = 0; }); f0.debtLike.forEach((d) => { d.amount = 0; }); f0.nwcClose = f0.nwcPeg;
+      const z = MA.fdd(x, v, f0);
+      add("M&A", "실사 조정이 모두 0이면 매매대금은 처음 제시가와 같다", Math.abs(z.diff) < 1e-9, "매매대금 " + z.price.toFixed(2) + " = 제시가 " + x.offer.equity);
+      const fd = MA.fdd(x, v, clone(MA.FDD_DEFAULTS));
+      add("M&A", "실사 반영 매매대금 = 조정 후 기업가치를 지분가치 브리지에 넣은 값", near(fd.price, fd.viaBridge), fd.price.toFixed(2) + " = " + fd.viaBridge.toFixed(2) + "억원");
     }
 
     /* ---------- 지주사 ---------- */
