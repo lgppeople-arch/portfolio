@@ -8,7 +8,9 @@
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
     Cash: require("./engines/cash.js"),
-    Fx: require("./engines/fx.js")
+    Fx: require("./engines/fx.js"),
+    Mbo: require("./engines/mbo.js"),
+    Pl: require("./engines/pl.js")
   } : null;
   const api = factory();
   if (node) {
@@ -55,7 +57,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -185,6 +187,39 @@
       const o1 = clone(Fx.DEFAULTS.ops); o1.ratios = [100, 100, 100];
       const a = Fx.ops(m, o1, -15).hedged, b = Fx.ops(m, o1, 15).hedged;
       add("환리스크", "수출 순노출을 100% 헤지하면 원화 매출은 환율과 무관하다", near(a, b), F_(a) + "억원");
+    }
+
+    /* ---------- 성과평가 ---------- */
+    if (Mbo) {
+      const sc = { th: 60, tg: 100, st: 120 };
+      const up = (a) => Mbo.score({ dir: "up", th: 80, tg: 100, st: 110, act: a }, sc);
+      const dn = (a) => Mbo.score({ dir: "down", th: 10, tg: 6, st: 4, act: a }, sc);
+      const okUp = up(79) === 0 && up(80) === 60 && up(90) === 80 && up(100) === 100 && up(105) === 110 && up(130) === 120;
+      const okDn = dn(11) === 0 && dn(10) === 60 && dn(8) === 80 && dn(6) === 100 && dn(5) === 110 && dn(1) === 120;
+      add("성과평가", "KPI 점수 구간: 하한 60, 목표 100, 도전 120, 하한 미달 0 (클수록·작을수록 좋은 지표 모두)", okUp && okDn, "");
+      const x = clone(Mbo.DEFAULTS), r = Mbo.evaluate(x);
+      add("성과평가", "인센티브 배분액을 모두 더하면 총액과 같다", near(r.allocSum, x.pool), F_(r.allocSum) + "억원");
+      const y = clone(x); y.grades.forEach((g) => { g.mult = 1; });
+      const ry = Mbo.evaluate(y), heads = Fin.sum(y.orgs.map((o) => o.heads));
+      add("성과평가", "등급 배수가 모두 같으면 인원 비례로 나뉜다", ry.orgs.every((o) => near(o.alloc, y.pool * o.heads / heads)), "");
+      const z = clone(x); z.orgs.forEach((o) => o.kpis.forEach((k) => { k.w *= 2; }));
+      add("성과평가", "가중치를 같은 비율로 키워도 조직 점수는 그대로다", Mbo.evaluate(z).orgs.every((o, i) => near(o.total, r.orgs[i].total)), "");
+    }
+
+    /* ---------- 월 손익 보고 ---------- */
+    if (Pl) {
+      const rows = Pl.sample();
+      const all = Pl.report(rows, 9, "전사", "trend3");
+      const parts = Pl.BUS.map((b) => Pl.report(rows, 9, b, "trend3"));
+      add("손익보고", "사업부 합계 = 전사 (누계 매출·영업이익)", near(Fin.sum(parts.map((q) => q.ytd.act.rev)), all.ytd.act.rev) && near(Fin.sum(parts.map((q) => q.ytd.act.op)), all.ytd.act.op), F_(all.ytd.act.op) + "억원");
+      const bridgeOk = [all].concat(parts).every((q) => near(Fin.sum(q.bridge.items.map((i) => i.v)), q.bridge.total));
+      add("손익보고", "영업이익 차이 분해를 더하면 영업이익 차이와 같다 (전사·사업부)", bridgeOk, F_(all.bridge.total) + "억원");
+      const plan = Pl.report(rows, 9, "전사", "plan");
+      const months = Pl.cube(rows, "전사");
+      let restOp = 0; for (let i = 9; i < 12; i++) restOp += Pl.derive(months[i].plan).op;
+      add("손익보고", "계획 유지 방식이면 연간 전망 = 누계 실적 + 남은 달 계획", near(plan.year.outlook.op, plan.ytd.act.op + restOp), F_(plan.year.outlook.op) + "억원");
+      const back = Pl.parse(Pl.toCsv(rows));
+      add("손익보고", "표로 내보냈다가 다시 읽어도 결과가 같다", back.errors.length === 0 && near(Pl.report(back.rows, 9, "전사", "trend3").year.outlook.op, all.year.outlook.op), back.rows.length + "줄");
     }
 
     /* ---------- 13주 자금수지 ---------- */

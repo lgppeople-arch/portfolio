@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>성과평가 MBO·KPI · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .orgs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 1000px) { .orgs { grid-template-columns: minmax(0, 1fr); } }
+  .orgcard { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+  .orgcard .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .orgcard h3 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .orgcard .heads { font-family: var(--f-num); font-size: 12px; color: var(--muted); }
+  .orgcard .big { display: flex; align-items: baseline; gap: 10px; }
+  .orgcard .big b { font-family: var(--f-display); font-weight: 800; font-size: 40px; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .grade { font-family: var(--f-display); font-weight: 800; font-size: 20px; width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; color: var(--paper); }
+  .kbar { display: grid; grid-template-columns: minmax(0, 1fr) 46px; gap: 3px 10px; align-items: center; font-size: 12.5px; }
+  .kbar .nm { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kbar .sc { font-family: var(--f-num); text-align: right; }
+  .kbar .track { grid-column: 1 / -1; position: relative; height: 8px; background: var(--rule-soft); border-radius: 999px; }
+  .kbar .track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+  .kbar .track .tg { position: absolute; top: -3px; width: 2px; height: 14px; background: var(--ink); border-radius: 1px; }
+  .kbars { display: grid; gap: 8px; }
+  .flags { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: var(--s-1); }
+  .flags li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 6px; line-height: 1.55; color: var(--ink-2); }
+  .flags li::before { content: "!"; font-family: var(--f-num); font-weight: 700; color: #B7791F; }
+  .flags li.bad::before { content: "✕"; color: var(--neg-ink); }
+  .flags li.ok::before { content: "✓"; color: var(--pos); }
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .two { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .card .field input { background: var(--surface); }
+  table.etable.kpi { min-width: 900px; }
+  table.etable select { font: inherit; font-size: var(--s-1); padding: 5px 4px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  table.alloc { border-collapse: collapse; width: 100%; font-size: var(--s-1); }
+  table.alloc th, table.alloc td { padding: 9px 8px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.alloc th:first-child, table.alloc td:first-child { text-align: left; }
+  table.alloc thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.alloc td { font-family: var(--f-num); }
+  table.alloc td:first-child { font-family: var(--f-body); }
+  table.alloc tr.sum td { font-weight: 600; border-top: 1px solid var(--rule); }
+  .abar { height: 10px; border-radius: 2px; background: var(--input); display: inline-block; vertical-align: middle; }
+  .gradetbl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .gradetbl .gcol { display: grid; gap: 6px; justify-items: center; font-size: 12px; color: var(--muted); }
+  .gradetbl input { width: 100%; font-family: var(--f-num); font-size: var(--s-1); text-align: right; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  @media (max-width: 480px) { .gradetbl { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html" aria-current="page">성과평가</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 성과평가 MBO·KPI</div>
+      <h1>성과평가 MBO·KPI</h1>
+      <p>조직별 KPI를 설계하고, 연말 실적으로 점수와 등급을 매긴 뒤 인센티브를 나눕니다. 목표가 전년보다 쉽거나 한 지표에 무게가 쏠린 KPI처럼 설계 단계에서 흔히 생기는 문제도 함께 점검합니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><a class="guide-link" href="guide.html#how-mbo">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 가상 제조사의 영업·생산·연구 세 조직 연간 평가 · 모든 수치는 가상</span>
+
+    <section class="orgs" id="orgs" aria-live="polite"></section>
+
+    <section class="block2" aria-label="인센티브와 평가 기준">
+      <div class="two">
+        <div class="card">
+          <h3>인센티브 배분 <span class="pill" id="alloc-pill"></span></h3>
+          <div class="fs-grid">
+            <div class="field"><label for="pool">인센티브 총액<small>억원</small></label><input id="pool" type="number" inputmode="decimal" step="1" min="0"></div>
+          </div>
+          <div class="scroll" style="border: 0"><table class="alloc" id="alloc"></table></div>
+          <div class="memo"><span class="label">보고 문장</span><p id="memo"></p></div>
+          <div class="selfcheck" id="check"></div>
+        </div>
+        <div class="card">
+          <h3>평가 기준</h3>
+          <p class="hint"><b>점수 구간</b> · 하한에 못 미치면 0점, 하한부터 목표까지와 목표부터 도전 목표까지는 직선으로 점수를 줍니다.</p>
+          <div class="fs-grid">
+            <div class="field"><label for="sc-th">하한 점수</label><input id="sc-th" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+            <div class="field"><label for="sc-tg">목표 점수</label><input id="sc-tg" type="number" inputmode="decimal" step="5" min="1" max="200"></div>
+            <div class="field"><label for="sc-st">도전 목표 점수<small>상한</small></label><input id="sc-st" type="number" inputmode="decimal" step="5" min="1" max="300"></div>
+          </div>
+          <p class="hint"><b>등급 기준과 인센티브 배수</b> · 점수가 기준 이상이면 그 등급입니다.</p>
+          <div class="gradetbl" id="grades"></div>
+          <div class="form-actions"><button type="button" class="btn" id="reset">예시값으로 되돌리기</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="조직별 KPI">
+      <h2>조직별 KPI</h2>
+      <div id="kpi-tables" style="display: grid; gap: 18px"></div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>KPI 점수: 하한 미달 0점, 하한 60점, 목표 100점, 도전 목표 120점(상한)이고 그 사이는 직선으로 잇습니다. 작을수록 좋은 지표(원가율, 회전일수, 사고 건수)는 방향을 뒤집어 같은 식을 씁니다. 도전 목표가 목표와 같으면 목표 점수가 최고점입니다.</li>
+        <li>조직 점수 = KPI 점수 × 가중치의 합. 가중치 합이 100%가 아니면 합으로 나눠 계산하고 점검 목록에 표시합니다.</li>
+        <li>인센티브 배분액 = 총액 × (인원 × 등급 배수) ÷ 전체 (인원 × 등급 배수). 모든 조직의 등급이 같으면 인원 비례가 됩니다. 실제로는 연봉 총액이나 직급을 기준으로 쓰기도 합니다.</li>
+        <li>설계 점검: 가중치 합, 지표 수, 하한·목표·도전 순서, 전년 실적보다 쉬운 목표, 너무 작거나 쏠린 가중치, 조직이 통제하기 어려운 지표를 봅니다. 점수 구간과 등급 기준은 회사마다 다르므로 예시입니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/mbo.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.MboEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  let x = JSON.parse(JSON.stringify(D));
+  const GCOL = () => ({ S: F.css("--pos"), A: F.css("--input"), B: F.css("--total"), C: "#B7791F", D: F.css("--neg") });
+
+  /* ---------- 입력 만들기 ---------- */
+  const COLS = [
+    { key: "name", label: "지표", type: "text" },
+    { key: "unit", label: "단위", type: "text", w: "64px" },
+    { key: "dir", label: "방향", type: "dir" },
+    { key: "w", label: "가중치 %", type: "num", step: 5, min: 0, max: 100 },
+    { key: "th", label: "하한", type: "num", step: 0.5 },
+    { key: "tg", label: "목표", type: "num", step: 0.5 },
+    { key: "st", label: "도전", type: "num", step: 0.5 },
+    { key: "prev", label: "전년 실적", type: "num", step: 0.5 },
+    { key: "act", label: "실적", type: "num", step: 0.5 },
+    { key: "ctrl", label: "통제 가능", type: "chk" }
+  ];
+  function buildTables() {
+    const host = $("kpi-tables");
+    host.textContent = "";
+    x.orgs.forEach((o, oi) => {
+      const card = F.el("div", { class: "card" });
+      const heads = F.el("input", { id: "h-" + oi, type: "number", inputmode: "numeric", step: 1, min: 0, value: o.heads, "aria-label": o.name + " 인원" });
+      heads.style.width = "90px"; heads.style.fontFamily = "var(--f-num)"; heads.style.textAlign = "right"; heads.style.padding = "5px 8px"; heads.style.border = "1px solid var(--rule)"; heads.style.borderRadius = "4px"; heads.style.background = "var(--surface)"; heads.style.color = "var(--input)";
+      heads.addEventListener("input", () => { o.heads = F.readNum(heads, o.heads); render(); });
+      card.appendChild(F.el("h3", null, [o.name, F.el("span", { class: "hint", style: "display: inline-flex; gap: 8px; align-items: center" }, ["인원", heads, "명"])]));
+      const tbl = F.el("table", { class: "etable kpi" });
+      const hr = F.el("tr");
+      COLS.forEach((c) => hr.appendChild(F.el("th", { class: c.type === "num" ? "r" : null, text: c.label })));
+      hr.appendChild(F.el("th", { class: "r", text: "점수" })); hr.appendChild(F.el("th", { class: "r", text: "기여" }));
+      tbl.appendChild(F.el("thead", null, [hr]));
+      const body = F.el("tbody");
+      o.kpis.forEach((k, ki) => {
+        const tr = F.el("tr");
+        COLS.forEach((c) => {
+          const id = "k-" + oi + "-" + ki + "-" + c.key;
+          let inp;
+          if (c.type === "dir") {
+            inp = F.el("select", { id: id, "aria-label": k.name + " 방향" }, [F.el("option", { value: "up", text: "↑ 클수록" }), F.el("option", { value: "down", text: "↓ 작을수록" })]);
+            inp.value = k.dir;
+            inp.addEventListener("change", () => { k.dir = inp.value; render(); });
+          } else if (c.type === "chk") {
+            inp = F.el("input", { id: id, type: "checkbox", "aria-label": k.name + " 통제 가능" });
+            inp.checked = !!k.ctrl;
+            inp.addEventListener("change", () => { k.ctrl = inp.checked; render(); });
+          } else if (c.type === "text") {
+            inp = F.el("input", { id: id, type: "text", value: k[c.key], "aria-label": "지표 " + (ki + 1) + " " + c.label });
+            if (c.w) inp.style.width = c.w;
+            inp.addEventListener("input", () => { k[c.key] = inp.value; render(); });
+          } else {
+            inp = F.el("input", { id: id, type: "number", inputmode: "decimal", step: c.step, min: c.min, max: c.max, value: k[c.key], "aria-label": k.name + " " + c.label });
+            inp.addEventListener("input", () => { k[c.key] = F.readNum(inp, k[c.key]); render(); });
+          }
+          tr.appendChild(F.el("td", { class: c.type === "num" ? "r" : null }, [inp]));
+        });
+        tr.appendChild(F.el("td", { class: "calc", id: "s-" + oi + "-" + ki }));
+        tr.appendChild(F.el("td", { class: "calc", id: "c-" + oi + "-" + ki }));
+        body.appendChild(tr);
+      });
+      tbl.appendChild(body);
+      card.appendChild(F.el("div", { class: "etable-wrap" }, [tbl]));
+      card.appendChild(F.el("ul", { class: "flags", id: "f-" + oi }));
+      host.appendChild(card);
+    });
+  }
+  function buildGrades() {
+    const host = $("grades");
+    host.textContent = "";
+    x.grades.forEach((g, i) => {
+      const mn = F.el("input", { id: "g-min-" + i, type: "number", inputmode: "decimal", step: 5, min: 0, value: g.min, "aria-label": g.g + "등급 기준 점수" });
+      const ml = F.el("input", { id: "g-mult-" + i, type: "number", inputmode: "decimal", step: 0.1, min: 0, value: g.mult, "aria-label": g.g + "등급 배수" });
+      mn.addEventListener("input", () => { g.min = F.readNum(mn, g.min); render(); });
+      ml.addEventListener("input", () => { g.mult = F.readNum(ml, g.mult); render(); });
+      const badge = F.el("span", { class: "grade", text: g.g }); badge.style.background = GCOL()[g.g];
+      host.appendChild(F.el("div", { class: "gcol" }, [badge, F.el("span", { text: "점수 ≥" }), mn, F.el("span", { text: "배수" }), ml]));
+    });
+  }
+  function fillSimple() {
+    $("pool").value = x.pool; $("sc-th").value = x.scale.th; $("sc-tg").value = x.scale.tg; $("sc-st").value = x.scale.st;
+  }
+
+  /* ---------- 결과 ---------- */
+  function render() {
+    x.pool = F.readNum($("pool"), D.pool);
+    x.scale = { th: F.readNum($("sc-th"), D.scale.th), tg: F.readNum($("sc-tg"), D.scale.tg), st: F.readNum($("sc-st"), D.scale.st) };
+    const r = E.evaluate(x), C = GCOL();
+
+    /* 조직 카드 */
+    const host = $("orgs");
+    host.textContent = "";
+    r.orgs.forEach((o) => {
+      const badge = F.el("span", { class: "grade", text: o.grade }); badge.style.background = C[o.grade] || F.css("--total");
+      const bars = F.el("div", { class: "kbars" });
+      const maxS = Math.max(x.scale.st, x.scale.tg, 1);
+      o.rows.forEach((row) => {
+        const s = row.score === null ? 0 : row.score;
+        const fill = F.el("i"); fill.style.width = Math.min(100, s / maxS * 100) + "%";
+        fill.style.background = row.score === null ? F.css("--neg") : s >= x.scale.tg ? F.css("--pos") : s >= x.scale.th ? F.css("--input") : F.css("--neg");
+        const tg = F.el("span", { class: "tg" }); tg.style.left = "calc(" + (x.scale.tg / maxS * 100) + "% - 1px)";
+        bars.appendChild(F.el("div", { class: "kbar" }, [F.el("span", { class: "nm", text: row.k.name + " · " + row.k.w + "%" }), F.el("span", { class: "sc", text: row.score === null ? "–" : F.num(row.score, 1) }), F.el("span", { class: "track", "aria-hidden": "true" }, [fill, tg])]));
+      });
+      const nCheck = o.checks.length;
+      host.appendChild(F.el("article", { class: "orgcard" }, [
+        F.el("div", { class: "top" }, [F.el("h3", { text: o.name }), F.el("span", { class: "heads", text: F.num(o.heads, 0) + "명" })]),
+        F.el("div", { class: "big" }, [F.el("b", { text: F.num(o.total, 1) }), F.el("span", { class: "muted", text: "점" }), badge]),
+        bars,
+        F.el("span", { class: "hint", text: nCheck ? "설계 점검 " + nCheck + "건 · 아래 표에서 확인" : "설계 점검 이상 없음" })
+      ]));
+    });
+
+    /* KPI 표 점수와 점검 */
+    r.orgs.forEach((o, oi) => {
+      o.rows.forEach((row, ki) => {
+        $("s-" + oi + "-" + ki).textContent = row.score === null ? "–" : F.num(row.score, 1);
+        $("c-" + oi + "-" + ki).textContent = F.num(row.contrib, 1);
+      });
+      const ul = $("f-" + oi);
+      ul.textContent = "";
+      if (!o.checks.length) ul.appendChild(F.el("li", { class: "ok", text: "설계 점검 이상 없음" }));
+      o.checks.forEach((c) => ul.appendChild(F.el("li", { class: c.lv, text: c.text })));
+    });
+
+    /* 배분 표 */
+    const tb = $("alloc");
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["조직", "인원", "점수", "등급", "배수", "배분액", "1인당", ""].forEach((h) => hr.appendChild(F.el("th", { text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody"), maxA = Math.max.apply(null, r.orgs.map((o) => o.alloc).concat([1e-9]));
+    r.orgs.forEach((o) => {
+      const bar = F.el("span", { class: "abar" }); bar.style.width = Math.round(o.alloc / maxA * 80) + "px";
+      body.appendChild(F.el("tr", null, [F.el("td", { text: o.name }), F.el("td", { text: F.num(o.heads, 0) }), F.el("td", { text: F.num(o.total, 1) }), F.el("td", { text: o.grade }), F.el("td", { text: F.num(o.mult, 1) }), F.el("td", { text: F.money(o.alloc, 2) + "억" }), F.el("td", { text: F.num(o.perHead, 0) + "만원" }), F.el("td", null, [bar])]));
+    });
+    const tot = F.el("tr", { class: "sum" });
+    [F.el("td", { text: "합계" }), F.el("td", { text: F.num(F.sum(r.orgs.map((o) => o.heads)), 0) }), F.el("td"), F.el("td"), F.el("td"), F.el("td", { text: F.money(r.allocSum, 2) + "억" }), F.el("td"), F.el("td")].forEach((td) => tot.appendChild(td));
+    body.appendChild(tot);
+    tb.appendChild(body);
+    const p = $("alloc-pill");
+    p.className = "pill " + (Math.abs(r.allocSum - x.pool) < 1e-9 ? "ok" : "bad");
+    p.textContent = "총액 " + F.money(x.pool, 1) + "억원";
+
+    /* 보고 문장 */
+    const sorted = r.orgs.slice().sort((a, b) => b.total - a.total), top = sorted[0], low = sorted[sorted.length - 1];
+    const allChecks = F.sum(r.orgs.map((o) => o.checks.length));
+    const memo = $("memo");
+    memo.textContent = "";
+    memo.append(F.josa(top.name, "이", "가") + " ", F.el("b", { text: F.num(top.total, 1) + "점(" + top.grade + "등급)" }), "으로 가장 높고, " + F.josa(low.name, "이", "가") + " " + F.num(low.total, 1) + "점(" + low.grade + "등급)으로 가장 낮습니다. ");
+    memo.append("인센티브 " + F.money(x.pool, 1) + "억원을 인원과 등급 배수로 나누면 1인당 " + F.num(top.perHead, 0) + "만원에서 " + F.num(Math.min.apply(null, r.orgs.map((o) => o.perHead)), 0) + "만원까지 차이가 납니다. ");
+    memo.append(allChecks ? "KPI 설계에서 확인할 점이 " + allChecks + "건 있어 다음 해 목표를 정할 때 반영해야 합니다." : "KPI 설계에서 문제가 된 항목은 없습니다.");
+
+    /* 실시간 검산 */
+    const chk = $("check");
+    chk.textContent = "";
+    const same = JSON.parse(JSON.stringify(x));
+    same.grades.forEach((g) => { g.mult = 1; });
+    const rs = E.evaluate(same), hs = F.sum(rs.orgs.map((o) => o.heads));
+    const prop = rs.orgs.every((o) => Math.abs(o.alloc - x.pool * o.heads / hs) < 1e-9);
+    [["배분액 합 = 인센티브 총액", Math.abs(r.allocSum - x.pool) < 1e-9], ["배수가 같으면 인원 비례 배분", prop]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  $("reset").addEventListener("click", () => { x = JSON.parse(JSON.stringify(D)); fillSimple(); buildGrades(); buildTables(); render(); });
+  ["pool", "sc-th", "sc-tg", "sc-st"].forEach((id) => $(id).addEventListener("input", render));
+  fillSimple(); buildGrades(); buildTables(); render();
+  F.onRedraw(() => { buildGrades(); render(); });
+})();
+</script>
+</body>
+</html>

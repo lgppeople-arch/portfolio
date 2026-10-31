@@ -10,6 +10,8 @@
 |---|---|
 | `index.html` | 홈: 경력, 업무 사례, 투자 의사결정 단계별 도구 |
 | `tools/guide.html` | 쉬운 가이드: 화면 읽는 법, 도구별 사용법, 붕어빵 가게 비유 용어 사전, 미니 계산기 |
+| `tools/pl-report.html` | 월 손익 보고: SAP 조회 형식 데이터로 당월·누계 손익, 영업이익 차이 분해, 3개월 추정과 연간 전망 |
+| `tools/mbo-kpi.html` | 성과평가 MBO·KPI: KPI 구간 점수, 조직 등급, 인센티브 배분, KPI 설계 점검 |
 | `tools/capex-kit.html` | 설비투자 분석 키트: 투자 타당성, 가동률과 원가, 계획 대비 실적 |
 | `tools/post-review.html` | 투자 사후관리: 승인 가정 대비 재추정, 샤플리 값 기반 NPV 차이 분해 |
 | `tools/ma-valuation.html` | M&A 가치평가: DCF, 유사기업·거래사례 배수, 제시가 검토, 인수 후 재무 |
@@ -20,6 +22,7 @@
 | `tools/checks.html` | 계산 검산: 모든 계산 엔진의 항등식·대조·실무 규칙 테스트 |
 | `assets/fin.js`, `assets/engines/` | 공용 계산 함수와 도구별 계산 엔진 (화면 코드와 분리) |
 | `assets/checks.js` | 검산 묶음. `node assets/checks.js`로도 실행 |
+| `examples/` | 월 손익 보고를 pandas로 다시 계산하는 예제(`python examples/pl_report.py`)와 예시 데이터 |
 | `assets/site.css`, `assets/theme.js` | 공용 스타일, 밝은 화면 기본과 테마 전환 |
 
 ## 원칙

@@ -36,8 +36,8 @@
   .howcard h3 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
   .howcard .one { color: var(--ink-2); }
   .howcard ol { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 8px; }
-  .howcard ol li { counter-increment: s; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; font-size: var(--s-2); line-height: 1.6; }
-  .howcard ol li::before { content: counter(s); width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: var(--f-num); font-size: 12px; display: grid; place-items: center; margin-top: 2px; }
+  .howcard ol li { counter-increment: s; position: relative; padding-left: 34px; font-size: var(--s-2); line-height: 1.6; }
+  .howcard ol li::before { content: counter(s); position: absolute; left: 0; top: 2px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: var(--f-num); font-size: 12px; display: grid; place-items: center; }
   .howcard .read { font-size: var(--s-1); color: var(--ink-2); background: var(--ledger); border-radius: 6px; padding: 10px 12px; line-height: 1.65; }
   .howcard .read b { color: var(--ink); }
   .howcard .go { justify-self: start; }
@@ -79,6 +79,8 @@
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
     <nav class="site-nav" aria-label="도구">
       <a href="guide.html" aria-current="page">가이드</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
       <a href="capex-kit.html">설비투자</a>
       <a href="post-review.html">사후관리</a>
       <a href="ma-process.html">M&amp;A 절차</a>
@@ -124,6 +126,28 @@
       <h2>도구별 사용법</h2>
       <p class="lead">도구마다 "무엇을 알려 주는지", "세 단계로 써 보기", "결과 읽는 법"을 정리했어요.</p>
       <div class="tools-howto">
+        <article class="howcard" id="how-pl">
+          <h3>월 손익 보고</h3>
+          <p class="one">이번 달과 올해 누계 손익이 계획보다 좋은지 나쁜지, 왜 그런지, 연말엔 어떨지 알려 줘요.</p>
+          <ol>
+            <li>위쪽에서 <b>기준월</b>과 <b>범위</b>(전사·사업부)를 고르세요.</li>
+            <li><b>손익 요약</b> 표에서 계획, 실적, 차이를 보세요. 빨간 숫자가 불리한 차이예요.</li>
+            <li><b>누계 영업이익 차이 분해</b>에서 무엇 때문에 이익이 달라졌는지 보고, <b>추정 방식</b>을 바꿔 연간 전망이 어떻게 변하는지 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 회사 장부 프로그램(SAP)에서 뽑은 표를 <b>데이터 붙여넣기</b>에 넣으면 같은 보고서가 바로 만들어져요. 매달 경영회의 자료를 만드는 일을 그대로 옮긴 거예요.</p>
+          <a class="btn go" href="pl-report.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-mbo">
+          <h3>성과평가 MBO·KPI</h3>
+          <p class="one">부서마다 정한 목표(KPI)를 얼마나 달성했는지 점수와 등급으로 바꾸고, 성과급을 나눠 줘요.</p>
+          <ol>
+            <li><b>조직별 KPI</b> 표에서 지표마다 하한, 목표, 도전 목표와 실적을 넣으세요.</li>
+            <li>위쪽 조직 카드에서 <b>점수와 등급</b>을 보세요. 막대 가운데 세로선이 목표(100점)예요.</li>
+            <li><b>인센티브 배분</b>에서 총액을 바꾸면 조직별·1인당 금액이 바로 바뀌어요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 표 아래 <b>!</b> 표시는 목표가 작년보다 쉽거나, 한 지표에 무게가 쏠렸거나, 부서가 통제하기 어려운 지표라는 경고예요. 평가를 공정하게 만드는 설계 점검이에요.</p>
+          <a class="btn go" href="mbo-kpi.html">도구 열기 →</a>
+        </article>
         <article class="howcard" id="how-capex">
           <h3>설비투자 분석 키트</h3>
           <p class="one">새 기계를 사도 될지 알려 줘요.</p>
@@ -244,6 +268,17 @@
         <article class="term" id="t-bep"><h4>손익분기점<span>Break-even</span></h4><p class="easy">이익도 손해도 아닌 딱 본전인 지점이에요. 이보다 더 팔아야 돈이 남아요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게세가 한 달 30만원이고 붕어빵 하나에 300원이 남으면, 한 달에 1,000개를 팔아야 본전이에요.</p></article>
         <article class="term" id="t-wc"><h4>운전자본<span>Working capital</span></h4><p class="easy">장사하느라 묶여 있는 돈이에요. 창고의 재고와 외상으로 판 돈은 더하고, 외상으로 산 돈은 빼요. 매출이 늘면 보통 같이 늘어서 현금이 묶여요.</p><p class="ex"><b>붕어빵 가게라면</b> 창고의 밀가루·팥 20만원 + 학교 매점에 외상으로 넘긴 붕어빵 값 10만원 − 아직 안 낸 밀가루 값 5만원 = 25만원이 묶여 있어요.</p></article>
         <article class="term" id="t-fcf"><h4>잉여현금흐름<span>Free cash flow · FCF</span></h4><p class="easy">1년 장사해서 실제로 주머니에 남는 현금이에요. 이익에서 세금을 내고, 새 기계 산 돈과 늘어난 운전자본은 빼고, 감가상각은 다시 더해요(실제로 돈이 나간 게 아니니까요).</p><p class="ex"><b>붕어빵 가게라면</b> 세금 낸 이익 50만원 + 감가상각 20만원 − 새 기계 30만원 − 늘어난 재고 5만원 = 35만원이 남아요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>경영관리</h3><div class="terms">
+        <article class="term" id="t-budget"><h4>사업계획과 예산<span>Business plan · Budget</span></h4><p class="easy">내년에 얼마를 팔고, 얼마를 쓰고, 얼마를 남길지 미리 정한 약속이에요. 한 해 동안 실적을 이 약속과 비교해요.</p><p class="ex"><b>붕어빵 가게라면</b> "내년엔 매달 붕어빵 3만 개를 팔아 100만원을 남긴다"고 정해 두고, 달마다 맞게 가는지 봐요.</p></article>
+        <article class="term" id="t-mgmtpl"><h4>관리손익과 월 마감<span>Management P&amp;L · Month-end close</span></h4><p class="easy">관리손익은 회사 안에서 판단하려고 사업부나 제품별로 나눠 본 손익이에요. 월 마감은 매달 장부를 닫고 그 달의 숫자를 확정하는 일이에요. 많은 회사가 SAP 같은 프로그램으로 해요.</p><p class="where">이 사이트에서는 <a href="pl-report.html">월 손익 보고</a></p></article>
+        <article class="term" id="t-ytd"><h4>당월·누계·달성률<span>Month · YTD · Achievement</span></h4><p class="easy">당월은 이번 달 한 달, 누계는 1월부터 이번 달까지 더한 값이에요. 달성률은 실적 ÷ 계획이에요. 100%가 넘으면 계획보다 잘한 거예요.</p><p class="ex"><b>붕어빵 가게라면</b> 9월까지 판 붕어빵이 계획 27만 개 중 26만 개면 누계 달성률 약 96%예요.</p></article>
+        <article class="term" id="t-cm"><h4>공헌이익<span>Contribution margin</span></h4><p class="easy">매출에서 팔수록 늘어나는 비용(변동비)만 뺀 돈이에요. 이 돈으로 가게세 같은 고정비를 메우고 남는 게 이익이에요. 공헌이익률은 공헌이익 ÷ 매출이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 1,000원짜리 붕어빵의 재료비가 400원이면 하나 팔 때마다 600원이 고정비를 메우는 데 보태져요(공헌이익률 60%).</p></article>
+        <article class="term" id="t-var"><h4>차이 분석<span>Variance analysis</span></h4><p class="easy">실적이 계획과 다른 이유를 나눠 보는 거예요. 덜 팔아서인지(매출), 재료가 비싸져서인지(공헌이익률), 고정비를 더 써서인지 따로 계산해요. 나눈 것을 다 더하면 전체 차이와 같아야 해요.</p><p class="where">이 사이트에서는 <a href="pl-report.html">월 손익 보고</a>, <a href="capex-kit.html#var">계획 대비 실적</a></p></article>
+        <article class="term" id="t-rolling"><h4>추정손익과 롤링 전망<span>Forecast · Rolling forecast</span></h4><p class="easy">남은 달의 숫자를 다시 예상해서 연말 결과를 미리 보는 거예요. 매달 최신 실적을 반영해 다시 짜서 "롤링"이라고 불러요.</p><p class="ex"><b>붕어빵 가게라면</b> 최근 석 달 동안 계획의 90%만 팔았다면, 남은 석 달도 90%로 보고 연말 이익을 다시 계산해요.</p></article>
+        <article class="term" id="t-kpi"><h4>MBO와 KPI<span>Management by objectives · Key performance indicator</span></h4><p class="easy">MBO는 부서마다 목표를 정하고 그 달성으로 평가하는 방식이에요. KPI는 그 목표를 재는 숫자예요(매출, 원가율, 납기 준수율 등).</p><p class="ex"><b>붕어빵 가게라면</b> 굽는 사람은 "타는 붕어빵 2% 이하", 파는 사람은 "하루 1,000개 판매"를 KPI로 정해요.</p><p class="where">이 사이트에서는 <a href="mbo-kpi.html">성과평가 MBO·KPI</a></p></article>
+        <article class="term" id="t-grade"><h4>가중치·등급·인센티브<span>Weight · Grade · Incentive</span></h4><p class="easy">가중치는 KPI마다 얼마나 중요하게 볼지 정한 비율(합 100%)이에요. 점수를 모아 S·A·B·C·D 같은 등급을 매기고, 등급이 높을수록 성과급(인센티브)을 더 받아요.</p></article>
       </div></div>
 
       <div class="tgroup"><h3>회사의 값 매기기</h3><div class="terms">

@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>월 손익 보고 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; }
+  .controls .grp { display: flex; align-items: center; gap: 10px; font-size: var(--s-1); color: var(--ink-2); }
+  .controls select { font: inherit; font-size: var(--s-1); padding: 6px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 18px; }
+  .grid2 > * { min-width: 0; }
+  @media (max-width: 1080px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  table.pl { border-collapse: collapse; width: 100%; min-width: 860px; font-size: var(--s-1); }
+  table.pl th, table.pl td { padding: 7px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule-soft); }
+  table.pl thead th { font-weight: 500; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.pl thead tr.grp th { color: var(--ink); font-weight: 700; font-size: 12px; text-align: center; border-bottom: 0; padding-bottom: 2px; }
+  table.pl tbody th { text-align: left; font-weight: 500; color: var(--ink); }
+  table.pl td { font-family: var(--f-num); }
+  table.pl tr.sub th { padding-left: 20px; color: var(--muted); font-weight: 400; }
+  table.pl tr.sub td { color: var(--ink-2); }
+  table.pl tr.key th, table.pl tr.key td { font-weight: 700; background: var(--ledger); }
+  table.pl tr.ratio th, table.pl tr.ratio td { color: var(--muted); font-size: 12px; }
+  table.pl td.bad { color: var(--neg-ink); }
+  table.pl td.good { color: var(--pos); }
+  table.pl .sep { border-left: 1px solid var(--rule); }
+  .bridge { display: grid; border-top: 1px solid var(--rule); }
+  .b-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 76px; gap: 6px 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--rule-soft); font-size: var(--s-1); }
+  .b-row.tot { font-weight: 700; font-size: var(--s-2); }
+  .b-row .val { font-family: var(--f-num); text-align: right; white-space: nowrap; }
+  .b-track { position: relative; height: 14px; }
+  .b-track i { position: absolute; top: 0; bottom: 0; border-radius: 2px; }
+  .b-track .zero { position: absolute; top: -4px; bottom: -4px; width: 1px; background: var(--mark-muted); }
+  @media (max-width: 560px) { .b-row { grid-template-columns: minmax(0, 1fr) 76px; } .b-row .b-track { grid-column: 1 / -1; grid-row: 2; } }
+  textarea#csv { width: 100%; min-height: 220px; font-family: var(--f-num); font-size: 12.5px; line-height: 1.5; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--input); resize: vertical; }
+  .errs { margin: 0; padding-left: 1.1em; font-size: var(--s-1); color: var(--neg-ink); display: grid; gap: 2px; }
+  pre.code { margin: 0; overflow-x: auto; background: var(--ledger); border: 1px solid var(--rule-soft); border-radius: 6px; padding: 14px 16px; font-family: var(--f-num); font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+  svg.plot text.m-now { fill: var(--ink); font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="pl-report.html" aria-current="page">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 월 손익 보고</div>
+      <h1>월 손익 보고</h1>
+      <p>SAP 관리손익을 조회하면 나오는 형식(기간·사업부·계정별 계획과 실적)을 붙여 넣으면, 당월·누계 손익표와 영업이익 차이 분석, 다음 3개월 추정과 연간 전망, 보고 문장까지 한 번에 만듭니다. 매달 마감 뒤 경영회의 자료를 만드는 흐름을 그대로 옮겼습니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 불리한 차이</span><span><a class="guide-link" href="guide.html#how-pl">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 두 사업부를 가진 가상 제조사의 2026년 계획과 1~9월 실적 · 모든 수치는 가상</span>
+
+    <div class="controls" role="group" aria-label="보고 기준">
+      <span class="grp"><label for="asof">기준월</label><select id="asof"></select></span>
+      <span class="grp">범위
+        <span class="seg" role="radiogroup" aria-label="범위">
+          <label><input type="radio" name="scope" value="전사" checked>전사</label>
+          <label><input type="radio" name="scope" value="1사업부">1사업부</label>
+          <label><input type="radio" name="scope" value="2사업부">2사업부</label>
+        </span>
+      </span>
+      <span class="grp">추정 방식
+        <span class="seg" role="radiogroup" aria-label="추정 방식">
+          <label><input type="radio" name="method" value="plan">계획 유지</label>
+          <label><input type="radio" name="method" value="ytd">누계 달성률</label>
+          <label><input type="radio" name="method" value="trend3" checked>최근 3개월</label>
+        </span>
+      </span>
+    </div>
+
+    <div class="kpis k4" aria-live="polite">
+      <div class="kpi"><div class="label">누계 매출</div><div class="v num" id="k-rev"></div><div class="sub" id="k-rev-sub"></div></div>
+      <div class="kpi"><div class="label">누계 영업이익</div><div class="v num" id="k-op"></div><div class="sub" id="k-op-sub"></div></div>
+      <div class="kpi"><div class="label">누계 영업이익률</div><div class="v num" id="k-opm"></div><div class="sub" id="k-opm-sub"></div></div>
+      <div class="kpi"><div class="label">연간 영업이익 전망</div><div class="v num" id="k-out"></div><div class="sub" id="k-out-sub"></div></div>
+    </div>
+
+    <div class="card" style="margin-top: 18px">
+      <h3>손익 요약 <span class="hint" id="tbl-note"></span></h3>
+      <div class="scroll" style="border: 0"><table class="pl" id="pl"></table></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>누계 영업이익 차이 분해 <span class="pill" id="pill"></span></h3>
+        <div class="bridge" id="bridge"></div>
+        <div class="memo"><span class="label">보고 문장</span><p id="memo"></p></div>
+        <div class="selfcheck" id="check"></div>
+      </div>
+      <div class="card">
+        <div class="chart" id="m-chart">
+          <div class="chart-head"><h4>월별 영업이익 <span class="muted">(억원)</span></h4>
+            <div class="legend"><span><i class="key-bar" style="background: var(--rule)"></i>계획</span><span><i class="key-line" style="background: var(--ink)"></i>실적</span><span><i class="key-dash" style="border-color: var(--accent)"></i>추정</span></div>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; gap: 14px; margin-top: 20px">
+      <details class="fs">
+        <summary>데이터 붙여넣기 <span class="sum-note" id="sn-data"></span></summary>
+        <div class="fs-body">
+          <p class="hint">한 줄에 <b>기간, 사업부, 계정, 계획, 실적</b> 순서입니다. 엑셀에서 복사한 탭 구분 표도 됩니다. 계정은 매출액·재료비·노무비·제조경비·판매관리비를 씁니다. 실적이 아직 없는 달은 비워 두세요.</p>
+          <textarea id="csv" spellcheck="false" aria-label="손익 데이터"></textarea>
+          <ul class="errs" id="errs" hidden></ul>
+          <div class="btn-row"><button type="button" class="btn primary" id="apply">이 데이터로 보고서 만들기</button><button type="button" class="btn" id="reset">예시 데이터로 되돌리기</button></div>
+        </div>
+      </details>
+      <details class="fs">
+        <summary>같은 계산을 Python(pandas)으로 <span class="sum-note">교차 검증</span></summary>
+        <div class="fs-body">
+          <p class="hint">같은 예시 데이터를 pandas로 계산해도 이 화면과 같은 숫자가 나오는지 확인했습니다. 전체 코드는 저장소의 <a href="https://github.com/lgppeople-arch/portfolio/blob/main/examples/pl_report.py" target="_blank" rel="noopener">examples/pl_report.py</a>에 있습니다.</p>
+<pre class="code">def pnl(frame, col):
+    """계정별 합계를 손익 항목으로 바꾼다."""
+    v = frame.groupby("항목")[col].sum().reindex(KEY.values(), fill_value=0.0)
+    cogs = v["mat"] + v["lab"] + v["ovh"]
+    op = v["rev"] - cogs - v["sga"]
+    return pd.concat([v, pd.Series({"cogs": cogs, "op": op,
+                                    "cmr": (v["rev"] - v["mat"]) / v["rev"]})])
+
+def bridge(p, a):
+    """영업이익 차이를 매출 증감, 공헌이익률 변화, 고정비 항목으로 나눈다."""
+    return pd.Series({
+        "매출 증감": (a["rev"] - p["rev"]) * p["cmr"],
+        "공헌이익률 변화": (a["cmr"] - p["cmr"]) * a["rev"],
+        "노무비": p["lab"] - a["lab"],
+        "제조경비": p["ovh"] - a["ovh"],
+        "판매관리비": p["sga"] - a["sga"],
+    })
+
+# 9월 누계, 전사:  매출 증감 -13.8  공헌이익률 변화 -20.0  노무비 -3.6  제조경비 9.0  판매관리비 0.0</pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>매출원가 = 재료비 + 노무비 + 제조경비, 영업이익 = 매출 − 매출원가 − 판매관리비. 재료비를 변동비, 나머지를 고정비로 보고 공헌이익률 = (매출 − 재료비) ÷ 매출로 계산합니다.</li>
+        <li>차이는 실적 − 계획입니다. 매출과 이익은 줄면, 비용은 늘면 불리한 차이로 빨갛게 표시합니다.</li>
+        <li>영업이익 차이 분해: 매출 증감 효과 = 매출 차이 × 계획 공헌이익률, 공헌이익률 효과 = 공헌이익률 차이 × 실적 매출, 고정비는 항목별 계획 − 실적. 다섯 효과의 합은 영업이익 차이와 정확히 같습니다. 전사로 보면 사업부 구성(믹스) 변화가 매출 증감과 공헌이익률 효과에 섞여, 사업부별 분해의 단순 합과 다를 수 있습니다.</li>
+        <li>추정: 기준월 다음 3개월에 계획 × 달성률을 계정별로 적용합니다. 누계 달성률은 1월부터 기준월까지, 최근 3개월은 최근 석 달의 실적 ÷ 계획입니다. 그 뒤 달은 계획을 씁니다. 연간 전망 = 누계 실적 + 3개월 추정 + 남은 계획.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/pl.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.PlEngine, $ = F.$;
+  let rows = E.sample();
+  const won = (x) => F.money(x, 1) + "억원";
+  const radio = (name) => document.querySelector("input[name=" + name + "]:checked").value;
+
+  function buildAsOf() {
+    const sel = $("asof"), last = E.lastActualMonth(rows) || 1, keep = Number(sel.value) || last;
+    sel.textContent = "";
+    for (let m = 1; m <= last; m++) sel.appendChild(F.el("option", { value: m, text: m + "월" }));
+    sel.value = String(Math.min(keep, last));
+  }
+
+  /* ---------- 손익표 ---------- */
+  const LINES = [
+    { key: "rev", label: "매출액", good: 1, cls: "key" },
+    { key: "cogs", label: "매출원가", good: -1 },
+    { key: "mat", label: "재료비", good: -1, cls: "sub" },
+    { key: "lab", label: "노무비", good: -1, cls: "sub" },
+    { key: "ovh", label: "제조경비", good: -1, cls: "sub" },
+    { key: "gp", label: "매출총이익", good: 1 },
+    { key: "sga", label: "판매관리비", good: -1 },
+    { key: "op", label: "영업이익", good: 1, cls: "key" },
+    { key: "opm", label: "영업이익률", good: 1, cls: "ratio", pct: true },
+    { key: "cmr", label: "공헌이익률", good: 1, cls: "ratio", pct: true }
+  ];
+  function drawTable(r) {
+    const tb = $("pl");
+    tb.textContent = "";
+    const g = F.el("tr", { class: "grp" });
+    [["", 1], [r.asOf + "월", 3], [r.asOf + "월 누계", 4], ["연간", 3]].forEach((c, i) => g.appendChild(F.el("th", { colspan: c[1], class: i > 0 ? "sep" : null, text: c[0] })));
+    const h = F.el("tr");
+    ["억원", "계획", "실적", "차이", "계획", "실적", "차이", "달성률", "계획", "전망", "차이"].forEach((t, i) => h.appendChild(F.el("th", { class: i === 1 || i === 4 || i === 8 ? "sep" : null, text: t })));
+    tb.appendChild(F.el("thead", null, [g, h]));
+    const body = F.el("tbody");
+    LINES.forEach((L) => {
+      const tr = F.el("tr", { class: L.cls || null });
+      tr.appendChild(F.el("th", { text: L.label }));
+      const cell = (p, a, sep, withRate) => {
+        const fmt = (v) => (v === null || v === undefined ? "–" : L.pct ? F.pct(v, 1) : F.money(v, 1));
+        const d = (a === null || p === null) ? null : a - p;
+        const tdP = F.el("td", { class: sep ? "sep" : null, text: fmt(p) });
+        const tdA = F.el("td", { text: fmt(a) });
+        const tdD = F.el("td", { text: d === null ? "–" : L.pct ? F.pp(d, 1) : F.signed(d, 1) });
+        if (d !== null && Math.abs(d) > 1e-9) tdD.classList.add(d * L.good < 0 ? "bad" : "good");
+        tr.appendChild(tdP); tr.appendChild(tdA); tr.appendChild(tdD);
+        if (withRate) tr.appendChild(F.el("td", { text: !L.pct && p ? F.pct(a / p, 1) : "" }));
+      };
+      cell(r.cur.plan[L.key], r.cur.act[L.key], true, false);
+      cell(r.ytd.plan[L.key], r.ytd.act[L.key], true, true);
+      cell(r.year.plan[L.key], r.year.outlook[L.key], true, false);
+      body.appendChild(tr);
+    });
+    tb.appendChild(body);
+    const mlabel = { plan: "계획 유지", ytd: "누계 달성률 반영", trend3: "최근 3개월 달성률 반영" }[r.method];
+    $("tbl-note").textContent = r.scope + " · 연간 전망은 " + mlabel;
+  }
+
+  /* ---------- 차이 분해 ---------- */
+  function drawBridge(r) {
+    const box = $("bridge"), b = r.bridge;
+    box.textContent = "";
+    const neg = F.sum(b.items.map((s) => Math.max(0, -s.v))), pos = F.sum(b.items.map((s) => Math.max(0, s.v)));
+    const span = neg + pos || 1, zero = neg / span * 100;
+    let negAt = zero, posAt = zero;
+    box.appendChild(F.el("div", { class: "b-row tot" }, [F.el("span", { text: "계획 영업이익" }), F.el("span"), F.el("span", { class: "val", text: F.money(b.plan, 1) })]));
+    b.items.forEach((s) => {
+      const track = F.el("span", { class: "b-track", "aria-hidden": "true" });
+      const z = F.el("span", { class: "zero" }); z.style.left = zero + "%"; track.appendChild(z);
+      const w = Math.abs(s.v) / span * 100, bar = F.el("i");
+      if (s.v < 0) { negAt -= w; bar.style.left = negAt + "%"; } else { bar.style.left = posAt + "%"; posAt += w; }
+      bar.style.width = Math.max(w, Math.abs(s.v) > 0.05 ? 0.6 : 0) + "%";
+      bar.style.background = s.v < 0 ? F.css("--neg") : F.css("--pos");
+      track.appendChild(bar);
+      box.appendChild(F.el("div", { class: "b-row" }, [F.el("span", { text: s.label }), track, F.el("span", { class: "val" + (s.v < -0.05 ? " neg" : ""), text: F.signed(s.v, 1) })]));
+    });
+    box.appendChild(F.el("div", { class: "b-row tot" }, [F.el("span", { text: "실적 영업이익" }), F.el("span"), F.el("span", { class: "val", text: F.money(b.act, 1) })]));
+    const p = $("pill");
+    p.className = "pill " + (b.total >= 0 ? "ok" : b.total > -0.05 * Math.abs(b.plan) ? "warn" : "bad");
+    p.textContent = (b.total >= 0 ? "계획 초과 " : "계획 미달 ") + F.money(Math.abs(b.total), 1) + "억원";
+  }
+
+  /* ---------- 월별 그래프 ---------- */
+  function drawChart(r) {
+    const H = 250, padL = 48, padR = 14, padT = 22, padB = 30;
+    const fr = F.plotFrame($("m-chart"), H, "월별 영업이익 계획 막대와 실적·추정 선 그래프");
+    const svg = fr.svg, W = fr.W, S = r.series;
+    const vals = [0].concat(S.map((s) => s.plan), S.filter((s) => s.act !== null).map((s) => s.act), S.filter((s) => s.fc !== null).map((s) => s.fc));
+    const t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const band = (W - padL - padR) / 12, X = (i) => padL + band * i + band / 2, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.money(tv, 0), { "text-anchor": "end" }); });
+    const bw = Math.min(26, band * 0.6), rule = F.css("--rule"), ink = F.css("--ink"), acc = F.css("--accent"), surf = F.css("--surface");
+    S.forEach((s, i) => {
+      F.svgEl("path", { d: F.barPath(X(i) - bw / 2, bw, Y(0), Y(s.plan), 3), fill: rule }, svg);
+      F.svgText(svg, X(i), H - 10, s.m + "월", { "text-anchor": "middle" });
+    });
+    const act = S.filter((s) => s.act !== null);
+    if (act.length) F.svgEl("path", { d: "M" + act.map((s) => X(s.m - 1) + "," + Y(s.act)).join("L"), fill: "none", stroke: ink, "stroke-width": 2.2, "stroke-linejoin": "round" }, svg);
+    act.forEach((s) => F.svgEl("circle", { cx: X(s.m - 1), cy: Y(s.act), r: 3.4, fill: ink, stroke: surf, "stroke-width": 1.5 }, svg));
+    const fc = S.filter((s) => s.fcKind === "fc");
+    if (fc.length && act.length) {
+      const last = act[act.length - 1];
+      F.svgEl("path", { d: "M" + X(last.m - 1) + "," + Y(last.act) + "L" + fc.map((s) => X(s.m - 1) + "," + Y(s.fc)).join("L"), fill: "none", stroke: acc, "stroke-width": 2, "stroke-dasharray": "5 4" }, svg);
+      fc.forEach((s) => F.svgEl("circle", { cx: X(s.m - 1), cy: Y(s.fc), r: 3.2, fill: surf, stroke: acc, "stroke-width": 1.8 }, svg));
+    }
+    const xa = padL + band * r.asOf;
+    F.svgEl("line", { x1: xa, x2: xa, y1: padT - 6, y2: H - padB, stroke: ink, "stroke-width": 1, "stroke-dasharray": "3 3" }, svg);
+    F.svgText(svg, xa - 6, padT - 10, "기준월 " + r.asOf + "월", { "text-anchor": "end", class: "m-now" });
+    const tip = F.makeTip(fr.plot);
+    S.forEach((s, i) => {
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: s.m + "월", rows: [["계획", won(s.plan), rule]].concat(s.act !== null ? [["실적", won(s.act), ink]] : s.fcKind === "fc" ? [["추정", won(s.fc), acc]] : []) }));
+    });
+  }
+
+  function render() {
+    const asOf = Number($("asof").value), scope = radio("scope"), method = radio("method");
+    const r = E.report(rows, asOf, scope, method);
+    const Y = r.ytd, dRev = Y.act.rev - Y.plan.rev, dOp = Y.act.op - Y.plan.op;
+    F.setValue($("k-rev"), F.money(Y.act.rev, 1), "억원");
+    $("k-rev-sub").textContent = "계획 대비 " + F.signed(dRev, 1) + " · " + F.pct(Y.act.rev / Y.plan.rev, 1);
+    F.setValue($("k-op"), F.money(Y.act.op, 1), "억원", Y.act.op < 0);
+    $("k-op-sub").textContent = "계획 대비 " + F.signed(dOp, 1) + " · " + F.pct(Y.act.op / Y.plan.op, 1);
+    F.setValue($("k-opm"), F.pct(Y.act.opm, 1).replace("%", ""), "%");
+    $("k-opm-sub").textContent = "계획 " + F.pct(Y.plan.opm, 1) + " · " + F.pp(Y.act.opm - Y.plan.opm, 1);
+    const dOut = r.year.outlook.op - r.year.plan.op;
+    F.setValue($("k-out"), F.money(r.year.outlook.op, 1), "억원");
+    $("k-out-sub").textContent = "연간 계획 " + F.money(r.year.plan.op, 1) + " · " + F.signed(dOut, 1);
+
+    drawTable(r);
+    drawBridge(r);
+    drawChart(r);
+
+    /* 보고 문장 */
+    const memo = $("memo"), items = r.bridge.items.slice().sort((a, b) => a.v - b.v);
+    const worst = items.filter((i) => i.v < -0.05), best = items.filter((i) => i.v > 0.05).reverse();
+    const sg = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + F.money(Math.abs(v), 1);
+    const name = (i) => i.label + "(" + sg(i.v) + "억원)";
+    memo.textContent = "";
+    memo.append(r.asOf + "월 누계 " + r.scope + " 매출은 " + won(Y.act.rev) + "으로 계획 대비 " + won(Math.abs(dRev)) + (dRev < 0 ? " 부족하고" : " 많고") + ", 영업이익은 ", F.el("b", { text: won(Y.act.op) }), "으로 " + won(Math.abs(dOp)) + "(" + F.pct(Math.abs(dOp / Y.plan.op), 1) + ") " + (dOp < 0 ? "미달입니다. " : "초과입니다. "));
+    if (dOp < 0 && worst.length) memo.append("가장 큰 원인은 " + worst.slice(0, 2).map(name).join("과 ") + "입니다. ");
+    else if (best.length) memo.append("가장 크게 기여한 것은 " + best.slice(0, 2).map(name).join("과 ") + "입니다. ");
+    if (r.scope === "전사") {
+      const bu = E.BUS.map((b) => { const q = E.report(rows, r.asOf, b, r.method); return { b: b, d: q.ytd.act.op - q.ytd.plan.op }; });
+      memo.append("사업부별로는 " + bu.map((q) => q.b + " " + sg(q.d) + "억원").join(", ") + "입니다. ");
+    }
+    const mtxt = { plan: "남은 달을 계획대로 가정하면", ytd: "누계 달성률을 반영하면", trend3: "최근 3개월 달성률을 반영하면" }[r.method];
+    memo.append(mtxt + " 연간 영업이익은 ", F.el("b", { text: won(r.year.outlook.op) }), "으로 계획보다 " + won(Math.abs(dOut)) + (dOut < 0 ? " 낮을 전망입니다." : " 높을 전망입니다."));
+
+    /* 실시간 검산 */
+    const chk = $("check");
+    chk.textContent = "";
+    const bOk = Math.abs(F.sum(r.bridge.items.map((i) => i.v)) - r.bridge.total) < 1e-9;
+    const all = E.report(rows, r.asOf, "전사", r.method), parts = E.BUS.map((b) => E.report(rows, r.asOf, b, r.method));
+    const sOk = Math.abs(F.sum(parts.map((q) => q.ytd.act.op)) - all.ytd.act.op) < 1e-9;
+    [["차이 분해 합 = 영업이익 차이", bOk], ["사업부 합 = 전사", sOk]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+    $("sn-data").textContent = rows.length + "줄 · 실적 " + E.lastActualMonth(rows) + "월까지";
+  }
+
+  function apply() {
+    const res = E.parse($("csv").value), ul = $("errs");
+    ul.textContent = "";
+    res.errors.slice(0, 6).forEach((e) => ul.appendChild(F.el("li", { text: e })));
+    if (res.errors.length > 6) ul.appendChild(F.el("li", { text: "그 밖에 " + (res.errors.length - 6) + "줄" }));
+    ul.hidden = res.errors.length === 0;
+    if (!res.rows.length) return;
+    rows = res.rows;
+    buildAsOf(); render();
+  }
+  $("apply").addEventListener("click", apply);
+  $("reset").addEventListener("click", () => { rows = E.sample(); $("csv").value = E.toCsv(rows); $("errs").hidden = true; buildAsOf(); $("asof").value = String(E.lastActualMonth(rows)); render(); });
+  $("asof").addEventListener("change", render);
+  document.querySelectorAll("input[name=scope], input[name=method]").forEach((i) => i.addEventListener("change", render));
+  $("csv").value = E.toCsv(rows);
+  buildAsOf(); $("asof").value = String(E.lastActualMonth(rows));
+  render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

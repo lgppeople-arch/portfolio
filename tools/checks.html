@@ -27,6 +27,8 @@
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
     <nav class="site-nav" aria-label="도구">
       <a href="guide.html">가이드</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
       <a href="capex-kit.html">설비투자</a>
       <a href="post-review.html">사후관리</a>
       <a href="ma-process.html">M&amp;A 절차</a>
@@ -72,16 +74,18 @@
 <script src="../assets/engines/holdco.js"></script>
 <script src="../assets/engines/cash.js"></script>
 <script src="../assets/engines/fx.js"></script>
+<script src="../assets/engines/mbo.js"></script>
+<script src="../assets/engines/pl.js"></script>
 <script src="../assets/checks.js"></script>
 <script>
 (function () {
   "use strict";
   const F = window.Fin, $ = F.$;
-  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html" };
+  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html" };
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine });
+    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }
