@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>설비투자 분석 키트 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
@@ -16,6 +17,7 @@
   <div class="wrap wide">
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
     <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
       <a href="capex-kit.html" aria-current="page">설비투자</a>
       <a href="post-review.html">사후관리</a>
       <a href="ma-process.html">M&amp;A 절차</a>
@@ -25,6 +27,7 @@
       <a href="fx-hedge.html">환리스크</a>
       <a href="checks.html">검산</a>
     </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
   </div>
 </header>
 <main>
@@ -33,7 +36,7 @@
       <div class="crumb"><a href="../index.html">홈</a> / 도구 / 설비투자 분석 키트</div>
       <h1>설비투자 분석 키트</h1>
       <p>생산라인 증설 하나를 놓고 원가 구조를 보고, 투자 타당성을 따지고, 실적이 나온 뒤 차이를 나눠 보는 세 가지 계산입니다. 입력값을 바꾸면 결과가 바로 다시 계산됩니다. 승인 뒤에는 <a href="post-review.html">투자 사후관리</a>로 이어서 볼 수 있습니다.</p>
-      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span></div>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span><span><a class="guide-link" href="guide.html#how-capex">처음이면 쉬운 사용법 보기 →</a></span></div>
     </div>
   </div>
   <section id="tools">

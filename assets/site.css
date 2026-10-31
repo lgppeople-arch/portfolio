@@ -500,3 +500,10 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
   .df-k { display: block; font-size: 11px; font-family: var(--f-num); letter-spacing: 0.04em; color: var(--muted); margin-bottom: 2px; }
 }
 .stage-more { font-size: var(--s-1); color: var(--ink-2); }
+
+/* 테마 전환 버튼 */
+.theme-btn { flex: none; display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12px; font-weight: 500; padding: 5px 11px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.theme-btn:hover { border-color: var(--ink); color: var(--ink); }
+.theme-btn svg { display: block; }
+@media (max-width: 640px) { .theme-btn .lbl { display: none; } .theme-btn { padding: 6px 8px; } }
+.guide-link { font-size: var(--s-1); }

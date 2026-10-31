@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>투자 사후관리 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
@@ -27,6 +28,7 @@
   <div class="wrap wide">
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
     <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
       <a href="capex-kit.html">설비투자</a>
       <a href="post-review.html" aria-current="page">사후관리</a>
       <a href="ma-process.html">M&amp;A 절차</a>
@@ -36,6 +38,7 @@
       <a href="fx-hedge.html">환리스크</a>
       <a href="checks.html">검산</a>
     </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
   </div>
 </header>
 
@@ -45,7 +48,7 @@
       <div class="crumb"><a href="../index.html">홈</a> / 도구 / 투자 사후관리</div>
       <h1>투자 사후관리</h1>
       <p>승인한 투자가 계획대로 가고 있는지 봅니다. 승인 당시 가정과 실적·재추정을 같은 모형으로 다시 계산하고, NPV가 달라진 이유를 투자비·가동률·단가·원가로 나눕니다. 나누는 순서에 따라 결과가 달라지지 않도록 샤플리 값을 씁니다.</p>
-      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span><span>금액 단위 억원</span></div>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span><span>금액 단위 억원</span><span><a class="guide-link" href="guide.html#how-post">처음이면 쉬운 사용법 보기 →</a></span></div>
     </div>
   </div>
 

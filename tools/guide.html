@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>쉬운 가이드 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+  .jump a { font-size: var(--s-1); font-weight: 600; color: var(--ink); text-decoration: none; border: 1px solid var(--rule); background: var(--surface); border-radius: 999px; padding: 6px 14px; }
+  .jump a:hover { border-color: var(--ink); }
+  .gsec { padding-top: 56px; scroll-margin-top: 64px; }
+  .gsec > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-5); letter-spacing: -0.02em; margin-bottom: 6px; }
+  .gsec > p.lead { color: var(--ink-2); max-width: 66ch; margin-bottom: 22px; font-size: var(--s-3); }
+
+  .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 960px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+  .rule-card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px; display: grid; gap: 8px; align-content: start; }
+  .rule-card .demo { min-height: 34px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .rule-card b { font-size: var(--s-2); }
+  .rule-card p { font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; }
+  .fake-input { font-family: var(--f-num); font-size: var(--s-1); color: var(--input); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 10px; background: var(--surface); min-width: 70px; text-align: right; }
+  .fake-num { font-family: var(--f-num); font-size: var(--s-3); font-weight: 600; }
+  .fake-neg { font-family: var(--f-num); font-size: var(--s-3); font-weight: 600; color: var(--neg-ink); }
+
+  .tools-howto { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 860px) { .tools-howto { grid-template-columns: minmax(0, 1fr); } }
+  .howcard { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 10px; align-content: start; scroll-margin-top: 72px; }
+  .howcard h3 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .howcard .one { color: var(--ink-2); }
+  .howcard ol { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 8px; }
+  .howcard ol li { counter-increment: s; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; font-size: var(--s-2); line-height: 1.6; }
+  .howcard ol li::before { content: counter(s); width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: var(--f-num); font-size: 12px; display: grid; place-items: center; margin-top: 2px; }
+  .howcard .read { font-size: var(--s-1); color: var(--ink-2); background: var(--ledger); border-radius: 6px; padding: 10px 12px; line-height: 1.65; }
+  .howcard .read b { color: var(--ink); }
+  .howcard .go { justify-self: start; }
+
+  .search { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 56px); z-index: 5; background: var(--paper); padding: 10px 0; }
+  .search input { flex: 1 1 260px; min-width: 0; font: inherit; font-size: var(--s-2); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink); }
+  .search input:focus { outline: 2px solid var(--input); outline-offset: 1px; }
+  .search .cnt { font-family: var(--f-num); font-size: 12px; color: var(--muted); }
+  .tgroup { margin-top: 26px; }
+  .tgroup > h3 { font-family: var(--f-num); font-size: 12px; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+  .terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 860px) { .terms { grid-template-columns: minmax(0, 1fr); } }
+  .term { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 8px; align-content: start; scroll-margin-top: 130px; }
+  .term h4 { margin: 0; font-size: var(--s-3); font-weight: 700; }
+  .term h4 span { font-family: var(--f-num); font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 6px; }
+  .term .easy { font-size: var(--s-2); line-height: 1.7; }
+  .term .ex { font-size: var(--s-1); color: var(--ink-2); line-height: 1.7; border-left: 3px solid var(--accent); padding-left: 10px; }
+  .term .ex b { color: var(--ink); }
+  .term .where { font-size: 12px; color: var(--muted); }
+  .empty { color: var(--muted); padding: 20px 0; }
+
+  .calc { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 24px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 22px; }
+  .calc > * { min-width: 0; }
+  @media (max-width: 860px) { .calc { grid-template-columns: minmax(0, 1fr); } }
+  .calc .field input { background: var(--surface); }
+  .yrs { display: grid; gap: 8px; }
+  .yr { display: grid; grid-template-columns: 52px minmax(0, 1fr) 84px; gap: 10px; align-items: center; font-size: var(--s-1); }
+  .yr .bars { display: grid; gap: 3px; }
+  .yr .bars i { display: block; height: 10px; border-radius: 2px; }
+  .yr .v { font-family: var(--f-num); text-align: right; line-height: 1.35; }
+  .yr .v small { display: block; color: var(--muted); }
+  .calc-out { font-size: var(--s-3); line-height: 1.7; }
+  .calc-out b { font-family: var(--f-num); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html" aria-current="page">가이드</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 쉬운 가이드</div>
+      <h1>쉬운 가이드</h1>
+      <p>이 사이트의 계산 도구를 처음 쓰는 사람을 위한 설명서예요. 어려운 재무 용어는 학교 앞 붕어빵 가게 이야기로 풀었어요. 중학생도 읽고 바로 써 볼 수 있게 썼습니다.</p>
+      <nav class="jump" aria-label="가이드 목차">
+        <a href="#read">화면 읽는 법</a><a href="#howto">도구별 사용법</a><a href="#terms">용어 사전</a><a href="#calc">미니 계산기</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+
+    <section class="gsec" id="read" style="padding-top: 8px">
+      <h2>화면 읽는 법</h2>
+      <p class="lead">모든 도구가 같은 약속을 지켜요. 이 여섯 가지만 알면 어느 도구든 쓸 수 있어요.</p>
+      <div class="rules">
+        <div class="rule-card"><div class="demo"><span class="fake-input">130</span></div><b>파란 숫자는 바꿔도 되는 값</b><p>칸을 눌러 숫자를 고치면 결과가 바로 다시 계산돼요. 엑셀로 재무 모델을 만들 때도 입력값은 파란색으로 쓰는 관행이 있어요.</p></div>
+        <div class="rule-card"><div class="demo"><span class="fake-num">41.7</span><small class="muted">억원</small></div><b>검은 숫자는 계산된 값</b><p>직접 고칠 수 없어요. 파란 숫자를 바꾸면 따라서 바뀌어요.</p></div>
+        <div class="rule-card"><div class="demo"><span class="fake-neg">(21.4)</span><span class="muted">= −21.4</span></div><b>괄호 숫자는 마이너스</b><p>회계에서는 마이너스를 괄호로 써요. 줄어든 돈, 나간 돈, 손해를 뜻해요.</p></div>
+        <div class="rule-card"><div class="demo"><span class="fake-num" style="font-size: var(--s-2)">1억원 = 100,000,000원</span></div><b>단위를 먼저 보세요</b><p>금액은 대부분 <b>억원</b>이에요. 1억원은 100,000,000원이에요. 달러는 <b>백만 달러</b>로 적었어요. 150백만 달러 × 1,400원 = 2,100억원.</p></div>
+        <div class="rule-card"><div class="demo"><span class="memo" style="padding: 2px 0 2px 10px"><span class="label">보고 문장</span></span></div><b>보고 문장은 결과 요약</b><p>숫자를 문장으로 바꿔 놓은 거예요. 회사 보고서에 그대로 옮겨 쓸 수 있게 만들었어요.</p></div>
+        <div class="rule-card"><div class="demo"><span class="selfcheck" style="border: 0; padding: 0"><span>검산 통과</span></span></div><b>✓ 표시는 스스로 한 검산</b><p>계산이 맞는지 도구가 직접 확인한 결과예요. ✕가 보이면 입력값이 이상하다는 뜻이에요.</p></div>
+      </div>
+      <p class="hint" style="margin-top: 14px">그래프에 마우스를 올리거나 손가락으로 누르면 숫자가 나와요. 다 망가졌다 싶으면 <b>예시값으로 되돌리기</b> 버튼을 누르세요. 오른쪽 위 <b>밝게/어둡게</b> 버튼으로 화면 색을 바꿀 수 있어요.</p>
+    </section>
+
+    <section class="gsec" id="howto">
+      <h2>도구별 사용법</h2>
+      <p class="lead">도구마다 "무엇을 알려 주는지", "세 단계로 써 보기", "결과 읽는 법"을 정리했어요.</p>
+      <div class="tools-howto">
+        <article class="howcard" id="how-capex">
+          <h3>설비투자 분석 키트</h3>
+          <p class="one">새 기계를 사도 될지 알려 줘요.</p>
+          <ol>
+            <li>왼쪽 파란 칸에서 투자비, 가동률, 판매단가를 바꿔 보세요.</li>
+            <li>오른쪽 위 <b>NPV 양수</b> 또는 <b>NPV 음수</b> 배지와 NPV·IRR 숫자를 보세요.</li>
+            <li><b>민감도 표</b>와 <b>영향이 큰 가정</b>에서 어떤 가정이 결과를 가장 크게 흔드는지 확인하세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · NPV가 0보다 크면 할 만한 투자예요. IRR이 할인율보다 높아도 같은 뜻이에요. 실제 가동률이 <b>손익분기 가동률</b>보다 높을수록 안전해요.</p>
+          <a class="btn go" href="capex-kit.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-post">
+          <h3>투자 사후관리</h3>
+          <p class="one">이미 산 기계가 계획만큼 돈을 벌고 있는지 알려 줘요.</p>
+          <ol>
+            <li><b>연도별 실적</b>에 실제로 나온 가동률, 단가, 원가를 넣으세요. 칸 아래 회색 글자가 계획 값이에요.</li>
+            <li><b>남은 기간 재추정</b>에 앞으로의 예상을 넣으세요.</li>
+            <li><b>NPV 차이 분해</b> 그래프에서 어떤 원인이 NPV를 가장 많이 바꿨는지 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 빨간 막대는 NPV를 줄인 원인, 초록 막대는 늘린 원인이에요. <b>실적을 계획값으로 채우기</b>를 누르면 차이가 모두 0이 되는 걸 확인할 수 있어요.</p>
+          <a class="btn go" href="post-review.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-process">
+          <h3>M&amp;A 절차 지도</h3>
+          <p class="one">회사를 사는 전 과정을 단계별로 보여 줘요.</p>
+          <ol>
+            <li>맨 위 단계 지도에서 궁금한 단계를 누르세요.</li>
+            <li>단계마다 <b>핵심 개념</b>을 먼저 읽고, <b>세부 절차</b>를 순서대로 따라가세요.</li>
+            <li><b>제 경력이 있는 단계만 보기</b>를 켜면 제가 일한 단계만 남아요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · ●는 제가 직접 참여한 단계, ○는 다른 업무에서 같은 성격의 일을 해 본 단계예요.</p>
+          <a class="btn go" href="ma-process.html">지도 열기 →</a>
+        </article>
+        <article class="howcard" id="how-ma">
+          <h3>M&amp;A 가치평가</h3>
+          <p class="one">사려는 회사가 얼마짜리인지, 제시한 값이 적당한지 알려 줘요.</p>
+          <ol>
+            <li><b>연도별 추정</b>에 앞으로 5년의 성장률과 이익률을 넣으세요.</li>
+            <li><b>제시 인수가</b>에 사려는 값을 넣으세요.</li>
+            <li><b>방법별 기업가치 범위</b> 그래프에서 점선(제시가)이 막대들 안에 있는지 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 점선이 대부분의 막대 안에 있으면 시세에 맞는 값이에요. 오른쪽으로 벗어나면 비싸게 사는 거예요. <b>필요 시너지</b>는 비싸게 산 만큼을 메우려면 매년 얼마를 더 벌어야 하는지예요. 아래 <b>실사 결과를 가격에 반영하기</b>에서는 실사에서 찾은 문제로 실제 낼 돈이 얼마나 줄어드는지 볼 수 있어요.</p>
+          <a class="btn go" href="ma-valuation.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-holdco">
+          <h3>지주사 포트폴리오 가치</h3>
+          <p class="one">지주회사의 진짜 값(NAV)과, 주가가 그보다 얼마나 싼지 알려 줘요.</p>
+          <ol>
+            <li><b>자회사</b> 표에 지분율과 시가총액(비상장이면 EBITDA·배수)을 넣으세요.</li>
+            <li>위쪽 폭포 그래프에서 어떤 자회사가 가치를 많이 차지하는지 보세요.</li>
+            <li>아래 <b>매각 시나리오</b>로 자회사를 팔면 무엇이 바뀌는지 시험해 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 할인율이 클수록 주가가 NAV보다 싸요. <b>지주회사 요건 점검</b>의 빨간 표시는 법에서 정한 기준에 못 미친다는 뜻이에요.</p>
+          <a class="btn go" href="holdco-nav.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-cash">
+          <h3>13주 자금수지</h3>
+          <p class="one">앞으로 3개월 동안 통장 잔액이 바닥나지 않는지 알려 줘요.</p>
+          <ol>
+            <li>기초 현금, 월별 매출, 급여 같은 값을 넣으세요.</li>
+            <li>그래프의 검은 선(잔액)이 빨간 점선(최소 보유현금) 위에 있는지 보세요.</li>
+            <li><b>스트레스</b> 버튼을 눌러 돈이 늦게 들어오는 상황을 시험해 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 배경이 빨간 주는 돈이 모자랄 뻔한 주예요. 오른쪽 <b>재무약정</b> 막대가 세로선(약정 한도)을 넘지 않아야 해요.</p>
+          <a class="btn go" href="cash-13w.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-fx">
+          <h3>환리스크 헤지</h3>
+          <p class="one">환율이 움직일 때 손해를 어떻게 줄일지 방법별로 비교해요.</p>
+          <ol>
+            <li>위쪽 <b>시장 가정</b>에 환율과 두 나라 금리를 넣으세요.</li>
+            <li><b>인수대금 헤지</b>에서 슬라이더로 환율을 움직이며 전략별 비용을 보세요.</li>
+            <li><b>거래 무산</b>을 눌러 거래가 깨졌을 때의 부담도 확인하세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 선이 평평할수록 환율과 상관없이 비용이 고정돼요. 기울어질수록 환율에 따라 크게 변해요. 헤지는 가장 싼 결과를 맞히는 게 아니라 흔들리는 폭을 줄이는 일이에요.</p>
+          <a class="btn go" href="fx-hedge.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-checks">
+          <h3>검산</h3>
+          <p class="one">이 사이트의 계산이 맞는지 자동으로 확인해요.</p>
+          <ol>
+            <li>페이지를 열기만 하면 돼요.</li>
+            <li>맨 위 숫자(예: 40 / 40)가 통과한 검산 수예요.</li>
+            <li>항목마다 무엇을 확인했는지 아래에 적혀 있어요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 모두 ✓면 계산 엔진이 정상이에요. 이 검산은 답을 미리 몰라도 틀렸는지 알 수 있는 방식(항등식)으로 만들었어요.</p>
+          <a class="btn go" href="checks.html">검산 열기 →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="gsec" id="terms">
+      <h2>용어 사전</h2>
+      <p class="lead">사이트에 나오는 어려운 말을 붕어빵 가게 이야기로 풀었어요. 찾는 말을 아래 칸에 쳐 보세요.</p>
+      <div class="search" role="search">
+        <label for="q" class="sr-only" style="position:absolute;left:-9999px">용어 찾기</label>
+        <input id="q" type="search" placeholder="예: NPV, 할인율, 실사, 선물환" autocomplete="off">
+        <span class="cnt" id="q-cnt"></span>
+      </div>
+      <p class="empty" id="q-empty" hidden>찾는 말이 없어요. 다른 말로 쳐 보세요.</p>
+
+      <div class="tgroup"><h3>돈과 시간</h3><div class="terms">
+        <article class="term" id="t-tvm"><h4>돈의 시간가치<span>Time value of money</span></h4><p class="easy">오늘 받는 100만원이 1년 뒤 받는 100만원보다 값져요. 오늘 받으면 은행에 넣어 이자를 받거나 장사에 쓸 수 있으니까요.</p><p class="ex"><b>붕어빵 가게라면</b> 오늘 100만원이 있으면 밀가루를 사서 1년 동안 붕어빵을 팔아 더 큰 돈을 만들 수 있어요.</p></article>
+        <article class="term" id="t-disc"><h4>할인율<span>Discount rate</span></h4><p class="easy">미래의 돈을 오늘 가치로 바꿀 때 깎는 비율이에요. 바라는 수익이 클수록 많이 깎아요.</p><p class="ex"><b>붕어빵 가게라면</b> 할인율 10%면 1년 뒤 110만원은 오늘 100만원과 같아요.</p><p class="where">이 사이트에서는 <a href="capex-kit.html">설비투자</a>, <a href="ma-valuation.html">가치평가</a></p></article>
+        <article class="term" id="t-pv"><h4>현재가치<span>Present value</span></h4><p class="easy">미래에 받을 돈을 할인율로 깎아서 오늘 값으로 바꾼 금액이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 2년 뒤 받을 40만원은 할인율 10%로 오늘 약 33만원이에요. 40 ÷ 1.1 ÷ 1.1 = 33.1.</p></article>
+        <article class="term" id="t-npv"><h4>NPV<span>순현재가치 · Net present value</span></h4><p class="easy">앞으로 벌 돈을 모두 오늘 가치로 바꿔 더한 뒤, 지금 내는 돈을 뺀 값이에요. 0보다 크면 할 만한 투자예요.</p><p class="ex"><b>붕어빵 가게라면</b> 100만원짜리 기계로 4년 동안 매년 40만원을 더 번다면, 할인율 10%로 미래 돈의 오늘 가치는 약 127만원이에요. 127 − 100 = NPV 약 27만원.</p><p class="where">이 사이트에서는 <a href="capex-kit.html">설비투자</a>, <a href="post-review.html">사후관리</a></p></article>
+        <article class="term" id="t-irr"><h4>IRR<span>내부수익률 · Internal rate of return</span></h4><p class="easy">이 투자가 "연 몇 % 이자를 주는 통장"과 같은지 알려 주는 숫자예요. NPV를 딱 0으로 만드는 할인율이에요. 정해 둔 할인율보다 높으면 좋은 투자예요.</p><p class="ex"><b>붕어빵 가게라면</b> 위 기계의 IRR은 약 22%예요. 은행 이자 3%보다 훨씬 낫죠.</p></article>
+        <article class="term" id="t-pb"><h4>회수기간<span>Payback period</span></h4><p class="easy">투자한 돈을 다 돌려받는 데 걸리는 시간이에요. 할인 회수기간은 미래 돈을 오늘 가치로 바꿔서 따지기 때문에 조금 더 길어요.</p><p class="ex"><b>붕어빵 가게라면</b> 100만원 기계로 매년 40만원을 벌면 2.5년이면 본전이에요.</p></article>
+        <article class="term" id="t-sens"><h4>민감도 분석<span>Sensitivity</span></h4><p class="easy">가정 하나를 바꿨을 때 결과가 얼마나 흔들리는지 보는 거예요. 가장 크게 흔드는 가정이 가장 조심해야 할 가정이에요.</p><p class="ex"><b>붕어빵 가게라면</b> "붕어빵 값이 10% 내리면 NPV는?", "손님이 20% 줄면?"을 하나씩 바꿔 봐요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>회사의 이익과 현금</h3><div class="terms">
+        <article class="term" id="t-ebit"><h4>매출과 영업이익<span>Revenue · EBIT</span></h4><p class="easy">매출은 판 돈 전부예요. 영업이익은 매출에서 재료비, 월급, 가게세, 기계값을 나눠 뺀 비용까지 빼고 남은 돈으로, 장사 실력을 보여 줘요.</p><p class="ex"><b>붕어빵 가게라면</b> 한 달에 300만원어치 팔고, 재료비·알바비·가게세·기계값으로 240만원이 들면 영업이익은 60만원이에요.</p></article>
+        <article class="term" id="t-ebitda"><h4>EBITDA<span>이자·세금·감가상각 전 이익</span></h4><p class="easy">영업이익에 감가상각을 다시 더한 값이에요. 기계값을 어떻게 나눠 잡든 상관없이 장사로 버는 현금에 가까워서, 회사끼리 비교할 때 많이 써요.</p><p class="ex"><b>붕어빵 가게라면</b> 영업이익 60만원에 기계값 나눠 뺀 5만원을 더하면 EBITDA 65만원이에요.</p></article>
+        <article class="term" id="t-dep"><h4>감가상각<span>Depreciation</span></h4><p class="easy">비싼 기계를 사면 그 값을 쓰는 기간에 나눠서 비용으로 잡아요. 돈은 살 때 한 번에 나가지만, 비용은 여러 해에 나눠 적는 거예요.</p><p class="ex"><b>붕어빵 가게라면</b> 100만원 기계를 5년 쓰면 매년 20만원씩 비용으로 잡아요.</p></article>
+        <article class="term" id="t-fixvar"><h4>고정비와 변동비<span>Fixed · Variable cost</span></h4><p class="easy">고정비는 하나도 안 팔아도 나가는 돈이고, 변동비는 팔수록 늘어나는 돈이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게세와 사장님 월급은 고정비, 밀가루와 팥은 변동비예요.</p></article>
+        <article class="term" id="t-util"><h4>가동률<span>Utilization</span></h4><p class="easy">최대로 만들 수 있는 양 가운데 실제로 만든 비율이에요. 낮으면 고정비를 적은 양이 나눠 내서 하나당 원가가 비싸져요.</p><p class="ex"><b>붕어빵 가게라면</b> 하루 최대 1,000개를 구울 수 있는데 600개를 구우면 가동률 60%예요.</p><p class="where">이 사이트에서는 <a href="capex-kit.html#bep">가동률과 원가</a></p></article>
+        <article class="term" id="t-bep"><h4>손익분기점<span>Break-even</span></h4><p class="easy">이익도 손해도 아닌 딱 본전인 지점이에요. 이보다 더 팔아야 돈이 남아요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게세가 한 달 30만원이고 붕어빵 하나에 300원이 남으면, 한 달에 1,000개를 팔아야 본전이에요.</p></article>
+        <article class="term" id="t-wc"><h4>운전자본<span>Working capital</span></h4><p class="easy">장사하느라 묶여 있는 돈이에요. 창고의 재고와 외상으로 판 돈은 더하고, 외상으로 산 돈은 빼요. 매출이 늘면 보통 같이 늘어서 현금이 묶여요.</p><p class="ex"><b>붕어빵 가게라면</b> 창고의 밀가루·팥 20만원 + 학교 매점에 외상으로 넘긴 붕어빵 값 10만원 − 아직 안 낸 밀가루 값 5만원 = 25만원이 묶여 있어요.</p></article>
+        <article class="term" id="t-fcf"><h4>잉여현금흐름<span>Free cash flow · FCF</span></h4><p class="easy">1년 장사해서 실제로 주머니에 남는 현금이에요. 이익에서 세금을 내고, 새 기계 산 돈과 늘어난 운전자본은 빼고, 감가상각은 다시 더해요(실제로 돈이 나간 게 아니니까요).</p><p class="ex"><b>붕어빵 가게라면</b> 세금 낸 이익 50만원 + 감가상각 20만원 − 새 기계 30만원 − 늘어난 재고 5만원 = 35만원이 남아요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>회사의 값 매기기</h3><div class="terms">
+        <article class="term" id="t-ev"><h4>기업가치와 지분가치<span>Enterprise value · Equity value</span></h4><p class="easy">기업가치는 회사 전체의 값이에요. 그중 빚을 갚고 주인에게 남는 몫이 지분가치예요. 지분가치 = 기업가치 − 순차입금.</p><p class="ex"><b>붕어빵 가게라면</b> 가게 전체가 1,000만원인데 은행 빚이 300만원이면, 주인 몫은 700만원이에요.</p></article>
+        <article class="term" id="t-nd"><h4>순차입금<span>Net debt</span></h4><p class="easy">빌린 돈에서 가진 현금을 뺀 값이에요. 지금 당장 현금으로 갚고 남는 빚이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 빚 300만원, 통장 100만원이면 순차입금은 200만원이에요.</p></article>
+        <article class="term" id="t-dcf"><h4>DCF<span>현금흐름할인법 · Discounted cash flow</span></h4><p class="easy">회사가 앞으로 벌 잉여현금흐름을 모두 오늘 가치로 바꿔 더해서 값을 매기는 방법이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 앞으로 5년 동안 벌 현금과 그 뒤로도 계속 벌 현금을 오늘 가치로 바꿔 더하면 가게의 값이 나와요.</p><p class="where">이 사이트에서는 <a href="ma-valuation.html">M&amp;A 가치평가</a></p></article>
+        <article class="term" id="t-wacc"><h4>WACC<span>가중평균자본비용</span></h4><p class="easy">회사가 쓰는 돈의 평균 "값"이에요. 빌린 돈의 이자율과 주인(주주)이 바라는 수익률을 비율대로 섞은 거예요. DCF에서 할인율로 써요.</p><p class="ex"><b>붕어빵 가게라면</b> 은행에서 빌린 돈은 이자 5%, 내 돈은 적어도 12%는 벌고 싶다면, 둘을 섞은 평균 약 10%가 WACC예요.</p></article>
+        <article class="term" id="t-beta"><h4>베타<span>Beta</span></h4><p class="easy">주식시장 전체가 1% 움직일 때 이 회사 주가가 몇 % 움직이는지예요. 1보다 크면 더 출렁여서, 주주가 더 높은 수익을 바라요.</p><p class="ex"><b>붕어빵 가게라면</b> 경기가 나쁠 때 손님이 확 줄고 좋을 때 확 느는 가게는 베타가 커요.</p></article>
+        <article class="term" id="t-tv"><h4>영구가치와 영구성장률<span>Terminal value</span></h4><p class="easy">5년 뒤에도 회사가 계속 돈을 번다고 보고, 그 뒤 전부를 한 번에 계산한 값이에요. 영구성장률은 아주 먼 미래까지 매년 자란다고 보는 비율로, 보통 경제성장률보다 낮게 잡아요.</p><p class="ex"><b>붕어빵 가게라면</b> 6년째부터는 매년 2%씩만 천천히 자란다고 보고 그 이후를 한꺼번에 계산해요. 가게 값의 절반 넘게를 차지하기도 해요.</p></article>
+        <article class="term" id="t-mult"><h4>배수와 PER<span>Multiple · P/E</span></h4><p class="easy">비슷한 회사들이 이익의 몇 배에 거래되는지 보고 값을 매기는 방법이에요. EV/EBITDA 8배면 EBITDA의 8배가 기업가치예요. PER은 주가가 1년 순이익의 몇 배인지예요.</p><p class="ex"><b>붕어빵 가게라면</b> 동네 비슷한 가게들이 1년 EBITDA의 8배에 팔렸다면, EBITDA 100만원인 우리 가게는 약 800만원이에요.</p></article>
+        <article class="term" id="t-comps"><h4>유사기업과 거래사례<span>Trading comps · Precedent deals</span></h4><p class="easy">유사기업은 주식시장에서 거래되는 비슷한 회사들의 배수, 거래사례는 실제로 회사가 통째로 팔린 거래들의 배수예요. 거래사례가 보통 더 높아요.</p><p class="ex"><b>붕어빵 가게라면</b> 주식 한두 주를 사는 값보다, 가게를 통째로 사는 값이 더 비싸요.</p></article>
+        <article class="term" id="t-prem"><h4>경영권 프리미엄<span>Control premium</span></h4><p class="easy">회사를 통째로 가져와서 마음대로 운영할 권리에 얹어 주는 값이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 메뉴, 가격, 영업시간을 내 마음대로 정할 수 있으니 그만큼 더 쳐 줘요.</p></article>
+        <article class="term" id="t-syn"><h4>시너지<span>Synergy</span></h4><p class="easy">두 회사를 합치면 따로일 때보다 더 버는 것이에요. 원가 시너지(재료를 싸게 삼)와 매출 시너지(서로의 손님에게 팔기)가 있어요. 시너지를 값에 다 얹어 주면 그 이익은 파는 사람이 가져가요.</p><p class="ex"><b>붕어빵 가게라면</b> 옆 호떡 가게를 사서 밀가루를 함께 대량으로 사면 더 싸게 살 수 있어요.</p></article>
+        <article class="term" id="t-ff"><h4>가치 범위 차트<span>Football field</span></h4><p class="easy">여러 방법으로 구한 가치의 범위를 가로 막대로 나란히 놓은 그림이에요. 제시한 값이 어느 쪽에 있는지 한눈에 보여요.</p><p class="where">이 사이트에서는 <a href="ma-valuation.html">M&amp;A 가치평가</a></p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>회사를 사고팔 때 (M&amp;A)</h3><div class="terms">
+        <article class="term" id="t-nda"><h4>비밀유지계약<span>NDA</span></h4><p class="easy">거래 때문에 본 정보를 다른 데 쓰거나 퍼뜨리지 않겠다는 약속이에요. 자세한 자료를 받기 전에 맺어요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게를 살까 하고 레시피와 매출 장부를 봤는데, 안 사기로 했다고 그 레시피를 따라 쓰면 안 돼요.</p></article>
+        <article class="term" id="t-loi"><h4>인수의향서<span>LOI</span></h4><p class="easy">"이 정도 값과 조건이면 사고 싶어요"라는 편지예요. 보통 법적으로 꼭 지켜야 하는 약속은 아니에요.</p></article>
+        <article class="term" id="t-dd"><h4>실사<span>Due diligence</span></h4><p class="easy">사기 전에 장부, 창고, 계약서, 세금, 소송을 꼼꼼히 확인하는 일이에요. 재무는 회계법인, 법률은 법무법인이 주로 맡아요.</p><p class="ex"><b>붕어빵 가게라면</b> 장부의 매출이 진짜인지, 밀린 가게세는 없는지, 기계는 멀쩡한지 확인해요.</p><p class="where">이 사이트에서는 <a href="ma-process.html#st-06">M&amp;A 절차 지도</a></p></article>
+        <article class="term" id="t-qoe"><h4>정상화 EBITDA<span>Quality of earnings</span></h4><p class="easy">올해만 있었던 특별한 일을 빼고 평소 실력으로 다시 계산한 이익이에요. 회사 값은 이 숫자에 배수를 곱해 정하는 경우가 많아요.</p><p class="ex"><b>붕어빵 가게라면</b> 올해 축제 덕분에 반짝 번 돈은 빼고, 한 번만 낸 수리비는 다시 더해요.</p></article>
+        <article class="term" id="t-dl"><h4>부채성 항목<span>Debt-like items</span></h4><p class="easy">빚은 아니지만 곧 나갈 돈이에요. 회사 값에서 빚처럼 빼요.</p><p class="ex"><b>붕어빵 가게라면</b> 아직 안 준 알바생 퇴직금, 곧 내야 할 세금이 여기에 들어가요.</p></article>
+        <article class="term" id="t-peg"><h4>정상 운전자본<span>NWC peg</span></h4><p class="easy">평소에 있어야 할 운전자본 수준이에요. 팔기 직전에 재고를 비우거나 외상을 서둘러 받아 현금을 늘리면, 그 차이만큼 값을 조정해요.</p><p class="ex"><b>붕어빵 가게라면</b> 창고에 평소 밀가루 20포대가 있어야 하는데 넘기는 날 5포대뿐이면, 모자란 15포대 값만큼 깎아요.</p></article>
+        <article class="term" id="t-mech"><h4>완결 회계와 락드박스<span>Completion accounts · Locked box</span></h4><p class="easy">값을 마지막으로 정하는 두 방법이에요. 완결 회계는 넘기는 날의 장부를 보고 나중에 정산하고, 락드박스는 미리 정한 날의 장부로 값을 고정한 뒤 파는 사람이 그 사이에 돈을 빼 가지 못하게 약속해요.</p></article>
+        <article class="term" id="t-spa"><h4>주식매매계약<span>SPA</span></h4><p class="easy">회사를 사고파는 최종 계약서예요. 값, 파는 사람의 약속(진술·보장), 문제가 생기면 물어주는 방법, 거래를 마무리할 조건이 다 들어가요.</p></article>
+        <article class="term" id="t-rw"><h4>진술·보장<span>Representations &amp; warranties</span></h4><p class="easy">파는 사람이 "장부가 맞다", "숨긴 빚이 없다" 같은 사실을 약속하는 조항이에요. 틀리면 물어줘야 해요(손해배상).</p></article>
+        <article class="term" id="t-cp"><h4>선행조건<span>Conditions precedent</span></h4><p class="easy">거래를 마무리하기 전에 꼭 채워야 하는 조건이에요. 정부 승인, 중요한 거래처의 동의 같은 것이에요.</p></article>
+        <article class="term" id="t-pmi"><h4>인수 후 통합<span>PMI</span></h4><p class="easy">산 회사를 우리 회사 방식에 맞춰 함께 굴러가게 만드는 일이에요. 보고 체계, 회계, 사람, 시너지 실행을 챙겨요. 인수의 진짜 성과는 여기서 나와요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>지주회사</h3><div class="terms">
+        <article class="term" id="t-hold"><h4>지주회사<span>Holding company</span></h4><p class="easy">다른 회사들의 주식을 가지고 그 회사들을 거느리는 회사예요. 법에서 정한 요건(자산 규모, 자회사 주식 비중, 부채비율, 자회사 지분율)을 지켜야 해요.</p></article>
+        <article class="term" id="t-nav"><h4>NAV<span>순자산가치</span></h4><p class="easy">지주회사가 가진 자회사 지분의 값과 다른 재산을 다 더하고, 빚을 뺀 값이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 붕어빵·호떡·어묵 가게 지분 값을 모두 더하고 본사 빚을 빼면 NAV예요.</p><p class="where">이 사이트에서는 <a href="holdco-nav.html">지주사 포트폴리오 가치</a></p></article>
+        <article class="term" id="t-disc2"><h4>지주사 할인<span>Holding company discount</span></h4><p class="easy">지주회사 주가가 NAV보다 싼 정도예요. 자회사를 직접 사는 것보다 한 단계 거쳐 가니 싸게 거래되는 경우가 많아요.</p></article>
+        <article class="term" id="t-ratio"><h4>지주비율과 부채비율<span>Holding ratio · Debt ratio</span></h4><p class="easy">지주비율은 지주회사 재산 가운데 자회사 주식이 차지하는 비율(50% 이상이어야 지주회사), 부채비율은 빚 ÷ 자기 돈이에요. 지주회사는 부채비율 200% 이하를 지켜야 해요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>현금과 빚</h3><div class="terms">
+        <article class="term" id="t-13w"><h4>13주 자금수지<span>13-week cash flow</span></h4><p class="easy">앞으로 13주(약 3개월) 동안 통장에 들어오고 나갈 돈을 날짜별로 미리 적어 보는 "통장 일기"예요.</p><p class="where">이 사이트에서는 <a href="cash-13w.html">13주 자금수지</a></p></article>
+        <article class="term" id="t-min"><h4>최소 보유현금<span>Minimum cash</span></h4><p class="easy">무슨 일이 있어도 통장에 남겨 둘 돈이에요. 이 밑으로 내려가면 위험 신호예요.</p></article>
+        <article class="term" id="t-rcf"><h4>한도대출<span>Revolving credit</span></h4><p class="easy">정해진 한도 안에서 필요할 때 꺼내 쓰고 여유가 생기면 갚는 대출이에요. 마이너스 통장과 비슷해요.</p></article>
+        <article class="term" id="t-cov"><h4>재무약정<span>Covenant</span></h4><p class="easy">돈을 빌릴 때 은행과 맺는 "건강 약속"이에요. 예를 들어 순차입금이 EBITDA의 3배를 넘지 않게 하겠다고 약속하고, 어기면 은행이 빨리 갚으라고 할 수 있어요.</p></article>
+        <article class="term" id="t-icr"><h4>이자보상배율<span>Interest coverage</span></h4><p class="easy">영업이익으로 이자를 몇 번 낼 수 있는지예요. 1보다 작으면 번 돈으로 이자도 못 내는 상태예요.</p><p class="ex"><b>붕어빵 가게라면</b> 1년 영업이익 600만원, 이자 200만원이면 3배예요.</p></article>
+        <article class="term" id="t-bizday"><h4>영업일<span>Business day</span></h4><p class="easy">은행이 일하는 날이에요(주말·공휴일 제외). 급여일이 휴일이면 보통 하루 앞당겨 주고, 세금 내는 날이 휴일이면 다음 영업일로 미뤄져요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>환율</h3><div class="terms">
+        <article class="term" id="t-fx"><h4>환율과 환리스크<span>FX risk</span></h4><p class="easy">환율은 1달러를 사는 데 드는 원화예요. 환리스크는 환율이 움직여 손해 볼 위험이에요. 달러를 내야 하는 회사는 환율이 오르면, 달러를 받는 회사는 환율이 내리면 손해예요.</p><p class="ex"><b>붕어빵 가게라면</b> 미국산 팥을 달러로 사는데 환율이 1,300원에서 1,400원이 되면 같은 팥이 더 비싸져요.</p></article>
+        <article class="term" id="t-hedge"><h4>헤지<span>Hedge</span></h4><p class="easy">손해 볼 위험을 미리 줄여 두는 일이에요. 보험과 비슷해요. 더 벌 기회도 같이 줄어들 수 있어요.</p></article>
+        <article class="term" id="t-fwd"><h4>선물환<span>FX forward</span></h4><p class="easy">몇 달 뒤에 달러를 "오늘 정한 값"으로 사거나 팔기로 약속하는 계약이에요. 약속이라서 그날이 오면 꼭 지켜야 해요.</p><p class="ex"><b>붕어빵 가게라면</b> 석 달 뒤 팥 값을 낼 달러를 오늘 1,395원에 사기로 은행과 약속해 두면, 그사이 환율이 올라도 걱정 없어요.</p><p class="where">이 사이트에서는 <a href="fx-hedge.html">환리스크 헤지</a></p></article>
+        <article class="term" id="t-swap"><h4>스왑포인트<span>Swap points</span></h4><p class="easy">지금 환율과 선물환율의 차이예요. 두 나라의 금리 차이에서 생겨요. 달러 금리가 원화보다 높으면 선물로 달러를 더 싸게 살 수 있어요.</p></article>
+        <article class="term" id="t-opt"><h4>통화옵션과 프리미엄<span>FX option · Premium</span></h4><p class="easy">정한 값에 달러를 살(콜) 또는 팔(풋) "권리"예요. 의무가 아니라서 불리하면 안 쓰면 돼요. 대신 처음에 보험료(프리미엄)를 내요.</p><p class="ex"><b>붕어빵 가게라면</b> "석 달 뒤 달러를 1,400원에 살 권리"를 사 두면, 환율이 1,500원이 돼도 1,400원에 사고, 1,300원이 되면 권리를 버리고 싸게 사면 돼요.</p></article>
+        <article class="term" id="t-vol"><h4>변동성<span>Volatility</span></h4><p class="easy">환율이 얼마나 크게 출렁이는지예요. 많이 출렁일수록 옵션 보험료가 비싸요.</p></article>
+        <article class="term" id="t-dc"><h4>딜 컨틴전트 선물환<span>Deal-contingent forward</span></h4><p class="easy">회사 인수가 깨지면 없던 일이 되는 선물환이에요. 은행이 그 위험을 떠안는 대신 환율에 조금 웃돈을 얹어요.</p></article>
+        <article class="term" id="t-hr"><h4>헤지 비율과 자연 헤지<span>Hedge ratio · Natural hedge</span></h4><p class="easy">헤지 비율은 전체 가운데 몇 %를 미리 고정할지예요. 자연 헤지는 달러로 받을 돈과 달러로 낼 돈을 먼저 맞바꿔서, 파생상품 없이 위험을 줄이는 방법이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 해외에 붕어빵 틀을 팔아 받은 달러로 미국산 팥값을 내면, 그만큼은 환율 걱정이 없어요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>이 사이트의 계산 방법</h3><div class="terms">
+        <article class="term" id="t-shap"><h4>샤플리 값<span>Shapley value</span></h4><p class="easy">여러 원인이 함께 만든 결과를 공평하게 나누는 방법이에요. 어떤 순서로 따지느냐에 따라 몫이 달라지지 않게, 가능한 모든 순서의 평균을 내요.</p><p class="ex"><b>붕어빵 가게라면</b> 세 친구가 함께 장사해서 번 돈을 나눌 때, 누가 먼저 합류했느냐에 상관없이 각자 보탠 몫의 평균으로 나눠요.</p><p class="where">이 사이트에서는 <a href="post-review.html">투자 사후관리</a></p></article>
+        <article class="term" id="t-ident"><h4>항등식 검산<span>Identity check</span></h4><p class="easy">답을 몰라도 틀렸는지 알 수 있는 검사예요. 계산이 맞다면 항상 성립해야 하는 관계를 확인해요.</p><p class="ex"><b>학교라면</b> 반별 학생 수를 다 더하면 전교생 수와 같아야 해요. 다르면 어딘가 잘못 센 거예요.</p><p class="where">이 사이트에서는 <a href="checks.html">검산</a></p></article>
+      </div></div>
+    </section>
+
+    <section class="gsec" id="calc">
+      <h2>미니 계산기 · 이 기계, 살까 말까?</h2>
+      <p class="lead">숫자를 바꾸면서 NPV와 IRR이 어떻게 움직이는지 직접 느껴 보세요. 미래의 돈이 오늘 가치로 얼마나 줄어드는지 막대로 보여 줘요.</p>
+      <div class="calc">
+        <form id="calc-form" novalidate>
+          <div class="fs-grid" style="grid-template-columns: minmax(0, 1fr)">
+            <div class="field"><label for="c-cost">기계 값<small>만원, 지금 내는 돈</small></label><input id="c-cost" type="number" inputmode="decimal" step="10" min="1" value="100"></div>
+            <div class="field"><label for="c-cash">매년 더 버는 돈<small>만원</small></label><input id="c-cash" type="number" inputmode="decimal" step="5" min="0" value="40"></div>
+            <div class="field"><label for="c-years">쓰는 기간<small>년, 1~10</small></label><input id="c-years" type="number" inputmode="numeric" step="1" min="1" max="10" value="4"></div>
+            <div class="field"><label for="c-rate">할인율<small>%, 바라는 수익률</small></label><input id="c-rate" type="number" inputmode="decimal" step="1" min="0" max="50" value="10"></div>
+          </div>
+          <div class="form-actions" style="margin-top: 12px"><button type="button" class="btn" id="c-reset">처음 값으로</button></div>
+        </form>
+        <div style="display: grid; gap: 16px; align-content: start" aria-live="polite">
+          <p class="calc-out" id="c-out"></p>
+          <div class="legend"><span><i class="key-bar" style="background: var(--mark-muted)"></i>그해 버는 돈</span><span><i class="key-bar" style="background: var(--input)"></i>오늘 가치로 바꾼 돈</span></div>
+          <div class="yrs" id="c-yrs"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>모르는 말이 또 나오면 이 가이드의 용어 사전에서 찾아보세요.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, $ = F.$;
+
+  /* ---------- 용어 찾기 ---------- */
+  const terms = Array.from(document.querySelectorAll(".term"));
+  const groups = Array.from(document.querySelectorAll(".tgroup"));
+  const norm = (s) => s.toLowerCase().replace(/\s+/g, "");
+  terms.forEach((t) => { t.dataset.k = norm(t.textContent); });
+  function filter() {
+    const q = norm($("q").value);
+    let shown = 0;
+    terms.forEach((t) => { const ok = !q || t.dataset.k.indexOf(q) >= 0; t.hidden = !ok; if (ok) shown++; });
+    groups.forEach((g) => { g.hidden = !g.querySelector(".term:not([hidden])"); });
+    $("q-cnt").textContent = q ? shown + "개 찾음" : terms.length + "개 용어";
+    $("q-empty").hidden = shown > 0;
+  }
+  $("q").addEventListener("input", filter);
+  filter();
+
+  /* ---------- 미니 계산기 ---------- */
+  const DEF = { cost: 100, cash: 40, years: 4, rate: 10 };
+  function calc() {
+    const cost = F.readNum($("c-cost"), DEF.cost), cash = F.readNum($("c-cash"), DEF.cash);
+    const years = Math.round(F.readNum($("c-years"), DEF.years)), rate = F.readNum($("c-rate"), DEF.rate) / 100;
+    const flows = [-cost];
+    for (let i = 1; i <= years; i++) flows.push(cash);
+    const npv = F.npv(rate, flows), irr = F.irr(flows), pb = F.payback(flows);
+    const pvs = flows.slice(1).map((c, i) => c / Math.pow(1 + rate, i + 1));
+    const pvSum = F.sum(pvs);
+    const out = $("c-out");
+    out.textContent = "";
+    out.append("앞으로 " + years + "년 동안 버는 돈 " + F.num(cash * years, 0) + "만원을 오늘 가치로 바꾸면 ", F.el("b", { text: F.num(pvSum, 1) + "만원" }), "이에요. 기계 값 " + F.num(cost, 0) + "만원을 빼면 NPV는 ", F.el("b", { text: F.money(npv, 1) + "만원" }), "이에요. ");
+    out.append(npv > 0.05 ? "0보다 크니까 사 볼 만한 기계예요. " : npv < -0.05 ? "0보다 작으니까 이 조건이면 사지 않는 게 나아요. " : "딱 본전이에요. ");
+    if (irr !== null) out.append("이 기계는 연 ", F.el("b", { text: F.pct(irr, 1) }), " 이자를 주는 통장과 같아요" + (irr > rate ? "(바라는 수익률 " + F.pct(rate, 0) + "보다 높아요). " : "(바라는 수익률 " + F.pct(rate, 0) + "보다 낮아요). "));
+    out.append(pb === null ? "쓰는 기간 안에 본전을 못 찾아요." : F.num(pb, 1) + "년이면 본전을 찾아요.");
+    const box = $("c-yrs");
+    box.textContent = "";
+    const max = Math.max(cash, 1);
+    pvs.forEach((pv, i) => {
+      const a = F.el("i"); a.style.width = (cash / max * 100) + "%"; a.style.background = F.css("--mark-muted");
+      const b = F.el("i"); b.style.width = (pv / max * 100) + "%"; b.style.background = F.css("--input");
+      box.appendChild(F.el("div", { class: "yr" }, [F.el("span", { class: "muted", text: (i + 1) + "년 뒤" }), F.el("span", { class: "bars" }, [a, b]), F.el("span", { class: "v" }, [F.num(cash, 1), F.el("small", { text: "오늘 " + F.num(pv, 1) })])]));
+    });
+  }
+  ["c-cost", "c-cash", "c-years", "c-rate"].forEach((id) => $(id).addEventListener("input", calc));
+  $("calc-form").addEventListener("submit", (e) => e.preventDefault());
+  $("c-reset").addEventListener("click", () => { $("c-cost").value = DEF.cost; $("c-cash").value = DEF.cash; $("c-years").value = DEF.years; $("c-rate").value = DEF.rate; calc(); });
+  calc();
+  F.onRedraw(calc);
+})();
+</script>
+</body>
+</html>
