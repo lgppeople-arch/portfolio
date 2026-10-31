@@ -14,6 +14,8 @@
 | `tools/ma-valuation.html` | M&A 가치평가: DCF, 유사기업·거래사례 배수, 제시가 검토, 인수 후 재무 |
 | `tools/holdco-nav.html` | 지주사 포트폴리오 가치: NAV, 지주사 할인, 지주회사 요건, 지분 매각 시나리오 |
 | `tools/cash-13w.html` | 13주 자금수지: 영업일 규칙, 한도대출, 분기말 재무약정 |
+| `tools/ma-process.html` | M&A 절차 지도: 비밀유지계약부터 인수 후 통합까지 13단계와 경력 위치 |
+| `tools/fx-hedge.html` | 환리스크 헤지: 인수대금(선물환·옵션·딜 컨틴전트), 수출 순노출 구간별 헤지 |
 | `tools/checks.html` | 계산 검산: 모든 계산 엔진의 항등식·대조·실무 규칙 테스트 |
 | `assets/fin.js`, `assets/engines/` | 공용 계산 함수와 도구별 계산 엔진 (화면 코드와 분리) |
 | `assets/checks.js` | 검산 묶음. `node assets/checks.js`로도 실행 |

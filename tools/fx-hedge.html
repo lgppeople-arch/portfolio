@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>환리스크 헤지 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .mkt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 32px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 26px; }
+  .mkt > * { min-width: 0; }
+  .mkt h2 { font-size: var(--s-3); font-weight: 700; margin-bottom: 10px; }
+  .mkt .field input { background: var(--surface); }
+  @media (max-width: 900px) { .mkt { grid-template-columns: minmax(0, 1fr); } }
+  table.fwd { border-collapse: collapse; width: 100%; font-size: var(--s-1); }
+  table.fwd th, table.fwd td { padding: 7px 8px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.fwd th:first-child, table.fwd td:first-child { text-align: left; }
+  table.fwd thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.fwd td { font-family: var(--f-num); }
+  .tabbar { margin-bottom: 18px; }
+  .slider { display: grid; gap: 6px; }
+  .slider .top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: var(--s-1); color: var(--ink-2); }
+  .slider .top b { font-family: var(--f-num); color: var(--input); }
+  .slider input { width: 100%; accent-color: var(--input); }
+  .slider .ticks { display: flex; justify-content: space-between; font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  table.strat { border-collapse: collapse; width: 100%; font-size: var(--s-1); }
+  table.strat th, table.strat td { padding: 9px 8px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.strat th:first-child, table.strat td:first-child { text-align: left; white-space: normal; }
+  table.strat thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.strat td { font-family: var(--f-num); }
+  table.strat td:first-child { font-family: var(--f-body); }
+  table.strat i.sw { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 8px; }
+  svg.plot text.lc-now { fill: var(--ink); font-size: 11px; font-weight: 600; font-family: var(--f-num); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html" aria-current="page">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 환리스크 헤지</div>
+      <h1>환리스크 헤지</h1>
+      <p>외화로 큰돈을 치르거나 받는 회사가 환율 변동을 어떻게 다룰지 계산합니다. 해외 인수대금처럼 한 번에 큰 금액이 오가는 거래와, 매달 들어오는 수출 대금을 나눠 봅니다. 선물환, 통화옵션, 딜 컨틴전트 선물환의 비용과 남는 위험을 같은 화면에서 비교합니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>달러 금액 백만 달러 · 환율 원/달러 · 결과 억원</span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 가상 제조사의 달러 거래 · 환율과 금리를 포함한 모든 수치는 가상</span>
+
+    <section class="mkt" aria-label="시장 가정">
+      <form id="mkt-form" novalidate>
+        <h2>시장 가정</h2>
+        <div class="fs-grid">
+          <div class="field"><label for="m-spot">현물환율<small>원/달러</small></label><input id="m-spot" type="number" inputmode="decimal" step="5" min="1"></div>
+          <div class="field"><label for="m-vol">환율 변동성<small>연 %, 옵션 가격용</small></label><input id="m-vol" type="number" inputmode="decimal" step="0.5" min="0" max="80"></div>
+          <div class="field"><label for="m-rd">원화 금리<small>연 %</small></label><input id="m-rd" type="number" inputmode="decimal" step="0.25" min="-5" max="30"></div>
+          <div class="field"><label for="m-rf">달러 금리<small>연 %</small></label><input id="m-rf" type="number" inputmode="decimal" step="0.25" min="-5" max="30"></div>
+        </div>
+      </form>
+      <div>
+        <h2>선물환율 <span class="muted" style="font-weight: 400; font-size: var(--s-1)">금리 차이로 정해집니다</span></h2>
+        <table class="fwd" id="fwd-table"></table>
+        <p class="hint" id="fwd-note" style="margin-top: 8px"></p>
+      </div>
+    </section>
+
+    <div class="subtabs tabbar" role="tablist" aria-label="노출 종류">
+      <button role="tab" id="tb-deal" aria-selected="true" aria-controls="tp-deal">인수대금 헤지 · 서명부터 종결까지</button>
+      <button role="tab" id="tb-ops" aria-selected="false" aria-controls="tp-ops" tabindex="-1">수출 대금 헤지 · 12개월</button>
+    </div>
+
+    <!-- ===== 인수대금 ===== -->
+    <div id="tp-deal" role="tabpanel" aria-labelledby="tb-deal">
+      <div class="workbench">
+        <form class="inputs2" id="deal-form" novalidate>
+          <details class="fs" open>
+            <summary>인수 거래 <span class="sum-note" id="sn-deal"></span></summary>
+            <div class="fs-body">
+              <div class="fs-grid">
+                <div class="field"><label for="d-usd">인수대금<small>백만 달러</small></label><input id="d-usd" type="number" inputmode="decimal" step="10" min="0"></div>
+                <div class="field"><label for="d-months">종결까지<small>개월</small></label><select id="d-months"></select></div>
+                <div class="field"><label for="d-ratio">헤지 비율<small>대금 대비 %</small></label><input id="d-ratio" type="number" inputmode="decimal" step="10" min="0" max="100"></div>
+                <div class="field"><label for="d-strike">옵션 행사가<small>원, 비우면 선물환율</small></label><input id="d-strike" type="number" inputmode="decimal" step="5" min="0" placeholder="선물환율"></div>
+                <div class="field"><label for="d-dcp">딜 컨틴전트 프리미엄<small>선물환율 대비 %</small></label><input id="d-dcp" type="number" inputmode="decimal" step="0.1" min="0" max="10"></div>
+              </div>
+              <p class="hint">딜 컨틴전트 선물환은 거래가 무산되면 계약도 없어지는 선물환입니다. 은행이 무산 위험을 떠안는 대가로 환율에 프리미엄을 얹습니다.</p>
+            </div>
+          </details>
+          <div class="slider">
+            <div class="top"><label for="d-shock">종결 시점 환율 시나리오</label><b id="d-shock-out"></b></div>
+            <input id="d-shock" type="range" min="-20" max="20" step="1">
+            <div class="ticks"><span>−20%</span><span>0</span><span>+20%</span></div>
+          </div>
+          <div class="form-actions"><button type="button" class="btn" id="deal-reset">예시값으로 되돌리기</button></div>
+        </form>
+
+        <aside class="board" aria-live="polite">
+          <div class="board-head"><h2>종결 시점 원화 부담</h2>
+            <div class="seg" role="radiogroup" aria-label="거래 결과">
+              <label><input type="radio" name="outcome" id="oc-close" value="close" checked>거래 종결</label>
+              <label><input type="radio" name="outcome" id="oc-fail" value="fail">거래 무산</label>
+            </div>
+          </div>
+          <p class="verdict" id="deal-verdict"></p>
+          <div class="kpis k4">
+            <div class="kpi"><div class="label">서명 시점 환산</div><div class="v num" id="k-sign"></div><div class="sub" id="k-sign-sub"></div></div>
+            <div class="kpi"><div class="label">선물환율</div><div class="v num" id="k-fwd"></div><div class="sub" id="k-fwd-sub"></div></div>
+            <div class="kpi"><div class="label">옵션 프리미엄</div><div class="v num" id="k-prem"></div><div class="sub" id="k-prem-sub"></div></div>
+            <div class="kpi"><div class="label">딜 컨틴전트 추가 비용</div><div class="v num" id="k-dc"></div><div class="sub" id="k-dc-sub"></div></div>
+          </div>
+          <div class="chart" id="deal-chart">
+            <div class="chart-head"><h4 id="deal-chart-title">종결 시점 환율별 원화 비용 <span class="muted">(억원)</span></h4>
+              <div class="legend" id="deal-legend"></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <div class="scroll" style="border: 0"><table class="strat" id="deal-table"></table></div>
+          <div class="memo"><span class="label">보고 문장</span><p id="deal-memo"></p></div>
+          <div class="selfcheck" id="deal-check"></div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===== 수출 대금 ===== -->
+    <div id="tp-ops" role="tabpanel" aria-labelledby="tb-ops" hidden>
+      <div class="workbench">
+        <form class="inputs2" id="ops-form" novalidate>
+          <details class="fs" open>
+            <summary>노출과 헤지 정책 <span class="sum-note" id="sn-ops"></span></summary>
+            <div class="fs-body">
+              <div class="fs-grid">
+                <div class="field"><label for="o-sales">월 수출 대금<small>백만 달러</small></label><input id="o-sales" type="number" inputmode="decimal" step="1" min="0"></div>
+                <div class="field"><label for="o-costs">월 달러 지출<small>원재료 수입 등, 백만 달러</small></label><input id="o-costs" type="number" inputmode="decimal" step="1" min="0"></div>
+                <div class="field"><label for="o-budget">사업계획 환율<small>원/달러</small></label><input id="o-budget" type="number" inputmode="decimal" step="5" min="1"></div>
+              </div>
+              <p class="hint"><b>구간별 헤지 비율</b> · 가까운 달일수록 현금흐름이 확실해 많이 헤지하고, 먼 달은 적게 둡니다.</p>
+              <div class="fs-grid">
+                <div class="field"><label for="o-r1">1~3개월<small>%</small></label><input id="o-r1" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+                <div class="field"><label for="o-r2">4~6개월<small>%</small></label><input id="o-r2" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+                <div class="field"><label for="o-r3">7~12개월<small>%</small></label><input id="o-r3" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+              </div>
+            </div>
+          </details>
+          <div class="slider">
+            <div class="top"><label for="o-shock">앞으로 12개월 환율 시나리오</label><b id="o-shock-out"></b></div>
+            <input id="o-shock" type="range" min="-20" max="20" step="1">
+            <div class="ticks"><span>−20%</span><span>0</span><span>+20%</span></div>
+          </div>
+          <div class="form-actions"><button type="button" class="btn" id="ops-reset">예시값으로 되돌리기</button></div>
+        </form>
+
+        <aside class="board" aria-live="polite">
+          <div class="board-head"><h2>12개월 원화 순매출</h2><span class="pill" id="ops-pill"></span></div>
+          <p class="verdict" id="ops-verdict"></p>
+          <div class="kpis k4">
+            <div class="kpi"><div class="label">연간 순노출</div><div class="v num" id="k-net"></div><div class="sub" id="k-net-sub"></div></div>
+            <div class="kpi"><div class="label">헤지 평균 환율</div><div class="v num" id="k-avg"></div><div class="sub" id="k-avg-sub"></div></div>
+            <div class="kpi"><div class="label">환율 1% 하락 영향</div><div class="v num" id="k-sens"></div><div class="sub" id="k-sens-sub"></div></div>
+            <div class="kpi"><div class="label">사업계획 대비</div><div class="v num" id="k-bud"></div><div class="sub" id="k-bud-sub"></div></div>
+          </div>
+          <div class="chart" id="ops-chart">
+            <div class="chart-head"><h4>환율 변화별 12개월 원화 순매출 <span class="muted">(억원)</span></h4>
+              <div class="legend"><span><i class="key-line" style="background: var(--mark-muted)"></i>헤지 안 함</span><span><i class="key-line" style="background: var(--input)"></i>헤지 후</span><span><i class="key-dash"></i>사업계획</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <details class="fs">
+            <summary>월별 보기</summary>
+            <div class="fs-body"><div class="scroll" style="border: 0"><table class="strat" id="ops-table"></table></div></div>
+          </details>
+          <div class="memo"><span class="label">보고 문장</span><p id="ops-memo"></p></div>
+          <div class="selfcheck" id="ops-check"></div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>선물환율은 금리평형(연속복리)으로 계산합니다. 선물환율 = 현물환율 × e^((원화 금리 − 달러 금리) × 기간). 달러 금리가 더 높으면 선물환율이 현물보다 낮습니다.</li>
+        <li>통화옵션은 Garman-Kohlhagen 식으로 값을 매깁니다. 콜옵션 매입은 달러를 행사가에 살 권리라서, 환율이 오르면 비용 상한을 막고 내리면 그 이득을 그대로 누립니다. 프리미엄은 서명 때 내고, 비교할 때는 종결 시점 가치로 옮깁니다.</li>
+        <li>거래가 무산되면 사야 할 달러가 없어집니다. 일반 선물환은 그래도 정산해야 해서, 환율이 선물환율보다 낮으면 그 차이만큼 손실이 납니다. 옵션은 프리미엄만 잃고 남은 가치는 되팔 수 있습니다. 딜 컨틴전트 선물환은 계약이 없어져 부담이 없습니다.</li>
+        <li>수출 대금은 달러 수입에서 달러 지출을 뺀 순노출만 헤지 대상으로 봅니다. 자연 헤지를 먼저 쓰고 남은 노출에만 파생상품을 쓰는 방식입니다. 달마다 그 달 만기 선물환율로 헤지하고, 시나리오 환율은 12개월 내내 같은 비율로 움직인다고 놓습니다.</li>
+        <li>은행 마진, 신용한도, 헤지회계 요건, 세금은 넣지 않았습니다. 실제 계약 조건은 거래 은행 견적으로 바꿔 넣어야 합니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/fx.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.FxEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  const SHOCKS = []; for (let k = -20; k <= 20; k += 1) SHOCKS.push(k);
+  const COLORS = () => ({ none: F.css("--mark-muted"), fwd: F.css("--input"), opt: F.css("--accent"), dc: F.css("--pos") });
+  const DASH = { none: null, fwd: null, opt: null, dc: "6 4" };
+  const won = (x) => F.money(x, 1) + "억원";
+  const won0 = (x) => F.money(x, 0) + "억원";
+  const rate = (x) => F.num(x, 1) + "원";
+
+  for (let mo = 1; mo <= 12; mo++) $("d-months").appendChild(F.el("option", { value: mo, text: mo + "개월" }));
+
+  function fill() {
+    $("m-spot").value = D.mkt.spot; $("m-rd").value = D.mkt.rd; $("m-rf").value = D.mkt.rf; $("m-vol").value = D.mkt.vol;
+    $("d-usd").value = D.deal.usd; $("d-months").value = String(D.deal.months); $("d-ratio").value = D.deal.ratio; $("d-strike").value = ""; $("d-dcp").value = D.deal.dcp; $("d-shock").value = D.deal.shock;
+    $("o-sales").value = D.ops.sales; $("o-costs").value = D.ops.costs; $("o-budget").value = D.ops.budget;
+    $("o-r1").value = D.ops.ratios[0]; $("o-r2").value = D.ops.ratios[1]; $("o-r3").value = D.ops.ratios[2]; $("o-shock").value = D.ops.shock;
+    document.querySelectorAll("input[type=number]").forEach((i) => i.setAttribute("aria-invalid", "false"));
+  }
+  const n = (id, fb) => F.readNum($(id), fb);
+  function readMkt() { return { spot: n("m-spot", D.mkt.spot), rd: n("m-rd", D.mkt.rd), rf: n("m-rf", D.mkt.rf), vol: n("m-vol", D.mkt.vol) }; }
+  function readDeal() {
+    const k = $("d-strike").value.trim();
+    return { usd: n("d-usd", D.deal.usd), months: Number($("d-months").value), ratio: n("d-ratio", D.deal.ratio), strike: k === "" ? 0 : n("d-strike", 0), dcp: n("d-dcp", D.deal.dcp), shock: Number($("d-shock").value) };
+  }
+  function readOps() {
+    return { sales: n("o-sales", D.ops.sales), costs: n("o-costs", D.ops.costs), budget: n("o-budget", D.ops.budget), ratios: [n("o-r1", 80), n("o-r2", 50), n("o-r3", 30)], shock: Number($("o-shock").value) };
+  }
+
+  /* ---------- 공용 선 그래프: x는 환율 변화(%) ---------- */
+  function lineChart(hostId, xs, series, markX, label, fmtX) {
+    const H = 270, padL = 56, padR = 16, padT = 16, padB = 34;
+    const fr = F.plotFrame($(hostId), H, label);
+    const svg = fr.svg, W = fr.W;
+    const vals = []; series.forEach((s) => s.values.forEach((v) => vals.push(v)));
+    const t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const X = (x) => padL + (x - xs[0]) / (xs[xs.length - 1] - xs[0]) * (W - padL - padR);
+    const Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => {
+      F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg);
+      F.svgText(svg, padL - 6, Y(tv) + 4, F.money(tv, 0), { "text-anchor": "end" });
+    });
+    [-20, -10, 0, 10, 20].forEach((x) => F.svgText(svg, X(x), H - padB + 16, fmtX(x), { "text-anchor": "middle" }));
+    F.svgEl("line", { x1: X(markX), x2: X(markX), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-width": 1, "stroke-dasharray": "3 3" }, svg);
+    series.forEach((s) => {
+      F.svgEl("path", { d: "M" + s.values.map((v, i) => X(xs[i]) + "," + Y(v)).join("L"), fill: "none", stroke: s.color, "stroke-width": s.width || 2.2, "stroke-dasharray": s.dash || "none", "stroke-linejoin": "round" }, svg);
+      const i = xs.indexOf(markX);
+      if (i >= 0) F.svgEl("circle", { cx: X(markX), cy: Y(s.values[i]), r: 3.6, fill: s.color, stroke: F.css("--surface"), "stroke-width": 1.5 }, svg);
+    });
+    const tip = F.makeTip(fr.plot), step = (W - padL - padR) / (xs.length - 1);
+    xs.forEach((x, i) => {
+      const hit = F.svgEl("rect", { class: "hit", x: X(x) - step / 2, y: padT, width: step, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: fmtX(x), rows: series.map((s) => [s.label, won(s.values[i]), s.color]) }));
+    });
+  }
+
+  /* ---------- 시장 ---------- */
+  function renderMkt(m) {
+    const tb = $("fwd-table");
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["만기", "선물환율", "스왑포인트", "연 환산"].forEach((h) => hr.appendChild(F.el("th", { text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    [1, 3, 6, 12].forEach((mo) => {
+      const f = E.forward(m, mo), sp = f - m.spot;
+      body.appendChild(F.el("tr", null, [F.el("td", { text: mo + "개월" }), F.el("td", { text: F.num(f, 2) }), F.el("td", { class: sp < 0 ? "neg" : null, text: F.signed(sp, 2) }), F.el("td", { text: F.pctSigned(sp / m.spot * 12 / mo, 2) })]));
+    });
+    tb.appendChild(body);
+    $("fwd-note").textContent = m.rf > m.rd ? "달러 금리가 원화보다 높아 선물로 달러를 사면 현물보다 싸게 삽니다(스왑포인트 음수)." : m.rf < m.rd ? "원화 금리가 달러보다 높아 선물 달러가 현물보다 비쌉니다(스왑포인트 양수)." : "두 금리가 같아 선물환율과 현물환율이 같습니다.";
+  }
+
+  /* ---------- 인수대금 ---------- */
+  function renderDeal(m) {
+    const d = readDeal(), r = E.deal(m, d, SHOCKS), s = r.setup, at = r.at;
+    const fail = $("oc-fail").checked, key = fail ? "fail" : "close";
+    const C = COLORS();
+    $("d-shock-out").textContent = rate(at.ST) + " (" + (d.shock > 0 ? "+" : d.shock < 0 ? "−" : "") + Math.abs(d.shock) + "%)";
+    $("sn-deal").textContent = F.num(d.usd, 0) + "백만 달러 · " + d.months + "개월 · " + F.num(d.ratio, 0) + "%";
+
+    F.setValue($("k-sign"), F.money(r.signing, 0), "억원");
+    $("k-sign-sub").textContent = rate(m.spot) + " 기준";
+    F.setValue($("k-fwd"), F.num(s.F, 1), "원");
+    $("k-fwd-sub").textContent = d.months + "개월 · 현물 대비 " + F.signed(s.F - m.spot, 1);
+    F.setValue($("k-prem"), F.money(r.premEok, 1), "억원");
+    $("k-prem-sub").textContent = "달러당 " + F.num(s.prem, 1) + "원 · 행사가 " + F.num(s.K, 1);
+    F.setValue($("k-dc"), F.money(r.dcCostEok, 1), "억원");
+    $("k-dc-sub").textContent = "선물환 대비 +" + F.num(d.dcp, 1) + "%";
+
+    const legend = $("deal-legend");
+    legend.textContent = "";
+    E.STRATS.forEach((st) => {
+      const k = st.key === "dc" ? F.el("i", { class: "key-dash" }) : F.el("i", { class: "key-line" });
+      if (st.key === "dc") k.style.borderColor = C.dc; else k.style.background = C[st.key];
+      legend.appendChild(F.el("span", null, [k, st.label]));
+    });
+    $("deal-chart-title").firstChild.textContent = fail ? "거래 무산 시 헤지 정리 부담 " : "종결 시점 환율별 원화 비용 ";
+    lineChart("deal-chart", SHOCKS, E.STRATS.map((st) => ({ label: st.label, color: C[st.key], dash: DASH[st.key], values: r.curve.map((c) => c[key][st.key]) })), d.shock,
+      fail ? "거래가 무산됐을 때 종결 예정 시점 환율별로 전략마다 생기는 원화 부담 선 그래프" : "종결 시점 환율별로 전략마다 드는 원화 인수 비용 선 그래프",
+      (x) => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x) + "%");
+
+    /* 전략 표: 지금 시나리오에서 종결·무산 부담과 ±20% 범위 */
+    const tb = $("deal-table");
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["전략", "종결 시 비용", "서명 시점 대비", "무산 시 부담", "비용 범위 ±20%"].forEach((h) => hr.appendChild(F.el("th", { text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    E.STRATS.forEach((st) => {
+      const cl = r.curve.map((c) => c.close[st.key]);
+      const lo = Math.min.apply(null, cl), hi = Math.max.apply(null, cl);
+      const sw = F.el("i", { class: "sw" }); sw.style.background = C[st.key];
+      const fv = at.fail[st.key];
+      body.appendChild(F.el("tr", null, [
+        F.el("td", null, [sw, st.label]),
+        F.el("td", { text: F.money(at.close[st.key], 1) }),
+        F.el("td", { class: at.close[st.key] - r.signing > 0 ? "neg" : null, text: F.signed(at.close[st.key] - r.signing, 1) }),
+        F.el("td", { class: fv > 0.05 ? "neg" : null, text: Math.abs(fv) < 0.05 ? "0" : F.signed(fv, 1) }),
+        F.el("td", { text: F.money(hi - lo, 0) })
+      ]));
+    });
+    tb.appendChild(body);
+
+    const best = E.STRATS.slice().sort((a, b) => at.close[a.key] - at.close[b.key])[0];
+    const worstOf = (k) => Math.max.apply(null, r.curve.map((c) => c.close[k]));
+    const v = $("deal-verdict");
+    v.textContent = "";
+    if (fail) v.append("거래가 무산되면 사야 할 달러가 없어집니다. 그래프는 그때 헤지를 정리하며 떠안는 부담이고, 일반 선물환은 환율이 내릴수록 손실이 커집니다.");
+    else {
+      v.append("종결 시점 환율이 " + rate(at.ST) + "이면 결과적으로 가장 싼 전략은 ", F.el("b", { text: best.label }), "(" + won0(at.close[best.key]) + ")");
+      v.append(worstOf(best.key) - at.close[best.key] > 1
+        ? "이지만, 환율이 20% 오르면 이 전략의 비용은 " + won0(worstOf(best.key)) + "까지 늘어납니다. 헤지는 가장 싼 결과를 맞히는 일이 아니라 비용이 움직이는 폭을 줄이는 일입니다."
+        : "이고, 환율이 어느 쪽으로 움직여도 비용이 거의 변하지 않습니다.");
+    }
+
+    const memo = $("deal-memo"), h = s.h;
+    memo.textContent = "";
+    memo.append("서명 시점 환율 " + rate(m.spot) + "으로 " + F.num(d.usd, 0) + "백만 달러는 " + won0(r.signing) + "입니다. ");
+    if (h > 0) {
+      memo.append(d.months + "개월 선물환으로 " + F.num(d.ratio, 0) + "% 헤지하면 종결 비용은 ", F.el("b", { text: won0(r.curve[20].close.fwd) }), (h >= 1 ? "으로 고정되지만" : " 근처로 좁혀지지만") + ", 거래가 무산되고 환율이 " + Math.abs(d.shock < 0 ? d.shock : -10) + "% 내리면 정산 손실 " + won0(E.dealAt(m, d, m.spot * (1 - Math.abs(d.shock < 0 ? d.shock : -10) / 100)).fail.fwd) + "을 떠안습니다. ");
+      memo.append("딜 컨틴전트 선물환은 " + won0(r.dcCostEok) + "을 더 내는 대신 무산 위험이 없고, 콜옵션은 프리미엄 " + won0(r.premEok) + "으로 비용 상한만 막고 환율이 내리면 그 이득을 남깁니다.");
+    } else memo.append("헤지 비율이 0%라 종결 비용은 환율에 따라 " + won0(r.curve[0].close.none) + "에서 " + won0(r.curve[r.curve.length - 1].close.none) + "까지 움직입니다.");
+
+    const chk = $("deal-check");
+    chk.textContent = "";
+    const d100 = Object.assign({}, d, { ratio: 100 }), c100 = E.deal(m, d100, [-20, 0, 20]).curve.map((c) => c.close.fwd);
+    const fixed = c100.every((v) => Math.abs(v - c100[0]) < 1e-6);
+    const o = E.option(m, s.K, d.months), parity = Math.abs((o.call - o.put) - o.df * (o.F - s.K)) < 1e-9;
+    [["100% 선물환이면 종결 비용 고정", fixed], ["풋-콜 패리티", parity]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  /* ---------- 수출 대금 ---------- */
+  function renderOps(m) {
+    const o = readOps(), r = E.ops(m, o, o.shock), curve = E.opsCurve(m, o, SHOCKS);
+    $("o-shock-out").textContent = rate(r.ST) + " (" + (o.shock > 0 ? "+" : o.shock < 0 ? "−" : "") + Math.abs(o.shock) + "%)";
+    $("sn-ops").textContent = "순노출 월 " + F.num(r.net, 1) + "백만 달러";
+
+    F.setValue($("k-net"), F.num(r.netYear, 0), "백만 달러", r.netYear < 0);
+    $("k-net-sub").textContent = "수출 " + F.num(o.sales * 12, 0) + " − 지출 " + F.num(o.costs * 12, 0);
+    F.setValue($("k-avg"), r.avgFwd === null ? "–" : F.num(r.avgFwd, 1), r.avgFwd === null ? "" : "원");
+    $("k-avg-sub").textContent = "헤지 비중 " + F.pct(r.hedgeShare, 0);
+    F.setValue($("k-sens"), F.money(-r.sens1.hedged, 1), "억원", r.sens1.hedged > 0);
+    $("k-sens-sub").textContent = "헤지 안 하면 " + F.money(-r.sens1.unhedged, 1);
+    const vsB = r.hedged - r.budget;
+    F.setValue($("k-bud"), F.signed(vsB, 1), "억원", vsB < 0);
+    $("k-bud-sub").textContent = "헤지 안 하면 " + F.signed(r.unhedged - r.budget, 1);
+    const p = $("ops-pill");
+    p.className = "pill " + (vsB >= 0 ? "ok" : vsB > -0.02 * Math.abs(r.budget) ? "warn" : "bad");
+    p.textContent = vsB >= 0 ? "사업계획 이상" : "사업계획 " + F.pct(-vsB / Math.abs(r.budget || 1), 1) + " 미달";
+
+    lineChart("ops-chart", SHOCKS, [
+      { label: "헤지 안 함", color: F.css("--mark-muted"), values: curve.map((c) => c.unhedged) },
+      { label: "헤지 후", color: F.css("--input"), values: curve.map((c) => c.hedged) },
+      { label: "사업계획", color: F.css("--ink"), dash: "5 4", width: 1.6, values: curve.map((c) => c.budget) }
+    ], o.shock, "환율 변화별 12개월 원화 순매출, 헤지 전후와 사업계획 비교 선 그래프", (x) => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x) + "%");
+
+    $("ops-verdict").textContent = "";
+    $("ops-verdict").append("환율이 " + rate(r.ST) + "이면 12개월 원화 순매출은 헤지 후 ", F.el("b", { text: won0(r.hedged) }), ", 헤지 안 하면 " + won0(r.unhedged) + "입니다. 사업계획 환율 " + rate(o.budget) + " 기준은 " + won0(r.budget) + "입니다.");
+
+    const tb = $("ops-table");
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["월", "헤지 비율", "선물환율", "헤지 안 함", "헤지 후"].forEach((h) => hr.appendChild(F.el("th", { text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    r.rows.forEach((row) => body.appendChild(F.el("tr", null, [F.el("td", { text: row.m + "개월 뒤" }), F.el("td", { text: F.pct(row.h, 0) }), F.el("td", { text: F.num(row.F, 1) }), F.el("td", { text: F.money(row.unhedged, 1) }), F.el("td", { text: F.money(row.hedged, 1) })])));
+    tb.appendChild(body);
+
+    const memo = $("ops-memo");
+    memo.textContent = "";
+    memo.append("월 수출 대금 " + F.num(o.sales, 1) + "백만 달러에서 달러 지출 " + F.num(o.costs, 1) + "백만 달러를 먼저 상계하면 헤지할 순노출은 연 " + F.num(r.netYear, 0) + "백만 달러입니다. ");
+    memo.append("환율이 1% 내리면 헤지 안 한 순매출은 " + won(r.sens1.unhedged) + " 줄지만, 지금 정책(1~3개월 " + o.ratios[0] + "%, 4~6개월 " + o.ratios[1] + "%, 7~12개월 " + o.ratios[2] + "%)이면 ", F.el("b", { text: won(r.sens1.hedged) }), "으로 줄어듭니다. ");
+    if (r.avgFwd !== null) memo.append("헤지한 부분의 평균 환율은 " + rate(r.avgFwd) + "으로 사업계획 환율 " + rate(o.budget) + "보다 " + F.num(Math.abs(r.avgFwd - o.budget), 1) + "원 " + (r.avgFwd >= o.budget ? "높습니다." : "낮습니다."));
+
+    const chk = $("ops-check");
+    chk.textContent = "";
+    const o100 = Object.assign({}, o, { ratios: [100, 100, 100] });
+    const flat = Math.abs(E.ops(m, o100, -20).hedged - E.ops(m, o100, 20).hedged) < 1e-6;
+    const zero = Object.assign({}, o, { ratios: [0, 0, 0] });
+    const same = Math.abs(E.ops(m, zero, o.shock).hedged - r.unhedged) < 1e-9;
+    [["100% 헤지면 매출이 환율과 무관", flat], ["헤지 0%면 헤지 후 = 헤지 안 함", same]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  function render() {
+    const m = readMkt();
+    renderMkt(m);
+    renderDeal(m);
+    renderOps(m);
+  }
+
+  ["m-spot", "m-rd", "m-rf", "m-vol", "d-usd", "d-ratio", "d-strike", "d-dcp", "d-shock", "o-sales", "o-costs", "o-budget", "o-r1", "o-r2", "o-r3", "o-shock"].forEach((id) => $(id).addEventListener("input", render));
+  ["d-months", "oc-close", "oc-fail"].forEach((id) => $(id).addEventListener("change", render));
+  ["mkt-form", "deal-form", "ops-form"].forEach((id) => $(id).addEventListener("submit", (e) => e.preventDefault()));
+  $("deal-reset").addEventListener("click", () => { fill(); render(); });
+  $("ops-reset").addEventListener("click", () => { fill(); render(); });
+  F.tabs(["tb-deal", "tb-ops"], () => render());
+  fill(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

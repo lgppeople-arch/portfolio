@@ -27,9 +27,11 @@
     <nav class="site-nav" aria-label="도구">
       <a href="capex-kit.html">설비투자</a>
       <a href="post-review.html">사후관리</a>
-      <a href="ma-valuation.html">M&amp;A</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
       <a href="holdco-nav.html">지주사</a>
       <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
       <a href="checks.html" aria-current="page">검산</a>
     </nav>
   </div>
@@ -66,16 +68,17 @@
 <script src="../assets/engines/ma.js"></script>
 <script src="../assets/engines/holdco.js"></script>
 <script src="../assets/engines/cash.js"></script>
+<script src="../assets/engines/fx.js"></script>
 <script src="../assets/checks.js"></script>
 <script>
 (function () {
   "use strict";
   const F = window.Fin, $ = F.$;
-  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html" };
+  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html" };
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine });
+    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }

@@ -7,7 +7,8 @@
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
-    Cash: require("./engines/cash.js")
+    Cash: require("./engines/cash.js"),
+    Fx: require("./engines/fx.js")
   } : null;
   const api = factory();
   if (node) {
@@ -54,11 +55,12 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
     const fmt = (x) => (Math.abs(x) < 1e-9 ? "0" : x.toExponential(1));
+    const F_ = (x) => x.toFixed(2);
 
     /* ---------- 공통 계산 ---------- */
     {
@@ -154,6 +156,35 @@
       add("지주사", "매각 후 지주비율 = (자회사 장부가 합 − 매각분) ÷ 매각 후 자산총액", near(sc.cAfter.holdRatio, expect), (sc.cAfter.holdRatio * 100).toFixed(2) + "%");
       const sumBS = sc.h2.assets - sc.h2.liab - sc.h2.equity, sumBS0 = x.holdco.assets - x.holdco.liab - x.holdco.equity;
       add("지주사", "매각 전후 재무상태표 차이(자산 − 부채 − 자본)가 그대로 유지된다", near(sumBS, sumBS0), "전 " + sumBS0.toFixed(2) + " / 후 " + sumBS.toFixed(2));
+    }
+
+    /* ---------- 환리스크 헤지 ---------- */
+    if (Fx) {
+      const m = clone(Fx.DEFAULTS.mkt);
+      let worstPc = 0;
+      [1300, 1391.28, 1450].forEach((K) => [3, 6, 12].forEach((mo) => {
+        const o = Fx.option(m, K, mo);
+        worstPc = Math.max(worstPc, Math.abs((o.call - o.put) - o.df * (o.F - K)));
+      }));
+      add("환리스크", "풋-콜 패리티: 콜 − 풋 = 할인계수 × (선물환율 − 행사가)", worstPc < 1e-9, "최대 오차 " + fmt(worstPc) + "원");
+      const same = Object.assign({}, m, { rf: m.rd });
+      add("환리스크", "두 통화 금리가 같으면 선물환율 = 현물환율", near(Fx.forward(same, 6), same.spot), Fx.forward(same, 6).toFixed(4) + "원");
+
+      const shocks = [-20, -10, 0, 10, 20];
+      const d1 = clone(Fx.DEFAULTS.deal); d1.ratio = 100;
+      const c1 = Fx.deal(m, d1, shocks).curve.map((c) => c.close.fwd);
+      add("환리스크", "선물환으로 100% 헤지하면 종결 비용은 환율과 무관하다", c1.every((v) => near(v, c1[0])), F_(c1[0]) + "억원");
+      const d0 = clone(Fx.DEFAULTS.deal); d0.ratio = 0;
+      const c0 = Fx.deal(m, d0, shocks).curve;
+      add("환리스크", "헤지 비율이 0이면 모든 전략이 헤지 안 함과 같다 (종결·무산)", c0.every((c) => ["fwd", "opt", "dc"].every((k) => near(c.close[k], c.close.none) && Math.abs(c.fail[k]) < 1e-9)), "");
+      const dz = clone(Fx.DEFAULTS.deal); dz.dcp = 0;
+      const cz = Fx.deal(m, dz, shocks).curve;
+      add("환리스크", "딜 컨틴전트 선물환은 무산돼도 부담이 없고, 프리미엄 0이면 일반 선물환과 같다", cz.every((c) => c.fail.dc === 0 && near(c.close.dc, c.close.fwd)), "");
+      const s = Fx.dealSetup(m, d1), up = Fx.dealAt(m, d1, s.K * 1.15, s);
+      add("환리스크", "콜옵션 헤지의 종결 비용 상한 = (행사가 + 프리미엄의 종결 시점 가치) × 금액", near(up.close.opt, Fx.eok(d1.usd, s.K + s.premFV)), F_(up.close.opt) + "억원");
+      const o1 = clone(Fx.DEFAULTS.ops); o1.ratios = [100, 100, 100];
+      const a = Fx.ops(m, o1, -15).hedged, b = Fx.ops(m, o1, 15).hedged;
+      add("환리스크", "수출 순노출을 100% 헤지하면 원화 매출은 환율과 무관하다", near(a, b), F_(a) + "억원");
     }
 
     /* ---------- 13주 자금수지 ---------- */

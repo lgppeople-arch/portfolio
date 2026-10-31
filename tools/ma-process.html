@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>M&amp;A 절차 지도 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .flowmap { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 12px; display: grid; gap: 10px; }
+  .flowmap .phases { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; }
+  .flowmap .phases span { font-family: var(--f-num); font-size: 11px; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1.5px solid var(--ink); padding-bottom: 5px; text-align: center; }
+  .flowmap ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; }
+  .flowmap li.dim { opacity: 0.35; }
+  .flowmap a { display: grid; justify-items: center; align-content: start; gap: 5px; padding: 8px 2px 10px; border-radius: 6px; text-decoration: none; color: var(--ink); text-align: center; height: 100%; }
+  .flowmap a:hover { background: var(--ledger); }
+  .flowmap .n { font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  .flowmap .t { font-size: 12.5px; font-weight: 600; line-height: 1.35; word-break: keep-all; }
+  .flowmap .mk { font-size: 15px; line-height: 1; height: 15px; color: var(--accent); }
+  .flowmap .ms { font-family: var(--f-num); font-size: 10.5px; color: var(--surface); background: var(--ink); border-radius: 3px; padding: 1px 6px; }
+  @media (max-width: 980px) { .flowmap .phases { display: none; } .flowmap ol { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .flowmap ol { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .maprow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding-top: 10px; border-top: 1px dashed var(--rule); font-size: var(--s-1); color: var(--ink-2); }
+  .maprow .key { display: inline-flex; align-items: center; gap: 6px; }
+  .maprow .key b { color: var(--accent); font-size: 15px; line-height: 1; }
+  .maprow label { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .maprow input { accent-color: var(--input); width: 16px; height: 16px; }
+  .howto { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 26px 0 8px; }
+  .howto > div { border-top: 1px solid var(--rule); padding-top: 10px; display: grid; gap: 4px; align-content: start; }
+  .howto b { font-size: var(--s-2); }
+  .howto p { font-size: var(--s-1); color: var(--ink-2); }
+  @media (max-width: 860px) { .howto { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
+
+  .stages { display: grid; margin-top: 18px; }
+  .stage-card { padding: 30px 0; border-top: 1px solid var(--rule); scroll-margin-top: 72px; }
+  .sc-head { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 12px; align-items: baseline; margin-bottom: 14px; }
+  .sc-no { font-family: var(--f-display); font-weight: 800; font-size: 30px; color: var(--accent); line-height: 1; }
+  .sc-head h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); letter-spacing: -0.01em; line-height: 1.3; }
+  .sc-en { font-family: var(--f-num); font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+  .sc-phase { font-family: var(--f-num); font-size: 11px; color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .sc-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px 36px; padding-left: 70px; }
+  .stage-card.has-mine .sc-grid { grid-template-columns: minmax(0, 1fr) 340px; }
+  @media (max-width: 960px) { .sc-grid, .stage-card.has-mine .sc-grid { grid-template-columns: minmax(0, 1fr); padding-left: 0; } }
+  .sc-main { min-width: 0; }
+  .sc-what { font-size: var(--s-3); line-height: 1.75; max-width: 72ch; }
+  .sc-dl { margin: 16px 0 0; display: grid; gap: 12px; max-width: 80ch; }
+  .sc-dl > div { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 12px; }
+  .sc-dl dt { font-size: var(--s-1); font-weight: 700; color: var(--ink); padding-top: 2px; }
+  .sc-dl dd { margin: 0; font-size: var(--s-2); color: var(--ink-2); line-height: 1.65; }
+  .sc-dl ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+  .sc-dl .trap dt { color: var(--neg-ink); }
+  @media (max-width: 560px) { .sc-dl > div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+  .sc-tools { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: var(--s-1); color: var(--muted); }
+  .sc-tools a { font-weight: 600; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); border-radius: 4px; padding: 4px 10px; background: var(--surface); }
+  .sc-tools a:hover { background: var(--ink); color: var(--paper); }
+  .sc-mine { align-self: start; min-width: 0; background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 12px; align-content: start; }
+  .sc-mine-h { font-family: var(--f-num); font-size: 11px; letter-spacing: 0.06em; color: var(--muted); }
+  .mine { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; }
+  .mine .mk { color: var(--accent); font-size: 15px; line-height: 1.5; }
+  .mine b { font-size: var(--s-1); }
+  .mine p { font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; margin: 2px 0 6px; }
+  .note-end { margin-top: 10px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: var(--s-1); color: var(--muted); max-width: 90ch; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html" aria-current="page">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / M&amp;A 절차 지도</div>
+      <h1>M&amp;A 절차 지도</h1>
+      <p>인수하는 회사 쪽에서 본 M&amp;A 전 과정을 비밀유지계약부터 인수 후 통합까지 13단계로 정리했습니다. 단계마다 무엇을 하는지, 어떤 문서가 오가는지, 재무 담당자가 무엇을 챙겨야 하는지 적고, 제가 실제로 일한 단계를 표시했습니다.</p>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <nav class="flowmap" aria-label="M&amp;A 단계 지도">
+      <div class="phases" aria-hidden="true">
+        <span style="grid-column: 1 / 4">준비</span>
+        <span style="grid-column: 4 / 6">검토·제안</span>
+        <span style="grid-column: 6 / 8">실사·협상</span>
+        <span style="grid-column: 8 / 11">구조·승인·계약</span>
+        <span style="grid-column: 11 / 14">종결·통합</span>
+      </div>
+      <ol>
+        <li data-mine="related"><a href="#st-01"><span class="n">01</span><span class="t">전략·탐색</span><span class="mk" aria-label="관련 경험">○</span></a></li>
+        <li data-mine="direct"><a href="#st-02"><span class="n">02</span><span class="t">자문사 계약</span><span class="mk" aria-label="직접 참여">●</span></a></li>
+        <li><a href="#st-03"><span class="n">03</span><span class="t">비밀유지계약</span><span class="mk"></span></a></li>
+        <li data-mine="related"><a href="#st-04"><span class="n">04</span><span class="t">예비 가치평가</span><span class="mk" aria-label="관련 경험">○</span></a></li>
+        <li><a href="#st-05"><span class="n">05</span><span class="t">인수의향서</span><span class="mk"></span></a></li>
+        <li data-mine="direct"><a href="#st-06"><span class="n">06</span><span class="t">실사</span><span class="mk" aria-label="직접 참여">●</span></a></li>
+        <li><a href="#st-07"><span class="n">07</span><span class="t">가격 확정</span><span class="mk"></span></a></li>
+        <li data-mine="related"><a href="#st-08"><span class="n">08</span><span class="t">구조·자금</span><span class="mk" aria-label="관련 경험">○</span></a></li>
+        <li data-mine="direct related"><a href="#st-09"><span class="n">09</span><span class="t">내부 승인</span><span class="mk" aria-label="직접 참여">●</span></a></li>
+        <li><a href="#st-10"><span class="n">10</span><span class="t">주식매매계약</span><span class="ms">서명</span></a></li>
+        <li><a href="#st-11"><span class="n">11</span><span class="t">인허가·공시</span><span class="mk"></span></a></li>
+        <li><a href="#st-12"><span class="n">12</span><span class="t">거래 종결</span><span class="ms">종결</span></a></li>
+        <li data-mine="related"><a href="#st-13"><span class="n">13</span><span class="t">통합·사후관리</span><span class="mk" aria-label="관련 경험">○</span></a></li>
+      </ol>
+      <div class="maprow">
+        <span class="key"><b>●</b>직접 참여 · 인수 TFT</span>
+        <span class="key"><b>○</b>관련 경험 · 다른 거래나 같은 성격의 업무</span>
+        <span id="mine-count"></span>
+        <label for="only-mine"><input type="checkbox" id="only-mine">제 경력이 있는 단계만 보기</label>
+      </div>
+    </nav>
+
+    <div class="howto">
+      <div><b>참고용 절차 정리</b><p>경쟁입찰과 수의계약의 차이, 단계별 문서와 재무 체크포인트를 한곳에 모았습니다.</p></div>
+      <div><b>제 경력의 위치</b><p>이력서에 적은 사실만 표시했습니다. 인수 TFT에서 직접 한 일과, 다른 업무에서 같은 성격의 일을 해 본 경험을 나눴습니다.</p></div>
+      <div><b>바로 계산해 보기</b><p>가치평가, 실사 결과의 가격 반영, 외화 대금 헤지, 인수 후 성과 점검은 도구로 직접 돌려 볼 수 있습니다.</p></div>
+    </div>
+
+    <div class="stages">
+
+      <article class="stage-card has-mine" id="st-01" data-mine="related">
+        <header class="sc-head"><span class="sc-no">01</span><h2>인수 전략·대상 탐색<span class="sc-en">Strategy &amp; sourcing</span></h2><span class="sc-phase">준비</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">왜 사는지(기술, 고객, 생산능력, 지역)를 먼저 정하고, 기준에 맞는 후보를 넓게 뽑은 뒤(롱리스트) 좁힙니다(숏리스트). 매도 측 자문사가 회사 이름을 가린 요약 자료(티저)를 보내오며 시작되는 경우도 많습니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>인수 전략 보고, 후보 선별표, 티저</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>인수 목적에 맞는 평가 기준: 규모, 수익성, 고객·기술 보완</li><li>직접 투자(설비 증설)와 비교한 대안 검토</li><li>투자 여력: 보유 현금, 차입 한도, 재무약정</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>매물이 먼저 정해지고 목적을 나중에 붙이면 분석이 거래를 정당화하는 쪽으로 기웁니다.</dd></div>
+            </dl>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">○</span><div><b>관련 경험</b><p>중국 상장 경쟁사의 투자설명서 원문을 사업구조·원가·설비투자·고객·재무지표로 분석하고 분기마다 보고했습니다. 대상 업계를 읽는 방식이 같습니다.</p><span class="df-src">경쟁사 리서치</span></div></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="stage-card has-mine" id="st-02" data-mine="direct">
+        <header class="sc-head"><span class="sc-no">02</span><h2>자문사 선정·계약<span class="sc-en">Advisor engagement</span></h2><span class="sc-phase">준비</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">재무자문사(거래 구조·가격·협상), 회계법인(재무·세무 실사, 가치평가), 법무법인(법률 실사, 계약서)을 정하고, 필요하면 환경·기술·인사 실사 자문을 더합니다. 제안서를 비교해 자문 계약(Engagement Letter)을 맺습니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>제안서, 자문 계약서(업무범위, 보수, 책임 한도, 이해상충 확인), 고객확인·자금세탁방지(KYC/AML) 서류</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>자문사끼리 업무범위가 겹치거나 빠진 곳</li><li>보수 구조(고정보수, 성공보수, 실비)와 거래가 무산될 때 드는 비용</li><li>전체 자문 비용 예산과 승인</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>실사 범위를 좁게 잡았다가 중간에 추가 계약이 붙어 비용과 일정이 늘어납니다.</dd></div>
+            </dl>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">●</span><div><b>직접 참여</b><p>자문 계약의 업무범위와 보수 수준을 검토하고 예상 비용을 산출했습니다. Engagement Letter와 자금세탁방지(AML) 서류를 관리했습니다.</p><span class="df-src">인수 TFT</span></div></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="stage-card" id="st-03">
+        <header class="sc-head"><span class="sc-no">03</span><h2>비밀유지계약<span class="sc-en">NDA</span></h2><span class="sc-phase">준비</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">상세 자료를 받기 전에 맺습니다. 받은 정보를 이 거래 검토에만 쓰고, 정해진 사람에게만 공유하겠다고 약속하는 계약입니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 조항</dt><dd>비밀정보의 범위와 예외(이미 공개된 정보 등), 사용 목적 제한, 공유할 수 있는 사람(임직원·자문사), 유효기간, 자료 반환·파기, 대상회사 임직원 채용 권유 금지, 대상회사 임직원·고객 직접 접촉 금지</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>사내 열람자 명단과 자료 접근 관리</li><li>상장사라면 미공개 중요정보 관리: 정보 차단, 내부자 거래 예방</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>경쟁사끼리 거래하면서 가격·고객 정보를 그대로 주고받으면 공정거래법상 정보 교환 문제가 될 수 있습니다. 이때는 소수만 민감 정보를 보는 클린팀을 둡니다.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage-card has-mine" id="st-04" data-mine="related">
+        <header class="sc-head"><span class="sc-no">04</span><h2>자료 검토·예비 가치평가<span class="sc-en">Information review &amp; preliminary valuation</span></h2><span class="sc-phase">검토·제안</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">투자설명서(IM)와 경영진 설명회로 사업을 이해하고, 유사기업 배수와 현금흐름할인(DCF)으로 가격 범위를 잡습니다. 시너지 가설과 인수 후 재무 영향(차입, 이익)을 함께 봅니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>투자설명서(IM), 예비 재무자료, 예비 가치평가 보고</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>매도 측 사업계획이 얼마나 낙관적인지</li><li>일회성 손익과 순차입금 정의</li><li>시너지와 통합 비용을 가격과 따로 보기</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>시너지를 가격에 다 얹으면 그 가치를 매도인에게 넘겨주게 됩니다.</dd></div>
+            </dl>
+            <p class="sc-tools">관련 도구 <a href="ma-valuation.html">M&amp;A 가치평가</a></p>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">○</span><div><b>관련 경험</b><p>이전 직장에서 사업부문 가치평가와 수익성 분석을 했습니다. 「기업가치평가와 재무실사」 기반 가치평가 교육(DCF, 시장·자산가치 접근법, 비상장주식 평가)을 받았습니다.</p><span class="df-src">이전 직장 · 교육</span></div></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="stage-card" id="st-05">
+        <header class="sc-head"><span class="sc-no">05</span><h2>인수의향서·예비입찰<span class="sc-en">LOI · Non-binding offer</span></h2><span class="sc-phase">검토·제안</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">가격과 조건을 담은 구속력 없는 제안을 냅니다. 경쟁입찰이면 예비입찰, 숏리스트, 실사, 본입찰(구속력 있는 제안), 우선협상대상자 선정 순서로 갑니다. 수의계약이면 양해각서(MOU)나 조건 요약서(텀싯)에 배타적 협상 기간을 두고 진행합니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 내용</dt><dd>가격과 가격 기준, 인수 구조, 자금 조달 방법, 실사 범위와 일정, 선행조건, 배타적 협상 기간</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>가격 기준: 현금·차입금이 없는 상태의 기업가치인지, 지분가치인지</li><li>정상 운전자본과 순차입금 정의 같은 가정을 함께 적기</li><li>자금 조달 확실성: 보유 현금, 금융기관 확약</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>가정 없이 숫자만 적으면 실사 뒤 가격을 조정할 근거가 약해집니다.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage-card has-mine" id="st-06" data-mine="direct">
+        <header class="sc-head"><span class="sc-no">06</span><h2>실사<span class="sc-en">Due diligence</span></h2><span class="sc-phase">실사·협상</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">가상 데이터룸(VDR)에 올라온 자료를 검토하고, 자료요청목록과 질의응답으로 빈 곳을 채웁니다. 경영진 인터뷰와 현장 실사를 거쳐 문제 항목(레드플래그)을 보고받습니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>자료요청목록, 질의응답 기록, 실사 보고서(재무·세무·법률·사업·환경·IT)</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>재무실사: 이익의 질(정상화 EBITDA), 순차입금과 부채성 항목, 운전자본 추이, 설비투자 수준</li><li>법률실사: 주요 계약의 지배권 변경 조항, 소송, 인허가, 지식재산권, 노무</li><li>결과를 가격(정상화 EBITDA, 부채성 항목, 정상 운전자본)과 계약 조항(진술·보장, 특별손해배상, 선행조건)으로 나눠 옮기기</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>일정에 밀려 확인하지 못한 항목을 계약서의 일반 보장 조항으로만 막으려 하는 것.</dd></div>
+            </dl>
+            <p class="sc-tools">관련 도구 <a href="ma-valuation.html#fdd">실사 결과를 가격에 반영하기</a></p>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">●</span><div><b>직접 참여</b><p>실사 진행을 조율하고, 자문사 담당 파트너와 영문으로 직접 교신하며 딜 일정과 서류 요건을 관리했습니다.</p><span class="df-src">인수 TFT</span></div></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="stage-card" id="st-07">
+        <header class="sc-head"><span class="sc-no">07</span><h2>가격 확정·협상<span class="sc-en">Price &amp; mechanism</span></h2><span class="sc-phase">실사·협상</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">실사 결과를 반영해 가격과 가격 결정 방식을 정합니다. 완결 회계(거래종결 시점 재무상태표로 사후 정산)와 락드박스(기준일 재무상태표로 가격을 확정하고, 그 뒤 매도인 쪽으로 새는 가치만 금지) 가운데 하나를 고르고, 필요하면 언아웃(성과에 따른 추가 지급)이나 에스크로(대금 일부 예치)를 둡니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>가격 산정 근거, 가격 조정 산식 초안</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>순차입금, 부채성 항목, 정상 운전자본의 정의를 계약서 문구까지 맞추기</li><li>가격 조정이 실제로 얼마인지 시나리오로 계산하기</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>정의가 모호하면 종결 뒤 정산 단계에서 다툼이 생깁니다.</dd></div>
+            </dl>
+            <p class="sc-tools">관련 도구 <a href="ma-valuation.html#fdd">실사 결과를 가격에 반영하기</a></p>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage-card has-mine" id="st-08" data-mine="related">
+        <header class="sc-head"><span class="sc-no">08</span><h2>인수 구조·자금 조달<span class="sc-en">Structure &amp; financing</span></h2><span class="sc-phase">구조·승인·계약</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">주식을 살지 자산·사업을 살지, 누가 살지(본사, 해외 법인, 특수목적법인)를 정하고 자금을 마련합니다(보유 현금, 인수금융, 회사채, 유상증자). 대금이 외화면 서명부터 종결까지의 환리스크를 관리합니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>자금 조달 계획, 금융기관 확약서, 세무 구조 검토</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>인수 후 순차입금/EBITDA, 이자보상배율과 재무약정</li><li>배당·이자 송금과 세금 구조</li><li>외화 대금 헤지 방식: 선물환, 통화옵션, 딜 컨틴전트 선물환</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>거래가 무산될 수 있는데 일반 선물환으로 헤지했다가, 무산 뒤 환율이 반대로 움직여 정산 손실을 보는 것.</dd></div>
+            </dl>
+            <p class="sc-tools">관련 도구 <a href="fx-hedge.html">환리스크 헤지</a><a href="cash-13w.html">13주 자금수지</a></p>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">○</span><div><b>관련 경험</b><p>구미 생산부지·건물 인수(약 1,500억원, 2026년 공시) 건의 투자 설명 자료와 차입용 투자·회수 계획을 공동 작성했습니다.</p><span class="df-src">자산 인수</span></div></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="stage-card has-mine" id="st-09" data-mine="direct related">
+        <header class="sc-head"><span class="sc-no">09</span><h2>내부 승인<span class="sc-en">Internal approval</span></h2><span class="sc-phase">구조·승인·계약</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">자문사 계약, 인수의향서 제출, 계약 체결 같은 고비마다 사내 승인을 받습니다. 중요한 자산의 취득이나 대규모 차입은 상법상 이사회 결의 사항이고, 그 밖의 승인권자는 회사의 위임전결 규정을 따릅니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>품의서, 투자심의 자료, 이사회 안건과 의사록</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>승인받은 가정(가격, 자금 조달, 시너지)을 기록해 사후관리의 기준선으로 남기기</li><li>승인 범위(가격 상한, 조건)를 분명히 하기</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>승인 뒤 가격이나 구조가 바뀌었는데 다시 승인받지 않고 진행하는 것.</dd></div>
+            </dl>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">●</span><div><b>직접 참여</b><p>인수 관련 사내 품의서를 작성했습니다.</p><span class="df-src">인수 TFT</span></div></div>
+            <div class="mine"><span class="mk" aria-hidden="true">○</span><div><b>관련 경험</b><p>이사회 안건 초안과 의사록을 작성하고, 정관·이사회규정·위임전결규정 개정안을 만들었습니다.</p><span class="df-src">이사회 업무</span></div></div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="stage-card" id="st-10">
+        <header class="sc-head"><span class="sc-no">10</span><h2>주식매매계약 체결<span class="sc-en">SPA signing</span></h2><span class="sc-phase">구조·승인·계약</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">법무법인이 계약서 초안을 쓰고 양측이 협상합니다. 서명(사이닝) 뒤 선행조건이 채워지면 거래를 종결(클로징)합니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 조항</dt><dd>매매대금과 가격 조정, 진술·보장, 종결 전 확약(정상 영업 유지 등), 선행조건(인허가, 제3자 동의), 손해배상(한도, 최소 청구액, 청구 기간), 특별손해배상, 해제 사유와 종결 기한(롱스톱 데이트). 진술·보장 보험(W&amp;I)을 쓰기도 합니다.</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>가격 조정 정의와 산식이 실사 결과와 맞는지</li><li>손해배상 한도와 특별손해배상이 실사에서 나온 위험 크기를 덮는지</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>실사에서 이미 알게 된 문제를 일반 진술·보장으로만 다루면, 알고 산 위험이라는 이유로 청구가 막힐 수 있습니다. 특별손해배상이나 가격으로 따로 정해 둡니다.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage-card" id="st-11">
+        <header class="sc-head"><span class="sc-no">11</span><h2>인허가·신고·공시<span class="sc-en">Regulatory &amp; disclosure</span></h2><span class="sc-phase">종결·통합</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">일정 규모 이상이면 공정거래위원회에 기업결합신고를 하고, 대상 국가의 경쟁당국 신고와 외국인투자 심사도 확인합니다. 해외 회사 지분을 사면 송금 전에 외국환거래법상 해외직접투자 신고를 합니다. 상장사는 일정 규모 이상의 타법인 주식 취득을 공시합니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>기업결합신고서, 해외직접투자 신고서, 공시 문서</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>심사 기간이 종결 기한 안에 들어오는지</li><li>공시 시점과 그 전까지의 정보 관리</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>심사 기간을 짧게 잡았다가 종결 기한을 넘기는 것.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage-card" id="st-12">
+        <header class="sc-head"><span class="sc-no">12</span><h2>거래 종결<span class="sc-en">Closing</span></h2><span class="sc-phase">종결·통합</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">선행조건이 채워졌는지 확인하고, 자금 흐름표대로 대금을 보내고 주식을 넘겨받습니다. 완결 회계 방식이면 보통 종결 뒤 두세 달 안에 종결 재무상태표로 가격을 정산합니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>종결 확인서, 자금 흐름표(funds flow), 주식 양수도 서류, 종결 재무상태표</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>송금 일정과 환전, 종결일 현금·차입금 확인</li><li>대상회사 은행 서명권자와 자금 통제를 종결일에 넘겨받기</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>종결일에 자금 통제를 넘겨받지 못해 결재 공백이 생기는 것.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage-card has-mine" id="st-13" data-mine="related">
+        <header class="sc-head"><span class="sc-no">13</span><h2>인수 후 통합·사후관리<span class="sc-en">PMI &amp; post-review</span></h2><span class="sc-phase">종결·통합</span></header>
+        <div class="sc-grid">
+          <div class="sc-main">
+            <p class="sc-what">종결 첫날 계획(자금 통제, 결재 권한, 보고 체계)과 100일 계획으로 통합을 시작합니다. 회계 정책과 계정을 맞춰 월 결산과 연결 보고에 넣고, 인수가격배분(PPA)으로 영업권을 잡은 뒤 매년 손상검사를 합니다. 승인 당시 사업계획·시너지와 실적을 비교해 점검합니다.</p>
+            <dl class="sc-dl">
+              <div><dt>주요 문서</dt><dd>100일 계획, 보고 패키지, 시너지 추적표, 인수가격배분 보고서</dd></div>
+              <div><dt>재무 담당이 챙길 것</dt><dd><ul><li>결산 일정과 보고 양식, 내부통제</li><li>시너지 추적과 승인 가정 대비 실적</li><li>투자계약상 주주 권리(동의권, 정보요구권) 행사</li></ul></dd></div>
+              <div class="trap"><dt>흔한 함정</dt><dd>시너지를 잴 기준선을 종결 전에 정해 두지 않아 성과를 설명하지 못하는 것.</dd></div>
+            </dl>
+            <p class="sc-tools">관련 도구 <a href="post-review.html">투자 사후관리</a></p>
+          </div>
+          <aside class="sc-mine" aria-label="제 경력">
+            <span class="sc-mine-h">제 경력</span>
+            <div class="mine"><span class="mk" aria-hidden="true">○</span><div><b>관련 경험</b><p>지분을 투자한 회사가 신규 투자를 추진할 때 투자계약의 동반투자자 동의 조항에 따라 투자안을 검토하고 서면동의 요청자료를 작성했습니다.</p><span class="df-src">투자회사 관리</span></div></div>
+            <div class="mine"><span class="mk" aria-hidden="true">○</span><div><b>관련 경험</b><p>집행한 투자의 실적을 계획과 비교해 차이 원인을 보고하는 사후관리를 운영합니다.</p><span class="df-src">설비투자 사후관리</span></div></div>
+          </aside>
+        </div>
+      </article>
+    </div>
+
+    <p class="note-end">일반적인 절차를 요약한 참고 자료입니다. 거래 구조, 대상 국가, 상장 여부에 따라 순서와 요건이 달라지고, 법률·세무 판단은 전문가 검토가 필요합니다. 제 경력 표시는 이력서에 적은 업무만 반영했고, 진행 중인 거래의 대상과 규모는 밝히지 않습니다.</p>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>M&amp;A 실무 요약은 <a href="../index.html#ma-practice">홈의 업무 사례</a>에도 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  const cards = Array.from(document.querySelectorAll(".stage-card"));
+  const has = (el, k) => (el.dataset.mine || "").split(" ").indexOf(k) >= 0;
+  const direct = cards.filter((c) => has(c, "direct")).length;
+  const related = cards.filter((c) => has(c, "related")).length;
+  document.getElementById("mine-count").textContent = cards.length + "단계 중 직접 참여 " + direct + "단계, 관련 경험 " + related + "단계";
+  const only = document.getElementById("only-mine");
+  only.addEventListener("change", () => {
+    cards.forEach((c) => { c.hidden = only.checked && !c.dataset.mine; });
+    document.querySelectorAll(".flowmap li").forEach((li) => li.classList.toggle("dim", only.checked && !li.dataset.mine));
+  });
+})();
+</script>
+</body>
+</html>

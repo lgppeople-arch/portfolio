@@ -105,6 +105,7 @@
           <div class="tools">
             <a class="tool-link" href="tools/ma-valuation.html">M&amp;A 가치평가 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/holdco-nav.html">지주사 포트폴리오 가치 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/ma-process.html">M&amp;A 절차 지도 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -116,6 +117,7 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/cash-13w.html">13주 자금수지 · 약정 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/fx-hedge.html">환리스크 헤지 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -183,7 +185,7 @@
         <article class="case case-wide" id="ma-practice">
           <div class="case-top">
             <div><h3>M&amp;A 실무 참여</h3><div class="meta">인수 TFT 재무 실무 · 거래 대상과 규모는 대외비라 밝히지 않습니다</div></div>
-            <p class="case-lede">재무·법률 실사와 계약서 작성은 회계법인과 법무법인이 맡고, 저는 회사 쪽에서 자문사 계약, 실사 일정과 서류, 사내 승인을 챙겼습니다. 거래 단계별로 자문사와 나눠 맡은 일을 정리했습니다. 실사 결과가 매매대금에 반영되는 과정은 <a href="tools/ma-valuation.html#fdd">M&amp;A 가치평가 도구</a>에서 직접 계산해 볼 수 있습니다.</p>
+            <p class="case-lede">재무·법률 실사와 계약서 작성은 회계법인과 법무법인이 맡고, 저는 회사 쪽에서 자문사 계약, 실사 일정과 서류, 사내 승인을 챙겼습니다. 거래 단계별로 자문사와 나눠 맡은 일을 정리했습니다. 실사 결과가 매매대금에 반영되는 과정은 <a href="tools/ma-valuation.html#fdd">M&amp;A 가치평가 도구</a>에서 계산해 볼 수 있고, 비밀유지계약부터 인수 후 통합까지 전 과정에서 제 위치는 <a href="tools/ma-process.html">M&amp;A 절차 지도</a>에 표시했습니다.</p>
           </div>
           <ol class="dealflow">
             <li class="df-head" aria-hidden="true"><span></span><span>단계</span><span>자문사가 하는 일</span><span>제가 맡은 일</span></li>
@@ -335,12 +337,13 @@
 <script src="assets/engines/ma.js"></script>
 <script src="assets/engines/holdco.js"></script>
 <script src="assets/engines/cash.js"></script>
+<script src="assets/engines/fx.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine });
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");
