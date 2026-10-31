@@ -10,7 +10,8 @@
     Cash: require("./engines/cash.js"),
     Fx: require("./engines/fx.js"),
     Mbo: require("./engines/mbo.js"),
-    Pl: require("./engines/pl.js")
+    Pl: require("./engines/pl.js"),
+    Three: require("./engines/three.js")
   } : null;
   const api = factory();
   if (node) {
@@ -57,7 +58,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -220,6 +221,34 @@
       add("손익보고", "계획 유지 방식이면 연간 전망 = 누계 실적 + 남은 달 계획", near(plan.year.outlook.op, plan.ytd.act.op + restOp), F_(plan.year.outlook.op) + "억원");
       const back = Pl.parse(Pl.toCsv(rows));
       add("손익보고", "표로 내보냈다가 다시 읽어도 결과가 같다", back.errors.length === 0 && near(Pl.report(back.rows, 9, "전사", "trend3").year.outlook.op, all.year.outlook.op), back.rows.length + "줄");
+    }
+
+    /* ---------- 세 재무제표 연결 모형 ---------- */
+    if (Three) {
+      const x = clone(Three.DEFAULTS), r = Three.run(x), ys = r.years;
+      const maxAbs = (f) => Math.max.apply(null, ys.map((y) => Math.abs(f(y))));
+      add("재무제표", "해마다 자산 = 부채 + 자본", ys.every((y) => Math.abs(y.check.balance) < 1e-9), ys.length + "년, 최대 차이 " + fmt(maxAbs((y) => y.check.balance)));
+      add("재무제표", "현금흐름표의 기말현금 = 재무상태표의 현금", ys.every((y) => Math.abs(y.check.cashTie) < 1e-9), "최대 차이 " + fmt(maxAbs((y) => y.check.cashTie)));
+      add("재무제표", "기초 자본 + 순이익 − 배당 = 기말 자본", ys.every((y) => Math.abs(y.check.reTie) < 1e-9), F_(ys[0].bs.eq) + "억원 (" + ys[0].year + ")");
+      add("재무제표", "ROE = 순이익률 × 총자산회전율 × 재무레버리지 (DuPont)", ys.every((y) => near(y.r.roe, y.r.margin * y.r.turnover * y.r.leverage, 1e-12)), (ys[0].r.roe * 100).toFixed(2) + "%");
+      const cfoOk = ys.every((y) => near(y.cf.cfo, y.is.ni + y.is.dep + y.cf.dAR + y.cf.dINV + y.cf.dAP));
+      add("재무제표", "영업현금흐름 = 순이익 + 감가상각 + 운전자본 변동", cfoOk, F_(ys[0].cf.cfo) + "억원");
+      /* 무작위 동인 300가지(적자·대규모 투자·차입 포함)에서도 항등식이 깨지지 않는지 */
+      const rnd = rng(20261031);
+      let worst = 0, floor = true, lossYears = 0, drawYears = 0;
+      for (let k = 0; k < 300; k++) {
+        const z = clone(Three.DEFAULTS), d = z.d;
+        d.growth = -25 + rnd() * 70; d.cogs = 40 + rnd() * 60; d.sga = rnd() * 30; d.dep = rnd() * 20; d.capex = rnd() * 40;
+        d.dso = rnd() * 150; d.dio = rnd() * 180; d.dpo = rnd() * 120; d.rate = rnd() * 12; d.tax = rnd() * 40; d.payout = rnd() * 100; d.minCash = rnd() * 300;
+        Three.run(z).years.forEach((y) => {
+          worst = Math.max(worst, Math.abs(y.check.balance) / Math.max(1, y.bs.assets), Math.abs(y.check.cashTie) / Math.max(1, y.bs.assets));
+          if (y.bs.cash < d.minCash - 1e-9 || y.bs.debt < -1e-9) floor = false;
+          if (y.is.ni < 0) lossYears++;
+          if (y.cf.draw > 0) drawYears++;
+        });
+      }
+      add("재무제표", "무작위 동인 300가지에서도 대차·현금이 맞는다 (적자·차입 포함)", worst < 1e-12, "적자 " + lossYears + "개 연도, 차입 " + drawYears + "개 연도");
+      add("재무제표", "현금은 최소 보유현금 아래로 내려가지 않고, 차입금은 음수가 되지 않는다", floor, "300가지 × " + x.years + "년");
     }
 
     /* ---------- 13주 자금수지 ---------- */

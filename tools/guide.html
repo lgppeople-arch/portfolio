@@ -79,6 +79,7 @@
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
     <nav class="site-nav" aria-label="도구">
       <a href="guide.html" aria-current="page">가이드</a>
+      <a href="fsa.html">재무제표</a>
       <a href="pl-report.html">손익보고</a>
       <a href="mbo-kpi.html">성과평가</a>
       <a href="capex-kit.html">설비투자</a>
@@ -126,6 +127,17 @@
       <h2>도구별 사용법</h2>
       <p class="lead">도구마다 "무엇을 알려 주는지", "세 단계로 써 보기", "결과 읽는 법"을 정리했어요.</p>
       <div class="tools-howto">
+        <article class="howcard" id="how-fsa">
+          <h3>재무제표 분석 프레임워크</h3>
+          <p class="one">세 재무제표가 어떻게 이어지는지 직접 움직여 보고, 회사를 분석할 때 읽는 순서와 꼭 볼 주석을 알려 줘요.</p>
+          <ol>
+            <li>맨 위 <b>동인</b>(성장률, 원가율, 회전일수 등) 숫자를 바꿔 보세요.</li>
+            <li><b>세 개의 다리</b>에서 순이익이 자본으로, 현금 증감이 현금 잔액으로 이어지는지 보세요. ✓가 켜져 있으면 세 표가 맞아떨어진다는 뜻이에요.</li>
+            <li>아래 <b>ROE 분해</b>와 <b>비율 사전</b>에서 같은 숫자가 비율로 어떻게 바뀌는지 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 매출채권 회전일수를 늘리면 첫해 이익은 그대로인데 영업현금흐름이 줄고 차입금이 늘어요. "이익은 났는데 돈이 없는" 회사가 어떻게 생기는지 바로 보여요.</p>
+          <a class="btn go" href="fsa.html">도구 열기 →</a>
+        </article>
         <article class="howcard" id="how-pl">
           <h3>월 손익 보고</h3>
           <p class="one">이번 달과 올해 누계 손익이 계획보다 좋은지 나쁜지, 왜 그런지, 연말엔 어떨지 알려 줘요.</p>
@@ -268,6 +280,11 @@
         <article class="term" id="t-bep"><h4>손익분기점<span>Break-even</span></h4><p class="easy">이익도 손해도 아닌 딱 본전인 지점이에요. 이보다 더 팔아야 돈이 남아요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게세가 한 달 30만원이고 붕어빵 하나에 300원이 남으면, 한 달에 1,000개를 팔아야 본전이에요.</p></article>
         <article class="term" id="t-wc"><h4>운전자본<span>Working capital</span></h4><p class="easy">장사하느라 묶여 있는 돈이에요. 창고의 재고와 외상으로 판 돈은 더하고, 외상으로 산 돈은 빼요. 매출이 늘면 보통 같이 늘어서 현금이 묶여요.</p><p class="ex"><b>붕어빵 가게라면</b> 창고의 밀가루·팥 20만원 + 학교 매점에 외상으로 넘긴 붕어빵 값 10만원 − 아직 안 낸 밀가루 값 5만원 = 25만원이 묶여 있어요.</p></article>
         <article class="term" id="t-fcf"><h4>잉여현금흐름<span>Free cash flow · FCF</span></h4><p class="easy">1년 장사해서 실제로 주머니에 남는 현금이에요. 이익에서 세금을 내고, 새 기계 산 돈과 늘어난 운전자본은 빼고, 감가상각은 다시 더해요(실제로 돈이 나간 게 아니니까요).</p><p class="ex"><b>붕어빵 가게라면</b> 세금 낸 이익 50만원 + 감가상각 20만원 − 새 기계 30만원 − 늘어난 재고 5만원 = 35만원이 남아요.</p></article>
+        <article class="term" id="t-3fs"><h4>세 재무제표<span>재무상태표 · 손익계산서 · 현금흐름표</span></h4><p class="easy">회사 성적표는 세 장이에요. 재무상태표는 지금 가진 것과 빚, 손익계산서는 1년 동안 벌고 쓴 것, 현금흐름표는 통장에 실제로 들어오고 나간 돈이에요. 세 장이 서로 이어져 있어서 한 장의 숫자가 바뀌면 나머지도 바뀌어요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게·기계·통장 잔고와 빌린 돈이 재무상태표, 1년 동안 판 돈과 쓴 돈이 손익계산서, 통장 기록이 현금흐름표예요. 1년 동안 남긴 이익은 재무상태표의 "내 돈(자본)"을 늘려요.</p><p class="where">이 사이트에서는 <a href="fsa.html">재무제표 분석</a></p></article>
+        <article class="term" id="t-roe"><h4>ROE와 듀퐁 분해<span>Return on equity · DuPont</span></h4><p class="easy">주인이 넣은 돈(자본)으로 1년에 몇 %를 벌었는지예요. "얼마나 남기나(이익률) × 얼마나 빨리 돌리나(회전율) × 얼마나 빌려 키웠나(레버리지)"로 쪼개면, 같은 ROE라도 어떻게 벌었는지 보여요.</p><p class="ex"><b>붕어빵 가게라면</b> 내 돈 1,000만원으로 1년에 150만원을 남기면 ROE 15%예요. 그게 빚을 많이 내서 가게를 키운 덕분이라면, 장사가 안될 때 더 위험해요.</p><p class="where">이 사이트에서는 <a href="fsa.html#s-ratios">재무제표 분석</a></p></article>
+        <article class="term" id="t-roic"><h4>ROIC<span>투하자본이익률 · Return on invested capital</span></h4><p class="easy">장사에 실제로 묶어 둔 돈(기계, 가게, 재고와 외상값)으로 세금 내고 몇 %를 버는지예요. 빌린 돈인지 내 돈인지와 상관없이 사업 자체의 실력을 봐요. 돈을 구해 오는 비용(WACC)보다 높아야 회사 가치가 늘어요.</p><p class="ex"><b>붕어빵 가게라면</b> 기계와 재고에 1,000만원이 묶여 있고 세금 낸 영업이익이 120만원이면 ROIC 12%예요. 돈을 구하는 비용이 8%라면 4%p만큼 가치를 만들고 있어요.</p></article>
+        <article class="term" id="t-ccc"><h4>현금전환주기<span>Cash conversion cycle</span></h4><p class="easy">재료값을 낸 뒤 물건을 팔아 돈을 다시 받기까지 걸리는 날수예요. 재고로 있는 날 + 외상값을 받는 데 걸리는 날 − 재료값을 늦게 내는 날이에요. 짧을수록 현금이 덜 묶여요.</p><p class="ex"><b>붕어빵 가게라면</b> 밀가루가 창고에 10일 있고, 매점 외상값을 20일 뒤 받고, 밀가루 값은 15일 뒤 내면 10 + 20 − 15 = 15일이에요.</p></article>
+        <article class="term" id="t-notes"><h4>주석<span>Notes to financial statements</span></h4><p class="easy">재무제표 뒤에 붙는 설명서예요. 숫자를 어떻게 계산했는지, 사업부별로 얼마를 벌었는지, 소송이나 보증처럼 표에 아직 안 잡힌 위험이 있는지 적혀 있어요. 분석할 때는 표보다 주석에서 더 많은 걸 찾아요.</p><p class="ex"><b>붕어빵 가게라면</b> "올해 이익이 늘었다"는 숫자 뒤에 "사실 기계를 10년 쓰기로 바꿔서 감가상각이 줄었다"는 설명이 주석에 있을 수 있어요.</p><p class="where">이 사이트에서는 <a href="fsa.html#s-notes">꼭 읽는 주석 열 가지</a></p></article>
       </div></div>
 
       <div class="tgroup"><h3>경영관리</h3><div class="terms">

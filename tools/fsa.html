@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>재무제표 분석 프레임워크 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 470px; }
+  .drv { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 18px; }
+  @media (max-width: 1100px) { .drv { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .drv { grid-template-columns: minmax(0, 1fr); } }
+  .drv .field { grid-template-columns: minmax(0, 1fr) 76px; }
+  .drv .field input { background: var(--surface); }
+  table.three { border-collapse: collapse; width: 100%; min-width: 640px; font-size: var(--s-1); }
+  table.three th, table.three td { padding: 6px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule-soft); }
+  table.three thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.three tbody th { text-align: left; font-weight: 500; color: var(--ink-2); }
+  table.three td { font-family: var(--f-num); }
+  table.three tr.grp th { font-family: var(--f-num); font-size: 11px; letter-spacing: 0.06em; color: var(--accent); padding-top: 14px; }
+  table.three tr.tot th, table.three tr.tot td { font-weight: 700; color: var(--ink); }
+  table.three tr.chk td { color: var(--pos); font-size: 12px; }
+  .links3 { display: grid; gap: 10px; margin: 6px 0 4px; }
+  .eqn { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: var(--s-1); }
+  .eqn .chip { font-family: var(--f-num); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 9px; color: var(--ink); white-space: nowrap; }
+  .eqn .chip small { font-family: var(--f-body); color: var(--muted); margin-right: 6px; }
+  .eqn .op { color: var(--muted); font-family: var(--f-num); }
+  .eqn .ok { color: var(--pos); font-family: var(--f-num); font-size: 12px; }
+  .dupont { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin: 8px 0; }
+  .dupont .box { flex: 1 1 140px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 2px; }
+  .dupont .box b { font-family: var(--f-display); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
+  .dupont .box span { font-size: 12px; color: var(--muted); }
+  .dupont .box.res { border-color: var(--accent); }
+  .dupont .sym { align-self: center; font-family: var(--f-num); font-size: 22px; color: var(--muted); }
+  table.dict { border-collapse: collapse; width: 100%; min-width: 760px; font-size: var(--s-1); }
+  table.dict th, table.dict td { padding: 10px 12px; border-bottom: 1px solid var(--rule-soft); text-align: left; vertical-align: top; line-height: 1.6; }
+  table.dict thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.dict td.f { font-size: 13px; color: var(--ink); white-space: nowrap; }
+  table.dict td.v { font-family: var(--f-num); text-align: right; white-space: nowrap; color: var(--ink); }
+  .order { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 0; counter-reset: o; border-top: 1px solid var(--rule); }
+  .order li { counter-increment: o; display: grid; grid-template-columns: 44px minmax(0, 1fr) minmax(0, 0.9fr); gap: 4px 18px; padding: 14px 0; border-bottom: 1px solid var(--rule-soft); }
+  .order li::before { content: counter(o, decimal-leading-zero); font-family: var(--f-display); font-weight: 800; font-size: 22px; color: var(--accent); }
+  .order b { font-size: var(--s-2); display: block; margin-bottom: 2px; }
+  .order span { font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; }
+  .order .num-s { font-size: 13px; color: var(--ink-2); line-height: 1.7; display: grid; gap: 2px; align-content: start; }
+  .order .num-s::before { content: "보는 숫자"; font-family: var(--f-num); font-size: 11px; letter-spacing: 0.04em; color: var(--muted); }
+  @media (max-width: 760px) { .order li { grid-template-columns: 38px minmax(0, 1fr); } .order .num-s { grid-column: 2; } }
+  svg.plot text.c-lab { fill: var(--ink-2); font-size: 11px; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="fsa.html" aria-current="page">재무제표</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 재무제표 분석 프레임워크</div>
+      <div class="rpt-tag">Analysis framework · 01</div>
+      <h1>세 재무제표를<br>하나로 읽는 법</h1>
+      <p class="dek">손익계산서, 재무상태표, 현금흐름표는 따로 떨어진 표가 아닙니다. 이 프레임워크는 제가 기업을 분석할 때 쓰는 순서와 확인 항목, 그리고 세 표가 어떻게 이어지는지 직접 움직여 볼 수 있는 모형을 담았습니다.</p>
+      <div class="rpt-meta"><span>작성<b>이기표</b></span><span>바탕<b>재무제표 분석 교육과 팀 내 전파 교육 자료</b></span><span>예시 기업<b>가상의 제조사</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>이익보다 현금을 먼저 봅니다</b><p>영업현금흐름이 순이익을 꾸준히 따라오는지가 이익의 질을 가장 빨리 보여 줍니다.</p></div>
+      <div><b>숫자의 이유는 주석에 있습니다</b><p>부문 정보, 재고 평가, 유형자산 변동, 우발부채를 읽어야 본문 숫자의 방향을 해석할 수 있습니다.</p></div>
+      <div><b>세 표는 항상 맞아떨어집니다</b><p>순이익은 자본으로, 현금 증감은 현금 잔액으로 이어집니다. 이 연결이 깨지면 숫자를 다시 봐야 합니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-link">
+          <h2>세 재무제표는 하나로 이어집니다</h2>
+          <p>아래는 가상의 제조사를 5년 동안 굴려 보는 모형입니다. 성장률, 원가율, 회전일수, 설비투자, 배당성향을 바꾸면 손익계산서가 먼저 바뀌고, 그 결과가 현금흐름표를 거쳐 재무상태표로 이어집니다. 현금이 최소 보유현금보다 모자라면 차입하고, 남으면 차입금부터 갚습니다.</p>
+          <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span><span>금액 단위 억원</span><span><a class="guide-link" href="guide.html#how-fsa">처음이면 쉬운 사용법 보기 →</a></span></div>
+          <div class="drv" id="drv"></div>
+          <div class="fig rv-up" data-rv>
+            <div class="fig-h"><h4>2026년, 세 표를 잇는 세 개의 다리</h4><span class="hint" id="link-year"></span></div>
+            <div class="fig-b links3" id="links"></div>
+            <div class="fig-s">순이익은 이익잉여금으로, 영업현금흐름은 순이익에서 출발해 현금으로, 현금흐름표의 기말현금은 재무상태표의 현금으로 이어집니다.</div>
+          </div>
+          <div class="fig">
+            <div class="fig-h"><h4>5년 요약 재무제표</h4><span class="hint">억원 · 가상 기업</span></div>
+            <div class="fig-b"><div class="scroll" style="border: 0"><table class="three" id="three"></table></div></div>
+            <div class="fig-s">마지막 줄의 ✓는 해마다 자산 = 부채 + 자본, 현금흐름표 기말현금 = 재무상태표 현금이 맞는지 확인한 결과입니다. 표시는 소수 첫째 자리 반올림이라 합계가 0.1 정도 다를 수 있습니다.</div>
+          </div>
+          <div class="fig" data-rv id="cf-fig">
+            <div class="fig-h"><h4>이익과 현금, 그리고 투자</h4><div class="legend"><span><i class="key-bar" style="background: var(--mark-muted)"></i>순이익</span><span><i class="key-bar" style="background: var(--input)"></i>영업현금흐름</span><span><i class="key-bar" style="background: var(--accent)"></i>설비투자</span></div></div>
+            <div class="fig-b"><div class="chart" id="cf-chart"><div class="plot-host"></div></div></div>
+            <div class="fig-s">영업현금흐름이 순이익보다 크고 설비투자를 감당하면, 성장하면서도 차입을 줄일 수 있습니다.</div>
+          </div>
+        </section>
+
+        <section id="s-order">
+          <h2>읽는 순서 일곱 단계</h2>
+          <p>보고서를 처음부터 끝까지 읽기보다, 질문을 정해 놓고 필요한 숫자를 찾아갑니다.</p>
+          <ol class="order">
+            <li><div><b>사업 구조: 무엇으로 돈을 버나</b><span>사업보고서의 사업 내용과 부문 정보 주석으로 매출과 이익이 어디서 나오는지 봅니다.</span></div><span class="num-s">부문별 매출·영업이익, 지역별 매출, 주요 고객 비중</span></li>
+            <li><div><b>손익의 질: 이익이 반복되나</b><span>매출총이익률과 판관비 구조의 추세, 영업외손익과 일회성 항목을 걸러 냅니다.</span></div><span class="num-s">매출총이익률, 영업이익률, 일회성 손익</span></li>
+            <li><div><b>현금 전환: 이익이 현금이 되나</b><span>영업현금흐름이 순이익을 따라오는지, 매출채권과 재고에 현금이 묶이는지 봅니다.</span></div><span class="num-s">영업현금흐름 ÷ 순이익, 매출채권·재고·매입채무 일수</span></li>
+            <li><div><b>투자: 성장에 얼마를 쓰나</b><span>설비투자와 연구개발이 감가상각과 매출에 비해 어느 수준인지 봅니다.</span></div><span class="num-s">설비투자 ÷ 감가상각, 연구개발비 ÷ 매출, 건설중인자산</span></li>
+            <li><div><b>자본 구조: 버틸 수 있나</b><span>차입 규모와 이자 부담, 만기 구조를 봅니다.</span></div><span class="num-s">순차입금 ÷ EBITDA, 이자보상배율, 차입금 만기</span></li>
+            <li><div><b>주주환원: 남은 돈은 어디로 가나</b><span>배당과 자사주 매입·소각 규모를 잉여현금흐름과 비교합니다.</span></div><span class="num-s">배당성향, 주주환원 ÷ 잉여현금흐름</span></li>
+            <li><div><b>주석의 위험 신호: 숫자 밖에 무엇이 있나</b><span>우발부채, 약정, 특수관계자 거래, 충당부채처럼 본문에 다 드러나지 않는 위험을 찾습니다.</span></div><span class="num-s">소송·보증, 계열사 거래 비중, 충당부채 증감</span></li>
+          </ol>
+        </section>
+
+        <section id="s-notes">
+          <h2>꼭 읽는 주석 열 가지</h2>
+          <p>주석은 본문 숫자의 근거입니다. 같은 영업이익이라도 주석을 읽으면 지속될 이익인지 아닌지가 갈립니다.</p>
+          <div class="notecards">
+            <div class="notecard"><span class="n">주석 01</span><b>영업부문 정보</b><p>사업부별 매출, 영업이익, 자산.</p><p class="q">부문 이익률 추세, 부문 간 내부거래 제거 규모</p></div>
+            <div class="notecard"><span class="n">주석 02</span><b>수익 인식</b><p>언제, 얼마를 매출로 잡는지.</p><p class="q">기간 귀속, 반품·판매보증, 장기계약의 진행률</p></div>
+            <div class="notecard"><span class="n">주석 03</span><b>재고자산</b><p>재고 구성과 평가손실 충당금.</p><p class="q">평가손실 증감은 업황 신호. 재고일수와 함께 봅니다</p></div>
+            <div class="notecard"><span class="n">주석 04</span><b>유형자산 변동표</b><p>취득, 감가상각, 처분, 손상, 건설중인자산.</p><p class="q">현금흐름표의 설비투자와 맞는지, 내용연수 변경 여부</p></div>
+            <div class="notecard"><span class="n">주석 05</span><b>무형자산과 영업권</b><p>개발비, 영업권과 손상검사 가정.</p><p class="q">할인율·성장률 가정, 인수한 사업의 실적과 손상 여부</p></div>
+            <div class="notecard"><span class="n">주석 06</span><b>리스</b><p>사용권자산과 리스부채.</p><p class="q">순차입금과 EBITDA에 리스를 넣었는지 기준을 맞춥니다</p></div>
+            <div class="notecard"><span class="n">주석 07</span><b>충당부채</b><p>판매보증, 소송, 복구, 장기성과급.</p><p class="q">전입과 환입의 원인. 이익을 조정하는 데 쓰이지 않았는지</p></div>
+            <div class="notecard"><span class="n">주석 08</span><b>우발부채와 약정</b><p>소송, 지급보증, 차입 약정 한도.</p><p class="q">재무상태표에 아직 잡히지 않은 위험과 재무약정 조건</p></div>
+            <div class="notecard"><span class="n">주석 09</span><b>특수관계자 거래</b><p>계열사와의 매출·매입, 채권·채무.</p><p class="q">거래 비중과 조건의 변화, 지배구조 이슈</p></div>
+            <div class="notecard"><span class="n">주석 10</span><b>법인세</b><p>유효세율과 이연법인세.</p><p class="q">법정세율과의 차이 원인, 일회성 세무 효과</p></div>
+          </div>
+        </section>
+
+        <section id="s-ratios">
+          <h2>비율 사전과 ROE 분해</h2>
+          <p>비율은 숫자 사이의 관계를 보는 도구입니다. 아래 값은 위 모형의 2026년 숫자로 계산되고, 동인을 바꾸면 함께 바뀝니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>ROE를 세 갈래로 나누기 (DuPont)</h4><span class="hint">2026년</span></div>
+            <div class="fig-b"><div class="dupont" id="dupont"></div></div>
+            <div class="fig-s">ROE가 같아도 이익률로 버는 회사, 자산을 빨리 돌리는 회사, 빚으로 키운 회사는 위험이 다릅니다.</div>
+          </div>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="dict" id="dict"></table></div>
+        </section>
+
+        <section id="s-flags">
+          <h2>이익의 질과 위험 신호</h2>
+          <p>하나만으로 결론을 내리지 않고, 두세 개가 함께 나타나면 깊게 들여다봅니다.</p>
+          <ul class="flaglist">
+            <li><span><b>순이익은 느는데 영업현금흐름이 따라오지 못합니다.</b> 현금전환이 몇 해 연속 1을 밑돌면 매출채권이나 재고에 현금이 쌓이고 있을 수 있습니다.</span></li>
+            <li><span><b>매출채권·재고 일수가 매출보다 빨리 늘어납니다.</b> 밀어내기 매출이나 재고 진부화의 신호일 수 있습니다.</span></li>
+            <li><span><b>설비투자가 감가상각을 오래 밑돕니다.</b> 당장의 현금흐름은 좋아 보여도 미래 경쟁력을 깎고 있을 수 있습니다.</span></li>
+            <li><span><b>이익이 영업외손익이나 일회성 항목에 기댑니다.</b> 자산 처분이익, 환입, 평가이익을 빼고 다시 봅니다.</span></li>
+            <li><span><b>회계 추정을 바꿔 이익이 늘었습니다.</b> 내용연수 연장, 충당금 기준 변경은 주석의 회계정책 변경 항목에 나옵니다.</span></li>
+            <li><span><b>특수관계자 거래 비중이 갑자기 커졌습니다.</b> 거래 조건이 시장 가격과 같은지 확인합니다.</span></li>
+            <li><span><b>지급보증과 소송이 늘었습니다.</b> 우발부채 주석과 감사보고서의 강조사항을 함께 봅니다.</span></li>
+          </ul>
+        </section>
+
+        <section id="s-apply">
+          <h2>이 틀을 실무에 쓰는 곳</h2>
+          <p>같은 순서와 확인 항목을 이 사이트의 도구에 그대로 썼습니다.</p>
+          <ul class="plain">
+            <li><a href="pl-report.html">월 손익 보고</a>: 손익의 질과 차이 분석을 매달 반복합니다.</li>
+            <li><a href="ma-valuation.html">M&amp;A 가치평가</a>: 현금흐름(FCFF)으로 기업가치를 구하고, 실사 결과를 가격에 반영합니다.</li>
+            <li><a href="capex-kit.html">설비투자 분석 키트</a>: 투자와 감가상각, 운전자본이 현금흐름을 어떻게 바꾸는지 봅니다.</li>
+            <li><a href="cash-13w.html">13주 자금수지</a>: 자본 구조와 재무약정을 단기 현금으로 점검합니다.</li>
+          </ul>
+          <p class="rpt-end">예시 수치는 모두 가상입니다. 모형의 계산 기준: 매출원가에는 감가상각을 넣지 않고 따로 뺍니다. 감가상각 = 전년 말 유형자산 × 감가상각률, 이자 = 전년 말 차입금 × 이자율, 배당은 그해 순이익 × 배당성향으로 그해에 지급합니다. 매출채권·재고·매입채무는 회전일수 ÷ 365로 계산하고, 현금이 최소 보유현금보다 모자라면 차입, 남으면 차입금부터 상환합니다. ROIC = 세후 영업이익 ÷ 평균 투하자본(운전자본 + 유형자산).</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/three.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.ThreeEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  let x = JSON.parse(JSON.stringify(D));
+  const FIELDS = [
+    ["growth", "매출 성장률", "%/년", 1, -30, 60], ["cogs", "매출원가율", "감가상각 제외 %", 0.5, 0, 100], ["sga", "판관비율", "%", 0.5, 0, 60], ["dep", "감가상각률", "유형자산 대비 %", 0.5, 0, 50],
+    ["capex", "설비투자", "매출 대비 %", 0.5, 0, 60], ["dso", "매출채권 회전일수", "일", 1, 0, 365], ["dio", "재고 회전일수", "일", 1, 0, 365], ["dpo", "매입채무 회전일수", "일", 1, 0, 365],
+    ["rate", "차입 이자율", "%", 0.1, 0, 30], ["tax", "법인세율", "%", 0.1, 0, 60], ["payout", "배당성향", "%", 5, 0, 100], ["minCash", "최소 보유현금", "억원", 10, 0, 2000]
+  ];
+  const M = (v) => F.money(v, 1);
+
+  function buildDrivers() {
+    const box = $("drv");
+    box.textContent = "";
+    FIELDS.forEach((f) => {
+      const inp = F.el("input", { id: "d-" + f[0], type: "number", inputmode: "decimal", step: f[3], min: f[4], max: f[5], value: x.d[f[0]] });
+      inp.addEventListener("input", () => { x.d[f[0]] = F.readNum(inp, D.d[f[0]]); render(); });
+      box.appendChild(F.el("div", { class: "field" }, [F.el("label", { for: "d-" + f[0] }, [f[1], F.el("small", { text: f[2] })]), inp]));
+    });
+  }
+
+  function chip(label, v) { return F.el("span", { class: "chip" }, [F.el("small", { text: label }), M(v)]); }
+  const op = (s) => F.el("span", { class: "op", text: s });
+
+  function render() {
+    const r = E.run(x), y = r.years[0];
+    /* 세 개의 다리 */
+    const L = $("links");
+    L.textContent = "";
+    L.appendChild(F.el("div", { class: "eqn" }, [chip("기초 자본", r.eq0), op("+"), chip("순이익", y.is.ni), op("−"), chip("배당", -y.cf.div), op("="), chip("기말 자본", y.bs.eq), F.el("span", { class: "ok", text: Math.abs(y.check.reTie) < 1e-9 ? "✓ 손익 → 자본" : "✕" })]));
+    const wc = y.cf.dAR + y.cf.dINV + y.cf.dAP, cfoOk = Math.abs(y.is.ni + y.is.dep + wc - y.cf.cfo) < 1e-9;
+    L.appendChild(F.el("div", { class: "eqn" }, [chip("순이익", y.is.ni), op("+"), chip("감가상각", y.is.dep), op("+"), chip("운전자본 변동", wc), op("="), chip("영업현금흐름", y.cf.cfo), F.el("span", { class: "ok", text: cfoOk ? "✓ 손익 → 현금흐름" : "✕" })]));
+    L.appendChild(F.el("div", { class: "eqn" }, [chip("기초 현금", x.open.cash), op("+"), chip("현금 증감", y.cf.net), op("="), chip("기말 현금", y.bs.cash), F.el("span", { class: "ok", text: Math.abs(y.check.cashTie) < 1e-9 ? "✓ 현금흐름 → 재무상태" : "✕" })]));
+    $("link-year").textContent = "억원";
+
+    /* 5년 표 */
+    const tb = $("three"), Y = r.years;
+    tb.textContent = "";
+    const hr = F.el("tr"); hr.appendChild(F.el("th", { text: "" }));
+    Y.forEach((q) => hr.appendChild(F.el("th", { text: q.year + "E" })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    const grp = (t) => { const tr = F.el("tr", { class: "grp" }); tr.appendChild(F.el("th", { colspan: Y.length + 1, text: t })); body.appendChild(tr); };
+    const row = (label, fn, cls) => { const tr = F.el("tr", { class: cls || null }); tr.appendChild(F.el("th", { text: label })); Y.forEach((q) => { const v = fn(q); const td = F.el("td", { text: M(v) }); if (v < 0) td.classList.add("neg"); tr.appendChild(td); }); body.appendChild(tr); };
+    grp("손익계산서");
+    row("매출", (q) => q.is.rev); row("매출원가 (감가상각 제외)", (q) => -q.is.cogs); row("매출총이익", (q) => q.is.gp); row("판관비", (q) => -q.is.sga); row("감가상각", (q) => -q.is.dep); row("영업이익", (q) => q.is.ebit, "tot"); row("이자비용", (q) => -q.is.interest); row("법인세", (q) => -q.is.tax); row("순이익", (q) => q.is.ni, "tot");
+    grp("현금흐름표");
+    row("영업활동", (q) => q.cf.cfo, "tot"); row("투자활동 (설비투자)", (q) => q.cf.cfi); row("배당", (q) => q.cf.div); row("차입·상환", (q) => q.cf.draw + q.cf.repay); row("현금 증감", (q) => q.cf.net, "tot");
+    grp("재무상태표");
+    row("현금", (q) => q.bs.cash); row("매출채권 + 재고", (q) => q.bs.ar + q.bs.inv); row("유형자산", (q) => q.bs.ppe); row("자산 총계", (q) => q.bs.assets, "tot");
+    row("매입채무", (q) => q.bs.ap); row("차입금", (q) => q.bs.debt); row("자본", (q) => q.bs.eq); row("부채와 자본 총계", (q) => q.bs.liab + q.bs.eq, "tot");
+    const ck = F.el("tr", { class: "chk" }); ck.appendChild(F.el("th", { text: "검산" }));
+    Y.forEach((q) => ck.appendChild(F.el("td", { text: Math.abs(q.check.balance) < 1e-6 && Math.abs(q.check.cashTie) < 1e-6 ? "✓ 대차·현금" : "✕" })));
+    body.appendChild(ck);
+    tb.appendChild(body);
+
+    drawCf(r);
+
+    /* DuPont */
+    const du = $("dupont");
+    du.textContent = "";
+    const box = (v, label, cls, isMult) => F.el("div", { class: "box" + (cls ? " " + cls : "") }, [F.el("b", { text: isMult ? F.num(v, 2) + "배" : F.pct(v, 1) }), F.el("span", { text: label })]);
+    du.appendChild(box(y.r.margin, "순이익률 · 얼마나 남기나"));
+    du.appendChild(F.el("span", { class: "sym", text: "×" }));
+    du.appendChild(box(y.r.turnover, "총자산회전율 · 얼마나 빨리 돌리나", null, true));
+    du.appendChild(F.el("span", { class: "sym", text: "×" }));
+    du.appendChild(box(y.r.leverage, "재무레버리지 · 얼마나 빌려 키웠나", null, true));
+    du.appendChild(F.el("span", { class: "sym", text: "=" }));
+    du.appendChild(box(y.r.roe, "ROE · 자기자본이익률", "res"));
+
+    /* 비율 사전 */
+    const DICT = [
+      ["매출총이익률", "매출총이익 ÷ 매출", "제품 경쟁력과 원가 구조", y.r.gpm, "pct"],
+      ["영업이익률", "영업이익 ÷ 매출", "본업의 수익성", y.r.ebitm, "pct"],
+      ["ROE", "순이익 ÷ 평균 자기자본", "주주 돈으로 얼마나 버나", y.r.roe, "pct"],
+      ["ROIC", "세후 영업이익 ÷ 평균 투하자본", "사업에 넣은 돈의 수익률. WACC보다 높아야 가치 창출", y.r.roic, "pct"],
+      ["현금전환", "영업현금흐름 ÷ 순이익", "이익이 현금이 되는 정도. 1 근처 이상이 건강", y.r.cashConv, "x"],
+      ["현금전환주기", "매출채권일수 + 재고일수 − 매입채무일수", "현금이 장사에 묶이는 날수", y.r.ccc, "day"],
+      ["설비투자 ÷ 감가상각", "설비투자 ÷ 감가상각", "1보다 크면 키우는 중, 작으면 유지 이하", y.r.capexDep, "x"],
+      ["순차입금 ÷ EBITDA", "(차입금 − 현금) ÷ EBITDA", "빚을 몇 년 이익으로 갚나. 재무약정에 자주 쓰임", y.r.ndEbitda, "x"],
+      ["이자보상배율", "영업이익 ÷ 이자비용", "번 돈으로 이자를 몇 번 내나", y.r.icr, "x"]
+    ];
+    const dt = $("dict");
+    dt.textContent = "";
+    const dh = F.el("tr");
+    ["비율", "계산식", "무엇을 보나", "2026년 값"].forEach((h) => dh.appendChild(F.el("th", { text: h })));
+    dt.appendChild(F.el("thead", null, [dh]));
+    const db = F.el("tbody");
+    DICT.forEach((d) => {
+      const v = d[4] === "pct" ? F.pct(d[3], 1) : d[4] === "day" ? F.num(d[3], 0) + "일" : d[3] === null ? "–" : F.num(d[3], 2) + "배";
+      db.appendChild(F.el("tr", null, [F.el("td", null, [F.el("b", { text: d[0] })]), F.el("td", { class: "f", text: d[1] }), F.el("td", { text: d[2] }), F.el("td", { class: "v", text: v })]));
+    });
+    dt.appendChild(db);
+  }
+
+  function drawCf(r) {
+    const Y = r.years, H = 240, padL = 46, padR = 12, padT = 12, padB = 28;
+    const fr = F.plotFrame($("cf-chart"), H, "연도별 순이익, 영업현금흐름, 설비투자 막대 그래프");
+    const svg = fr.svg, W = fr.W;
+    const vals = [0]; Y.forEach((q) => vals.push(q.is.ni, q.cf.cfo, -q.cf.capex));
+    const t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const band = (W - padL - padR) / Y.length, Yp = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Yp(tv), y2: Yp(tv) }, svg); F.svgText(svg, padL - 6, Yp(tv) + 4, F.money(tv, 0), { "text-anchor": "end" }); });
+    const cols = [F.css("--mark-muted"), F.css("--input"), F.css("--accent")], bw = Math.min(18, band / 4.5);
+    const tip = F.makeTip(fr.plot);
+    Y.forEach((q, i) => {
+      const xs = padL + band * i + band / 2;
+      [q.is.ni, q.cf.cfo, -q.cf.capex].forEach((v, k) => {
+        F.svgEl("path", { class: "rv-bar", d: F.barPath(xs + (k - 1.5) * (bw + 3), bw, Yp(0), Yp(v), 3), fill: cols[k] }, svg);
+      });
+      F.svgText(svg, xs, H - 9, q.year + "E", { "text-anchor": "middle", class: "c-lab" });
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: q.year + "년", rows: [["순이익", M(q.is.ni) + "억원", cols[0]], ["영업현금흐름", M(q.cf.cfo) + "억원", cols[1]], ["설비투자", M(-q.cf.capex) + "억원", cols[2]]] }));
+    });
+  }
+
+  buildDrivers();
+  render();
+  F.onRedraw(render);
+  /* 바깥 호에만 이름을 붙이고, 안쪽 호(유형자산 → 감가상각, 운전자본 변동)는 입자 흐름으로만 보여 준다 */
+  Report.flows($("hero-art"), {
+    area: { span: 0.42, max: 560, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.14, y: 0.30, label: "손익계산서", ly: -30 }, { x: 0.46, y: 0.80, label: "현금흐름표" }, { x: 0.84, y: 0.34, label: "재무상태표", ly: -30 }],
+    links: [
+      { from: 0, to: 2, bend: -0.22, c: 0, label: "순이익 → 이익잉여금", n: 30 },
+      { from: 2, to: 0, bend: -0.20, c: 1, n: 16 },
+      { from: 0, to: 1, bend: 0.30, c: 2, label: "순이익 + 감가상각", dx: -66, dy: 4, n: 26 },
+      { from: 1, to: 2, bend: 0.28, c: 0, label: "현금 증감 → 기말 현금", dx: 78, dy: 4, n: 26 },
+      { from: 2, to: 1, bend: 0.22, c: 1, n: 16 }
+    ]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>

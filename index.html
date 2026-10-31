@@ -145,6 +145,7 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/capex-kit.html#bep">가동률과 원가 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/fsa.html">재무제표 분석 프레임워크 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -326,7 +327,7 @@
             <div><dt>재경관리사</dt><dd>삼일회계법인 · 2020.01</dd></div>
             <div><dt>ADsP</dt><dd>데이터분석준전문가 · 2019.12</dd></div>
             <div><dt>컴퓨터활용능력 1급</dt><dd>대한상공회의소 · 2019.10</dd></div>
-            <div><dt>재무제표 분석</dt><dd>패스트캠퍼스 「재무제표 분석 Master 패키지」(2025 개정판). 팀 내 전파 교육 담당</dd></div>
+            <div><dt>재무제표 분석</dt><dd>패스트캠퍼스 「재무제표 분석 Master 패키지」(2025 개정판). 팀 내 전파 교육 담당. <a class="ev" href="tools/fsa.html">교육 내용을 정리한 분석 프레임워크 →</a></dd></div>
             <div><dt>가치평가</dt><dd>「기업가치평가와 재무실사」 기반 교육: DCF, 시장·자산가치 접근법, 비상장주식 평가</dd></div>
             <div><dt>반도체 산업</dt><dd>SemiAnalysis 등 해외 리포트 구독, CXMT 투자설명서 개인 검토</dd></div>
             <div><dt>학력</dt><dd>경희대학교 경영학과 졸업 (2019.08)</dd></div>
@@ -407,12 +408,13 @@
 <script src="assets/engines/fx.js"></script>
 <script src="assets/engines/mbo.js"></script>
 <script src="assets/engines/pl.js"></script>
+<script src="assets/engines/three.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine });
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

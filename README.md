@@ -10,6 +10,7 @@
 |---|---|
 | `index.html` | 홈: 경력, 업무 사례, 투자 의사결정 단계별 도구 |
 | `tools/guide.html` | 쉬운 가이드: 화면 읽는 법, 도구별 사용법, 붕어빵 가게 비유 용어 사전, 미니 계산기 |
+| `tools/fsa.html` | 재무제표 분석 프레임워크(리포트 형식): 세 재무제표 연결 모형, 읽는 순서, 꼭 읽는 주석, 비율 사전과 ROE 분해, 위험 신호 |
 | `tools/pl-report.html` | 월 손익 보고: SAP 조회 형식 데이터로 당월·누계 손익, 영업이익 차이 분해, 3개월 추정과 연간 전망 |
 | `tools/mbo-kpi.html` | 성과평가 MBO·KPI: KPI 구간 점수, 조직 등급, 인센티브 배분, KPI 설계 점검 |
 | `tools/capex-kit.html` | 설비투자 분석 키트: 투자 타당성, 가동률과 원가, 계획 대비 실적 |
@@ -24,6 +25,7 @@
 | `assets/checks.js` | 검산 묶음. `node assets/checks.js`로도 실행 |
 | `examples/` | 월 손익 보고를 pandas로 다시 계산하는 예제(`python examples/pl_report.py`)와 예시 데이터 |
 | `assets/site.css`, `assets/theme.js` | 공용 스타일, 밝은 화면 기본과 테마 전환 |
+| `assets/report.css`, `assets/report.js` | 분석 리포트 템플릿: 캔버스 표지 그림(흐름·웨이퍼), 목차 강조, 스크롤 진입 애니메이션 |
 
 ## 원칙
 
