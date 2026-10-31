@@ -11,7 +11,8 @@
     Fx: require("./engines/fx.js"),
     Mbo: require("./engines/mbo.js"),
     Pl: require("./engines/pl.js"),
-    Three: require("./engines/three.js")
+    Three: require("./engines/three.js"),
+    Cycle: require("./engines/cycle.js")
   } : null;
   const api = factory();
   if (node) {
@@ -58,7 +59,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -249,6 +250,36 @@
       }
       add("재무제표", "무작위 동인 300가지에서도 대차·현금이 맞는다 (적자·차입 포함)", worst < 1e-12, "적자 " + lossYears + "개 연도, 차입 " + drawYears + "개 연도");
       add("재무제표", "현금은 최소 보유현금 아래로 내려가지 않고, 차입금은 음수가 되지 않는다", floor, "300가지 × " + x.years + "년");
+    }
+
+    /* ---------- 반도체 사이클 개념 모형 ---------- */
+    if (Cycle) {
+      const D = Cycle.DEFAULTS, runWith = (o) => Cycle.run(Object.assign(clone(D), o));
+      const st = runWith({ shock: 0 }).quarters;
+      const steady = st.every((q) => Math.abs(q.gpm - D.target / 100) < 1e-9 && Math.abs(q.weeks - Cycle.CONST.wStar) < 1e-9 && Math.abs(q.priceIdx - 100) < 1e-9);
+      add("반도체 사이클", "수요 충격이 없으면 가격·이익률·재고 주수가 정상 상태에서 움직이지 않는다", steady, st.length + "분기, 매출총이익률 " + D.target + "%");
+      let n = 0, badUnits = 0, badGp = 0, badAllow = 0;
+      [-20, -10, 0, 10, 20].forEach((sh) => [0, 1, 2, 3].forEach((rc) => [2, 5, 8].forEach((ld) => [false, true].forEach((ct) => {
+        const r = runWith({ shock: sh, react: rc, lead: ld, cut: ct });
+        let wdSum = 0;
+        r.quarters.forEach((q) => {
+          if (Math.abs(q.check.units) > 1e-9 * Math.max(1, q.inv)) badUnits++;
+          if (Math.abs(q.check.gp) > 1e-9 * Math.max(1, Math.abs(q.rev))) badGp++;
+          wdSum += q.wd;
+          if (q.allow < -1e-12 || Math.abs(wdSum - q.allow) > 1e-9 * Math.max(1, q.rev)) badAllow++;
+        });
+        n++;
+      }))));
+      add("반도체 사이클", "재고 수량: 기초 + 생산 − 판매 = 기말 (" + n + "가지 설정 × 32분기)", badUnits === 0, "어긋난 분기 " + badUnits);
+      add("반도체 사이클", "매출총이익 = 매출 − 당기 제조원가 + 재고(원가) 증가 − 평가손실 증가", badGp === 0, "어긋난 분기 " + badGp);
+      add("반도체 사이클", "재고평가손실 누계 = 기말 충당금, 충당금은 음수가 되지 않는다(환입은 쌓인 만큼만)", badAllow === 0, "");
+      const byReact = [0, 1, 2, 3].map((rc) => runWith({ react: rc }).summary.gpmMin);
+      add("반도체 사이클", "투자 반응이 클수록 불황의 최저 매출총이익률이 낮다", byReact.every((v, i) => i === 0 || v <= byReact[i - 1] + 1e-12), byReact.map((v) => Fin.pct(v, 1)).join(" → "));
+      const byLead = [2, 3, 4, 5, 6, 7, 8].map((ld) => runWith({ lead: ld }).summary.gpmMin);
+      add("반도체 사이클", "투자 시차가 길수록 최저 매출총이익률이 낮다", byLead.every((v, i) => i === 0 || v <= byLead[i - 1] + 1e-12), "2분기 " + Fin.pct(byLead[0], 1) + " → 8분기 " + Fin.pct(byLead[6], 1));
+      const a = runWith({ cut: false }), b = runWith({ cut: true });
+      const idleOk = a.quarters.every((q) => q.idle === 0) && b.quarters.every((q) => (q.util < 1) === (q.idle > 0));
+      add("반도체 사이클", "감산하면 최대 재고 주수가 줄고, 저조업 비용은 가동률을 낮춘 분기에만 생긴다", b.summary.weeksMax < a.summary.weeksMax && idleOk, a.summary.weeksMax.toFixed(1) + "주 → " + b.summary.weeksMax.toFixed(1) + "주");
     }
 
     /* ---------- 13주 자금수지 ---------- */

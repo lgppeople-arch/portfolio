@@ -95,6 +95,7 @@
   }
 
   /* ---------- 히어로 아트 2: 웨이퍼 맵 (원형 웨이퍼 위 다이가 물결처럼 빛남) ---------- */
+  /* opt.within / opt.span / opt.max / opt.min: flows와 같은 방식으로 넓은 화면에서는 본문 칼럼 오른쪽 영역에만 그린다 */
   function wafer(canvas, opt) {
     opt = opt || {};
     const ctx = canvas.getContext("2d");
@@ -104,26 +105,44 @@
       W = canvas.clientWidth; H = canvas.clientHeight;
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const R = Math.min(H * 0.62, W * 0.42), cx = W - R * 0.95, cy = H * 0.55, step = Math.max(9, R / 15);
+      let R = Math.min(H * 0.62, W * 0.42), cx = W - R * 0.95, cy = H * 0.55;
+      if (opt.within && W >= (opt.min || 0)) {
+        const el = document.querySelector(opt.within);
+        let right = W;
+        if (el) right = el.getBoundingClientRect().right - canvas.getBoundingClientRect().left - parseFloat(getComputedStyle(el).paddingRight || 0);
+        const AW = Math.min(W * (opt.span || 0.42), opt.max || 560), AX = right - AW;
+        R = Math.min(H * 0.55, AW * 0.62); cx = AX + R; cy = H * 0.55;
+      }
+      const step = Math.max(8, R / 24);
       dies = [];
       for (let x = cx - R; x <= cx + R; x += step) for (let y = cy - R; y <= cy + R; y += step) {
         const dx = x + step / 2 - cx, dy = y + step / 2 - cy;
         if (dx * dx + dy * dy < (R - step * 0.6) * (R - step * 0.6)) dies.push({ x: x, y: y, s: step - 2, d: Math.hypot(dx, dy) / R, a: Math.atan2(dy, dx), k: Math.random() });
       }
-      dies.R = R; dies.cx = cx; dies.cy = cy;
+      dies.R = R; dies.cx = cx; dies.cy = cy; dies.step = step;
     }
     function draw(now, still) {
       const t = still ? 2.2 : (now - t0) / 1000, A = css("--hero-a"), B = css("--hero-b"), C = css("--hero-c");
       ctx.clearRect(0, 0, W, H);
       ctx.strokeStyle = css("--hero-line"); ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(dies.cx, dies.cy, dies.R, 0, Math.PI * 2); ctx.stroke();
+      /* 검사 장비가 훑고 지나가는 듯한 세로 스캔선: 지나가는 다이가 밝아지고 불량 다이는 구리색으로 번쩍인다 */
+      const span = dies.R * 2.6, sx = still ? -1e9 : dies.cx - dies.R * 1.3 + ((t * 0.16) % 1) * span, reach = dies.step * 3;
       dies.forEach((d) => {
         const wave = 0.5 + 0.5 * Math.sin(t * 1.6 - d.d * 7 + d.a * 1.2);
-        const hot = d.k > 0.965;
-        ctx.fillStyle = hot ? A : wave > 0.72 ? C : B;
-        ctx.globalAlpha = hot ? 0.95 : 0.10 + wave * 0.42;
+        const hot = d.k > 0.965, boost = Math.max(0, 1 - Math.abs(d.x + d.s / 2 - sx) / reach);
+        ctx.fillStyle = hot ? A : wave > 0.72 || boost > 0.55 ? C : B;
+        ctx.globalAlpha = hot ? Math.min(1, 0.55 + boost * 0.6) : Math.min(0.9, 0.10 + wave * 0.42 + boost * 0.4);
         ctx.fillRect(d.x + 1, d.y + 1, d.s, d.s);
       });
+      if (!still && sx > dies.cx - dies.R && sx < dies.cx + dies.R) {
+        const half = Math.sqrt(Math.max(0, dies.R * dies.R - (sx - dies.cx) * (sx - dies.cx)));
+        const g = ctx.createLinearGradient(sx - reach, 0, sx + reach, 0);
+        g.addColorStop(0, "transparent"); g.addColorStop(0.5, C); g.addColorStop(1, "transparent");
+        ctx.globalAlpha = 0.16; ctx.fillStyle = g; ctx.fillRect(sx - reach, dies.cy - half, reach * 2, half * 2);
+        ctx.globalAlpha = 0.85; ctx.strokeStyle = C; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(sx, dies.cy - half); ctx.lineTo(sx, dies.cy + half); ctx.stroke();
+      }
       ctx.globalAlpha = 1;
       /* 노치 */
       ctx.fillStyle = css("--hero-bg");

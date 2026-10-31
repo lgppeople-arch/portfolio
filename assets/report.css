@@ -32,7 +32,7 @@
 /* 핵심 요약 */
 .takeaways { margin: 32px 0 6px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: tk; }
 .takeaways > div { counter-increment: tk; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
-.takeaways > div::before { content: "핵심 " counter(tk); font-family: var(--f-num); font-size: 11px; letter-spacing: 0.06em; color: var(--accent); }
+.takeaways > div::before { content: "핵심 " counter(tk); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
 .takeaways b { font-size: var(--s-3); line-height: 1.4; }
 .takeaways p { font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; }
 @media (max-width: 900px) { .takeaways { grid-template-columns: minmax(0, 1fr); } }
@@ -40,7 +40,7 @@
 /* 본문 배치: 목차 레일 + 본문 */
 .rpt-grid { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; align-items: start; padding-block: 40px 24px; }
 .rpt-toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); display: grid; gap: 2px; font-size: var(--s-1); }
-.rpt-toc .h { font-family: var(--f-num); font-size: 11px; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+.rpt-toc .h { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
 .rpt-toc a { display: block; padding: 6px 10px; border-left: 2px solid var(--rule); color: var(--ink-2); text-decoration: none; line-height: 1.4; }
 .rpt-toc a:hover { color: var(--ink); }
 .rpt-toc a.on { border-left-color: var(--accent); color: var(--ink); font-weight: 600; background: color-mix(in srgb, var(--accent) 6%, transparent); }
@@ -52,13 +52,14 @@
 .rpt-body h3 { font-size: var(--s-3); font-weight: 700; margin: 26px 0 8px; }
 .rpt-body p { max-width: 72ch; font-size: var(--s-2); line-height: 1.85; color: var(--ink-2); margin: 0 0 12px; }
 .rpt-body p b, .rpt-body li b { color: var(--ink); }
+.rpt-body p.hint { font-size: 12.5px; line-height: 1.7; color: var(--muted); }
 .rpt-body ul.plain { max-width: 72ch; margin: 0 0 12px; padding-left: 1.1em; display: grid; gap: 6px; color: var(--ink-2); line-height: 1.75; }
 
 /* 그림 */
 .fig { counter-increment: fig; margin: 22px 0 26px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
 .fig-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 16px; flex-wrap: wrap; padding: 14px 18px 0; }
 .fig-h h4 { margin: 0; font-size: var(--s-2); font-weight: 700; }
-.fig-h h4::before { content: "그림 " counter(fig) "  "; font-family: var(--f-num); font-weight: 500; font-size: 12px; color: var(--accent); white-space: pre; }
+.fig-h h4::before { content: "그림 " counter(fig) "  "; font-weight: 600; font-size: 12px; color: var(--accent); white-space: pre; }
 .fig-b { padding: 12px 18px 16px; }
 .fig-s { padding: 10px 18px 12px; border-top: 1px solid var(--rule-soft); font-size: 12px; color: var(--muted); }
 .callout { margin: 18px 0; padding: 14px 18px; border-radius: var(--radius); background: color-mix(in srgb, var(--input) 7%, var(--surface)); border: 1px solid color-mix(in srgb, var(--input) 25%, var(--rule)); font-size: var(--s-2); line-height: 1.75; color: var(--ink); max-width: 76ch; }
@@ -92,11 +93,11 @@
 .notecards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 14px 0 8px; }
 @media (max-width: 760px) { .notecards { grid-template-columns: minmax(0, 1fr); } }
 .notecard { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
-.notecard .n { font-family: var(--f-num); font-size: 11px; color: var(--accent); letter-spacing: 0.04em; }
+.notecard .n { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.02em; }
 .notecard b { font-size: var(--s-2); }
 .notecard p { font-size: var(--s-1); color: var(--ink-2); line-height: 1.7; margin: 0; max-width: none; }
 .notecard p.q { color: var(--ink); }
-.notecard p.q::before { content: "확인할 것  "; font-family: var(--f-num); font-size: 11px; color: var(--muted); white-space: pre; }
+.notecard p.q::before { content: "확인할 것  "; font-size: 12px; color: var(--muted); white-space: pre; }
 .flaglist { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); max-width: 80ch; }
 .flaglist li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--rule-soft); font-size: var(--s-2); line-height: 1.65; color: var(--ink-2); }
 .flaglist li::before { content: "▲"; color: var(--neg); font-size: 12px; padding-top: 4px; }

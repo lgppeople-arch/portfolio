@@ -22,6 +22,7 @@
       <a href="#cycle" data-sec="cycle">하는 일</a>
       <a href="#career" data-sec="career">경력</a>
       <a href="#cases" data-sec="cases">사례</a>
+      <a href="#reports" data-sec="reports">리포트</a>
       <a href="#how" data-sec="how">도구 만드는 방식</a>
       <a href="#skills" data-sec="skills">역량</a>
       <a href="#contact" data-sec="contact">연락</a>
@@ -287,6 +288,35 @@
     </div>
   </section>
 
+  <section class="block" id="reports">
+    <div class="wrap wide">
+      <div class="block-head">
+        <div class="kicker">REPORTS</div>
+        <div><h2>분석 리포트</h2><p>기업과 산업을 분석할 때 쓰는 틀을 리포트 형식으로 정리했습니다. 그래프와 모형은 직접 움직여 볼 수 있고, 예시 수치는 모두 가상입니다.</p></div>
+      </div>
+      <div class="reports">
+        <a class="rcard" href="tools/fsa.html">
+          <div class="rcover" data-art="flows" aria-hidden="true"></div>
+          <div class="rbody">
+            <span class="rtag">Analysis framework · 01</span>
+            <h3>세 재무제표를 하나로 읽는 법</h3>
+            <p>세 재무제표 연결 모형, 읽는 순서 일곱 단계, 꼭 읽는 주석 열 가지, 비율 사전과 ROE 분해, 위험 신호</p>
+            <span class="rmeta">재무제표 분석 교육과 팀 내 전파 교육 자료 바탕 <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="rcard" href="tools/semi-cycle.html">
+          <div class="rcover" data-art="wafer" aria-hidden="true"></div>
+          <div class="rbody">
+            <span class="rtag">Industry note · 02</span>
+            <h3>반도체 사이클을 재무로 읽는 법</h3>
+            <p>밸류체인 단계별 재무 체크, 국면별 재무제표 신호, 재고·가격·설비투자가 맞물리는 사이클 모형, 부품·소재 기업 체크포인트</p>
+            <span class="rmeta">반도체 부품 제조사 재무기획 실무 관점 <span class="arr">→</span></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <section class="block" id="how">
     <div class="wrap wide">
       <div class="block-head">
@@ -400,6 +430,40 @@
   });
 })();
 </script>
+<script>
+/* 홈 리포트 카드 표지: 정적 SVG로 한 번만 그린다 (애니메이션은 리포트 페이지에서) */
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (tag, a, p) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+  let seed = 7; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  const A = "#E08A57", B = "#6E95FF", C = "#4FC59A", L = "#22303C";
+  document.querySelectorAll(".rcover").forEach((box) => {
+    const svg = mk("svg", { viewBox: "0 0 400 170", preserveAspectRatio: "xMidYMid slice" }, box);
+    for (let x = 0; x <= 400; x += 34) mk("line", { x1: x, x2: x, y1: 0, y2: 170, stroke: L, "stroke-width": 1, opacity: 0.6 }, svg);
+    for (let y = 0; y <= 170; y += 34) mk("line", { x1: 0, x2: 400, y1: y, y2: y, stroke: L, "stroke-width": 1, opacity: 0.6 }, svg);
+    if (box.dataset.art === "flows") {
+      const N = [[210, 52], [292, 132], [352, 60]], col = [A, C, B];
+      const curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1]; return [mx - dy * k, my + dx * k]; };
+      [[0, 2, -0.25, A], [2, 0, -0.22, B], [0, 1, 0.3, C], [1, 2, 0.28, A], [2, 1, 0.2, B]].forEach((l) => {
+        const a = N[l[0]], b = N[l[1]], c = curve(a, b, l[2]);
+        mk("path", { d: "M" + a + " Q" + c + " " + b, fill: "none", stroke: l[3], "stroke-width": 1.4, opacity: 0.45, class: "fl" }, svg);
+        for (let i = 1; i < 9; i++) { const u = i / 9 + (rnd() - 0.5) * 0.06, v = 1 - u; mk("circle", { cx: v * v * a[0] + 2 * v * u * c[0] + u * u * b[0], cy: v * v * a[1] + 2 * v * u * c[1] + u * u * b[1], r: 1 + rnd() * 1.6, fill: l[3], opacity: 0.4 + 0.6 * Math.sin(Math.PI * u) }, svg); }
+      });
+      N.forEach((n, i) => { mk("circle", { cx: n[0], cy: n[1], r: 15, fill: "none", stroke: col[i], "stroke-width": 1.4, opacity: 0.55 }, svg); mk("circle", { cx: n[0], cy: n[1], r: 5, fill: col[i] }, svg); });
+    } else {
+      const cx = 300, cy = 92, R = 74, st = 8.5;
+      mk("circle", { cx: cx, cy: cy, r: R, fill: "none", stroke: L, "stroke-width": 2 }, svg);
+      for (let x = cx - R; x < cx + R; x += st) for (let y = cy - R; y < cy + R; y += st) {
+        const dx = x + st / 2 - cx, dy = y + st / 2 - cy, d = Math.hypot(dx, dy);
+        if (d > R - st * 0.7) continue;
+        const w = 0.5 + 0.5 * Math.sin(2.2 - d / R * 7 + Math.atan2(dy, dx) * 1.2), hot = rnd() > 0.965;
+        mk("rect", { x: x + 1, y: y + 1, width: st - 2, height: st - 2, fill: hot ? A : w > 0.72 ? C : B, opacity: hot ? 0.95 : 0.12 + w * 0.45 }, svg);
+      }
+      mk("line", { x1: 268, x2: 268, y1: cy - Math.sqrt(R * R - 32 * 32), y2: cy + Math.sqrt(R * R - 32 * 32), stroke: C, "stroke-width": 1.2, opacity: 0.85 }, svg);
+    }
+  });
+})();
+</script>
 <script src="assets/fin.js"></script>
 <script src="assets/engines/post.js"></script>
 <script src="assets/engines/ma.js"></script>
@@ -409,12 +473,13 @@
 <script src="assets/engines/mbo.js"></script>
 <script src="assets/engines/pl.js"></script>
 <script src="assets/engines/three.js"></script>
+<script src="assets/engines/cycle.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine });
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

@@ -47,7 +47,7 @@
   .search input:focus { outline: 2px solid var(--input); outline-offset: 1px; }
   .search .cnt { font-family: var(--f-num); font-size: 12px; color: var(--muted); }
   .tgroup { margin-top: 26px; }
-  .tgroup > h3 { font-family: var(--f-num); font-size: 12px; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+  .tgroup > h3 { font-size: 12.5px; letter-spacing: 0.02em; color: var(--muted); font-weight: 600; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
   .terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   @media (max-width: 860px) { .terms { grid-template-columns: minmax(0, 1fr); } }
   .term { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 8px; align-content: start; scroll-margin-top: 130px; }
@@ -80,6 +80,7 @@
     <nav class="site-nav" aria-label="도구">
       <a href="guide.html" aria-current="page">가이드</a>
       <a href="fsa.html">재무제표</a>
+      <a href="semi-cycle.html">반도체 사이클</a>
       <a href="pl-report.html">손익보고</a>
       <a href="mbo-kpi.html">성과평가</a>
       <a href="capex-kit.html">설비투자</a>
@@ -137,6 +138,17 @@
           </ol>
           <p class="read"><b>읽는 법</b> · 매출채권 회전일수를 늘리면 첫해 이익은 그대로인데 영업현금흐름이 줄고 차입금이 늘어요. "이익은 났는데 돈이 없는" 회사가 어떻게 생기는지 바로 보여요.</p>
           <a class="btn go" href="fsa.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-semi">
+          <h3>반도체 사이클과 재무</h3>
+          <p class="one">반도체 가격과 이익이 왜 몇 년마다 크게 오르내리는지, 그때 재무제표 어디가 움직이는지 보여 줘요.</p>
+          <ol>
+            <li><b>밸류체인 지도</b>에서 단계(설계, 메모리, 장비, 소재·부품 등)를 눌러 단계마다 먼저 볼 숫자를 보세요.</li>
+            <li><b>사이클 시계</b>에서 국면을 눌러 그때 어떤 계정이 움직이는지 보세요.</li>
+            <li><b>사이클 모형</b>에서 수요 충격, 투자 반응, 시차, 감산을 바꾸고 네 개의 그래프가 어떻게 변하는지 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 투자 반응을 "크게", 시차를 길게 하면 불황이 깊어져요. 빨간 배경이 매출총손실 분기예요. 설비투자 막대가 매출 선보다 훨씬 크게 출렁이는 게 장비·부품 회사가 겪는 변동이에요.</p>
+          <a class="btn go" href="semi-cycle.html">리포트 열기 →</a>
         </article>
         <article class="howcard" id="how-pl">
           <h3>월 손익 보고</h3>
@@ -296,6 +308,13 @@
         <article class="term" id="t-rolling"><h4>추정손익과 롤링 전망<span>Forecast · Rolling forecast</span></h4><p class="easy">남은 달의 숫자를 다시 예상해서 연말 결과를 미리 보는 거예요. 매달 최신 실적을 반영해 다시 짜서 "롤링"이라고 불러요.</p><p class="ex"><b>붕어빵 가게라면</b> 최근 석 달 동안 계획의 90%만 팔았다면, 남은 석 달도 90%로 보고 연말 이익을 다시 계산해요.</p></article>
         <article class="term" id="t-kpi"><h4>MBO와 KPI<span>Management by objectives · Key performance indicator</span></h4><p class="easy">MBO는 부서마다 목표를 정하고 그 달성으로 평가하는 방식이에요. KPI는 그 목표를 재는 숫자예요(매출, 원가율, 납기 준수율 등).</p><p class="ex"><b>붕어빵 가게라면</b> 굽는 사람은 "타는 붕어빵 2% 이하", 파는 사람은 "하루 1,000개 판매"를 KPI로 정해요.</p><p class="where">이 사이트에서는 <a href="mbo-kpi.html">성과평가 MBO·KPI</a></p></article>
         <article class="term" id="t-grade"><h4>가중치·등급·인센티브<span>Weight · Grade · Incentive</span></h4><p class="easy">가중치는 KPI마다 얼마나 중요하게 볼지 정한 비율(합 100%)이에요. 점수를 모아 S·A·B·C·D 같은 등급을 매기고, 등급이 높을수록 성과급(인센티브)을 더 받아요.</p></article>
+      </div></div>
+
+      <div class="tgroup"><h3>반도체와 사이클</h3><div class="terms">
+        <article class="term" id="t-cycle"><h4>반도체 사이클<span>Semiconductor cycle</span></h4><p class="easy">반도체 가격과 이익이 몇 년마다 크게 오르내리는 현상이에요. 잘될 때 회사들이 다 같이 공장을 늘리는데, 공장이 지어지는 1~2년 뒤 물건이 한꺼번에 쏟아지면 가격이 떨어져요.</p><p class="ex"><b>붕어빵 가게라면</b> 붕어빵이 대박 나서 동네 가게들이 다 같이 틀을 두 배로 늘리면, 몇 달 뒤엔 붕어빵이 남아돌아 값이 떨어져요.</p><p class="where">이 사이트에서는 <a href="semi-cycle.html">반도체 사이클</a></p></article>
+        <article class="term" id="t-nrv"><h4>재고평가손실과 환입<span>Inventory write-down · 저가법</span></h4><p class="easy">재고를 만든 값(원가)보다 지금 팔 수 있는 값이 낮아지면, 그 차이만큼 재고 가치를 깎아 비용으로 잡아요. 나중에 값이 회복되면 깎았던 만큼 안에서 되돌려요(환입).</p><p class="ex"><b>붕어빵 가게라면</b> 1,000원에 만든 붕어빵 재고가 있는데 옆에 가게가 생겨 700원에만 팔 수 있다면, 하나에 300원씩 재고 가치를 깎아요.</p><p class="where">이 사이트에서는 <a href="semi-cycle.html#s-model">사이클 모형</a></p></article>
+        <article class="term" id="t-idle"><h4>저조업 비용<span>Unabsorbed fixed overhead</span></h4><p class="easy">공장을 덜 돌려도 기계값(감가상각)과 고정비는 그대로 나가요. 평소만큼 만들었다면 제품 원가에 나눠 넣었을 고정비 중, 덜 만든 만큼은 재고로 넘기지 않고 그 기간 비용으로 바로 잡아요.</p><p class="ex"><b>붕어빵 가게라면</b> 하루 1,000개 굽던 가게가 손님이 줄어 500개만 구우면, 가게세의 절반은 붕어빵 원가가 아니라 "놀린 비용"으로 그 달에 잡아요.</p></article>
+        <article class="term" id="t-btb"><h4>수주 ÷ 매출<span>Book-to-bill</span></h4><p class="easy">새로 받은 주문을 같은 기간에 판 금액으로 나눈 값이에요. 1보다 크면 일감이 쌓이고, 1보다 작으면 줄고 있다는 뜻이에요. 장비 회사의 앞날을 볼 때 많이 봐요.</p><p class="ex"><b>붕어빵 가게라면</b> 이번 달 단체 주문을 120만원어치 받고 100만원어치를 납품했다면 1.2예요.</p></article>
       </div></div>
 
       <div class="tgroup"><h3>회사의 값 매기기</h3><div class="terms">

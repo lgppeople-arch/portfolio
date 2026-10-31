@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>반도체 사이클과 재무 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 470px; }
+  /* ---- 밸류체인 지도 ---- */
+  .chain { display: grid; grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1.25fr) 22px minmax(0, 1fr) 22px minmax(0, 1fr); grid-template-areas: "design a1 fab a2 back a3 demand" ". . up up up . ." ". . supply supply supply . ."; gap: 6px 0; align-items: stretch; margin: 16px 0 8px; }
+  .chain .arr { display: grid; place-items: center; color: var(--muted); font-family: var(--f-num); font-size: 14px; }
+  .chain .up { grid-area: up; text-align: center; color: var(--muted); font-size: 12px; padding: 2px 0; }
+  .chain .fab { grid-area: fab; display: grid; gap: 6px; }
+  .chain .supply { grid-area: supply; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
+  .stage-btn { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 4px; align-content: start; padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); transition: border-color .15s, box-shadow .15s, transform .15s; min-width: 0; }
+  .stage-btn:hover { border-color: var(--ink-2); }
+  .stage-btn:focus-visible { outline: 2px solid var(--input); outline-offset: 2px; }
+  .stage-btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .stage-btn b { font-size: var(--s-2); }
+  .stage-btn small { font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .stage-btn .g { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .stage-btn.demand { background: color-mix(in srgb, var(--input) 5%, var(--surface)); }
+  .dots { display: inline-flex; gap: 3px; vertical-align: middle; margin-left: 4px; }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--rule); display: inline-block; }
+  .dots i.on { background: var(--accent); }
+  .dots.b i.on { background: var(--input); }
+  @media (max-width: 860px) {
+    .chain { grid-template-columns: minmax(0, 1fr); grid-template-areas: "design" "a1" "fab" "a2" "back" "a3" "demand" "up" "supply"; }
+    .chain .arr { transform: rotate(90deg); height: 18px; }
+  }
+  .stage-detail { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 14px 26px; margin-top: 12px; }
+  .stage-detail h3 { grid-column: 1 / -1; margin: 0; font-size: var(--s-3); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+  .stage-detail h3 span { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .stage-detail .k { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 6px; display: block; }
+  .stage-detail p { margin: 0; font-size: var(--s-1); line-height: 1.75; color: var(--ink-2); max-width: none; }
+  .stage-detail ul { margin: 0; padding-left: 1.05em; display: grid; gap: 4px; font-size: var(--s-1); line-height: 1.6; color: var(--ink-2); }
+  .stage-detail .gauge-row { display: grid; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .stage-detail .gauge-row .dots i { width: 9px; height: 9px; }
+  @media (max-width: 860px) { .stage-detail { grid-template-columns: minmax(0, 1fr); } }
+  /* ---- 사이클 시계 ---- */
+  .clock { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 22px; align-items: center; }
+  @media (max-width: 860px) { .clock { grid-template-columns: minmax(0, 1fr); } }
+  .clock svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .clock .seg { cursor: pointer; transition: opacity .2s, fill .2s; }
+  .clock .seg:focus { outline: none; }
+  .clock .seg:focus-visible { stroke: var(--input); stroke-width: 2; }
+  .clock text { font-family: var(--f-body); }
+  .clock .lab { font-size: 13px; fill: var(--ink-2); }
+  .clock .lab.on { fill: var(--ink); font-weight: 700; }
+  .clock .no { font-family: var(--f-num); font-size: 11px; fill: var(--ink-2); pointer-events: none; transition: fill .2s; }
+  .clock .no.on { fill: var(--surface); }
+  .clock .cn { font-family: var(--f-display); font-weight: 800; font-size: 46px; fill: var(--ink); }
+  .clock .cl { font-size: 15px; font-weight: 700; fill: var(--ink); }
+  .clock .cs { font-size: 11px; fill: var(--muted); }
+  .clock .hand { transition: transform .7s cubic-bezier(.3, .8, .3, 1); }
+  .phase-card { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 18px 20px; display: grid; gap: 10px; }
+  .phase-card .k { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .phase-card h3 { margin: 0; font-size: var(--s-3); }
+  .phase-card p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink-2); max-width: none; }
+  .phase-card ul { margin: 0; padding-left: 1.05em; display: grid; gap: 4px; font-size: var(--s-1); line-height: 1.6; color: var(--ink-2); }
+  .phase-card .fp { border-top: 1px solid var(--rule-soft); padding-top: 10px; font-size: var(--s-1); color: var(--ink); line-height: 1.7; }
+  .phase-card .fp b { color: var(--accent); font-weight: 600; margin-right: 6px; }
+  .phase-nav { display: flex; gap: 8px; }
+  .phase-nav button { all: unset; cursor: pointer; font-size: 12px; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 10px; }
+  .phase-nav button:hover { color: var(--ink); border-color: var(--ink-2); }
+  .phase-nav button:focus-visible { outline: 2px solid var(--input); outline-offset: 2px; }
+  /* ---- 모형 ---- */
+  .ctrl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 22px; padding: 16px 18px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; align-items: end; }
+  @media (max-width: 1100px) { .ctrl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .ctrl { grid-template-columns: minmax(0, 1fr); } }
+  .ctrl .c { display: grid; gap: 6px; min-width: 0; }
+  .ctrl .c > span { font-size: var(--s-1); color: var(--ink-2); display: flex; justify-content: space-between; gap: 8px; }
+  .ctrl .c > span b { font-weight: 600; color: var(--input); }
+  .ctrl .seg { width: 100%; display: flex; }
+  .ctrl .seg label { flex: 1; text-align: center; padding: 6px 4px; }
+  .ctrl .more { grid-column: 1 / -1; }
+  .ctrl .more summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+  .ctrl .more .row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 22px; margin-top: 10px; }
+  @media (max-width: 760px) { .ctrl .more .row { grid-template-columns: minmax(0, 1fr); } }
+  .ctrl .more .field { grid-template-columns: minmax(0, 1fr) 76px; }
+  .ctrl .tools { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .multi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 14px 0; }
+  @media (max-width: 900px) { .multi { grid-template-columns: minmax(0, 1fr); } }
+  .multi .fig { margin: 0; }
+  .multi .fig-b { padding-top: 6px; }
+  svg.plot .cline { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  svg.plot .band-loss { fill: var(--neg); fill-opacity: 0.08; }
+  svg.plot .band-shock { fill: var(--input); fill-opacity: 0.07; }
+  svg.plot .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  svg.plot text.ref-t { fill: var(--muted); font-size: 10.5px; }
+  .bandkey { display: inline-flex; align-items: center; gap: 6px; }
+  .bandkey i { width: 12px; height: 10px; border-radius: 2px; display: inline-block; }
+  .numband b.neg { color: var(--neg); }
+  table.chk { border-collapse: collapse; width: 100%; min-width: 760px; font-size: var(--s-1); }
+  table.chk th, table.chk td { padding: 11px 12px; border-bottom: 1px solid var(--rule-soft); text-align: left; vertical-align: top; line-height: 1.6; }
+  table.chk thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.chk td:first-child { color: var(--ink); font-weight: 600; width: 26%; }
+  table.chk td:last-child { color: var(--ink-2); width: 30%; }
+  .plays { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 14px 0; }
+  @media (max-width: 1100px) { .plays { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .plays { grid-template-columns: minmax(0, 1fr); } }
+  .play { border: 1px solid var(--rule); border-top: 3px solid var(--c, var(--accent)); border-radius: var(--radius); background: var(--surface); padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
+  .play .k { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .play b { font-size: var(--s-2); }
+  .play ul { margin: 0; padding-left: 1.05em; display: grid; gap: 5px; font-size: var(--s-1); line-height: 1.6; color: var(--ink-2); }
+  .play .to { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="fsa.html">재무제표</a>
+      <a href="semi-cycle.html" aria-current="page">반도체 사이클</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 반도체 사이클과 재무</div>
+      <div class="rpt-tag">Industry note · 02</div>
+      <h1>반도체 사이클을<br>재무로 읽는 법</h1>
+      <p class="dek">반도체 사이클은 수요 변화에 공급이 늦게, 그리고 크게 반응하면서 생깁니다. 호황 때 늘린 설비가 1~2년 뒤 한꺼번에 들어오면 가격이 무너지고, 그 결과는 재고평가손실, 저조업 비용, 설비투자 축소로 재무제표에 찍힙니다. 밸류체인 단계마다 볼 숫자와, 사이클이 생기는 원리를 직접 움직여 볼 수 있는 모형을 담았습니다.</p>
+      <div class="rpt-meta"><span>작성<b>이기표</b></span><span>관점<b>반도체 부품 제조사 재무기획 실무</b></span><span>모형<b>가상 수치 · 개념 모형</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>사이클은 공급이 키웁니다</b><p>높은 이익률을 보고 결정한 증설이 시차를 두고 한꺼번에 들어오면 가격이 무너집니다. 투자 반응이 크고 시차가 길수록 골이 깊습니다.</p></div>
+      <div><b>장비·부품은 고객 투자를 키워서 받습니다</b><p id="tk2">모형에서 메모리 매출이 오르내리는 폭보다 설비투자가 오르내리는 폭이 훨씬 큽니다. 장비·부품 회사의 매출이 곧 이 설비투자입니다.</p></div>
+      <div><b>불황은 주석에 먼저 나옵니다</b><p>재고평가손실은 재고자산 주석의 충당금 변동에, 투자 축소는 현금흐름표와 유형자산 변동표에 먼저 보입니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-chain">
+          <h2>단계마다 돈 버는 방식이 다릅니다</h2>
+          <p>같은 반도체 산업이어도 설계, 생산, 장비, 소재·부품은 자본이 드는 정도와 사이클을 타는 정도가 다릅니다. 그래서 먼저 볼 재무 숫자도 다릅니다. 단계를 눌러 보세요.</p>
+          <div class="chain" id="chain" role="group" aria-label="반도체 밸류체인 단계"></div>
+          <div class="stage-detail" id="stage-detail" aria-live="polite"></div>
+          <p class="hint" style="margin-top: 10px">자본집약도와 사이클 민감도 점(●)은 공개 자료와 실무 경험을 바탕으로 한 제 정성 평가입니다.</p>
+        </section>
+
+        <section id="s-clock">
+          <h2>국면마다 재무제표에 찍히는 신호</h2>
+          <p>사이클은 대체로 같은 순서로 돕니다. 국면을 누르면 그때 어떤 계정이 움직이는지, 재무기획은 무엇을 챙기는지 볼 수 있습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>사이클 시계</h4><div class="phase-nav"><button type="button" id="ph-prev" aria-label="이전 국면">← 이전</button><button type="button" id="ph-next" aria-label="다음 국면">다음 →</button></div></div>
+            <div class="fig-b">
+              <div class="clock">
+                <div id="clock-svg"></div>
+                <div class="phase-card" id="phase-card" aria-live="polite"></div>
+              </div>
+            </div>
+            <div class="fig-s">화면에 보이는 동안 국면이 저절로 넘어갑니다. 국면을 직접 누르면 멈춥니다.</div>
+          </div>
+        </section>
+
+        <section id="s-model">
+          <h2>사이클이 생기는 원리를 움직여 봅니다</h2>
+          <p>가상의 메모리 회사를 8년(32분기) 동안 굴리는 개념 모형입니다. 수요는 연 20%씩 늘고 원가는 연 18%씩 내려가는 정상 상태에서 출발합니다. 1년 차 3분기부터 네 분기 동안 수요가 갑자기 늘면 무슨 일이 생기는지, 투자 반응과 시차, 감산을 바꿔 가며 보세요.</p>
+          <div class="ctrl" id="ctrl">
+            <label class="c"><span>수요 충격 <b id="v-shock"></b></span><input type="range" id="i-shock" min="-20" max="20" step="5"></label>
+            <div class="c"><span>투자 반응 <b id="v-react"></b></span>
+              <div class="seg" role="radiogroup" aria-label="투자 반응">
+                <label><input type="radio" name="react" value="0">없음</label><label><input type="radio" name="react" value="1">작게</label><label><input type="radio" name="react" value="2">보통</label><label><input type="radio" name="react" value="3">크게</label>
+              </div>
+            </div>
+            <label class="c"><span>투자 → 생산 시차 <b id="v-lead"></b></span><input type="range" id="i-lead" min="2" max="8" step="1"></label>
+            <div class="c"><span>재고가 쌓이면 감산 <b id="v-cut"></b></span>
+              <div class="seg" role="radiogroup" aria-label="감산">
+                <label><input type="radio" name="cut" value="0">안 함</label><label><input type="radio" name="cut" value="1">감산</label>
+              </div>
+            </div>
+            <details class="more">
+              <summary>정상 상태 가정 바꾸기</summary>
+              <div class="row">
+                <div class="field"><label for="i-growth">수요(비트) 증가율<small>연 %</small></label><input id="i-growth" type="number" inputmode="decimal" step="1" min="0" max="60"></div>
+                <div class="field"><label for="i-costdown">단위원가 하락률<small>연 %</small></label><input id="i-costdown" type="number" inputmode="decimal" step="1" min="0" max="40"></div>
+                <div class="field"><label for="i-target">투자 판단 기준 이익률<small>매출총이익률 %</small></label><input id="i-target" type="number" inputmode="decimal" step="1" min="5" max="70"></div>
+              </div>
+            </details>
+            <div class="tools"><span>금액은 시작 분기 매출 = 100 기준 · 가격과 원가는 원가 하락 추세를 뺀 지수</span><button type="button" class="btn ghost" id="reset">예시값으로 되돌리기</button></div>
+          </div>
+
+          <div class="numband" data-rv>
+            <div><b id="n-max"></b><span>최고 매출총이익률</span></div>
+            <div><b id="n-min"></b><span>최저 매출총이익률</span></div>
+            <div><b id="n-loss"></b><span>매출총손실 분기</span></div>
+            <div><b id="n-swing"></b><span>설비투자 변동폭 (최고 ÷ 최저)</span></div>
+          </div>
+          <div class="callout" id="story"></div>
+
+          <div class="multi" data-rv>
+            <div class="fig"><div class="fig-h"><h4>가격과 원가</h4><div class="legend"><span><i class="key-line" style="background: var(--accent)"></i>가격</span><span><i class="key-line" style="background: var(--ink-2)"></i>단위원가</span></div></div><div class="fig-b"><div class="chart" id="c-price"><div class="plot-host"></div></div></div></div>
+            <div class="fig"><div class="fig-h"><h4>매출총이익률</h4><div class="legend"><span><i class="key-line" style="background: var(--input)"></i>이익률</span><span><i class="key-bar" style="background: var(--neg)"></i>재고평가손실</span><span><i class="key-bar" style="background: var(--pos)"></i>환입</span><span><i class="key-bar" style="background: var(--mark-muted)"></i>저조업 비용</span></div></div><div class="fig-b"><div class="chart" id="c-gpm"><div class="plot-host"></div></div></div></div>
+            <div class="fig"><div class="fig-h"><h4>설비투자 = 장비·부품사의 매출</h4><div class="legend"><span><i class="key-bar" style="background: var(--accent)"></i>설비투자</span><span><i class="key-line" style="background: var(--ink-2)"></i>메모리 매출</span></div></div><div class="fig-b"><div class="chart" id="c-capex"><div class="plot-host"></div></div></div></div>
+            <div class="fig"><div class="fig-h"><h4>재고 주수와 가동률</h4><div class="legend"><span><i class="key-line" style="background: var(--neg)"></i>재고 주수 (왼쪽)</span><span><i class="key-line" style="background: var(--pos)"></i>가동률 (오른쪽)</span></div></div><div class="fig-b"><div class="chart" id="c-inv"><div class="plot-host"></div></div></div></div>
+          </div>
+          <p class="hint"><span class="bandkey"><i style="background: color-mix(in srgb, var(--input) 18%, transparent)"></i>수요 충격 기간</span> · <span class="bandkey"><i style="background: color-mix(in srgb, var(--neg) 20%, transparent)"></i>매출총손실 분기</span> · 그래프에 마우스를 올리면 분기별 숫자가 나옵니다.</p>
+        </section>
+
+        <section id="s-parts">
+          <h2>부품·소재 기업을 볼 때 확인하는 것</h2>
+          <p>부품·소재 회사는 고객의 가동률과 설비투자를 함께 탑니다. 아래 질문의 답은 대부분 사업보고서의 사업의 내용과 주석에 있습니다.</p>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)">
+            <table class="chk">
+              <thead><tr><th>질문</th><th>왜 중요한가</th><th>어디서 확인하나</th></tr></thead>
+              <tbody>
+                <tr><td>매출 중 소모성 제품 비중은?</td><td>쓰면 닳는 소모성 제품은 고객 가동률을, 장비에 들어가는 부품은 고객 설비투자를 따릅니다. 비중에 따라 사이클을 타는 정도가 다릅니다.</td><td>사업의 내용(제품별 매출), 실적 발표 자료</td></tr>
+                <tr><td>상위 고객 비중은?</td><td>한두 고객의 투자 계획이 실적을 좌우합니다. 고객이 증설을 미루면 바로 매출에 찍힙니다.</td><td>영업부문 주석의 주요 고객 정보, 사업의 내용</td></tr>
+                <tr><td>고객 인증에 얼마나 걸리나?</td><td>새 고객이나 새 공정에 들어가려면 품질 인증을 거쳐야 해서, 개발비를 먼저 쓰고 매출은 늦게 들어옵니다.</td><td>연구개발 활동, 무형자산(개발비) 주석</td></tr>
+                <tr><td>원재료·환율 노출은?</td><td>수출 비중이 높고 원재료를 수입하면 환율이 매출과 원가 양쪽에 영향을 줍니다. 어느 쪽이 큰지가 순노출입니다.</td><td>금융위험관리 주석의 외화 자산·부채와 환율 민감도</td></tr>
+                <tr><td>재고가 고객 맞춤형인가?</td><td>특정 고객용으로 만든 재고는 다른 곳에 팔기 어려워, 고객 계획이 바뀌면 진부화 위험이 커집니다.</td><td>재고자산 주석의 평가충당금 변동</td></tr>
+                <tr><td>증설이 고객 계획보다 앞서 있나?</td><td>고객 증설이 늦어지면 가동률은 낮고 감가상각은 그대로라 이익률이 먼저 떨어집니다.</td><td>유형자산 변동표(건설중인자산), 약정사항</td></tr>
+                <tr><td>품질 문제의 책임은?</td><td>고객 공정에서 사고가 나면 배상과 보증 비용이 생길 수 있습니다.</td><td>충당부채, 우발부채와 약정사항 주석</td></tr>
+                <tr><td>해외 법인과의 거래는?</td><td>생산·판매 법인이 나라마다 있으면 내부거래 가격과 연결 제거가 손익에 영향을 줍니다.</td><td>특수관계자 거래, 연결 범위 주석</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s-plays">
+          <h2>국면마다 재무기획이 할 일</h2>
+          <p>사이클을 피할 수는 없어도, 국면마다 미리 할 일을 정해 두면 숫자가 덜 흔들립니다. 이 사이트의 도구를 국면에 맞춰 연결했습니다.</p>
+          <div class="plays">
+            <div class="play" style="--c: var(--pos)"><span class="k">호황 · 가격 상승 ~ 이익 정점</span><b>정점 가격으로 투자하지 않기</b><ul><li>증설 투자는 사이클 평균 가격으로 심의하고, 하강 시나리오를 반드시 넣습니다.</li><li>늘어난 수출만큼 환헤지 비율을 다시 맞춥니다.</li></ul><div class="to"><a href="capex-kit.html">설비투자 키트 →</a><a href="fx-hedge.html">환리스크 →</a></div></div>
+            <div class="play" style="--c: var(--accent)"><span class="k">증설 · 공급 증가</span><b>집행과 가정을 같이 관리</b><ul><li>집행 속도와 승인 때 가정을 분기마다 실적과 비교합니다.</li><li>늘어날 감가상각을 사업계획 손익에 미리 반영합니다.</li></ul><div class="to"><a href="post-review.html">투자 사후관리 →</a><a href="pl-report.html">월 손익 보고 →</a></div></div>
+            <div class="play" style="--c: var(--neg)"><span class="k">하강 · 재고 조정</span><b>손익과 현금을 먼저 지키기</b><ul><li>재고평가손실과 감산(저조업) 영향을 월 손익 전망에 넣습니다.</li><li>13주 자금수지로 유동성과 재무약정을 점검하고, 투자 집행 시기를 다시 잡습니다.</li></ul><div class="to"><a href="pl-report.html">손익 전망 →</a><a href="cash-13w.html">13주 자금수지 →</a></div></div>
+            <div class="play" style="--c: var(--input)"><span class="k">바닥 · 회복</span><b>다음 사이클 준비</b><ul><li>원가 절감 성과를 측정하고 다음 증설의 자금 계획을 세웁니다.</li><li>기업가치가 낮아진 때의 인수·지분 투자 기회를 검토합니다.</li></ul><div class="to"><a href="ma-valuation.html">M&amp;A 가치평가 →</a><a href="holdco-nav.html">지주사 가치 →</a></div></div>
+          </div>
+          <p class="rpt-end">모형의 계산 기준: 수요는 추세 성장 위에 충격을 더하고, 생산능력은 투자 결정 뒤 정해진 분기만큼 늦게 늘어납니다. 가격은 원가 하락 추세(정상 가격)에 직전 분기 재고 주수가 정상(6주)에서 벗어난 정도를 반영하되 정상 가격의 약 0.5~1.7배 안에서 움직입니다. 투자는 목표 생산능력(추세 × (1 + 반응 × (매출총이익률 − 기준 이익률)))에서 현재 생산능력과 이미 발주한 물량을 뺀 만큼 하며, 공정 전환·유지 투자로 추세 증설의 30%는 늘 집행합니다. 감가상각은 설비가 들어온 분기부터 5년 정액입니다. 재고는 가중평균 원가로 평가하고 가격이 원가보다 낮으면 차이만큼 평가손실을, 가격이 회복되면 쌓인 충당금 안에서 환입을 잡습니다. 고정비는 정상조업도 기준으로 배부하고, 감산으로 배부되지 않은 고정비는 저조업 비용으로 그 분기에 비용 처리합니다. 판매비·법인세·운전자본 중 재고 외 항목은 넣지 않았습니다. 실제 시장 예측이 아닌 구조 설명용 모형이며, 특정 회사의 수치와 관계없습니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/cycle.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.CycleEngine, $ = F.$;
+  const reduce = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ================= 1. 밸류체인 ================= */
+  const STAGES = [
+    { id: "design", area: "design", name: "설계", tag: "팹리스 · IP · 설계 도구", capex: 1, cyc: 3,
+      how: "칩을 설계해 팔고 생산은 파운드리에 맡깁니다. 설계 자산(IP)과 설계 소프트웨어 회사는 사용료를 받습니다. 공장이 없어 자산이 가볍고, 연구개발이 가장 큰 비용입니다.",
+      nums: ["매출총이익률", "연구개발비 ÷ 매출", "재고자산 일수", "고객·제품 집중도"],
+      notes: ["영업부문과 주요 고객", "무형자산(개발비) 자산화 기준", "재고자산 평가", "주식기준보상"] },
+    { id: "memory", area: "fab", name: "메모리", tag: "D램 · 낸드, 설계부터 생산까지", capex: 5, cyc: 5,
+      how: "표준화된 제품을 대량 생산합니다. 가격은 수요와 공급이 정하고, 미세공정 전환으로 원가를 얼마나 빨리 낮추느냐가 이익을 가릅니다. 사이클을 가장 크게 탑니다.",
+      nums: ["비트 출하 증가율과 평균판매가격 (실적 발표)", "매출총이익률과 재고 주수", "설비투자 ÷ 매출, 감가상각 ÷ 매출", "순차입금과 현금"],
+      notes: ["재고자산 평가손실 충당금 변동", "유형자산 변동표와 건설중인자산", "영업부문(사업부별 손익)", "장비 구매 약정"] },
+    { id: "foundry", area: "fab", name: "파운드리", tag: "위탁생산", capex: 5, cyc: 3,
+      how: "고객이 설계한 칩을 대신 만들어 웨이퍼 단위로 돈을 받습니다. 첨단 공정일수록 단가가 높고, 장기 계약과 고객 선결제가 있지만 가동률이 이익을 좌우합니다.",
+      nums: ["가동률과 공정별 매출 비중 (실적 발표)", "매출총이익률", "설비투자 ÷ 매출", "고객 선수금"],
+      notes: ["계약부채(선수금)", "유형자산과 리스", "정부보조금", "영업부문과 지역별 매출"] },
+    { id: "back", area: "back", name: "후공정", tag: "패키징 · 테스트", capex: 3, cyc: 3,
+      how: "웨이퍼를 잘라 칩으로 포장하고 검사합니다. 여러 칩을 쌓거나 잇는 첨단 패키징의 비중이 커지면서 설비투자도 늘고 있습니다.",
+      nums: ["가동률", "고객 집중도", "설비투자 ÷ 매출", "매출총이익률"],
+      notes: ["주요 고객", "유형자산", "리스", "특수관계자 거래"] },
+    { id: "demand", area: "demand", name: "수요처", tag: "서버·AI · 모바일 · PC · 자동차", demand: true,
+      how: "데이터센터, 스마트폰, PC, 자동차와 산업용 기기가 칩을 씁니다. 완제품 회사가 쌓아 둔 재고를 줄이는 기간에는 실제 사용량보다 주문이 더 크게 줄어듭니다.",
+      nums: ["데이터센터 설비투자 계획", "스마트폰·PC 출하량", "고객사 재고 주수"],
+      notes: ["고객사 실적 발표의 재고 조정 언급"] },
+    { id: "equip", area: "supply", name: "장비", tag: "노광 · 식각 · 증착 · 검사", capex: 2, cyc: 4,
+      how: "반도체 회사의 설비투자가 곧 매출입니다. 수주에서 납품·설치까지 시차가 있고, 깔린 장비의 유지보수 매출이 쌓입니다. 고객 투자의 변동을 키워서 받습니다.",
+      nums: ["수주잔고", "수주 ÷ 매출 (Book-to-bill)", "선수금", "서비스 매출 비중", "연구개발비 ÷ 매출"],
+      notes: ["계약자산·계약부채(수익 인식 시점)", "판매보증 충당부채", "주요 고객", "재고자산(재공품)"], tools: [["설비투자 키트", "capex-kit.html"]] },
+    { id: "parts", area: "supply", name: "소재·부품", tag: "웨이퍼 · 가스 · 화학 · 장비 부품", capex: 3, cyc: 3,
+      how: "공정에 들어가는 재료와 장비 부품을 공급합니다. 쓰면 닳는 소모성 제품은 고객 가동률을, 장비에 들어가는 부품은 고객 설비투자를 따라갑니다.",
+      nums: ["소모성 매출 비중", "고객 집중도", "원재료 가격과 환율", "재고자산 일수", "매출총이익률"],
+      notes: ["주요 고객과 영업부문", "재고자산 평가", "외화 자산·부채와 환율 민감도", "특수관계자 거래"], tools: [["환리스크 헤지", "fx-hedge.html"], ["가동률과 원가", "capex-kit.html#bep"]] }
+  ];
+  let curStage = "memory";
+  const dots = (n, cls) => { const s = F.el("span", { class: "dots" + (cls ? " " + cls : ""), "aria-hidden": "true" }); for (let i = 1; i <= 5; i++) s.appendChild(F.el("i", { class: i <= n ? "on" : "" })); return s; };
+
+  function buildChain() {
+    const box = $("chain");
+    box.textContent = "";
+    const btn = (s) => {
+      const b = F.el("button", { type: "button", class: "stage-btn" + (s.demand ? " demand" : ""), "data-id": s.id, "aria-pressed": "false" }, [F.el("b", { text: s.name }), F.el("small", { text: s.tag })]);
+      if (!s.demand) b.appendChild(F.el("span", { class: "g" }, [F.el("span", null, ["자본", dots(s.capex)]), F.el("span", null, ["사이클", dots(s.cyc, "b")])]));
+      b.addEventListener("click", () => {
+        curStage = s.id; showStage();
+        if (window.innerWidth < 860) $("stage-detail").scrollIntoView({ block: "nearest", behavior: reduce() ? "auto" : "smooth" });
+      });
+      return b;
+    };
+    const by = (id) => STAGES.find((s) => s.id === id);
+    const place = (node, area) => { node.style.gridArea = area; box.appendChild(node); };
+    place(btn(by("design")), "design");
+    place(F.el("span", { class: "arr", "aria-hidden": "true", text: "→" }), "a1");
+    const fab = F.el("div", { class: "fab" }, [btn(by("memory")), btn(by("foundry"))]); box.appendChild(fab);
+    place(F.el("span", { class: "arr", "aria-hidden": "true", text: "→" }), "a2");
+    place(btn(by("back")), "back");
+    place(F.el("span", { class: "arr", "aria-hidden": "true", text: "→" }), "a3");
+    place(btn(by("demand")), "demand");
+    box.appendChild(F.el("div", { class: "up", text: "↑ 생산과 후공정에 장비와 소재·부품을 공급 ↑" }));
+    box.appendChild(F.el("div", { class: "supply" }, [btn(by("equip")), btn(by("parts"))]));
+  }
+  function showStage() {
+    document.querySelectorAll(".stage-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.id === curStage)));
+    const s = STAGES.find((x) => x.id === curStage), d = $("stage-detail");
+    d.textContent = "";
+    d.appendChild(F.el("h3", null, [s.name, F.el("span", { text: s.tag })]));
+    const c1 = F.el("div", null, [F.el("span", { class: "k", text: "돈 버는 방식" }), F.el("p", { text: s.how })]);
+    if (!s.demand) c1.appendChild(F.el("div", { class: "gauge-row" }, [F.el("span", null, ["자본집약도", dots(s.capex)]), F.el("span", null, ["사이클 민감도", dots(s.cyc, "b")])]));
+    d.appendChild(c1);
+    const list = (k, arr) => { const ul = F.el("ul"); arr.forEach((t) => ul.appendChild(F.el("li", { text: t }))); return F.el("div", null, [F.el("span", { class: "k", text: k }), ul]); };
+    d.appendChild(list(s.demand ? "수요 신호" : "먼저 볼 숫자", s.nums));
+    const c3 = list(s.demand ? "어디서 보나" : "주석에서 볼 것", s.notes);
+    if (s.tools) { const p = F.el("p", { style: "margin-top: 10px" }); s.tools.forEach((t, i) => { if (i) p.appendChild(document.createTextNode(" · ")); p.appendChild(F.el("a", { href: t[1], text: t[0] + " →" })); }); c3.appendChild(p); }
+    d.appendChild(c3);
+  }
+
+  /* ================= 2. 사이클 시계 ================= */
+  const PHASES = [
+    { n: "수요 회복", s: "재고가 줄고 가동률이 오릅니다.", sig: ["재고자산 일수 감소", "매출 증가, 매출총이익률 회복 시작"], fp: "회복 속도를 월 손익 전망에 반영하고, 미뤄 둔 투자의 재개 조건을 정합니다." },
+    { n: "가격 상승", s: "공급이 바로 따라오지 못해 가격이 오릅니다.", sig: ["평균판매가격 상승", "매출총이익률 급등", "쌓아 둔 재고평가충당금 환입"], fp: "환입 같은 일회성 이익을 걸러 낸 실력 이익률로 보고합니다." },
+    { n: "이익 정점", s: "이익과 현금이 가장 많이 들어옵니다.", sig: ["영업이익률 최고", "영업현금흐름 확대, 순차입금 감소", "법인세 비용 증가"], fp: "정점 이익을 기준으로 내년 계획을 세우지 않도록 사이클 평균 가정을 따로 둡니다." },
+    { n: "증설 결정", s: "높은 이익률을 보고 설비를 늘립니다.", sig: ["설비투자 급증 (투자활동 현금유출)", "건설중인자산 증가", "장비 구매 약정 증가 → 장비·부품사 수주 증가"], fp: "투자심의에 하강 시나리오와 집행 단계별 중단 조건을 넣습니다." },
+    { n: "공급 증가", s: "늘린 설비가 시차를 두고 한꺼번에 들어옵니다.", sig: ["건설중인자산이 유형자산으로 대체", "감가상각비 증가, 고정비 부담 확대"], fp: "늘어나는 감가상각을 사업계획 손익과 손익분기 가동률에 반영합니다." },
+    { n: "가격 하락", s: "공급이 수요를 앞질러 가격이 내려갑니다.", sig: ["평균판매가격 하락", "매출총이익률 하락", "재고자산 증가"], fp: "가격 시나리오별 손익과 현금 전망을 월마다 다시 냅니다." },
+    { n: "재고 조정", s: "팔리지 않은 재고의 가치를 깎습니다.", sig: ["재고평가손실 (충당금 증가)", "영업현금흐름 감소, 차입 증가"], fp: "13주 자금수지로 유동성과 재무약정 여유를 점검합니다." },
+    { n: "감산·투자 축소", s: "가동률을 낮추고 투자를 줄입니다.", sig: ["저조업 비용 (배부되지 않은 고정비)", "설비투자 축소", "비용 절감, 인력·조직 효율화"], fp: "감산의 손익 영향(저조업 비용)과 투자 이연 효과를 나눠 보고합니다." }
+  ];
+  let ph = 0, auto = true, timer = 0, clockVisible = false;
+  function polar(cx, cy, r, a) { return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+  function arcPath(cx, cy, r0, r1, a0, a1) {
+    const p0 = polar(cx, cy, r1, a0), p1 = polar(cx, cy, r1, a1), p2 = polar(cx, cy, r0, a1), p3 = polar(cx, cy, r0, a0), large = a1 - a0 > Math.PI ? 1 : 0;
+    return "M" + p0[0] + " " + p0[1] + " A" + r1 + " " + r1 + " 0 " + large + " 1 " + p1[0] + " " + p1[1] + " L" + p2[0] + " " + p2[1] + " A" + r0 + " " + r0 + " 0 " + large + " 0 " + p3[0] + " " + p3[1] + " Z";
+  }
+  function buildClock() {
+    const host = $("clock-svg");
+    host.textContent = "";
+    const W = 440, H = 400, cx = 220, cy = 200, r0 = 104, r1 = 140, n = PHASES.length, gap = 0.035;
+    const svg = F.svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "반도체 사이클 여덟 국면" }, host);
+    const tone = (i) => i < 3 ? F.css("--pos") : i < 5 ? F.css("--accent") : i < 7 ? F.css("--neg") : F.css("--input");
+    PHASES.forEach((p, i) => {
+      const a0 = -Math.PI / 2 + i * 2 * Math.PI / n + gap, a1 = -Math.PI / 2 + (i + 1) * 2 * Math.PI / n - gap, am = (a0 + a1) / 2;
+      const seg = F.svgEl("path", { class: "seg", d: arcPath(cx, cy, r0, r1, a0, a1), fill: tone(i), "data-i": i, tabindex: "0", role: "button", "aria-label": (i + 1) + ". " + p.n }, svg);
+      seg.addEventListener("click", () => { stopAuto(); setPhase(i); });
+      seg.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stopAuto(); setPhase(i); } });
+      const pn = polar(cx, cy, (r0 + r1) / 2, am);
+      F.svgText(svg, pn[0], pn[1] + 4, String(i + 1).padStart(2, "0"), { class: "no", "data-i": i, "text-anchor": "middle" });
+      const pl = polar(cx, cy, r1 + 16, am), c = Math.cos(am);
+      F.svgText(svg, pl[0], pl[1] + 4, p.n, { class: "lab", "data-i": i, "text-anchor": Math.abs(c) < 0.25 ? "middle" : c > 0 ? "start" : "end" });
+    });
+    /* 바늘: 현재 국면 가운데를 가리킨다 */
+    const hand = F.svgEl("g", { class: "hand", id: "hand", style: "transform-origin: " + cx + "px " + cy + "px" }, svg);
+    F.svgEl("line", { x1: cx, y1: cy - 62, x2: cx, y2: cy - r0 + 6, stroke: F.css("--ink"), "stroke-width": 2, "stroke-linecap": "round" }, hand);
+    F.svgEl("circle", { cx: cx, cy: cy - r0 + 6, r: 4, fill: F.css("--ink") }, hand);
+    F.svgText(svg, cx, cy - 14, "", { class: "cn", id: "c-no", "text-anchor": "middle" });
+    F.svgText(svg, cx, cy + 16, "", { class: "cl", id: "c-name", "text-anchor": "middle" });
+    F.svgText(svg, cx, cy + 36, "국면", { class: "cs", id: "c-sub", "text-anchor": "middle" });
+  }
+  function setPhase(i) {
+    ph = (i + PHASES.length) % PHASES.length;
+    const p = PHASES[ph], n = PHASES.length;
+    document.querySelectorAll(".clock .seg").forEach((s) => { s.style.opacity = Number(s.dataset.i) === ph ? "1" : "0.3"; });
+    document.querySelectorAll(".clock .lab, .clock .no").forEach((s) => s.classList.toggle("on", Number(s.dataset.i) === ph));
+    const hand = $("hand"); if (hand) hand.style.transform = "rotate(" + ((ph + 0.5) * 360 / n) + "deg)";
+    $("c-no").textContent = String(ph + 1).padStart(2, "0");
+    $("c-name").textContent = p.n;
+    const card = $("phase-card");
+    card.textContent = "";
+    card.appendChild(F.el("span", { class: "k", text: "국면 " + String(ph + 1).padStart(2, "0") + " / " + String(n).padStart(2, "0") }));
+    card.appendChild(F.el("h3", { text: p.n }));
+    card.appendChild(F.el("p", { text: p.s }));
+    const ul = F.el("ul"); p.sig.forEach((t) => ul.appendChild(F.el("li", { text: t })));
+    card.appendChild(F.el("div", null, [F.el("span", { class: "k", text: "재무제표 신호" }), ul]));
+    card.appendChild(F.el("p", { class: "fp" }, [F.el("b", { text: "재무기획" }), p.fp]));
+  }
+  function stopAuto() { auto = false; clearInterval(timer); }
+  function startAuto() {
+    clearInterval(timer);
+    if (!auto || reduce() || !clockVisible) return;
+    timer = setInterval(() => { if (!document.hidden) setPhase(ph + 1); }, 2800);
+  }
+
+  /* ================= 3. 사이클 모형 ================= */
+  const D = E.DEFAULTS;
+  let x = JSON.parse(JSON.stringify(D));
+  const qlabel = (t) => (Math.floor(t / 4) + 1) + "년 차 " + (t % 4 + 1) + "분기";
+
+  function bindControls() {
+    const sh = $("i-shock"), ld = $("i-lead");
+    sh.addEventListener("input", () => { x.shock = Number(sh.value); render(); });
+    ld.addEventListener("input", () => { x.lead = Number(ld.value); render(); });
+    document.querySelectorAll("input[name=react]").forEach((r) => r.addEventListener("change", () => { x.react = Number(r.value); render(); }));
+    document.querySelectorAll("input[name=cut]").forEach((r) => r.addEventListener("change", () => { x.cut = r.value === "1"; render(); }));
+    [["i-growth", "growth"], ["i-costdown", "costdown"], ["i-target", "target"]].forEach((p) => {
+      const inp = $(p[0]);
+      inp.addEventListener("input", () => { x[p[1]] = F.clamp(F.readNum(inp, D[p[1]]), Number(inp.min), Number(inp.max)); render(); });
+    });
+    $("reset").addEventListener("click", () => { x = JSON.parse(JSON.stringify(D)); syncControls(); render(); });
+  }
+  function syncControls() {
+    $("i-shock").value = x.shock; $("i-lead").value = x.lead;
+    document.querySelectorAll("input[name=react]").forEach((r) => { r.checked = Number(r.value) === x.react; });
+    document.querySelectorAll("input[name=cut]").forEach((r) => { r.checked = (r.value === "1") === x.cut; });
+    $("i-growth").value = x.growth; $("i-costdown").value = x.costdown; $("i-target").value = x.target;
+  }
+
+  function render() {
+    const r = E.run(x), q = r.quarters, s = r.summary;
+    const alt = E.run(Object.assign({}, x, { cut: !x.cut })).summary;
+    $("v-shock").textContent = (x.shock > 0 ? "+" : x.shock < 0 ? "−" : "") + Math.abs(x.shock) + "% · " + x.shockLen + "분기";
+    $("v-react").textContent = ["없음", "작게", "보통", "크게"][x.react];
+    $("v-lead").textContent = r.lead + "분기";
+    $("v-cut").textContent = x.cut ? "감산" : "안 함";
+
+    const setN = (id, text, neg) => { const b = $(id); b.textContent = text; b.classList.toggle("neg", !!neg); };
+    setN("n-max", F.pct(s.gpmMax, 1));
+    setN("n-min", F.pct(s.gpmMin, 1), s.gpmMin < 0);
+    setN("n-loss", s.lossQ + "개", s.lossQ > 0);
+    setN("n-swing", F.num(s.capexSwing, 1) + "배");
+
+    $("tk2").textContent = "모형 기본 설정에서 메모리 매출은 최고가 최저의 " + F.num(BASE.revSwing, 1) + "배인데, 설비투자는 " + F.num(BASE.capexSwing, 1) + "배로 흔들립니다. 장비·부품 회사의 매출이 곧 이 설비투자입니다.";
+
+    /* 해설 */
+    const st = $("story"); st.textContent = "";
+    const P = (nodes) => st.appendChild(F.el("p", { style: "margin: 0 0 8px" }, nodes));
+    if (x.shock === 0) {
+      P(["수요 충격이 없으면 가격, 이익률, 재고 주수가 모두 정상 상태에 머뭅니다. 위 막대를 움직여 충격을 줘 보세요."]);
+    } else {
+      const up = x.shock > 0;
+      /* 충격에 대한 첫 반응만 본다: 충격 시작부터 끝난 뒤 두 분기까지 */
+      const w1 = Math.min(q.length - 1, x.shockAt + x.shockLen + 2);
+      let ext = x.shockAt; for (let i = x.shockAt; i <= w1; i++) if (up ? q[i].priceIdx > q[ext].priceIdx : q[i].priceIdx < q[ext].priceIdx) ext = i;
+      const pDev = q[ext].priceIdx / 100 - 1;
+      const loss = q.filter((v) => v.gp < 0);
+      const lead = F.el("b", { text: qlabel(x.shockAt) + "부터 " + x.shockLen + "개 분기 동안 수요가 " + Math.abs(x.shock) + "% " + (up ? "늘자" : "줄자") });
+      const s1 = up ? " 재고가 바닥나면서 가격이 정상보다 최대 " + F.pct(pDev, 0) + " 올랐습니다(" + qlabel(ext) + ")."
+                    : " 재고가 쌓이면서 가격이 정상보다 최대 " + F.pct(-pDev, 0) + " 내렸습니다(" + qlabel(ext) + ").";
+      let s2;
+      if (loss.length) s2 = " 재고는 최대 " + F.num(s.weeksMax, 1) + "주까지 쌓였고, " + qlabel(loss[0].t) + "부터 매출총손실이 " + loss.length + "개 분기 나왔습니다.";
+      else s2 = " 재고는 최대 " + F.num(s.weeksMax, 1) + "주까지 쌓였지만 매출총손실 분기는 없었습니다. 최저 매출총이익률은 " + F.pct(s.gpmMin, 1) + "입니다.";
+      const s0 = up && x.react > 0 ? " 높은 이익률을 보고 늘린 설비가 " + r.lead + "분기 뒤 한꺼번에 들어오면서" : "";
+      P([lead, s1 + s0 + s2]);
+      P(["같은 기간 설비투자는 최고가 최저의 ", F.el("b", { text: F.num(s.capexSwing, 1) + "배" }), "로, 매출(" + F.num(s.revSwing, 1) + "배)보다 크게 흔들렸습니다. 장비·부품 회사가 겪는 변동이 아래 「설비투자 = 장비·부품사의 매출」 그래프의 막대입니다."]);
+      const on = x.cut ? s : alt, off = x.cut ? alt : s;
+      P([x.cut ? "감산을 끄면 " : "감산을 켜면 ", "매출총손실 분기는 ", F.el("b", { text: (x.cut ? on.lossQ + "개 → " + off.lossQ + "개" : off.lossQ + "개 → " + on.lossQ + "개") }),
+        ", 최대 재고는 " + (x.cut ? F.num(on.weeksMax, 1) + "주 → " + F.num(off.weeksMax, 1) + "주" : F.num(off.weeksMax, 1) + "주 → " + F.num(on.weeksMax, 1) + "주") + "가 됩니다. 감산하면 가동하지 않은 설비의 고정비 " + F.num(on.cumIdle, 1) + "가 저조업 비용으로 그 분기에 잡히고, 8년 누적 잉여현금흐름은 감산하지 않을 때보다 " + F.num(Math.abs(on.cumFcf - off.cumFcf), 0) + (on.cumFcf >= off.cumFcf ? " 많습니다." : " 적습니다.")]);
+    }
+    drawAll(r);
+  }
+
+  /* 작은 그래프 공통: x는 분기, 충격 기간과 매출총손실 분기를 배경으로 칠한다 */
+  function small(id, r, spec) {
+    const q = r.quarters, T = q.length, H = 210, padL = 40, padR = spec.right ? 40 : 10, padT = 10, padB = 24;
+    const fr = F.plotFrame($(id), H, spec.label), svg = fr.svg, W = fr.W, band = (W - padL - padR) / T;
+    const vals = []; spec.series.forEach((s) => q.forEach((v) => vals.push(s.get(v)))); (spec.extra || []).forEach((v) => vals.push(v));
+    const t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 4);
+    const X = (i) => padL + band * (i + 0.5), Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    /* 배경 띠 */
+    if (x.shock !== 0) F.svgEl("rect", { class: "band-shock", x: padL + band * x.shockAt, y: padT, width: band * Math.min(x.shockLen, T - x.shockAt), height: H - padT - padB }, svg);
+    q.forEach((v, i) => { if (v.gp < 0) F.svgEl("rect", { class: "band-loss", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg); });
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: Math.abs(tv) < 1e-9 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, spec.tick(tv), { "text-anchor": "end" }); });
+    for (let yr = 0; yr < T / 4; yr++) F.svgText(svg, X(yr * 4 + 1.5), H - 7, (yr + 1) + "년", { "text-anchor": "middle" });
+    if (spec.ref !== undefined) { F.svgEl("line", { class: "ref", x1: padL, x2: W - padR, y1: Y(spec.ref), y2: Y(spec.ref) }, svg); F.svgText(svg, W - padR - 2, Y(spec.ref) - 5, spec.refLabel, { class: "ref-t", "text-anchor": "end" }); }
+    const y0 = Y(Math.max(t.lo, Math.min(t.hi, 0)));
+    spec.series.forEach((s) => {
+      if (s.type === "bar") {
+        const bw = Math.max(2, band * (s.w || 0.62));
+        q.forEach((v, i) => { const val = s.get(v); if (!val) return; F.svgEl("path", { class: "rv-bar", d: F.barPath(X(i) - bw / 2 + (s.off || 0) * bw, bw, y0, Y(val), Math.min(2, bw / 3)), fill: typeof s.color === "function" ? s.color(val) : s.color }, svg); });
+      } else {
+        let d = ""; q.forEach((v, i) => { d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(s.get(v)).toFixed(1); });
+        F.svgEl("path", { class: "cline rv-line", d: d, stroke: s.color, "stroke-dasharray": s.dash || null }, svg);
+      }
+    });
+    if (spec.right) {
+      const R = spec.right, Y2 = (v) => padT + (R.hi - v) / (R.hi - R.lo) * (H - padT - padB);
+      R.ticks.forEach((tv) => F.svgText(svg, W - padR + 6, Y2(tv) + 4, R.tick(tv), { "text-anchor": "start" }));
+      let d = ""; q.forEach((v, i) => { d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y2(R.get(v)).toFixed(1); });
+      F.svgEl("path", { class: "cline rv-line", d: d, stroke: R.color, "stroke-dasharray": R.dash || null }, svg);
+    }
+    const tip = F.makeTip(fr.plot);
+    q.forEach((v, i) => {
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: qlabel(i), rows: spec.tipRows(v) }));
+    });
+  }
+  function drawAll(r) {
+    const cA = F.css("--accent"), cI = F.css("--input"), cN = F.css("--neg"), cP = F.css("--pos"), cK = F.css("--ink-2"), cM = F.css("--mark-muted");
+    const rev0 = r.quarters[0].rev, cap0 = r.quarters[0].capex;
+    small("c-price", r, { label: "분기별 가격과 단위원가 지수", tick: (v) => F.num(v, 0), ref: 100, refLabel: "정상 가격 100",
+      series: [{ get: (v) => v.costIdx, color: cK, dash: "4 3" }, { get: (v) => v.priceIdx, color: cA }],
+      tipRows: (v) => [["가격", F.num(v.priceIdx, 0), cA], ["단위원가", F.num(v.costIdx, 0), cK]] });
+    small("c-gpm", r, { label: "분기별 매출총이익률과 재고평가손실, 저조업 비용", tick: (v) => F.num(v, 0) + "%", extra: [0],
+      series: [
+        { type: "bar", get: (v) => -v.wd / v.rev * 100, color: (val) => val < 0 ? cN : cP, w: 0.42, off: -0.5 },
+        { type: "bar", get: (v) => -v.idle / v.rev * 100, color: cM, w: 0.42, off: 0.5 },
+        { get: (v) => v.gpm * 100, color: cI }
+      ],
+      tipRows: (v) => [["매출총이익률", F.pct(v.gpm, 1), cI], [v.wd >= 0 ? "재고평가손실" : "평가손실 환입", F.num(Math.abs(v.wd), 1), v.wd >= 0 ? cN : cP], ["저조업 비용", F.num(v.idle, 1), cM]] });
+    small("c-capex", r, { label: "분기별 설비투자와 매출 지수", tick: (v) => F.num(v, 0), extra: [0],
+      series: [{ type: "bar", get: (v) => v.capex / cap0 * 100, color: cA, w: 0.66 }, { get: (v) => v.rev / rev0 * 100, color: cK }],
+      tipRows: (v) => [["설비투자 (시작 = 100)", F.num(v.capex / cap0 * 100, 0), cA], ["메모리 매출 (시작 = 100)", F.num(v.rev / rev0 * 100, 0), cK]] });
+    small("c-inv", r, { label: "분기별 재고 주수와 가동률", tick: (v) => F.num(v, 0), ref: E.CONST.wStar, refLabel: "정상 재고 " + E.CONST.wStar + "주", extra: [0],
+      series: [{ get: (v) => v.weeks, color: cN }],
+      right: { get: (v) => v.util * 100, lo: 60, hi: 100, ticks: [60, 80, 100], tick: (v) => v + "%", color: cP, dash: "4 3" },
+      tipRows: (v) => [["재고 주수", F.num(v.weeks, 1) + "주", cN], ["가동률", F.pct(v.util, 0), cP]] });
+  }
+
+  const BASE = E.run(D).summary;
+  buildChain(); showStage();
+  buildClock(); setPhase(0);
+  $("ph-prev").addEventListener("click", () => { stopAuto(); setPhase(ph - 1); });
+  $("ph-next").addEventListener("click", () => { stopAuto(); setPhase(ph + 1); });
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { clockVisible = e.isIntersecting; if (clockVisible) startAuto(); else clearInterval(timer); }), { threshold: 0.35 }).observe($("clock-svg"));
+  }
+  bindControls(); syncControls(); render();
+  F.onRedraw(() => { render(); buildClock(); setPhase(ph); });
+  Report.wafer($("hero-art"), { within: ".rpt-hero .wrap", span: 0.42, max: 560, min: 1000 });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>
