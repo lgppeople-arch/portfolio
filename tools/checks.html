@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>계산 검산 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .why { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-bottom: 36px; }
+  .why > div { border-top: 1px solid var(--rule); padding-top: 12px; display: grid; gap: 6px; align-content: start; }
+  .why h3 { font-size: var(--s-3); font-weight: 700; }
+  .why p { color: var(--ink-2); font-size: var(--s-2); }
+  @media (max-width: 860px) { .why { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+  .grp-head { font-family: var(--f-display); font-weight: 800; font-size: var(--s-3); margin: 26px 0 6px; display: flex; gap: 10px; align-items: baseline; }
+  .grp-head small { font-family: var(--f-num); font-weight: 400; font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-valuation.html">M&amp;A</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="checks.html" aria-current="page">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 계산 검산</div>
+      <h1>계산 검산</h1>
+      <p>이 사이트의 도구는 AI 코딩 도구와 함께 만들었습니다. 그래서 숫자가 맞는지는 따로 확인합니다. 아래 항목은 지금 이 브라우저에서 각 도구의 계산 엔진을 직접 돌려 나온 결과입니다.</p>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <div class="why">
+      <div><span class="kicker">01</span><h3>항등식으로 확인</h3><p>실적이 계획과 같으면 차이가 0이어야 하고, 기여도를 다 더하면 총 차이와 같아야 합니다. 답을 몰라도 틀렸는지는 알 수 있는 검사입니다.</p></div>
+      <div><span class="kicker">02</span><h3>기존 계산과 대조</h3><p>새 도구가 기존 도구의 계산을 다시 쓸 때는 무작위 가정 수백 개를 넣어 두 계산이 같은 값을 내는지 봅니다.</p></div>
+      <div><span class="kicker">03</span><h3>실무 규칙을 테스트로</h3><p>급여일이 휴일이면 앞당기고 세금 기한은 다음 영업일로 미루는 식의 규칙을 실제 날짜로 확인합니다.</p></div>
+    </div>
+
+    <div class="check-sum" aria-live="polite"><b class="num" id="sum"></b><span class="pill" id="sum-pill"></span><span class="hint" id="sum-note"></span></div>
+    <div id="list"></div>
+    <p class="hint" style="margin-top: 24px">같은 검산을 <span class="num">node assets/checks.js</span>로도 돌릴 수 있습니다. 코드는 <a href="https://github.com/lgppeople-arch/portfolio/blob/main/assets/checks.js" target="_blank" rel="noopener">GitHub 저장소</a>에 있습니다.</p>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/post.js"></script>
+<script src="../assets/engines/ma.js"></script>
+<script src="../assets/engines/holdco.js"></script>
+<script src="../assets/engines/cash.js"></script>
+<script src="../assets/checks.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, $ = F.$;
+  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html" };
+  const t0 = performance.now();
+  let res;
+  try {
+    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine });
+  } catch (e) {
+    res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
+  }
+  const ms = performance.now() - t0;
+  const pass = res.filter((r) => r.ok).length;
+  $("sum").textContent = pass + " / " + res.length;
+  const p = $("sum-pill");
+  p.className = "pill " + (pass === res.length ? "ok" : "bad");
+  p.textContent = pass === res.length ? "모두 통과" : (res.length - pass) + "개 실패";
+  $("sum-note").textContent = "브라우저에서 " + F.num(ms, 0) + "ms 동안 실행";
+  const list = $("list");
+  const groups = [];
+  res.forEach((r) => { if (groups.indexOf(r.group) < 0) groups.push(r.group); });
+  groups.forEach((g) => {
+    const items = res.filter((r) => r.group === g);
+    const head = F.el("h2", { class: "grp-head" }, [g, F.el("small", { text: items.filter((r) => r.ok).length + " / " + items.length })]);
+    if (TOOL[g]) head.appendChild(F.el("a", { href: TOOL[g], class: "hint", text: "도구 열기 →" }));
+    list.appendChild(head);
+    const box = F.el("div", { class: "checklist" });
+    items.forEach((r) => {
+      box.appendChild(F.el("div", { class: "check-row " + (r.ok ? "ok" : "bad") }, [
+        F.el("span", { class: "mark", text: r.ok ? "✓" : "✕", "aria-label": r.ok ? "통과" : "실패" }),
+        F.el("span", { class: "name", text: r.name }),
+        F.el("span", { class: "grp", text: r.ok ? "통과" : "실패" }),
+        r.detail ? F.el("span", { class: "detail2", text: r.detail }) : null
+      ]));
+    });
+    list.appendChild(box);
+  });
+})();
+</script>
+</body>
+</html>

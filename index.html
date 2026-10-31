@@ -36,7 +36,7 @@
         <h1>투자를 검토하고,<br><em>결과까지</em> 확인하는<br>재무기획자</h1>
         <p class="lede">반도체 부품과 건설소재, 두 제조업에서 6년간 사업계획과 손익을 관리하고 설비 투자 심의와 생산부지 인수, 이사회·규정 업무까지 맡아 왔습니다. 이 사이트에는 경력과 함께, 제가 실무에서 쓰는 계산을 직접 돌려 볼 수 있는 도구를 모았습니다.</p>
         <div class="cta">
-          <a class="btn primary" href="tools/capex-kit.html">투자 분석 도구 열기 →</a>
+          <a class="btn primary" href="#cycle">분석 도구 모아 보기 ↓</a>
           <a class="btn" href="#career">경력 보기</a>
         </div>
       </div>
@@ -66,7 +66,7 @@
           <div class="eyebrow">What I do</div>
           <h2 style="margin-top: 8px">투자 의사결정의 처음부터 끝까지</h2>
         </div>
-        <p>계획을 세우고, 투자를 심의하고, 거래와 자금을 챙기고, 실적으로 검증합니다. 단계마다 제가 맡은 일과 직접 써 볼 수 있는 도구를 묶었습니다.</p>
+        <p>계획을 세우고, 투자를 심의하고, 거래와 자금을 챙기고, 실적으로 검증합니다. 단계마다 제가 맡은 일과 직접 써 볼 수 있는 도구를 묶었습니다. 모든 예시 수치는 가상입니다.</p>
       </div>
       <ol class="cycle">
         <li class="stage">
@@ -79,7 +79,6 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/capex-kit.html#bep">가동률과 원가 <span class="arr">→</span></a>
-            <div class="tool-soon">롤링 포캐스트 <span class="tag">준비 중</span></div>
           </div>
         </li>
         <li class="stage">
@@ -103,7 +102,8 @@
             <li>경쟁사 투자설명서 원문 분석</li>
           </ul>
           <div class="tools">
-            <div class="tool-soon">M&amp;A 가치평가 <span class="tag">준비 중</span></div>
+            <a class="tool-link" href="tools/ma-valuation.html">M&amp;A 가치평가 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/holdco-nav.html">지주사 포트폴리오 가치 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -114,7 +114,7 @@
             <li>정관·이사회규정·위임전결규정 개정, 이사회·주총 지원</li>
           </ul>
           <div class="tools">
-            <div class="tool-soon">13주 자금수지 · 약정 <span class="tag">준비 중</span></div>
+            <a class="tool-link" href="tools/cash-13w.html">13주 자금수지 · 약정 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -126,7 +126,7 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/capex-kit.html#var">계획 대비 실적 <span class="arr">→</span></a>
-            <div class="tool-soon">투자 사후관리 <span class="tag">준비 중</span></div>
+            <a class="tool-link" href="tools/post-review.html">투자 사후관리 <span class="arr">→</span></a>
           </div>
         </li>
       </ol>
@@ -211,8 +211,9 @@
       <div class="method2">
         <div><span class="kicker">01</span><h3>계산 기준을 먼저 공개</h3><p>할인 시점, 세금 처리, 잔존가치 같은 가정을 도구 아래에 적어 둡니다. 숫자를 받는 사람이 기준을 보고 반박할 수 있어야 쓸 수 있는 도구라고 생각합니다.</p></div>
         <div><span class="kicker">02</span><h3>항등 테스트로 검증</h3><p>실적이 계획과 같으면 차이가 <code>0</code>이어야 하고, 효과를 다 더하면 총 차이와 정확히 같아야 합니다. 이런 검산이 통과해야 차이를 계산 오차가 아닌 실제 성과로 설명할 수 있습니다.</p></div>
-        <div><span class="kicker">03</span><h3>설치 없이 브라우저에서</h3><p>현업 부서장도 바로 열 수 있게 단일 HTML 파일로 만들고, 입력한 데이터는 외부로 보내지 않습니다. 이 사이트의 예시 수치는 모두 가상입니다.</p></div>
+        <div><span class="kicker">03</span><h3>설치 없이 브라우저에서</h3><p>현업 부서장도 바로 열 수 있게 브라우저에서 바로 돌아가게 만들고, 입력한 데이터는 외부로 보내지 않습니다. 이 사이트의 예시 수치는 모두 가상입니다.</p></div>
       </div>
+      <a class="live-check" href="tools/checks.html" id="live-check"><span class="pill ok" id="live-pill">검산</span><span id="live-text">이 사이트의 계산 엔진을 지금 이 브라우저에서 검산합니다</span><span class="arr">결과 보기 →</span></a>
     </div>
   </section>
 
@@ -271,7 +272,7 @@
 <footer class="site-foot">
   <div class="wrap wide">
     <span>마지막 업데이트 2026년 10월</span>
-    <span>도구의 예시 수치는 모두 가상이며, 회사 내부 자료는 쓰지 않았습니다.</span>
+    <span>도구의 예시 수치는 모두 가상이며, 회사 내부 자료는 쓰지 않았습니다. <a href="tools/checks.html">계산 검산</a></span>
   </div>
 </footer>
 
@@ -311,6 +312,27 @@
       else fallback();
     } catch (e) { fallback(); }
   });
+})();
+</script>
+<script src="assets/fin.js"></script>
+<script src="assets/engines/post.js"></script>
+<script src="assets/engines/ma.js"></script>
+<script src="assets/engines/holdco.js"></script>
+<script src="assets/engines/cash.js"></script>
+<script src="assets/checks.js"></script>
+<script>
+(function () {
+  /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
+  try {
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine });
+    const pass = res.filter((r) => r.ok).length;
+    const pill = document.getElementById("live-pill");
+    pill.className = "pill " + (pass === res.length ? "ok" : "bad");
+    pill.textContent = pass + " / " + res.length;
+    document.getElementById("live-text").textContent = pass === res.length
+      ? "이 사이트의 계산 엔진이 항등식·대조·실무 규칙 검산 " + res.length + "개를 지금 모두 통과했습니다"
+      : (res.length - pass) + "개 검산이 실패했습니다";
+  } catch (e) { /* 검산을 못 돌리면 기본 문구 유지 */ }
 })();
 </script>
 </body>

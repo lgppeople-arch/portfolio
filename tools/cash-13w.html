@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>13주 자금수지 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .summary { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 24px; }
+  .summary > * { min-width: 0; }
+  .summary .side { display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 1000px) { .summary { grid-template-columns: minmax(0, 1fr); } }
+  .stressbar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 20px; margin: 18px 0 0; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+  .stressbar .field { grid-template-columns: auto 80px; gap: 8px; }
+  .stressbar .t { font-weight: 700; font-size: var(--s-2); margin-right: 4px; align-self: center; }
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .card .field input, .card .field select, .stressbar .field input { background: var(--surface); }
+  .months { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .months label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); font-family: var(--f-num); }
+  .months input { width: 100%; font-family: var(--f-num); font-size: var(--s-1); text-align: right; padding: 6px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  @media (max-width: 480px) { .months { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  svg.plot text.c-min { fill: var(--neg-ink); font-size: 11px; font-weight: 600; }
+  table.ledger td.low { color: var(--neg-ink); font-weight: 600; }
+  table.ledger td.memo2 { text-align: left; color: var(--muted); font-family: var(--f-body); white-space: nowrap; }
+  table.etable.sched { min-width: 420px; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-valuation.html">M&amp;A</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html" aria-current="page">자금수지</a>
+      <a href="checks.html">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 13주 자금수지</div>
+      <h1>13주 자금수지</h1>
+      <p>앞으로 13주 동안 현금이 언제 들어오고 나가는지 날짜 단위로 쌓아 봅니다. 급여·원천세·부가세 같은 정기 지급은 휴일 규칙에 맞춰 옮기고, 최소 보유현금 밑으로 내려가는 날과 분기말 재무약정 여유를 미리 확인합니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 유출·음수</span><span>금액 단위 억원</span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 생산라인을 증설 중인 가상 제조사 · 2026년 11월 2일(월)부터 13주 · 모든 수치는 가상</span>
+
+    <section class="summary" aria-live="polite">
+      <div>
+        <div class="board-head" style="margin-bottom: 10px"><h2>주차별 현금 잔액</h2><span class="pill" id="c-pill"></span></div>
+        <div class="chart" id="w-chart">
+          <div class="legend" style="margin-bottom: 6px"><span><i class="key-bar" style="background: var(--pos)"></i>순유입</span><span><i class="key-bar" style="background: var(--neg)"></i>순유출</span><span><i class="key-line" style="background: var(--ink)"></i>주말 잔액</span><span><i class="key-dash" style="border-color: var(--ink-2)"></i>주중 최저</span><span><i class="key-dash" style="border-color: var(--neg)"></i>최소 보유현금</span></div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="kpis" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+          <div class="kpi"><div class="label">최저 잔액</div><div class="v num" id="k-low"></div><div class="sub" id="k-low-sub"></div></div>
+          <div class="kpi"><div class="label">13주 말 잔액</div><div class="v num" id="k-end"></div><div class="sub" id="k-end-sub"></div></div>
+          <div class="kpi"><div class="label">한도대출 최대 인출</div><div class="v num" id="k-rcf"></div><div class="sub" id="k-rcf-sub"></div></div>
+          <div class="kpi"><div class="label">분기말 순차입금/EBITDA</div><div class="v num" id="k-lev"></div><div class="sub" id="k-lev-sub"></div></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="c-memo"></p></div>
+        <div class="selfcheck" id="c-check"></div>
+      </div>
+    </section>
+
+    <div class="stressbar" role="group" aria-label="스트레스 시나리오">
+      <span class="t">스트레스</span>
+      <div class="field"><label for="st-drop">매출 감소<small>이번 달부터 %</small></label><input id="st-drop" type="number" inputmode="decimal" step="5" min="0" max="90" value="0"></div>
+      <div class="field"><label for="st-delay">회수 지연<small>주</small></label><input id="st-delay" type="number" inputmode="numeric" step="1" min="0" max="8" value="0"></div>
+      <div class="field"><label for="st-pull">설비투자 앞당김<small>주</small></label><input id="st-pull" type="number" inputmode="numeric" step="1" min="0" max="8" value="0"></div>
+      <div class="btn-row">
+        <button type="button" class="btn sm" id="st-base">기본</button>
+        <button type="button" class="btn sm" id="st-mild">회수 2주 지연 + 매출 10% 감소</button>
+        <button type="button" class="btn sm" id="st-hard">회수 4주 지연 + 매출 20% 감소</button>
+      </div>
+    </div>
+
+    <section class="block2" aria-label="가정과 재무약정">
+      <div class="two">
+        <form class="card" id="c-form" novalidate>
+          <h3>가정</h3>
+          <div class="fs-grid">
+            <div class="field"><label for="c-open">기초 현금<small>11월 2일 아침</small></label><input id="c-open" type="number" inputmode="decimal" step="10"></div>
+            <div class="field"><label for="c-min">최소 보유현금<small>사내 기준</small></label><input id="c-min" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="field"><label for="c-rcf">한도대출 약정<small>한도</small></label><input id="c-rcf" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="switch-row"><label for="c-auto">부족하면 한도대출 자동 인출</label><input id="c-auto" type="checkbox"></div>
+          </div>
+          <p class="hint"><b>월별 매출</b> · 회수와 매입대금 지급의 바탕입니다. 9~10월은 확정 실적이라 스트레스를 걸지 않습니다.</p>
+          <div class="months" id="months"></div>
+          <div class="fs-grid">
+            <div class="field"><label for="c-lag">매출채권 회수<small>매출 후 몇 달 뒤 말일</small></label><input id="c-lag" type="number" inputmode="numeric" step="1" min="0" max="3"></div>
+            <div class="field"><label for="c-pr">원재료 매입<small>매출 대비 %</small></label><input id="c-pr" type="number" inputmode="decimal" step="1" min="0" max="100"></div>
+            <div class="field"><label for="c-plag">매입대금 지급<small>매입 후 몇 달 뒤 말일</small></label><input id="c-plag" type="number" inputmode="numeric" step="1" min="0" max="3"></div>
+            <div class="field"><label for="c-pay">급여<small>매월 25일</small></label><input id="c-pay" type="number" inputmode="decimal" step="1" min="0"></div>
+            <div class="field"><label for="c-wh">원천세·4대보험<small>매월 10일</small></label><input id="c-wh" type="number" inputmode="decimal" step="0.5" min="0"></div>
+            <div class="field"><label for="c-int">이자<small>매월 말일</small></label><input id="c-int" type="number" inputmode="decimal" step="0.1" min="0"></div>
+          </div>
+          <div class="form-actions"><button type="button" class="btn" id="c-reset">예시값으로 되돌리기</button></div>
+        </form>
+
+        <div class="card">
+          <h3>재무약정 · 2026년 12월 31일 <span class="pill" id="cov-pill"></span></h3>
+          <div class="gauges" id="gauges"></div>
+          <details class="fs">
+            <summary>약정 기준과 직전 12개월 실적</summary>
+            <div class="fs-body">
+              <div class="fs-grid">
+                <div class="field"><label for="v-ebitda">EBITDA<small>직전 12개월</small></label><input id="v-ebitda" type="number" inputmode="decimal" step="10" min="1"></div>
+                <div class="field"><label for="v-ebit">영업이익<small>직전 12개월</small></label><input id="v-ebit" type="number" inputmode="decimal" step="10"></div>
+                <div class="field"><label for="v-int">이자비용<small>직전 12개월</small></label><input id="v-int" type="number" inputmode="decimal" step="1" min="0.1"></div>
+                <div class="field"><label for="v-debt">총차입금<small>11월 2일</small></label><input id="v-debt" type="number" inputmode="decimal" step="10" min="0"></div>
+                <div class="field"><label for="v-liab">부채총계<small>11월 2일</small></label><input id="v-liab" type="number" inputmode="decimal" step="10" min="0"></div>
+                <div class="field"><label for="v-eq">자본총계<small>11월 2일</small></label><input id="v-eq" type="number" inputmode="decimal" step="10" min="1"></div>
+                <div class="field"><label for="v-maxlev">순차입금/EBITDA<small>약정 상한, 배</small></label><input id="v-maxlev" type="number" inputmode="decimal" step="0.25" min="0"></div>
+                <div class="field"><label for="v-maxdr">부채비율<small>약정 상한, %</small></label><input id="v-maxdr" type="number" inputmode="decimal" step="10" min="0"></div>
+                <div class="field"><label for="v-minicr">이자보상배율<small>약정 하한, 배</small></label><input id="v-minicr" type="number" inputmode="decimal" step="0.25" min="0"></div>
+              </div>
+              <p class="hint">분기말 차입금은 기초 차입금에 예정된 차입·상환과 한도대출 잔액을 더한 값입니다. 부채총계는 차입금 변동만 반영합니다.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="예정된 입출금">
+      <h2>예정된 입출금</h2>
+      <div class="two">
+        <div class="card">
+          <h3>설비투자 지급</h3>
+          <div class="etable-wrap"><table class="etable sched" id="t-capex"><thead><tr><th>날짜</th><th class="r">금액</th><th>내용</th><th></th></tr></thead><tbody></tbody></table></div>
+          <div class="btn-row"><button type="button" class="btn sm" id="add-capex">지급 추가</button></div>
+        </div>
+        <div class="card">
+          <h3>차입·상환과 세금</h3>
+          <div class="etable-wrap"><table class="etable sched" id="t-debt"><thead><tr><th>날짜</th><th class="r">금액<br><small>차입 +, 상환 −</small></th><th>내용</th><th></th></tr></thead><tbody></tbody></table></div>
+          <div class="btn-row"><button type="button" class="btn sm" id="add-debt">차입·상환 추가</button></div>
+          <div class="etable-wrap"><table class="etable sched" id="t-vat"><thead><tr><th>납부일</th><th class="r">부가세</th><th>내용</th><th></th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail" aria-label="상세">
+      <div class="detail-head"><h2>상세</h2></div>
+      <div class="subtabs" role="tablist" aria-label="상세 보기">
+        <button role="tab" id="dt-week" aria-selected="true" aria-controls="dp-week">주차별 표</button>
+        <button role="tab" id="dt-ev" aria-selected="false" aria-controls="dp-ev" tabindex="-1">날짜별 입출금</button>
+      </div>
+      <div id="dp-week" role="tabpanel" aria-labelledby="dt-week"><div class="scroll"><table class="ledger" id="week-table"></table></div></div>
+      <div id="dp-ev" role="tabpanel" aria-labelledby="dt-ev" hidden><div class="scroll"><table class="ledger" id="ev-table"></table></div></div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>입출금을 날짜별로 놓고 하루씩 잔액을 쌓습니다. 주차는 월요일부터 일요일까지입니다.</li>
+        <li>매출채권은 매출이 난 달에서 회수 기간만큼 뒤 달의 마지막 영업일에, 원재료 매입대금은 지급 기간만큼 뒤 달의 마지막 영업일에 오갑니다. 매입액은 매출 대비 비율로 잡아 매출이 줄면 함께 줄어듭니다.</li>
+        <li>급여는 25일이 휴일이면 앞당겨 주고, 원천세·4대보험(10일)과 부가세(25일)는 세법 기한 규칙대로 다음 영업일에 냅니다. 이 기간의 공휴일은 성탄절과 신정입니다.</li>
+        <li>한도대출 자동 인출을 켜면 영업일 마감 잔액이 최소 보유현금보다 낮을 때 부족분을 한도 안에서 꺼내고, 여유가 생기면 먼저 갚습니다. 최저 잔액은 인출 전 기준입니다.</li>
+        <li>재무약정은 12월 31일 잔액으로 계산합니다. 순차입금 = 총차입금 − 현금, 부채비율 = 부채총계 ÷ 자본총계, 이자보상배율 = 영업이익 ÷ 이자비용(직전 12개월).</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/cash.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.CashEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  const DOW = ["일", "월", "화", "수", "목", "금", "토"];
+  const MONTHS = Object.keys(D.sales);
+  const SIMPLE = {
+    "c-open": ["opening"], "c-min": ["minCash"], "c-rcf": ["rcf", "limit"], "c-lag": ["collectLag"], "c-pr": ["purchaseRatio"], "c-plag": ["payLag"],
+    "c-pay": ["payroll"], "c-wh": ["withholding"], "c-int": ["interest"],
+    "v-ebitda": ["cov", "ebitda"], "v-ebit": ["cov", "ebit"], "v-int": ["cov", "intLtm"], "v-debt": ["cov", "debt0"], "v-liab": ["cov", "liab0"], "v-eq": ["cov", "equity0"],
+    "v-maxlev": ["cov", "maxLev"], "v-maxdr": ["cov", "maxDebtRatio"], "v-minicr": ["cov", "minIcr"]
+  };
+  const get = (o, path) => path.reduce((a, k) => a[k], o);
+  let sched = { capex: [], debt: [], vat: [] };
+
+  const won = (x) => F.money(x, 1) + "억원";
+  const md = (s) => { const p = s.split("-"); return Number(p[1]) + "/" + Number(p[2]); };
+  const mdk = (s) => { const p = s.split("-"); const d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); return Number(p[1]) + "월 " + Number(p[2]) + "일(" + DOW[d.getUTCDay()] + ")"; };
+
+  /* ---------- 입력 만들기 ---------- */
+  function buildMonths() {
+    const box = $("months");
+    box.textContent = "";
+    MONTHS.forEach((m) => {
+      const p = m.split("-");
+      const inp = F.el("input", { id: "ms-" + m, type: "number", inputmode: "decimal", step: 5, min: 0, value: D.sales[m], "aria-label": p[0] + "년 " + Number(p[1]) + "월 매출" });
+      inp.addEventListener("input", render);
+      box.appendChild(F.el("label", null, [(p[0].slice(2)) + "." + p[1], inp]));
+    });
+  }
+  function buildSched(tableId, list, signed) {
+    const body = $(tableId).tBodies[0];
+    body.textContent = "";
+    list.forEach((row, i) => {
+      const tr = F.el("tr");
+      const d = F.el("input", { type: "date", value: row.date, min: "2026-11-02", max: "2027-01-31", id: tableId + "-d-" + i, "aria-label": (row.memo || "항목") + " 날짜" });
+      d.addEventListener("input", () => { if (d.value) { row.date = d.value; render(); } });
+      const a = F.el("input", { type: "number", inputmode: "decimal", step: 5, min: signed ? null : 0, value: row.amount, id: tableId + "-a-" + i, "aria-label": (row.memo || "항목") + " 금액" });
+      a.addEventListener("input", () => { row.amount = F.readNum(a, row.amount); render(); });
+      const m = F.el("input", { type: "text", value: row.memo, id: tableId + "-m-" + i, "aria-label": "내용 " + (i + 1) });
+      m.addEventListener("input", () => { row.memo = m.value; render(); });
+      const del = F.el("button", { type: "button", class: "row-del", text: "×", title: "삭제", "aria-label": (row.memo || "항목") + " 삭제" });
+      del.addEventListener("click", () => { list.splice(i, 1); buildAll(); render(); });
+      tr.appendChild(F.el("td", null, [d])); tr.appendChild(F.el("td", { class: "r" }, [a])); tr.appendChild(F.el("td", null, [m])); tr.appendChild(F.el("td", null, [del]));
+      body.appendChild(tr);
+    });
+  }
+  function buildAll() {
+    buildSched("t-capex", sched.capex, false);
+    buildSched("t-debt", sched.debt, true);
+    buildSched("t-vat", sched.vat, false);
+    $("add-capex").disabled = sched.capex.length >= 8;
+    $("add-debt").disabled = sched.debt.length >= 8;
+  }
+  function fill() {
+    Object.keys(SIMPLE).forEach((id) => { $(id).value = get(D, SIMPLE[id]); $(id).setAttribute("aria-invalid", "false"); });
+    $("c-auto").checked = D.rcf.auto;
+    MONTHS.forEach((m) => { $("ms-" + m).value = D.sales[m]; });
+    sched = { capex: D.capex.map((r) => Object.assign({}, r)), debt: D.debt.map((r) => Object.assign({}, r)), vat: D.vat.map((r) => Object.assign({}, r)) };
+    buildAll();
+  }
+
+  function read() {
+    const x = JSON.parse(JSON.stringify(D));
+    Object.keys(SIMPLE).forEach((id) => {
+      const path = SIMPLE[id], last = path[path.length - 1], parent = path.slice(0, -1).reduce((a, k) => a[k], x);
+      parent[last] = F.readNum($(id), get(D, path));
+    });
+    x.rcf.auto = $("c-auto").checked;
+    MONTHS.forEach((m) => { x.sales[m] = F.readNum($("ms-" + m), D.sales[m]); });
+    x.capex = sched.capex.filter((r) => r.date); x.debt = sched.debt.filter((r) => r.date); x.vat = sched.vat.filter((r) => r.date);
+    x.stress = { salesDrop: F.readNum($("st-drop"), 0), delayWeeks: Math.round(F.readNum($("st-delay"), 0)), capexPull: Math.round(F.readNum($("st-pull"), 0)) };
+    return x;
+  }
+
+  /* ---------- 주차 그래프 ---------- */
+  function drawWeeks(r, x) {
+    const W0 = r.weeks, H = 300, padL = 50, padR = 14, padT = 26, padB = 34;
+    const fr = F.plotFrame($("w-chart"), H, "13주 동안 주차별 순현금흐름 막대와 주말 잔액, 주중 최저 잔액 선 그래프");
+    const svg = fr.svg, W = fr.W;
+    const vals = [0, x.minCash].concat(W0.map((w) => w.net), W0.map((w) => w.close), W0.map((w) => w.low));
+    const t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const band = (W - padL - padR) / W0.length;
+    const X = (i) => padL + band * i + band / 2, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    const ink = F.css("--ink"), ink2 = F.css("--ink-2"), pos = F.css("--pos"), neg = F.css("--neg"), surface = F.css("--surface"), ledger = F.css("--ledger");
+    /* 최소 보유현금 밑으로 내려간 주는 배경 표시 */
+    W0.forEach((w, i) => { if (w.low < x.minCash) F.svgEl("rect", { x: padL + band * i, y: padT, width: band, height: H - padT - padB, fill: neg, "fill-opacity": 0.08 }, svg); });
+    /* 분기말 주 */
+    const qi = W0.findIndex((w) => w.start <= x.cov.testDate && w.end >= x.cov.testDate);
+    if (qi >= 0) {
+      F.svgEl("rect", { x: padL + band * qi, y: padT, width: band, height: H - padT - padB, fill: ledger }, svg);
+      F.svgText(svg, X(qi), padT - 10, "분기말", { "text-anchor": "middle", class: "c-lab" });
+    }
+    t.ticks.forEach((tv) => {
+      F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg);
+      F.svgText(svg, padL - 6, Y(tv) + 4, F.money(tv, 0), { "text-anchor": "end" });
+    });
+    const narrow = W < 560;
+    W0.forEach((w, i) => { if (!narrow || i % 2 === 0) F.svgText(svg, X(i), H - padB + 16, md(w.start), { "text-anchor": "middle" }); });
+    F.svgText(svg, padL, H - 6, "주 시작일(월)", { "text-anchor": "start" });
+    const bw = Math.min(22, band * 0.55);
+    W0.forEach((w, i) => F.svgEl("path", { d: F.barPath(X(i) - bw / 2, bw, Y(0), Y(w.net), 3), fill: w.net >= 0 ? pos : neg, "fill-opacity": 0.85 }, svg));
+    F.svgEl("line", { x1: padL, x2: W - padR, y1: Y(x.minCash), y2: Y(x.minCash), stroke: neg, "stroke-width": 1.5, "stroke-dasharray": "6 4" }, svg);
+    F.svgText(svg, W - padR, Y(x.minCash) - 6, "최소 " + F.money(x.minCash, 0), { "text-anchor": "end", class: "c-min" });
+    const line = (key) => "M" + W0.map((w, i) => X(i) + "," + Y(w[key])).join("L");
+    F.svgEl("path", { d: line("low"), fill: "none", stroke: ink2, "stroke-width": 1.4, "stroke-dasharray": "3 3" }, svg);
+    F.svgEl("path", { d: line("close"), fill: "none", stroke: ink, "stroke-width": 2.2, "stroke-linejoin": "round" }, svg);
+    W0.forEach((w, i) => {
+      F.svgEl("circle", { cx: X(i), cy: Y(w.close), r: 3.2, fill: ink, stroke: surface, "stroke-width": 1.5 }, svg);
+      if (w.drawn > 0.05) F.svgText(svg, X(i), Y(w.close) + 17, "한도 " + F.money(w.drawn, 0), { "text-anchor": "middle", class: "c-min" });
+    });
+    const tip = F.makeTip(fr.plot);
+    W0.forEach((w, i) => {
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: (i + 1) + "주차 · " + md(w.start) + "~" + md(w.end), rows: [["순현금흐름", F.signed(w.net, 1) + "억원", w.net >= 0 ? pos : neg], ["주말 잔액", won(w.close), ink], ["주중 최저(인출 전)", won(w.low), ink2], ["한도대출 잔액", won(w.drawn), null]] }));
+    });
+  }
+
+  /* ---------- 약정 게이지 ---------- */
+  function drawGauges(cov) {
+    const box = $("gauges");
+    box.textContent = "";
+    if (!cov) { box.appendChild(F.el("p", { class: "hint", text: "점검일이 13주 기간 밖입니다." })); return; }
+    let worst = "ok";
+    cov.items.forEach((it) => {
+      const max = it.dir === "max", scale = max ? it.limit * 1.25 : it.limit * 2.5;
+      const near = max ? it.value > it.limit * 0.9 : it.value < it.limit * 1.15;
+      const cls = !it.ok ? "bad" : near ? "warn" : "ok";
+      if (cls === "bad" || (cls === "warn" && worst === "ok")) worst = cls;
+      const color = cls === "bad" ? F.css("--neg") : cls === "warn" ? "#D4A72C" : F.css("--pos");
+      const fmt = (v) => (it.unit === "%" ? F.num(v, 0) + "%" : F.num(v, 2) + "배");
+      const bar = F.el("div", { class: "bar" });
+      const fillEl = F.el("div", { class: "fill" }); fillEl.style.width = Math.min(100, Math.max(0, it.value / scale * 100)) + "%"; fillEl.style.background = color;
+      const lim = F.el("div", { class: "lim" }); lim.style.left = "calc(" + (it.limit / scale * 100) + "% - 1px)";
+      bar.appendChild(fillEl); bar.appendChild(lim);
+      const room = it.key === "lev" ? "순차입금이 " + won(it.room) + " 더 늘어도 충족" : it.key === "dr" ? "부채가 " + won(it.room) + " 더 늘어도 충족" : "영업이익이 " + won(it.room) + " 줄어도 충족";
+      box.appendChild(F.el("div", { class: "gauge" }, [
+        F.el("div", { class: "top" }, [F.el("span", { text: it.label }), F.el("span", null, [F.el("b", { text: fmt(it.value) }), " / 약정 " + (max ? "≤ " : "≥ ") + fmt(it.limit) + " ", F.el("span", { class: "pill " + cls, text: cls === "bad" ? "위반" : cls === "warn" ? "근접" : "충족" })])]),
+        bar,
+        F.el("div", { class: "foot" }, [F.el("span", { text: it.ok ? room : "약정 위반: " + won(-it.room) + " 개선 필요" })])
+      ]));
+    });
+    const p = $("cov-pill"); p.className = "pill " + worst; p.textContent = worst === "bad" ? "위반 있음" : worst === "warn" ? "근접 항목 있음" : "모두 충족";
+  }
+
+  /* ---------- 표 ---------- */
+  function drawWeekTable(r, x) {
+    const tb = $("week-table"), W0 = r.weeks;
+    tb.textContent = "";
+    const hr = F.el("tr");
+    hr.appendChild(F.el("th", { class: "lft", text: "억원" }));
+    W0.forEach((w, i) => hr.appendChild(F.el("th", { text: (i + 1) + "주 " + md(w.start) })));
+    hr.appendChild(F.el("th", { class: "hl", text: "13주 합계" }));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    const row = (label, vals, total, opt) => {
+      opt = opt || {};
+      const tr = F.el("tr", { class: opt.cls || null });
+      tr.appendChild(F.el("th", { text: label }));
+      vals.concat(total === undefined ? [] : [total]).forEach((v, i) => {
+        const zero = opt.dash && typeof v === "number" && Math.abs(v) < 0.05;
+        const td = F.el("td", { text: v === null ? "" : zero ? "–" : opt.signed ? F.signed(v, 1) : F.money(v, 1) });
+        if (zero) td.classList.add("muted");
+        if (i === vals.length) td.classList.add("hl");
+        if (typeof v === "number" && v < 0) td.classList.add("neg");
+        if (opt.lowFlag && v < x.minCash) td.classList.add("low");
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    };
+    row("기초 현금", W0.map((w) => w.open), x.opening, { cls: "sum" });
+    let grp = "";
+    E.LINES.forEach((l) => {
+      if (l.group !== grp) { grp = l.group; const g = F.el("tr", { class: "grp" }); g.appendChild(F.el("th", { colspan: W0.length + 2, text: grp + " 활동" })); body.appendChild(g); }
+      const vals = W0.map((w) => w.lines[l.key]);
+      row(l.label, vals, F.sum(vals), { dash: true });
+    });
+    row("순현금흐름", W0.map((w) => w.net), F.sum(W0.map((w) => w.net)), { cls: "sum", signed: true });
+    row("기말 현금", W0.map((w) => w.close), r.close, { cls: "sum" });
+    row("주중 최저 (인출 전)", W0.map((w) => w.low), r.lowDay.pre, { cls: "sub", lowFlag: true });
+    row("한도대출 잔액", W0.map((w) => w.drawn), r.drawn, { cls: "sub" });
+    tb.appendChild(body);
+  }
+  function note(e) {
+    const d = Number(e.date.slice(8)), last = new Date(Date.UTC(+e.date.slice(0, 4), +e.date.slice(5, 7), 0)).getUTCDate();
+    if (e.line === "payroll" && d !== 25) return "25일 휴일, 앞당김";
+    if (e.line === "withholding" && d !== 10) return "10일 휴일, 다음 영업일";
+    if (e.line === "vat" && d !== 25) return "25일 휴일, 다음 영업일";
+    if ((e.line === "collect" || e.line === "purchase" || e.line === "interest") && d !== last && e.memo.indexOf("회수") < 0) return "말일 휴일, 앞당김";
+    if (e.line === "collect" && d !== last) return "말일 휴일 또는 지연";
+    return "";
+  }
+  function drawEvents(r) {
+    const tb = $("ev-table");
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["날짜", "항목", "내용", "금액", "잔액", "비고"].forEach((h, i) => hr.appendChild(F.el("th", { class: i < 3 || i === 5 ? "lft" : null, text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody"), label = {};
+    E.LINES.forEach((l) => { label[l.key] = l.label; });
+    let bal = Number($("c-open").value) || 0;
+    const open = F.readNum($("c-open"), D.opening);
+    bal = open;
+    r.events.forEach((e) => {
+      bal += e.amount;
+      const tr = F.el("tr");
+      tr.appendChild(F.el("td", { class: "memo2", text: mdk(e.date) }));
+      tr.appendChild(F.el("td", { class: "memo2", text: label[e.line] }));
+      tr.appendChild(F.el("td", { class: "memo2", text: e.memo }));
+      const a = F.el("td", { text: F.signed(e.amount, 1) }); if (e.amount < 0) a.classList.add("neg"); tr.appendChild(a);
+      tr.appendChild(F.el("td", { text: F.money(bal, 1) }));
+      tr.appendChild(F.el("td", { class: "memo2", text: note(e) }));
+      body.appendChild(tr);
+    });
+    tb.appendChild(body);
+  }
+
+  function render() {
+    const x = read();
+    const r = E.forecast(x);
+    const maxDrawn = Math.max.apply(null, r.daily.map((d) => d.drawn));
+    const short = x.minCash - r.lowDay.pre;
+    const uncovered = r.daily.some((d) => E.isBiz(d.t) && d.cash < x.minCash - 1e-9);
+    const p = $("c-pill");
+    if (uncovered) { p.className = "pill bad"; p.textContent = "자금 부족"; }
+    else if (r.breaches > 0) { p.className = "pill warn"; p.textContent = "한도대출 필요"; }
+    else { p.className = "pill ok"; p.textContent = "최소현금 유지"; }
+
+    F.setValue($("k-low"), F.money(r.lowDay.pre, 1), "억원", r.lowDay.pre < 0);
+    $("k-low-sub").textContent = mdk(r.lowDay.date) + " · 최소 대비 " + F.signed(-short, 1);
+    F.setValue($("k-end"), F.money(r.close, 1), "억원", r.close < 0);
+    $("k-end-sub").textContent = "기초 대비 " + F.signed(r.close - x.opening, 1);
+    F.setValue($("k-rcf"), F.money(maxDrawn, 1), "억원");
+    $("k-rcf-sub").textContent = "한도 " + F.money(x.rcf.limit, 0) + " · 13주 말 " + F.money(r.drawn, 1);
+    if (r.cov) {
+      const lev = r.cov.items[0];
+      F.setValue($("k-lev"), F.num(lev.value, 2), "배", !lev.ok);
+      $("k-lev-sub").textContent = "약정 " + F.num(lev.limit, 2) + "배 · " + (lev.ok ? "여력 " + F.money(lev.room, 0) + "억원" : "초과 " + F.money(-lev.room, 0) + "억원");
+    }
+
+    drawWeeks(r, x);
+    drawGauges(r.cov);
+
+    const memo = $("c-memo");
+    memo.textContent = "";
+    const st = x.stress, stressed = st.salesDrop > 0 || st.delayWeeks > 0 || st.capexPull > 0;
+    if (stressed) memo.append("매출 " + st.salesDrop + "% 감소" + (st.delayWeeks ? ", 회수 " + st.delayWeeks + "주 지연" : "") + (st.capexPull ? ", 설비투자 " + st.capexPull + "주 앞당김" : "") + "을 가정하면 ");
+    else memo.append("기본 가정에서 ");
+    memo.append("현금 잔액은 " + mdk(r.lowDay.date) + " ", F.el("b", { text: won(r.lowDay.pre) }), "까지 내려갑니다. ");
+    if (short > 0) {
+      memo.append("최소 보유현금보다 " + won(short) + " 부족해 ");
+      memo.append(x.rcf.auto ? (uncovered ? "한도대출 " + won(x.rcf.limit) + "을 다 써도 모자랍니다. " : "한도대출을 최대 " + won(maxDrawn) + " 꺼내야 합니다. ") : "한도대출이나 지급 일정 조정이 필요합니다. ");
+    } else memo.append("최소 보유현금 " + won(x.minCash) + "은 지킵니다. ");
+    if (r.cov) {
+      const lev = r.cov.items[0];
+      memo.append("12월 31일 순차입금/EBITDA는 " + F.num(lev.value, 2) + "배로 " + (lev.ok ? "약정 " + F.num(lev.limit, 1) + "배까지 " + won(lev.room) + "의 여력이 있습니다." : "약정 " + F.num(lev.limit, 1) + "배를 넘습니다."));
+    }
+
+    const chk = $("c-check");
+    chk.textContent = "";
+    const weeklyOk = r.weeks.every((w) => Math.abs(w.open + w.net - w.close) < 1e-6);
+    [["기초 + 입출금 합계 = 기말", Math.abs(r.check) < 1e-6], ["주차별 기초 + 순현금흐름 = 기말", weeklyOk]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+
+    drawWeekTable(r, x);
+    drawEvents(r);
+  }
+
+  /* ---------- 연결 ---------- */
+  function setStress(a, b, c) { $("st-drop").value = a; $("st-delay").value = b; $("st-pull").value = c; render(); }
+  $("st-base").addEventListener("click", () => setStress(0, 0, 0));
+  $("st-mild").addEventListener("click", () => setStress(10, 2, 0));
+  $("st-hard").addEventListener("click", () => setStress(20, 4, 0));
+  ["st-drop", "st-delay", "st-pull"].concat(Object.keys(SIMPLE)).forEach((id) => $(id).addEventListener("input", render));
+  $("c-auto").addEventListener("change", render);
+  $("add-capex").addEventListener("click", () => { sched.capex.push({ date: "2027-01-22", amount: 20, memo: "추가 지급" }); buildAll(); render(); });
+  $("add-debt").addEventListener("click", () => { sched.debt.push({ date: "2027-01-20", amount: 50, memo: "추가 차입" }); buildAll(); render(); });
+  $("c-form").addEventListener("submit", (e) => e.preventDefault());
+  $("c-reset").addEventListener("click", () => { fill(); setStress(0, 0, 0); });
+  F.tabs(["dt-week", "dt-ev"]);
+  buildMonths(); fill(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

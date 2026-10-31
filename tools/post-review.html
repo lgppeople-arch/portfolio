@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>투자 사후관리 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  table.agrid td .ref { display: block; font-family: var(--f-num); font-size: 11px; color: var(--muted); text-align: right; padding: 2px 6px 0; white-space: nowrap; }
+  table.agrid th.yr { text-align: right; }
+  .field label small.ref { color: var(--muted); }
+  svg.plot text.wf-lab { fill: var(--ink); font-size: 12px; }
+  svg.plot text.wf-lab.tot { font-weight: 700; }
+  svg.plot text.wf-val { fill: var(--ink); font-size: 11.5px; font-family: var(--f-num); }
+  svg.plot text.wf-now { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  .handoff { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: var(--s-1); color: var(--ink-2); background: color-mix(in srgb, var(--input) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--input) 30%, var(--rule)); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 16px; }
+  .board .seg { align-self: start; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html" aria-current="page">사후관리</a>
+      <a href="ma-valuation.html">M&amp;A</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="checks.html">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 투자 사후관리</div>
+      <h1>투자 사후관리</h1>
+      <p>승인한 투자가 계획대로 가고 있는지 봅니다. 승인 당시 가정과 실적·재추정을 같은 모형으로 다시 계산하고, NPV가 달라진 이유를 투자비·가동률·단가·원가로 나눕니다. 나누는 순서에 따라 결과가 달라지지 않도록 샤플리 값을 씁니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span><span>금액 단위 억원</span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <div class="handoff" id="handoff" hidden>
+      <span>설비투자 분석 키트에서 넘겨받은 계획입니다. 실적은 이 계획을 기준으로 만든 예시값입니다.</span>
+      <button type="button" class="btn sm" id="handoff-clear">기본 예시 계획으로 바꾸기</button>
+    </div>
+    <span class="sample" id="sample-note">예시: 설비투자 분석 키트의 가상 정밀부품 생산라인 증설안을 승인하고 2년이 지난 시점 · 모든 수치는 가상</span>
+
+    <div class="workbench">
+      <form class="inputs2" id="pr-form" novalidate>
+        <details class="fs" id="plan-box">
+          <summary>승인 당시 가정 <span class="sum-note" id="sn-plan"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid" id="plan-grid"></div>
+            <p class="hint">설비투자 분석 키트의 투자 타당성 계산과 같은 모형입니다. 키트에서 <b>이 계획으로 사후관리</b>를 누르면 여기로 넘어옵니다.</p>
+          </div>
+        </details>
+
+        <details class="fs" open>
+          <summary>경과 기간과 투자비 <span class="sum-note" id="sn-k"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid">
+              <div class="field"><label for="a-k">경과 기간<small>실적이 나온 연수</small></label><select id="a-k"><option value="1">1년</option><option value="2" selected>2년</option><option value="3">3년</option></select></div>
+              <div class="field"><label for="a-capex">투자비 실적<small class="ref" id="ref-capex"></small></label><input id="a-capex" type="number" inputmode="decimal" step="1" min="1"></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="fs" open>
+          <summary>연도별 실적 <span class="sum-note">파란 칸 실적 · 회색 계획</span></summary>
+          <div class="fs-body">
+            <div class="agrid-wrap">
+              <table class="agrid" id="act-grid"><thead><tr></tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+        </details>
+
+        <details class="fs" open>
+          <summary>남은 기간 재추정 <span class="sum-note" id="sn-f"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid">
+              <div class="field" id="f-util2-row"><label for="f-util2">2년차 가동률<small class="ref" id="ref-util2"></small></label><input id="f-util2" type="number" inputmode="decimal" step="1" min="0" max="100"></div>
+              <div class="field"><label for="f-util">정상 가동률<small class="ref" id="ref-util"></small></label><input id="f-util" type="number" inputmode="decimal" step="1" min="0" max="100"></div>
+              <div class="field"><label for="f-cr">연간 단가 인하율<small class="ref" id="ref-cr"></small></label><input id="f-cr" type="number" inputmode="decimal" step="0.5" min="0" max="50"></div>
+              <div class="field"><label for="f-uvc">단위 변동비<small class="ref" id="ref-uvc"></small></label><input id="f-uvc" type="number" inputmode="decimal" step="0.5" min="0"></div>
+              <div class="field"><label for="f-fixed">고정비<small class="ref" id="ref-fixed"></small></label><input id="f-fixed" type="number" inputmode="decimal" step="0.5" min="0"></div>
+            </div>
+            <p class="hint">남은 기간 판매단가는 마지막 실적 단가에서 재추정 인하율만큼 매년 낮아집니다.</p>
+          </div>
+        </details>
+
+        <div class="form-actions">
+          <button type="button" class="btn" id="pr-sample">예시 실적으로 되돌리기</button>
+          <button type="button" class="btn" id="pr-asplan">실적을 계획값으로 채우기</button>
+        </div>
+      </form>
+
+      <aside class="board" aria-live="polite">
+        <div class="board-head"><h2>승인 대비 재추정</h2><span class="pill" id="pr-pill"></span></div>
+        <p class="verdict" id="pr-verdict"></p>
+        <div class="kpis k4">
+          <div class="kpi"><div class="label">재추정 NPV</div><div class="v num" id="k-npv"></div><div class="sub" id="k-npv-sub"></div></div>
+          <div class="kpi"><div class="label">재추정 IRR</div><div class="v num" id="k-irr"></div><div class="sub" id="k-irr-sub"></div></div>
+          <div class="kpi"><div class="label">회수기간</div><div class="v num" id="k-pb"></div><div class="sub" id="k-pb-sub"></div></div>
+          <div class="kpi"><div class="label">손익분기 가동률</div><div class="v num" id="k-be"></div><div class="sub" id="k-be-sub"></div></div>
+        </div>
+        <div class="chart" id="wf-chart">
+          <div class="chart-head">
+            <h4>NPV 차이 분해 <span class="muted">(억원)</span></h4>
+            <div class="seg" role="radiogroup" aria-label="기여도 계산 방식">
+              <label><input type="radio" name="att" id="att-shap" value="shapley" checked>샤플리 값</label>
+              <label><input type="radio" name="att" id="att-seq" value="seq">단계 대체</label>
+            </div>
+          </div>
+          <div class="legend" style="margin-bottom: 6px"><span><i class="key-bar" style="background: var(--total)"></i>NPV</span><span><i class="key-bar" style="background: var(--pos)"></i>증가</span><span><i class="key-bar" style="background: var(--neg)"></i>감소</span><span><i class="key-whisker"></i>대체 순서에 따른 범위</span></div>
+          <div class="plot-host"></div>
+          <p class="check" id="wf-note" style="margin-top: 6px"></p>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="pr-memo"></p></div>
+        <div class="selfcheck" id="pr-check"></div>
+      </aside>
+    </div>
+
+    <section class="detail" aria-label="상세 계산">
+      <div class="detail-head"><h2>상세 계산</h2></div>
+      <div class="subtabs" role="tablist" aria-label="상세 보기">
+        <button role="tab" id="dt-cum" aria-selected="true" aria-controls="dp-cum">누적 현금흐름</button>
+        <button role="tab" id="dt-yr" aria-selected="false" aria-controls="dp-yr" tabindex="-1">연도별 비교</button>
+        <button role="tab" id="dt-att" aria-selected="false" aria-controls="dp-att" tabindex="-1">기여도 상세</button>
+      </div>
+      <div id="dp-cum" role="tabpanel" aria-labelledby="dt-cum">
+        <div class="chart" id="cum-chart">
+          <div class="chart-head">
+            <h4>누적 잉여현금흐름 <span class="muted">(억원)</span></h4>
+            <div class="legend"><span><i class="key-dash"></i>승인 당시 계획</span><span><i class="key-line" style="background: var(--ink)"></i>실적·재추정</span><span><i class="key-bar" style="background: var(--ledger); border: 1px solid var(--rule)"></i>실적 구간</span></div>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+      <div id="dp-yr" role="tabpanel" aria-labelledby="dt-yr" hidden><div class="scroll"><table class="ledger" id="yr-table"></table></div></div>
+      <div id="dp-att" role="tabpanel" aria-labelledby="dt-att" hidden><div class="scroll"><table class="ledger" id="att-table"></table></div></div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>프로젝트 모형은 설비투자 분석 키트의 투자 타당성 계산과 같습니다. 검산 페이지에서 무작위 가정 200개로 두 계산이 같은 값을 내는지 확인합니다.</li>
+        <li>지난 연도는 실적, 남은 연도는 재추정 가정으로 채웁니다. 투자비 실적이 바뀌면 감가상각, 유지보수 투자, 잔존가치도 함께 바뀝니다. 할인율과 세율은 승인 당시 값을 그대로 씁니다.</li>
+        <li>NPV 차이는 투자비, 초기 가동률(1~2년차), 정상 가동률(3년차부터), 판매단가, 단위 변동비, 고정비 6개 동인으로 나눕니다.</li>
+        <li>한 동인씩 계획값을 실적값으로 바꿔 가는 단계 대체법은 순서에 따라 결과가 달라집니다. 가동률이 이미 낮아진 뒤에 단가를 바꾸면 단가 효과가 작게 잡히는 식입니다. 그래서 기본값은 가능한 720가지 순서의 평균인 샤플리 값이고, 막대 위 가는 선은 순서에 따라 그 동인의 기여가 움직이는 범위입니다. 단계 대체는 위 목록 순서를 따릅니다.</li>
+        <li>어느 방식이든 기여도를 모두 더하면 총 NPV 차이와 정확히 같습니다. 실적을 계획과 똑같이 넣으면 모든 기여도가 0이 되는지도 매번 다시 계산해 아래에 표시합니다.</li>
+        <li>손익분기 가동률은 다른 실적·재추정 가정을 그대로 두고 남은 기간 정상 가동률만 바꿨을 때 NPV가 0이 되는 값입니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/post.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.PostEngine, $ = F.$;
+  const KEY = "lgp.plan.handoff";
+  const PLAN_FIELDS = [
+    ["capex", "초기 투자비", "억원", 10, 1, null], ["years", "평가기간", "년", 1, 5, 15], ["taxlife", "세법 내용연수", "년", 1, 1, 40],
+    ["maint", "유지보수 투자", "투자비 대비 %/년", 0.5, 0, null], ["salvage", "잔존가치", "투자비 대비 %", 1, 0, null],
+    ["capa", "연간 CAPA", "천 개", 10, 1, null], ["util", "정상 가동률", "3년차부터 %", 1, 0, 100], ["ramp1", "1년차 가동률", "%", 1, 0, 100], ["ramp2", "2년차 가동률", "%", 1, 0, 100],
+    ["asp", "판매단가", "천원/개, 1년차", 1, 0, null], ["cr", "연간 단가 인하율", "%", 0.5, 0, 50], ["uvc", "단위 변동비", "천원/개", 1, 0, null],
+    ["fixed", "증분 고정비", "억원/년", 1, 0, null], ["wc", "운전자본", "매출 대비 %", 1, 0, null], ["tax", "법인세율", "%", 0.1, 0, 60], ["rate", "할인율", "%", 0.5, 0, 40]
+  ];
+  const ROWS = [
+    { key: "util", label: "가동률", unit: "%", step: 1, min: 0, max: 100 },
+    { key: "asp", label: "판매단가", unit: "천원/개", step: 0.5, min: 0 },
+    { key: "uvc", label: "단위 변동비", unit: "천원/개", step: 0.5, min: 0 },
+    { key: "fixed", label: "고정비", unit: "억원", step: 0.5, min: 0 }
+  ];
+
+  let plan = Object.assign({}, E.PLAN_DEFAULTS);
+  let fromKit = false;
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const h = JSON.parse(raw);
+      const okPlan = h && h.plan && PLAN_FIELDS.every((f) => typeof h.plan[f[0]] === "number" && isFinite(h.plan[f[0]]));
+      if (okPlan) { plan = Object.assign({}, E.PLAN_DEFAULTS, h.plan); fromKit = true; }
+    }
+  } catch (e) { /* 저장소를 못 쓰면 예시 계획 */ }
+  let act = E.sampleActual(plan, 2);
+
+  /* ---------- 승인 가정 입력 ---------- */
+  function buildPlan() {
+    const g = $("plan-grid");
+    g.textContent = "";
+    PLAN_FIELDS.forEach((f) => {
+      const id = "p-" + f[0];
+      let inp;
+      if (f[0] === "years") {
+        inp = F.el("select", { id: id });
+        for (let y = 5; y <= 15; y++) inp.appendChild(F.el("option", { value: y, text: String(y) }));
+        inp.value = String(plan.years);
+        inp.addEventListener("change", onPlan);
+      } else {
+        inp = F.el("input", { id: id, type: "number", inputmode: "decimal", step: f[3], min: f[4], max: f[5], value: plan[f[0]] });
+        inp.addEventListener("input", onPlan);
+      }
+      g.appendChild(F.el("div", { class: "field" }, [F.el("label", { for: id }, [f[1], F.el("small", { text: f[2] })]), inp]));
+    });
+  }
+  function readPlan() {
+    const p = {};
+    PLAN_FIELDS.forEach((f) => {
+      const node = $("p-" + f[0]);
+      p[f[0]] = node.tagName === "SELECT" ? Number(node.value) : F.readNum(node, E.PLAN_DEFAULTS[f[0]]);
+    });
+    return p;
+  }
+  function onPlan() { plan = readPlan(); refreshRefs(); render(); }
+
+  /* ---------- 실적 격자 ---------- */
+  function buildActual() {
+    const k = act.k, planP = E.planPath(plan);
+    const head = $("act-grid").tHead.rows[0];
+    head.textContent = "";
+    head.appendChild(F.el("th"));
+    for (let t = 0; t < k; t++) head.appendChild(F.el("th", { class: "yr", scope: "col", text: (t + 1) + "년차" }));
+    const body = $("act-grid").tBodies[0];
+    body.textContent = "";
+    ROWS.forEach((r) => {
+      const tr = F.el("tr");
+      tr.appendChild(F.el("th", { scope: "row" }, [r.label, F.el("small", { text: r.unit })]));
+      for (let t = 0; t < k; t++) {
+        const inp = F.el("input", { id: "a-" + r.key + "-" + t, type: "number", inputmode: "decimal", step: r.step, min: r.min, max: r.max, value: act[r.key][t], "aria-label": (t + 1) + "년차 " + r.label + " 실적" });
+        inp.addEventListener("input", () => { act[r.key][t] = F.readNum(inp, act[r.key][t]); render(); });
+        const planVal = r.key === "util" ? planP.util[t] * 100 : planP[r.key][t];
+        tr.appendChild(F.el("td", null, [inp, F.el("span", { class: "ref", id: "ref-" + r.key + "-" + t, text: "계획 " + F.num(planVal, r.key === "util" ? 0 : 1) })]));
+      }
+      body.appendChild(tr);
+    });
+  }
+  function fillActualInputs() {
+    $("a-k").value = String(act.k);
+    $("a-capex").value = act.capex;
+    $("f-util2").value = act.fUtil2; $("f-util").value = act.fUtil; $("f-cr").value = act.fCr; $("f-uvc").value = act.fUvc; $("f-fixed").value = act.fFixed;
+    ["a-capex", "f-util2", "f-util", "f-cr", "f-uvc", "f-fixed"].forEach((id) => $(id).setAttribute("aria-invalid", "false"));
+    buildActual();
+  }
+  function refreshRefs() {
+    const planP = E.planPath(plan);
+    $("ref-capex").textContent = "억원 · 계획 " + F.num(plan.capex, 1);
+    $("ref-util2").textContent = "% · 계획 " + F.num(plan.ramp2, 0);
+    $("ref-util").textContent = (act.k >= 3 ? "4" : "3") + "년차부터 % · 계획 " + F.num(plan.util, 0);
+    $("ref-cr").textContent = "% · 계획 " + F.num(plan.cr, 1);
+    $("ref-uvc").textContent = "천원/개 · 계획 " + F.num(plan.uvc, 1);
+    $("ref-fixed").textContent = "억원/년 · 계획 " + F.num(plan.fixed, 1);
+    $("f-util2-row").hidden = act.k !== 1;
+    ROWS.forEach((r) => {
+      for (let t = 0; t < act.k; t++) {
+        const node = $("ref-" + r.key + "-" + t);
+        if (node) node.textContent = "계획 " + F.num(r.key === "util" ? planP.util[t] * 100 : planP[r.key][t], r.key === "util" ? 0 : 1);
+      }
+    });
+  }
+
+  const n = (id, fb) => F.readNum($(id), fb);
+  function readActual() {
+    act.capex = n("a-capex", act.capex);
+    act.fUtil2 = n("f-util2", act.fUtil2); act.fUtil = n("f-util", act.fUtil); act.fCr = n("f-cr", act.fCr);
+    act.fUvc = n("f-uvc", act.fUvc); act.fFixed = n("f-fixed", act.fFixed);
+    return act;
+  }
+
+  /* ---------- 표현 ---------- */
+  const PHRASE = {
+    capex: ["투자비 절감", "투자비 초과"], ramp: ["초기 가동률 초과", "초기 가동률 미달"], util: ["정상 가동률 상향", "정상 가동률 하향"],
+    price: ["판매단가 상승", "판매단가 하락"], vcost: ["변동비 절감", "변동비 상승"], fixed: ["고정비 절감", "고정비 증가"]
+  };
+  const won = (x) => F.money(x, 1) + "억원";
+  const wonS = (x) => (x > 0 ? "+" : x < 0 ? "−" : "") + F.money(Math.abs(x), 1) + "억원";
+
+  /* 남은 기간 정상 가동률만 바꿔 NPV가 0이 되는 값 (%) */
+  function breakEvenUtil(p, a) {
+    const f = (u) => E.run(p, E.actualPath(p, Object.assign({}, a, { fUtil: u }))).npv;
+    const lo = f(0), hi = f(100);
+    if (lo * hi > 0) return null;
+    let a0 = 0, b0 = 100, fa = lo;
+    for (let i = 0; i < 60; i++) {
+      const m = (a0 + b0) / 2, fm = f(m);
+      if (fa * fm <= 0) b0 = m; else { a0 = m; fa = fm; }
+    }
+    return (a0 + b0) / 2;
+  }
+
+  /* NPV 다리: 가로 폭포 그래프 */
+  function drawWaterfall(r, mode) {
+    const att = r.att, vals = mode === "seq" ? att.seq : att.shapley;
+    const rows = [{ label: "승인 당시 NPV", total: true, v: att.base }];
+    let cum = att.base;
+    att.drivers.forEach((d, i) => {
+      rows.push({ label: d.label + (d.sub ? " (" + d.sub + ")" : ""), key: d.key, from: cum, v: vals[i], lo: att.lo[i], hi: att.hi[i] });
+      cum += vals[i];
+    });
+    rows.push({ label: "재추정 NPV", total: true, v: att.full });
+    const rowH = 34, padT = 8, padB = 26;
+    const H = padT + rows.length * rowH + padB;
+    const fr = F.plotFrame($("wf-chart"), H, "승인 당시 NPV에서 재추정 NPV까지 동인별 기여를 보여 주는 가로 폭포 그래프");
+    const svg = fr.svg, W = fr.W, narrow = W < 520;
+    const labW = narrow ? 118 : 172, padR = 64;
+    const pts = [0];
+    rows.forEach((row) => {
+      if (row.total) pts.push(row.v);
+      else pts.push(row.from, row.from + row.v, row.from + row.lo, row.from + row.hi);
+    });
+    const t = F.niceTicks(Math.min.apply(null, pts), Math.max.apply(null, pts), narrow ? 4 : 6);
+    const X = (val) => labW + (val - t.lo) / (t.hi - t.lo) * (W - labW - padR);
+    const every = X(t.ticks[1]) - X(t.ticks[0]) < 44 ? 2 : 1;
+    t.ticks.forEach((tv, i) => {
+      F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: X(tv), x2: X(tv), y1: padT, y2: H - padB }, svg);
+      if (i % every === 0) F.svgText(svg, X(tv), H - padB + 16, F.money(tv, 0), { "text-anchor": "middle" });
+    });
+    const pos = F.css("--pos"), neg = F.css("--neg"), total = F.css("--total"), ink2 = F.css("--ink-2"), rule = F.css("--mark-muted");
+    const tip = F.makeTip(fr.plot);
+    rows.forEach((row, i) => {
+      const y = padT + i * rowH, cy = y + rowH / 2, bh = 18;
+      F.svgText(svg, labW - 10, cy + 4, row.label, { "text-anchor": "end", class: row.total ? "wf-lab tot" : "wf-lab" });
+      let x0, x1, col;
+      if (row.total) { x0 = X(Math.min(0, row.v)); x1 = X(Math.max(0, row.v)); col = total; }
+      else { x0 = X(Math.min(row.from, row.from + row.v)); x1 = X(Math.max(row.from, row.from + row.v)); col = row.v >= 0 ? pos : neg; }
+      F.svgEl("rect", { x: x0, y: cy - bh / 2, width: Math.max(1.5, x1 - x0), height: bh, rx: 2.5, fill: col }, svg);
+      if (!row.total && row.hi - row.lo > 1e-6) {
+        const wl = X(row.from + row.lo), wr = X(row.from + row.hi);
+        F.svgEl("path", { d: "M" + wl + "," + (cy - 5) + "V" + (cy + 5) + "M" + wl + "," + cy + "H" + wr + "M" + wr + "," + (cy - 5) + "V" + (cy + 5), stroke: ink2, "stroke-width": 1.4, fill: "none" }, svg);
+      }
+      if (i < rows.length - 1) {
+        const end = row.total ? row.v : row.from + row.v;
+        F.svgEl("line", { x1: X(end), x2: X(end), y1: cy + bh / 2, y2: cy + rowH - bh / 2, stroke: rule, "stroke-width": 1, "stroke-dasharray": "2 2" }, svg);
+      }
+      const endVal = row.total ? row.v : row.from + row.v;
+      /* 값 글자는 막대 오른쪽에 둔다. 자리가 없으면 왼쪽 */
+      const rEdge = row.total ? x1 : Math.max(x1, X(row.from + row.hi)), lEdge = row.total ? x0 : Math.min(x0, X(row.from + row.lo));
+      const onRight = rEdge + 6 + 46 <= W || lEdge - 6 - 46 < labW;
+      F.svgText(svg, onRight ? rEdge + 6 : lEdge - 6, cy + 4, row.total ? F.money(row.v, 1) : F.signed(row.v, 1), { "text-anchor": onRight ? "start" : "end", class: "wf-val" });
+      const hit = F.svgEl("rect", { class: "hit", x: labW, y: y, width: W - labW, height: rowH }, svg);
+      F.wireHit(hit, fr.plot, tip, () => row.total
+        ? { title: row.label, rows: [["NPV", won(row.v), total]] }
+        : { title: row.label, rows: [[mode === "seq" ? "단계 대체 기여" : "샤플리 기여", wonS(row.v), col], ["순서별 범위", F.signed(row.lo, 1) + " ~ " + F.signed(row.hi, 1), ink2], ["누적 NPV", won(endVal), null]] });
+    });
+  }
+
+  function drawCum(r) {
+    const N = r.mp.fcf.length - 1, k = r.k;
+    const cum = (arr) => { const o = []; arr.reduce((s, c, i) => (o[i] = s + c, s + c), 0); return o; };
+    const cp = cum(r.mp.fcf), ca = cum(r.ma.fcf);
+    const H = 260, padL = 52, padR = 16, padT = 18, padB = 30;
+    const fr = F.plotFrame($("cum-chart"), H, "승인 당시 계획과 실적·재추정의 누적 잉여현금흐름 비교 선 그래프");
+    const svg = fr.svg, W = fr.W;
+    const t = F.niceTicks(Math.min.apply(null, cp.concat(ca, [0])), Math.max.apply(null, cp.concat(ca, [0])), 5);
+    const X = (i) => padL + i / N * (W - padL - padR), Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    F.svgEl("rect", { x: X(0), y: padT, width: X(k) - X(0), height: H - padT - padB, fill: F.css("--ledger") }, svg);
+    t.ticks.forEach((tv) => {
+      F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg);
+      F.svgText(svg, padL - 6, Y(tv) + 4, F.money(tv, 0), { "text-anchor": "end" });
+    });
+    for (let i = 0; i <= N; i++) if (N <= 12 || i % 2 === 0) F.svgText(svg, X(i), H - 10, i + "년", { "text-anchor": "middle" });
+    const ink = F.css("--ink"), ink2 = F.css("--ink-2"), surface = F.css("--surface");
+    const path = (arr) => "M" + arr.map((v, i) => X(i) + "," + Y(v)).join("L");
+    F.svgEl("path", { d: path(cp), fill: "none", stroke: ink2, "stroke-width": 1.8, "stroke-dasharray": "5 4" }, svg);
+    F.svgEl("path", { d: path(ca), fill: "none", stroke: ink, "stroke-width": 2.2, "stroke-linejoin": "round" }, svg);
+    F.svgEl("circle", { cx: X(N), cy: Y(ca[N]), r: 4.5, fill: ink, stroke: surface, "stroke-width": 2 }, svg);
+    F.svgEl("line", { x1: X(k), x2: X(k), y1: padT, y2: H - padB, stroke: ink, "stroke-width": 1 }, svg);
+    F.svgText(svg, X(k) + 6, padT + 12, "현재 · " + k + "년차 말", { class: "wf-now" });
+    const tip = F.makeTip(fr.plot), band = (W - padL - padR) / N;
+    for (let i = 0; i <= N; i++) {
+      const hit = F.svgEl("rect", { class: "hit", x: X(i) - band / 2, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: i + "년차" + (i === 0 ? " (투자)" : i <= k ? " · 실적" : " · 재추정"), rows: [["계획 누적", won(cp[i]), ink2], ["실적·재추정 누적", won(ca[i]), ink], ["차이", wonS(ca[i] - cp[i]), null]] }));
+    }
+  }
+
+  function drawYearTable(r) {
+    const tb = $("yr-table"), N = r.mp.rows.length, k = r.k;
+    tb.textContent = "";
+    const hr = F.el("tr");
+    hr.appendChild(F.el("th", { class: "lft", text: "억원" }));
+    hr.appendChild(F.el("th", { text: "0년" }));
+    for (let t = 1; t <= N; t++) hr.appendChild(F.el("th", { class: t <= k ? "hl" : null, text: t + "년" + (t <= k ? " 실적" : "") }));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    const grp = (label) => { const tr = F.el("tr", { class: "grp" }); tr.appendChild(F.el("th", { colspan: N + 2, text: label })); body.appendChild(tr); };
+    const line = (label, v0, vals, opt) => {
+      opt = opt || {};
+      const tr = F.el("tr", { class: opt.cls || null });
+      tr.appendChild(F.el("th", { text: label }));
+      [v0].concat(vals).forEach((v, i) => {
+        const td = F.el("td", { class: i >= 1 && i <= k ? "hl" : null, text: v === null ? "" : opt.fmt ? opt.fmt(v) : opt.signed ? F.signed(v, 1) : F.money(v, 1) });
+        if (typeof v === "number" && v < 0 && !opt.fmt) td.classList.add("neg");
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    };
+    const P = r.mp.rows, A = r.ma.rows;
+    grp("가동률");
+    line("계획", null, P.map((x) => x.u), { fmt: (v) => F.pct(v, 0), cls: "sub" });
+    line("실적·재추정", null, A.map((x) => x.u), { fmt: (v) => F.pct(v, 0) });
+    grp("매출");
+    line("계획", null, P.map((x) => x.rev), { cls: "sub" });
+    line("실적·재추정", null, A.map((x) => x.rev));
+    line("차이", null, A.map((x, i) => x.rev - P[i].rev), { signed: true, cls: "sum" });
+    grp("영업이익");
+    line("계획", null, P.map((x) => x.ebit), { cls: "sub" });
+    line("실적·재추정", null, A.map((x) => x.ebit));
+    line("차이", null, A.map((x, i) => x.ebit - P[i].ebit), { signed: true, cls: "sum" });
+    grp("잉여현금흐름");
+    line("계획", r.mp.fcf[0], P.map((x) => x.fcf), { cls: "sub" });
+    line("실적·재추정", r.ma.fcf[0], A.map((x) => x.fcf));
+    line("차이", r.ma.fcf[0] - r.mp.fcf[0], A.map((x, i) => x.fcf - P[i].fcf), { signed: true, cls: "sum" });
+    tb.appendChild(body);
+  }
+
+  function drawAttTable(r) {
+    const tb = $("att-table"), att = r.att;
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["동인", "계획 → 실적·재추정", "샤플리 값", "단계 대체", "순서별 최소", "순서별 최대"].forEach((h, i) => hr.appendChild(F.el("th", { class: i < 2 ? "lft" : null, text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const P = r.plan, A = r.act, k = r.k;
+    const pctList = (arr, a, b) => arr.slice(a, b).map((u) => F.num(u * 100, 0)).join("/") + "%";
+    const desc = {
+      capex: F.num(P.capex, 1) + " → " + F.num(A.capex, 1) + "억원",
+      ramp: pctList(P.util, 0, 2) + " → " + pctList(A.util, 0, 2),
+      util: F.num(P.util[2] * 100, 0) + "% → " + F.num(A.util[2] * 100, 0) + "%" + (k >= 3 && A.util.length > 3 ? ", 4년차부터 " + F.num(A.util[3] * 100, 0) + "%" : ""),
+      price: "1년차 " + F.num(P.asp[0], 1) + " → " + F.num(A.asp[0], 1) + "천원",
+      vcost: F.num(P.uvc[0], 1) + " → " + F.num(A.uvc[k - 1], 1) + "천원",
+      fixed: F.num(P.fixed[0], 1) + " → " + F.num(A.fixed[k - 1], 1) + "억원"
+    };
+    const body = F.el("tbody");
+    att.drivers.forEach((d, i) => {
+      const tr = F.el("tr");
+      tr.appendChild(F.el("th", { text: d.label + (d.sub ? " (" + d.sub + ")" : "") }));
+      tr.appendChild(F.el("td", { class: "lft", text: desc[d.key] }));
+      [att.shapley[i], att.seq[i], att.lo[i], att.hi[i]].forEach((v) => { const td = F.el("td", { text: F.signed(v, 2) }); if (v < 0) td.classList.add("neg"); tr.appendChild(td); });
+      body.appendChild(tr);
+    });
+    const tr = F.el("tr", { class: "sum" });
+    tr.appendChild(F.el("th", { text: "합계" }));
+    tr.appendChild(F.el("td", { class: "lft", text: "재추정 NPV − 승인 NPV" }));
+    [F.sum(att.shapley), F.sum(att.seq)].forEach((v) => { const td = F.el("td", { text: F.signed(v, 2) }); if (v < 0) td.classList.add("neg"); tr.appendChild(td); });
+    tr.appendChild(F.el("td")); tr.appendChild(F.el("td"));
+    body.appendChild(tr);
+    tb.appendChild(body);
+  }
+
+  function pill(node, cls, text) { node.className = "pill " + cls; node.textContent = text; }
+
+  function render() {
+    const p = plan, a = readActual();
+    const r = E.analyze(p, a);
+    r.plan = r.plan || E.planPath(p);
+    const mode = $("att-seq").checked ? "seq" : "shapley";
+    const dNpv = r.ma.npv - r.mp.npv, rate = p.rate / 100;
+
+    $("sn-plan").textContent = "NPV " + won(r.mp.npv) + " · IRR " + F.pct(r.mp.irr, 1);
+    $("sn-k").textContent = a.k + "년 · 투자비 " + F.pctSigned(a.capex / p.capex - 1, 1);
+    $("sn-f").textContent = "정상 가동률 " + F.num(a.fUtil, 0) + "%";
+
+    if (r.ma.npv >= 0 && r.ma.npv >= r.mp.npv * 0.5) pill($("pr-pill"), "ok", "계획 범위");
+    else if (r.ma.npv >= 0) pill($("pr-pill"), "warn", "가치 감소");
+    else pill($("pr-pill"), "bad", "할인율 미달");
+
+    $("pr-verdict").textContent = "";
+    $("pr-verdict").append("재추정 NPV는 ", F.el("b", { text: won(r.ma.npv) }), "으로 승인 당시 " + won(r.mp.npv) + "보다 " + won(Math.abs(dNpv)) + (dNpv < 0 ? " 줄었습니다. " : " 늘었습니다. "),
+      r.ma.irr === null ? "재추정 IRR을 계산할 수 없습니다." : r.ma.irr >= rate
+        ? "재추정 IRR " + F.josa(F.pct(r.ma.irr, 1), "은", "는") + " 할인율 " + F.josa(F.pct(rate, 1), "을", "를") + " 넘습니다."
+        : "재추정 IRR " + F.josa(F.pct(r.ma.irr, 1), "이", "가") + " 할인율 " + F.pct(rate, 1) + "에 못 미칩니다.");
+
+    F.setValue($("k-npv"), F.money(r.ma.npv, 1), "억원", r.ma.npv < 0);
+    $("k-npv-sub").textContent = "계획 " + F.money(r.mp.npv, 1) + " · " + F.signed(dNpv, 1);
+    F.setValue($("k-irr"), r.ma.irr === null ? "–" : F.pct(r.ma.irr, 1).replace("%", ""), "%", r.ma.irr !== null && r.ma.irr < rate);
+    $("k-irr-sub").textContent = "계획 " + F.pct(r.mp.irr, 1) + " · " + (r.ma.irr === null ? "" : F.pp(r.ma.irr - r.mp.irr, 1));
+    F.setValue($("k-pb"), r.ma.pb === null ? "–" : F.num(r.ma.pb, 1), r.ma.pb === null ? "" : "년");
+    $("k-pb-sub").textContent = "계획 " + (r.mp.pb === null ? "–" : F.num(r.mp.pb, 1) + "년");
+    const be = breakEvenUtil(p, a);
+    F.setValue($("k-be"), be === null ? "–" : F.num(be, 1), be === null ? "" : "%");
+    const room = be === null ? null : a.fUtil - be;
+    $("k-be-sub").textContent = be === null ? "0~100% 밖" : room >= 0 ? "재추정보다 " + F.num(room, 1) + "%p 낮음" : "재추정보다 " + F.num(-room, 1) + "%p 높음";
+
+    drawWaterfall(r, mode);
+    const spread = Math.max.apply(null, r.att.hi.map((h, i) => h - r.att.lo[i]));
+    $("wf-note").textContent = mode === "seq"
+      ? "단계 대체: 위에서부터 차례로 실적을 넣은 결과입니다. 순서를 바꾸면 동인 하나의 기여가 최대 " + F.money(spread, 1) + "억원까지 달라집니다."
+      : "샤플리 값: 720가지 대체 순서의 평균입니다. 순서에 따라 동인 하나의 기여가 움직이는 폭은 최대 " + F.money(spread, 1) + "억원입니다.";
+
+    /* 보고 문장 */
+    const vals = mode === "seq" ? r.att.seq : r.att.shapley;
+    const items = r.att.drivers.map((d, i) => ({ key: d.key, v: vals[i] }));
+    const negs = items.filter((x) => x.v < -0.05).sort((x, y) => x.v - y.v), poss = items.filter((x) => x.v > 0.05).sort((x, y) => y.v - x.v);
+    const name = (x) => PHRASE[x.key][x.v >= 0 ? 0 : 1] + "(" + wonS(x.v) + ")";
+    const memo = $("pr-memo");
+    memo.textContent = "";
+    memo.append("승인 당시 NPV " + won(r.mp.npv) + "(IRR " + F.pct(r.mp.irr, 1) + ")였던 증설안을 " + a.k + "년 실적으로 다시 계산하면 NPV는 ", F.el("b", { text: won(r.ma.npv) }), ", IRR은 " + (r.ma.irr === null ? "–" : F.pct(r.ma.irr, 1)) + "입니다. ");
+    if (negs.length) memo.append("가장 큰 감소 요인은 " + negs.slice(0, 2).map(name).join("과 ") + "이고, ");
+    if (poss.length) memo.append(F.josa(poss.slice(0, 2).map(name).join("과 "), "이", "가") + " 일부를 메웠습니다. ");
+    else if (negs.length) memo.append("상쇄한 요인은 없었습니다. ");
+    if (be !== null) {
+      if (r.ma.npv < 0) memo.append("NPV를 0 이상으로 돌리려면 남은 기간 정상 가동률이 ", F.el("b", { text: F.num(be, 1) + "% 이상" }), "이어야 합니다(현재 재추정 " + F.num(a.fUtil, 0) + "%).");
+      else memo.append("남은 기간 정상 가동률이 ", F.el("b", { text: F.num(be, 1) + "%" }), " 밑으로 내려가면 NPV가 음수가 됩니다.");
+    } else if (r.ma.npv < 0) memo.append("가동률을 100%로 올려도 NPV가 음수라 단가나 원가 대책이 필요합니다.");
+
+    /* 실시간 검산 */
+    const chk = $("pr-check");
+    chk.textContent = "";
+    const sumOk = Math.abs(F.sum(r.att.shapley) - dNpv) < 1e-6 && Math.abs(F.sum(r.att.seq) - dNpv) < 1e-6;
+    const idOk = Math.abs(r.identity) < 1e-9;
+    [["기여도 합 = 총 NPV 차이", sumOk], ["실적 = 계획이면 차이 0", idOk]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+
+    drawCum(r);
+    drawYearTable(r);
+    drawAttTable(r);
+  }
+
+  /* ---------- 연결 ---------- */
+  $("a-k").addEventListener("change", () => {
+    const k = Number($("a-k").value), s = E.sampleActual(plan, k);
+    ["util", "asp", "uvc", "fixed"].forEach((key) => { for (let t = 0; t < k; t++) if (t < act[key].length) s[key][t] = act[key][t]; });
+    act.k = k; ["util", "asp", "uvc", "fixed"].forEach((key) => { act[key] = s[key]; });
+    buildActual(); refreshRefs(); render();
+  });
+  ["a-capex", "f-util2", "f-util", "f-cr", "f-uvc", "f-fixed"].forEach((id) => $(id).addEventListener("input", render));
+  ["att-shap", "att-seq"].forEach((id) => $(id).addEventListener("change", render));
+  $("pr-form").addEventListener("submit", (e) => e.preventDefault());
+  $("pr-sample").addEventListener("click", () => { act = E.sampleActual(plan, act.k); fillActualInputs(); refreshRefs(); render(); });
+  $("pr-asplan").addEventListener("click", () => {
+    act = E.planAsActual(plan, act.k);
+    const r6 = (v) => Math.round(v * 1e6) / 1e6;
+    ["util", "asp", "uvc", "fixed"].forEach((key) => { act[key] = act[key].map(r6); });
+    fillActualInputs(); refreshRefs(); render();
+  });
+  $("handoff-clear").addEventListener("click", () => {
+    try { localStorage.removeItem(KEY); } catch (e) { /* 무시 */ }
+    plan = Object.assign({}, E.PLAN_DEFAULTS); fromKit = false;
+    act = E.sampleActual(plan, 2);
+    $("handoff").hidden = true;
+    buildPlan(); fillActualInputs(); refreshRefs(); render();
+  });
+  if (fromKit) { $("handoff").hidden = false; $("plan-box").open = true; $("sample-note").hidden = true; }
+  F.tabs(["dt-cum", "dt-yr", "dt-att"], () => render());
+  buildPlan(); fillActualInputs(); refreshRefs(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>지주사 포트폴리오 가치 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .summary { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 24px; }
+  .summary > * { min-width: 0; }
+  .summary .side { display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 1000px) { .summary { grid-template-columns: minmax(0, 1fr); } }
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card .field input, .card .field select { background: var(--surface); }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  table.etable.subs { min-width: 960px; }
+  table.etable input:disabled { background: transparent; border-color: transparent; color: var(--mark-muted); }
+  .holdco-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 22px; }
+  .holdco-grid .field { grid-template-columns: minmax(0, 1fr) 96px; }
+  @media (max-width: 1100px) { .holdco-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .holdco-grid { grid-template-columns: minmax(0, 1fr); } }
+  .rules { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+  .rule { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--rule-soft); align-items: center; }
+  .rule .what { font-size: var(--s-2); }
+  .rule .what small { display: block; color: var(--muted); font-size: 12px; }
+  .rule .val { font-family: var(--f-num); font-size: var(--s-1); text-align: right; }
+  .rule .val .pill { margin-left: 8px; }
+  .cmp { width: 100%; border-collapse: collapse; font-size: var(--s-1); }
+  .cmp th, .cmp td { padding: 8px 6px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  .cmp th:first-child, .cmp td:first-child { text-align: left; white-space: normal; }
+  .cmp thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  .cmp td { font-family: var(--f-num); }
+  .cmp td:first-child { font-family: var(--f-body); }
+  svg.plot text.wf-lab { fill: var(--ink); font-size: 12px; }
+  svg.plot text.wf-lab.tot { font-weight: 700; }
+  svg.plot text.wf-val { fill: var(--ink); font-size: 11.5px; font-family: var(--f-num); }
+  svg.plot text.wf-gap { fill: var(--neg-ink); font-size: 11.5px; font-weight: 600; font-family: var(--f-num); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-valuation.html">M&amp;A</a>
+      <a href="holdco-nav.html" aria-current="page">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="checks.html">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 지주사 포트폴리오 가치</div>
+      <h1>지주사 포트폴리오 가치</h1>
+      <p>자회사 지분가치를 하나씩 더해 지주회사의 순자산가치(NAV)를 구하고, 주가가 NAV보다 얼마나 낮은지 봅니다. 공정거래법상 지주회사 요건을 함께 점검하고, 자회사 지분을 팔았을 때 가치와 요건이 어떻게 바뀌는지 미리 계산합니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 억원 · 주식 수 만 주 · 주가 원</span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 반도체·소재 자회사 다섯 곳을 둔 가상 지주회사 H · 모든 수치는 가상</span>
+
+    <section class="summary" aria-live="polite">
+      <div>
+        <div class="board-head" style="margin-bottom: 10px"><h2>순자산가치 (NAV)</h2><span class="pill" id="h-pill"></span></div>
+        <div class="chart" id="nav-chart">
+          <div class="legend" style="margin-bottom: 6px"><span><i class="key-bar" style="background: var(--input)"></i>상장 자회사</span><span><i class="key-bar" style="background: var(--accent)"></i>비상장 자회사</span><span><i class="key-bar" style="background: var(--mark-muted)"></i>지주사 자체</span><span><i class="key-bar" style="background: var(--total)"></i>합계</span></div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="kpis k4" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+          <div class="kpi"><div class="label">NAV</div><div class="v num" id="k-nav"></div><div class="sub" id="k-nav-sub"></div></div>
+          <div class="kpi"><div class="label">주당 NAV</div><div class="v num" id="k-ps"></div><div class="sub" id="k-ps-sub"></div></div>
+          <div class="kpi"><div class="label">지주사 할인율</div><div class="v num" id="k-disc"></div><div class="sub" id="k-disc-sub"></div></div>
+          <div class="kpi"><div class="label">목표 할인율 적용 주가</div><div class="v num" id="k-tgt"></div><div class="sub" id="k-tgt-sub"></div></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="h-memo"></p></div>
+        <div class="selfcheck" id="h-check"></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="자회사">
+      <h2>자회사</h2>
+      <div class="card">
+        <div class="etable-wrap">
+          <table class="etable subs" id="sub-table">
+            <thead><tr>
+              <th>회사</th><th>상장</th><th class="r">지분율 %</th><th class="r">시가총액</th><th class="r">EBITDA</th><th class="r">EV/EBITDA</th><th class="r">순차입금</th><th class="r">장부가액</th><th>2021.12.30<br>이후 편입</th><th class="r">100% 가치</th><th class="r">보유 지분가치</th><th></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="btn-row"><button type="button" class="btn sm" id="sub-add">자회사 추가</button><span class="hint">상장 자회사는 시가총액, 비상장 자회사는 EBITDA × 배수 − 순차입금으로 100% 가치를 잡습니다. 장부가액은 지주사 별도 재무상태표의 주식 장부가로, 지주비율 계산에 씁니다.</span></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="지주사 자체">
+      <h2>지주사 자체 <span class="muted" style="font-family: var(--f-body); font-weight: 400; font-size: var(--s-1)">별도 재무제표 기준</span></h2>
+      <form class="card" id="h-form" novalidate>
+        <div class="holdco-grid">
+          <div class="field"><label for="h-shares">발행주식수<small>만 주</small></label><input id="h-shares" type="number" inputmode="decimal" step="10" min="1"></div>
+          <div class="field"><label for="h-treasury">자사주<small>만 주</small></label><input id="h-treasury" type="number" inputmode="decimal" step="10" min="0"></div>
+          <div class="field"><label for="h-price">주가<small>원</small></label><input id="h-price" type="number" inputmode="decimal" step="100" min="0"></div>
+          <div class="field"><label for="h-target">목표 할인율<small>%</small></label><input id="h-target" type="number" inputmode="decimal" step="5" min="0" max="95"></div>
+          <div class="field"><label for="h-nd">순차입금<small>억원</small></label><input id="h-nd" type="number" inputmode="decimal" step="10"></div>
+          <div class="field"><label for="h-other">기타 투자자산<small>억원, 시가</small></label><input id="h-other" type="number" inputmode="decimal" step="10" min="0"></div>
+          <div class="field"><label for="h-roy">브랜드 로열티 수입<small>억원/년</small></label><input id="h-roy" type="number" inputmode="decimal" step="5" min="0"></div>
+          <div class="field"><label for="h-opex">지주사 운영비<small>억원/년</small></label><input id="h-opex" type="number" inputmode="decimal" step="5" min="0"></div>
+          <div class="field"><label for="h-rmult">로열티 순액 배수<small>세후 순액에 적용, 배</small></label><input id="h-rmult" type="number" inputmode="decimal" step="0.5" min="0" max="40"></div>
+          <div class="field"><label for="h-tax">법인세율<small>%</small></label><input id="h-tax" type="number" inputmode="decimal" step="0.1" min="0" max="60"></div>
+          <div class="field"><label for="h-assets">자산총액<small>억원</small></label><input id="h-assets" type="number" inputmode="decimal" step="10" min="1"></div>
+          <div class="field"><label for="h-liab">부채총계<small>억원</small></label><input id="h-liab" type="number" inputmode="decimal" step="10" min="0"></div>
+          <div class="field"><label for="h-equity">자본총계<small>억원</small></label><input id="h-equity" type="number" inputmode="decimal" step="10" min="1"></div>
+        </div>
+        <p class="hint" id="bs-hint"></p>
+        <div class="form-actions"><button type="button" class="btn" id="h-reset">예시값으로 되돌리기</button></div>
+      </form>
+    </section>
+
+    <section class="block2" aria-label="요건 점검과 매각 시나리오">
+      <div class="two">
+        <div class="card">
+          <h3>지주회사 요건 점검 <span class="pill" id="c-pill"></span></h3>
+          <div class="rules" id="rules"></div>
+          <p class="hint">2021년 12월 30일 시행 공정거래법 기준을 요약했습니다. 그 전에 편입한 자회사는 종전 기준(상장 20%, 비상장 40%)을 적용합니다. 유예기간, 벤처지주회사, 공동출자 같은 예외는 반영하지 않았으므로 실제 판단은 법무 검토가 필요합니다.</p>
+        </div>
+        <div class="card">
+          <h3>자회사 지분 매각 시나리오 <span class="pill" id="s-pill"></span></h3>
+          <div class="fs-grid">
+            <div class="field"><label for="s-idx">매각 대상</label><select id="s-idx"></select></div>
+            <div class="field"><label for="s-part">매각 비율<small>보유 지분 중 %</small></label><input id="s-part" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+            <div class="field"><label for="s-prem">매각 프리미엄<small>지분가치 대비 %</small></label><input id="s-prem" type="number" inputmode="decimal" step="5" min="-90" max="300"></div>
+            <div class="switch-row"><label for="s-repay">매각대금으로 차입 상환</label><input id="s-repay" type="checkbox"></div>
+          </div>
+          <p class="check" id="s-flow"></p>
+          <table class="cmp" id="s-table"></table>
+          <p class="memo" style="border-left-color: var(--accent)"><span class="label">해석</span><span id="s-memo" style="display: block; font-size: var(--s-2); line-height: 1.7"></span></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>NAV = 자회사 보유 지분가치 합 + 브랜드 로열티 순가치 + 기타 투자자산 − 지주사 순차입금. 상장 자회사는 시가총액, 비상장 자회사는 EBITDA × EV/EBITDA − 순차입금(음수면 0)에 지분율을 곱합니다.</li>
+        <li>브랜드 로열티 순가치 = (로열티 수입 − 지주사 운영비) × (1 − 법인세율) × 배수. 운영비가 더 크면 음수가 되어 NAV를 낮춥니다.</li>
+        <li>주당 NAV와 시가총액은 자사주를 뺀 유통주식수로 계산합니다. 지주사 할인율 = 1 − 시가총액 ÷ NAV.</li>
+        <li>지주회사 요건: 자산총액 5,000억원 이상이고 자회사 주식 장부가 합계가 자산총액의 50% 이상. 행위제한: 부채비율 200% 이하, 자회사 지분율 상장 30%·비상장 50% 이상(2021.12.30 이후 편입).</li>
+        <li>매각 시나리오: 매각가 = 매각 지분가치 × (1 + 프리미엄). 양도차익(매각가 − 매각분 장부가)에 법인세를 매기고, 남은 현금으로 차입을 갚거나 현금으로 둡니다. 어느 쪽이든 순차입금은 같이 줄어 NAV는 같고, 자산총액과 부채비율이 달라집니다. 지분을 전부 팔면 자회사 목록에서 빠집니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/holdco.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.HoldcoEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  const HFIELDS = { shares: "h-shares", treasury: "h-treasury", price: "h-price", netDebt: "h-nd", other: "h-other", royalty: "h-roy", opex: "h-opex", royaltyMult: "h-rmult", tax: "h-tax", assets: "h-assets", liab: "h-liab", equity: "h-equity" };
+  let subs = D.subs.map((s) => Object.assign({ mcap: 0, ebitda: 0, mult: 7, netDebt: 0 }, s));
+  const TARGET = 30;
+
+  const won = (x) => F.money(x, 0) + "억원";
+  const wonPS = (x) => F.num(Math.round(x / 10) * 10, 0) + "원";
+
+  /* ---------- 자회사 표 ---------- */
+  const NUMCOLS = [
+    { key: "stake", label: "지분율", step: 0.5, min: 0, max: 100 },
+    { key: "mcap", label: "시가총액", step: 100, min: 0, listedOnly: true },
+    { key: "ebitda", label: "EBITDA", step: 10, unlistedOnly: true },
+    { key: "mult", label: "EV/EBITDA", step: 0.5, min: 0, max: 60, unlistedOnly: true },
+    { key: "netDebt", label: "순차입금", step: 10, unlistedOnly: true },
+    { key: "book", label: "장부가액", step: 10, min: 0 }
+  ];
+  function buildSubs() {
+    const body = $("sub-table").tBodies[0];
+    body.textContent = "";
+    subs.forEach((s, i) => {
+      const tr = F.el("tr");
+      const name = F.el("input", { type: "text", value: s.name, id: "s-name-" + i, "aria-label": "자회사 " + (i + 1) + " 이름" });
+      name.addEventListener("input", () => { s.name = name.value; buildSaleOptions(); render(); });
+      tr.appendChild(F.el("td", null, [name]));
+      const listed = F.el("input", { type: "checkbox", id: "s-listed-" + i, "aria-label": s.name + " 상장 여부" });
+      listed.checked = !!s.listed;
+      listed.addEventListener("change", () => { s.listed = listed.checked; buildSubs(); render(); });
+      tr.appendChild(F.el("td", null, [listed]));
+      NUMCOLS.forEach((c) => {
+        const off = (c.listedOnly && !s.listed) || (c.unlistedOnly && s.listed);
+        const inp = F.el("input", { type: "number", inputmode: "decimal", step: c.step, min: c.min, max: c.max, value: off ? "" : s[c.key], id: "s-" + c.key + "-" + i, "aria-label": s.name + " " + c.label });
+        inp.disabled = off;
+        inp.addEventListener("input", () => { s[c.key] = F.readNum(inp, s[c.key]); render(); });
+        tr.appendChild(F.el("td", { class: "r" }, [inp]));
+      });
+      const nr = F.el("input", { type: "checkbox", id: "s-new-" + i, "aria-label": s.name + " 2021년 12월 30일 이후 편입" });
+      nr.checked = !!s.newRule;
+      nr.addEventListener("change", () => { s.newRule = nr.checked; render(); });
+      tr.appendChild(F.el("td", null, [nr]));
+      tr.appendChild(F.el("td", { class: "calc", id: "s-eq-" + i }));
+      tr.appendChild(F.el("td", { class: "calc", id: "s-val-" + i }));
+      const del = F.el("button", { type: "button", class: "row-del", "aria-label": s.name + " 삭제", title: "삭제", text: "×" });
+      del.disabled = subs.length <= 1;
+      del.addEventListener("click", () => { subs.splice(i, 1); buildSubs(); buildSaleOptions(); render(); });
+      tr.appendChild(F.el("td", null, [del]));
+      body.appendChild(tr);
+    });
+    $("sub-add").disabled = subs.length >= 8;
+  }
+  $("sub-add").addEventListener("click", () => {
+    subs.push({ name: "자회사 " + String.fromCharCode(65 + subs.length), listed: false, stake: 60, mcap: 0, ebitda: 50, mult: 7, netDebt: 0, book: 150, newRule: true });
+    buildSubs(); buildSaleOptions(); render();
+  });
+
+  function buildSaleOptions() {
+    const sel = $("s-idx"), keep = Number(sel.value || D.sale.idx);
+    sel.textContent = "";
+    subs.forEach((s, i) => sel.appendChild(F.el("option", { value: i, text: s.name })));
+    sel.value = String(Math.min(keep, subs.length - 1));
+  }
+
+  /* ---------- 입력 ---------- */
+  function fillHoldco() {
+    Object.keys(HFIELDS).forEach((k) => { $(HFIELDS[k]).value = D.holdco[k]; $(HFIELDS[k]).setAttribute("aria-invalid", "false"); });
+    $("h-target").value = TARGET;
+    $("s-part").value = D.sale.part; $("s-prem").value = D.sale.premium; $("s-repay").checked = D.sale.repay;
+  }
+  function read() {
+    const h = {};
+    Object.keys(HFIELDS).forEach((k) => { h[k] = F.readNum($(HFIELDS[k]), D.holdco[k]); });
+    if (h.treasury >= h.shares) { $(HFIELDS.treasury).setAttribute("aria-invalid", "true"); h.treasury = 0; }
+    return {
+      holdco: h,
+      subs: subs.map((s) => ({ name: s.name, listed: s.listed, stake: s.stake, mcap: s.mcap, ebitda: s.ebitda, mult: s.mult, netDebt: s.netDebt, book: s.book, newRule: s.newRule })),
+      sale: { idx: Number($("s-idx").value), part: F.readNum($("s-part"), D.sale.part), premium: F.readNum($("s-prem"), D.sale.premium), repay: $("s-repay").checked },
+      target: F.readNum($("h-target"), TARGET) / 100
+    };
+  }
+
+  /* ---------- NAV 폭포 ---------- */
+  function drawNav(n, h) {
+    const rows = [];
+    let cum = 0;
+    n.parts.slice().sort((a, b) => b.value - a.value).forEach((p) => { rows.push({ label: p.name, sub: (p.listed ? "상장" : "비상장") + " · " + F.num(p.stake, 1) + "%", from: cum, v: p.value, kind: p.listed ? "listed" : "unlisted" }); cum += p.value; });
+    rows.push({ label: "브랜드 로열티 순가치", from: cum, v: n.royaltyValue, kind: "own" }); cum += n.royaltyValue;
+    rows.push({ label: "기타 투자자산", from: cum, v: n.other, kind: "own" }); cum += n.other;
+    rows.push({ label: "지주사 순차입금", from: cum, v: -n.netDebt, kind: "own" }); cum -= n.netDebt;
+    rows.push({ label: "NAV", total: true, v: n.nav });
+    rows.push({ label: "시가총액", total: true, v: n.mcap, mcap: true });
+    const rowH = 32, padT = 8, padB = 26;
+    const H = padT + rows.length * rowH + padB;
+    const fr = F.plotFrame($("nav-chart"), H, "자회사 지분가치부터 순차입금까지 더하고 빼서 NAV에 이르는 가로 폭포 그래프와 시가총액 비교");
+    const svg = fr.svg, W = fr.W, narrow = W < 520;
+    const labW = narrow ? 112 : 150, padR = 70;
+    const pts = [0];
+    rows.forEach((r) => { if (r.total) pts.push(r.v); else pts.push(r.from, r.from + r.v); });
+    const t = F.niceTicks(Math.min.apply(null, pts), Math.max.apply(null, pts), narrow ? 4 : 6);
+    const X = (v) => labW + (v - t.lo) / (t.hi - t.lo) * (W - labW - padR);
+    const every = X(t.ticks[1]) - X(t.ticks[0]) < 50 ? 2 : 1;
+    t.ticks.forEach((tv, i) => {
+      F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: X(tv), x2: X(tv), y1: padT, y2: H - padB }, svg);
+      if (i % every === 0) F.svgText(svg, X(tv), H - padB + 16, F.money(tv, 0), { "text-anchor": "middle" });
+    });
+    const col = { listed: F.css("--input"), unlisted: F.css("--accent"), own: F.css("--mark-muted"), total: F.css("--total"), neg: F.css("--neg") };
+    const rule = F.css("--mark-muted"), tip = F.makeTip(fr.plot);
+    rows.forEach((r, i) => {
+      const cy = padT + i * rowH + rowH / 2, bh = 17;
+      F.svgText(svg, labW - 10, cy + 4, r.label, { "text-anchor": "end", class: r.total ? "wf-lab tot" : "wf-lab" });
+      let x0, x1, c;
+      if (r.total) { x0 = X(Math.min(0, r.v)); x1 = X(Math.max(0, r.v)); c = r.mcap ? F.css("--ink-2") : col.total; }
+      else { x0 = X(Math.min(r.from, r.from + r.v)); x1 = X(Math.max(r.from, r.from + r.v)); c = r.v < 0 && r.kind === "own" ? col.neg : col[r.kind]; }
+      F.svgEl("rect", { x: x0, y: cy - bh / 2, width: Math.max(1.5, x1 - x0), height: bh, rx: 2.5, fill: c, "fill-opacity": r.mcap ? 0.55 : 1 }, svg);
+      if (!r.total && i < rows.length - 1) {
+        const end = r.from + r.v;
+        F.svgEl("line", { x1: X(end), x2: X(end), y1: cy + bh / 2, y2: cy + rowH - bh / 2, stroke: rule, "stroke-width": 1, "stroke-dasharray": "2 2" }, svg);
+      }
+      F.svgText(svg, x1 + 6, cy + 4, r.total ? F.money(r.v, 0) : F.signed(r.v, 0), { "text-anchor": "start", class: "wf-val" });
+      const hit = F.svgEl("rect", { class: "hit", x: labW, y: cy - rowH / 2, width: W - labW, height: rowH }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: r.label + (r.sub ? " · " + r.sub : ""), rows: r.total ? [[r.label, won(r.v), c]] : [["더하는 값", F.signed(r.v, 0) + "억원", c], ["누적", won(r.from + r.v), null], ["NAV 대비", F.pct(r.v / n.nav, 1), null]] }));
+    });
+    /* NAV와 시가총액 사이 할인 표시 */
+    const yN = padT + (rows.length - 2) * rowH + rowH / 2, yM = yN + rowH;
+    if (n.nav > n.mcap) {
+      const xa = X(n.mcap), xb = X(n.nav), ym = yM;
+      F.svgEl("path", { d: "M" + xa + "," + (ym - 9) + "H" + xb + "V" + (ym - 18), fill: "none", stroke: col.neg, "stroke-width": 1.3, "stroke-dasharray": "3 2" }, svg);
+      F.svgText(svg, xb + 6, ym + 4, "할인 " + F.pct(n.discount, 1), { class: "wf-gap" });
+      void yN;
+    }
+  }
+
+  function pill(node, cls, text) { node.className = "pill " + cls; node.textContent = text; }
+
+  /* ---------- 요건 표시 ---------- */
+  function ruleRow(box, what, sub, val, cls, tag) {
+    const v = F.el("span", { class: "val" }, [val]);
+    v.appendChild(F.el("span", { class: "pill " + cls, text: tag }));
+    box.appendChild(F.el("div", { class: "rule" }, [F.el("span", { class: "what" }, [what, sub ? F.el("small", { text: sub }) : null]), v]));
+  }
+  function drawRules(c, h) {
+    const box = $("rules");
+    box.textContent = "";
+    ruleRow(box, "자산총액 5,000억원 이상", "지주회사 정의 요건", F.money(h.assets, 0) + "억원", c.assetsOk ? "ok" : "bad", c.assetsOk ? "충족" : "미달");
+    const hr = c.holdRatio, hrRoom = hr - 0.5;
+    ruleRow(box, "자회사 주식가액 ÷ 자산총액 50% 이상", "지주비율 · 장부가 기준", F.pct(hr, 1), hr < 0.5 ? "bad" : hrRoom < 0.05 ? "warn" : "ok", hr < 0.5 ? "미달" : "여유 " + F.pp(hrRoom, 1).replace("+", ""));
+    ruleRow(box, "부채비율 200% 이하", "부채총계 ÷ 자본총계", F.pct(c.debtRatio, 0), c.debtOk ? (c.debtRatio > 1.6 ? "warn" : "ok") : "bad", c.debtOk ? "충족" : "초과");
+    c.stakes.forEach((s) => {
+      const room = s.stake - s.need;
+      ruleRow(box, s.name + " 지분율", (s.listed ? "상장" : "비상장") + " · 기준 " + s.need + "%" + (s.newRule ? " (신규 편입)" : " (종전 기준)"), F.num(s.stake, 1) + "%", !s.ok ? "bad" : room < 5 ? "warn" : "ok", !s.ok ? "미달" : "여유 " + F.num(room, 1) + "%p");
+    });
+    const allOk = c.isHoldco && c.debtOk && c.stakes.every((s) => s.ok);
+    const warn = c.stakes.some((s) => s.ok && s.room < 5) || (c.holdRatio >= 0.5 && c.holdRatio - 0.5 < 0.05);
+    pill($("c-pill"), allOk ? (warn ? "warn" : "ok") : "bad", allOk ? (warn ? "충족 · 여유 적음" : "모두 충족") : c.isHoldco ? "행위제한 위반" : "지주회사 요건 밖");
+  }
+
+  /* ---------- 매각 시나리오 ---------- */
+  function drawSale(sc, x) {
+    if (!sc) return;
+    $("s-flow").textContent = "매각 지분가치 " + won(sc.sold) + " → 매각가 " + won(sc.price) + " · 양도차익 " + won(sc.gain) + " · 법인세 " + won(sc.tax) + " · 순현금 " + won(sc.cash) + (sc.repay > 0 ? " (차입 " + won(sc.repay) + " 상환)" : "");
+    const tb = $("s-table");
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["", "매각 전", "매각 후", "변화"].forEach((h) => hr.appendChild(F.el("th", { text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    const B = sc.before, A = sc.after, cb = sc.cBefore, ca = sc.cAfter;
+    const line = (label, b, a, fmt, dfmt) => {
+      const tr = F.el("tr");
+      [label, fmt(b), fmt(a), dfmt(a, b)].forEach((v) => tr.appendChild(F.el("td", { text: v })));
+      body.appendChild(tr);
+    };
+    line("NAV", B.nav, A.nav, (v) => F.money(v, 0), (a, b) => F.signed(a - b, 0));
+    line("주당 NAV", B.perShare, A.perShare, wonPS, (a, b) => F.pctSigned(a / b - 1, 1));
+    line("할인율 (주가 그대로)", B.discount, A.discount, (v) => F.pct(v, 1), (a, b) => F.pp(a - b, 1));
+    line("순차입금", x.holdco.netDebt, sc.h2.netDebt, (v) => F.money(v, 0), (a, b) => F.signed(a - b, 0));
+    line("자산총액", x.holdco.assets, sc.h2.assets, (v) => F.money(v, 0), (a, b) => F.signed(a - b, 0));
+    line("지주비율", cb.holdRatio, ca.holdRatio, (v) => F.pct(v, 1), (a, b) => F.pp(a - b, 1));
+    line("부채비율", cb.debtRatio, ca.debtRatio, (v) => F.pct(v, 0), (a, b) => F.pp(a - b, 0));
+    tb.appendChild(body);
+
+    const lostHold = cb.isHoldco && !ca.isHoldco;
+    const left = sc.part < 1 ? ca.stakes.find((s) => s.name === sc.name) : null;
+    const stakeBreach = left && !left.ok;
+    pill($("s-pill"), lostHold || stakeBreach ? "bad" : ca.holdRatio - 0.5 < 0.05 ? "warn" : "ok", lostHold ? "지주회사 요건 이탈" : stakeBreach ? "지분율 미달" : "요건 유지");
+    const m = $("s-memo");
+    m.textContent = "";
+    m.append(sc.name + " 지분 " + F.pct(sc.part, 0) + "를 프리미엄 " + F.pct(x.sale.premium / 100, 0) + "에 팔면 NAV는 " + F.signed(A.nav - B.nav, 0) + "억원 바뀝니다. 프리미엄에서 양도차익 법인세를 뺀 만큼입니다. ");
+    if (lostHold) m.append(F.el("b", { text: "지주비율이 " + F.pct(ca.holdRatio, 1) + "로 50% 밑으로 내려가 지주회사 요건을 벗어납니다. " }), "체제를 유지하려면 매각 비율을 줄이거나 다른 자회사 지분을 늘려야 합니다.");
+    else if (stakeBreach) m.append(F.el("b", { text: "남은 지분율 " + F.num(left.stake, 1) + "%가 기준 " + left.need + "%보다 낮아 행위제한에 걸립니다. " }), "전부 팔거나 기준 이상을 남겨야 합니다.");
+    else m.append("지주회사 요건은 유지됩니다(지주비율 " + F.pct(ca.holdRatio, 1) + ").");
+  }
+
+  function render() {
+    const x = read();
+    const n = E.nav(x.holdco, x.subs), c = E.compliance(x.holdco, x.subs), sc = E.sale(x.holdco, x.subs, x.sale);
+    n.parts.forEach((p, i) => { $("s-eq-" + i).textContent = F.money(p.eq100, 0); $("s-val-" + i).textContent = F.money(p.value, 0); });
+    const out = x.holdco.shares - x.holdco.treasury;
+
+    F.setValue($("k-nav"), F.money(n.nav, 0), "억원", n.nav < 0);
+    $("k-nav-sub").textContent = "시가총액 " + F.money(n.mcap, 0) + "억원";
+    F.setValue($("k-ps"), F.num(Math.round(n.perShare / 10) * 10, 0), "원", n.perShare < 0);
+    $("k-ps-sub").textContent = "주가 " + wonPS(x.holdco.price) + " · 유통 " + F.num(out, 0) + "만 주";
+    F.setValue($("k-disc"), n.discount === null ? "–" : F.pct(n.discount, 1).replace("%", ""), n.discount === null ? "" : "%");
+    $("k-disc-sub").textContent = "상장 자회사 비중 " + F.pct(n.listedShare, 0);
+    const tgtPrice = n.perShare * (1 - x.target);
+    F.setValue($("k-tgt"), F.num(Math.round(tgtPrice / 10) * 10, 0), "원");
+    $("k-tgt-sub").textContent = "할인율 " + F.pct(x.target, 0) + " · 현재 대비 " + F.pctSigned(tgtPrice / x.holdco.price - 1, 0);
+    if (n.discount === null) pill($("h-pill"), "bad", "NAV 음수");
+    else if (n.discount > 0.5) pill($("h-pill"), "warn", "할인 " + F.pct(n.discount, 0));
+    else if (n.discount >= 0) pill($("h-pill"), "ok", "할인 " + F.pct(n.discount, 0));
+    else pill($("h-pill"), "warn", "할증 " + F.pct(-n.discount, 0));
+
+    drawNav(n, x.holdco);
+
+    const top = n.parts.slice().sort((a, b) => b.value - a.value)[0];
+    const subSum = F.sum(n.parts.map((p) => p.value));
+    const memo = $("h-memo");
+    memo.textContent = "";
+    memo.append("자회사 지분가치 " + won(subSum) + "에 로열티 순가치와 기타자산 " + won(n.royaltyValue + n.other) + "을 더하고 순차입금 " + won(n.netDebt) + "을 빼면 NAV는 ", F.el("b", { text: won(n.nav) }), "(주당 " + wonPS(n.perShare) + ")입니다. ");
+    if (n.discount !== null) memo.append("현재 주가 " + wonPS(x.holdco.price) + "은 NAV보다 " + F.pct(Math.abs(n.discount), 1) + (n.discount >= 0 ? " 낮습니다. " : " 높습니다. "));
+    memo.append(F.josa(top.name, "이", "가") + " NAV의 " + F.pct(top.value / n.nav, 0) + "를 차지해 그 주가가 지주사 가치를 크게 좌우합니다. 할인율이 " + F.pct(x.target, 0) + "로 줄면 적정 주가는 " + wonPS(tgtPrice) + "입니다.");
+
+    const bsGap = x.holdco.assets - x.holdco.liab - x.holdco.equity;
+    $("bs-hint").textContent = Math.abs(bsGap) > 0.5 ? "자산총액이 부채와 자본의 합과 " + F.money(Math.abs(bsGap), 0) + "억원 다릅니다. 지주비율과 부채비율은 입력값 그대로 계산합니다." : "자산총액 = 부채총계 + 자본총계 (" + F.money(x.holdco.assets, 0) + "억원)";
+
+    drawRules(c, x.holdco);
+    drawSale(sc, x);
+
+    const chk = $("h-check");
+    chk.textContent = "";
+    const navOk = Math.abs(n.nav - (subSum + n.royaltyValue + n.other - n.netDebt)) < 1e-6;
+    const psOk = Math.abs(n.perShare * out / 1e4 - n.nav) < 1e-6;
+    const bsOk = sc ? Math.abs((sc.h2.assets - sc.h2.liab - sc.h2.equity) - bsGap) < 1e-6 : true;
+    [["NAV 구성 합계 일치", navOk], ["주당 NAV × 유통주식수 = NAV", psOk], ["매각 전후 재무상태표 균형 유지", bsOk]].forEach((q) => chk.appendChild(F.el("span", { class: q[1] ? null : "fail", text: q[0] })));
+  }
+
+  /* ---------- 연결 ---------- */
+  Object.keys(HFIELDS).forEach((k) => $(HFIELDS[k]).addEventListener("input", render));
+  ["h-target", "s-part", "s-prem"].forEach((id) => $(id).addEventListener("input", render));
+  ["s-idx", "s-repay"].forEach((id) => $(id).addEventListener("change", render));
+  $("h-form").addEventListener("submit", (e) => e.preventDefault());
+  $("h-reset").addEventListener("click", () => {
+    subs = D.subs.map((s) => Object.assign({ mcap: 0, ebitda: 0, mult: 7, netDebt: 0 }, s));
+    fillHoldco(); buildSubs(); $("s-idx").value = ""; buildSaleOptions(); $("s-idx").value = String(D.sale.idx); render();
+  });
+  fillHoldco(); buildSubs(); buildSaleOptions(); $("s-idx").value = String(D.sale.idx);
+  render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

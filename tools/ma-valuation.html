@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>M&amp;A 가치평가 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  svg.plot text.ff-lab { fill: var(--ink); font-size: 12px; font-weight: 500; }
+  svg.plot text.ff-lab.sel { font-weight: 700; }
+  svg.plot text.ff-note { fill: var(--muted); font-size: 10.5px; }
+  svg.plot text.ff-val { fill: var(--ink-2); font-size: 11px; font-family: var(--f-num); }
+  svg.plot text.ff-offer { fill: var(--ink); font-size: 11.5px; font-weight: 600; font-family: var(--f-num); }
+  .pf { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 8px 14px; align-items: center; font-size: var(--s-1); }
+  .pf .h { color: var(--muted); font-size: 12px; text-align: right; }
+  .pf .h:first-child { text-align: left; }
+  .pf b { font-family: var(--f-num); font-weight: 500; text-align: right; }
+  .pf .arrow { color: var(--mark-muted); }
+  .waccline { font-family: var(--f-num); font-size: 12px; color: var(--ink-2); background: var(--ledger); border-radius: 4px; padding: 8px 10px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-valuation.html" aria-current="page">M&amp;A</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="checks.html">검산</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / M&amp;A 가치평가</div>
+      <h1>M&amp;A 가치평가</h1>
+      <p>가상의 반도체 공정 부품 회사 T를 인수한다고 놓고, 현금흐름할인(DCF)과 유사기업·거래사례 배수로 가치 범위를 잡습니다. 제시가가 그 범위의 어디쯤인지, 차액을 메우려면 시너지가 얼마나 필요한지, 인수 후 차입 부담이 어떻게 바뀌는지까지 한 화면에서 봅니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span><i style="color: var(--neg-ink)">(123)</i> 음수</span><span>금액 단위 억원</span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample">예시: 국내 비상장 반도체 공정 부품 기업 T · 피어와 거래사례를 포함한 모든 수치는 가상</span>
+
+    <div class="workbench">
+      <form class="inputs2" id="ma-form" novalidate>
+        <details class="fs" open>
+          <summary>연도별 추정 <span class="sum-note" id="sn-proj"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid">
+              <div class="field"><label for="b-rev">2026E 매출<small>억원, 평가 기준연도</small></label><input id="b-rev" type="number" inputmode="decimal" step="10" min="1" value="1200"></div>
+              <div class="field"><label for="b-margin">2026E EBITDA 마진<small>%</small></label><input id="b-margin" type="number" inputmode="decimal" step="0.5" min="-50" max="90" value="20"></div>
+              <div class="field"><label for="b-da">2026E 감가상각<small>매출 대비 %</small></label><input id="b-da" type="number" inputmode="decimal" step="0.5" min="0" max="50" value="6"></div>
+              <div class="field"><label for="b-nwc">2026E 순운전자본<small>매출 대비 %</small></label><input id="b-nwc" type="number" inputmode="decimal" step="0.5" min="-50" max="100" value="18"></div>
+            </div>
+            <div class="agrid-wrap">
+              <table class="agrid" id="agrid">
+                <thead><tr><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="field" style="max-width: 300px"><label for="m-tax">법인세율<small>지방소득세 포함 %</small></label><input id="m-tax" type="number" inputmode="decimal" step="0.1" min="0" max="60" value="24.2"></div>
+          </div>
+        </details>
+
+        <details class="fs" open>
+          <summary>할인율 (WACC) <span class="sum-note" id="sn-wacc"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid">
+              <div class="field"><label for="w-rf">무위험이자율<small>국고채 10년 %</small></label><input id="w-rf" type="number" inputmode="decimal" step="0.1" min="0" max="20" value="3.0"></div>
+              <div class="field"><label for="w-mrp">시장위험프리미엄<small>%</small></label><input id="w-mrp" type="number" inputmode="decimal" step="0.5" min="0" max="20" value="7.0"></div>
+              <div class="field"><label for="w-betaU">무부채 베타<small>피어 평균</small></label><input id="w-betaU" type="number" inputmode="decimal" step="0.05" min="0" max="5" value="1.05"></div>
+              <div class="field"><label for="w-de">목표 부채/자기자본<small>%</small></label><input id="w-de" type="number" inputmode="decimal" step="5" min="0" max="400" value="30"></div>
+              <div class="field"><label for="w-size">규모 위험프리미엄<small>%</small></label><input id="w-size" type="number" inputmode="decimal" step="0.5" min="0" max="10" value="0.5"></div>
+              <div class="field"><label for="w-kd">세전 타인자본비용<small>%</small></label><input id="w-kd" type="number" inputmode="decimal" step="0.1" min="0" max="20" value="5.0"></div>
+            </div>
+            <p class="waccline num" id="wacc-line"></p>
+          </div>
+        </details>
+
+        <details class="fs" open>
+          <summary>영구가치 <span class="sum-note" id="sn-tv"></span></summary>
+          <div class="fs-body">
+            <div class="seg" role="radiogroup" aria-label="영구가치 방법">
+              <label><input type="radio" name="tv-method" id="tv-gordon" value="gordon" checked>영구성장</label>
+              <label><input type="radio" name="tv-method" id="tv-exit" value="exit">출구배수</label>
+            </div>
+            <div class="fs-grid">
+              <div class="field"><label for="tv-g">영구성장률<small>%</small></label><input id="tv-g" type="number" inputmode="decimal" step="0.25" min="-5" max="8" value="2.5"></div>
+              <div class="field"><label for="tv-ronic">신규투자 수익률 RONIC<small>영구 단계 %</small></label><input id="tv-ronic" type="number" inputmode="decimal" step="0.5" min="0.5" max="60" value="14"></div>
+              <div class="field"><label for="tv-exit-m">출구 EV/EBITDA<small>2031E 기준 배</small></label><input id="tv-exit-m" type="number" inputmode="decimal" step="0.5" min="0" max="40" value="7.0"></div>
+              <div class="switch-row"><label for="tv-mid">기중 할인 (mid-year)</label><input id="tv-mid" type="checkbox"></div>
+            </div>
+            <p class="hint" id="tv-cross"></p>
+          </div>
+        </details>
+
+        <details class="fs">
+          <summary>기업가치 → 지분가치 <span class="sum-note" id="sn-bridge"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid">
+              <div class="field"><label for="br-nd">순차입금<small>억원, 2026E 말</small></label><input id="br-nd" type="number" inputmode="decimal" step="10" value="280"></div>
+              <div class="field"><label for="br-mi">비지배지분<small>억원</small></label><input id="br-mi" type="number" inputmode="decimal" step="10" min="0" value="0"></div>
+              <div class="field"><label for="br-nonop">비영업자산<small>억원, 투자부동산 등</small></label><input id="br-nonop" type="number" inputmode="decimal" step="10" min="0" value="40"></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="fs">
+          <summary>유사기업 <span class="sum-note" id="sn-peers"></span></summary>
+          <div class="fs-body">
+            <div class="etable-wrap">
+              <table class="etable" id="peer-table">
+                <thead><tr><th>회사</th><th class="r">EV/EBITDA<br>2027E</th><th class="r">PER<br>2027E</th><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="btn-row"><button type="button" class="btn sm" id="peer-add">유사기업 추가</button></div>
+          </div>
+        </details>
+
+        <details class="fs">
+          <summary>거래사례 <span class="sum-note" id="sn-deals"></span></summary>
+          <div class="fs-body">
+            <div class="etable-wrap">
+              <table class="etable" id="deal-table">
+                <thead><tr><th>거래</th><th class="r">EV/EBITDA<br>직전 연도</th><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="btn-row"><button type="button" class="btn sm" id="deal-add">거래사례 추가</button></div>
+            <p class="hint">거래사례 배수에는 경영권 프리미엄이 들어 있어 보통 유사기업 배수보다 높습니다.</p>
+          </div>
+        </details>
+
+        <details class="fs" open>
+          <summary>제시가와 인수 구조 <span class="sum-note" id="sn-offer"></span></summary>
+          <div class="fs-body">
+            <div class="fs-grid">
+              <div class="field"><label for="o-eq">제시 인수가<small>지분 100% 기준 억원</small></label><input id="o-eq" type="number" inputmode="decimal" step="10" min="0" value="2300"></div>
+              <div class="field"><label for="o-stake">인수 지분율<small>%</small></label><input id="o-stake" type="number" inputmode="decimal" step="1" min="1" max="100" value="100"></div>
+              <div class="field"><label for="a-debt">인수자금 중 차입<small>%</small></label><input id="a-debt" type="number" inputmode="decimal" step="5" min="0" max="100" value="60"></div>
+              <div class="field"><label for="a-rate">인수금융 금리<small>%</small></label><input id="a-rate" type="number" inputmode="decimal" step="0.1" min="0" max="20" value="5.0"></div>
+            </div>
+            <p class="hint"><b>인수회사 현재 재무</b> (직전 연도)</p>
+            <div class="fs-grid">
+              <div class="field"><label for="a-ebitda">EBITDA<small>억원</small></label><input id="a-ebitda" type="number" inputmode="decimal" step="10" min="1" value="1100"></div>
+              <div class="field"><label for="a-ebit">영업이익<small>억원</small></label><input id="a-ebit" type="number" inputmode="decimal" step="10" value="650"></div>
+              <div class="field"><label for="a-nd">순차입금<small>억원</small></label><input id="a-nd" type="number" inputmode="decimal" step="10" value="1600"></div>
+              <div class="field"><label for="a-int">이자비용<small>억원</small></label><input id="a-int" type="number" inputmode="decimal" step="1" min="0.1" value="85"></div>
+            </div>
+          </div>
+        </details>
+
+        <div class="form-actions"><button type="button" class="btn" id="ma-reset">예시값으로 되돌리기</button></div>
+      </form>
+
+      <aside class="board" aria-live="polite">
+        <div class="board-head"><h2>가치 범위와 제시가</h2><span class="pill" id="ff-pill"></span></div>
+        <p class="verdict" id="ma-verdict"></p>
+        <div class="kpis k4">
+          <div class="kpi"><div class="label">DCF 기업가치</div><div class="v num" id="k-ev"></div><div class="sub" id="k-ev-sub"></div></div>
+          <div class="kpi"><div class="label">DCF 지분가치</div><div class="v num" id="k-eq"></div><div class="sub" id="k-eq-sub"></div></div>
+          <div class="kpi"><div class="label">제시가 프리미엄</div><div class="v num" id="k-prem"></div><div class="sub" id="k-prem-sub"></div></div>
+          <div class="kpi"><div class="label">필요 시너지</div><div class="v num" id="k-syn"></div><div class="sub" id="k-syn-sub"></div></div>
+        </div>
+        <div class="chart" id="ff-chart">
+          <div class="chart-head">
+            <h4>방법별 기업가치 범위 <span class="muted">(억원)</span></h4>
+            <div class="legend"><span><i class="key-range" style="background: color-mix(in srgb, var(--accent) 35%, transparent)"></i>DCF</span><span><i class="key-range" style="background: color-mix(in srgb, var(--input) 30%, transparent)"></i>배수</span><span><i class="key-line" style="background: var(--ink-2); width: 3px; height: 12px"></i>기준값</span><span><i class="key-dash"></i>제시가</span></div>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+        <div>
+          <h4 style="margin: 0 0 8px; font-size: var(--s-2)">인수 후 인수회사 재무 <span class="muted" style="font-weight: 400; font-size: var(--s-1)" id="pf-note"></span></h4>
+          <div class="pf" id="pf"></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="ma-memo"></p></div>
+        <div class="selfcheck" id="ma-check"></div>
+      </aside>
+    </div>
+
+    <section class="detail" aria-label="상세 계산">
+      <div class="detail-head"><h2>상세 계산</h2></div>
+      <div class="subtabs" role="tablist" aria-label="상세 보기">
+        <button role="tab" id="dt-cf" aria-selected="true" aria-controls="dp-cf">연도별 현금흐름</button>
+        <button role="tab" id="dt-sens" aria-selected="false" aria-controls="dp-sens" tabindex="-1">민감도</button>
+        <button role="tab" id="dt-rel" aria-selected="false" aria-controls="dp-rel" tabindex="-1">상대가치</button>
+      </div>
+      <div id="dp-cf" role="tabpanel" aria-labelledby="dt-cf"><div class="scroll"><table class="ledger" id="cf-table"></table></div></div>
+      <div id="dp-sens" role="tabpanel" aria-labelledby="dt-sens" hidden>
+        <p class="check" id="sens-cap" style="margin-bottom: 8px"></p>
+        <div class="scroll" style="border: 0"><table class="sens" id="sens-table"></table></div>
+      </div>
+      <div id="dp-rel" role="tabpanel" aria-labelledby="dt-rel" hidden>
+        <div class="scroll"><table class="ledger" id="rel-table"></table></div>
+      </div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li>매출은 2026E에서 연도별 성장률로 늘립니다. EBITDA·감가상각·설비투자·순운전자본은 매출 대비 비율입니다. FCFF = EBIT × (1 − 법인세율) + 감가상각 − 설비투자 − 순운전자본 증가.</li>
+        <li>자기자본비용 = 무위험이자율 + 레버드 베타 × 시장위험프리미엄 + 규모 위험프리미엄. 레버드 베타 = 무부채 베타 × (1 + (1 − t) × D/E). 부채 비중은 목표 D/E로 정합니다.</li>
+        <li>영구성장법은 가치동인 공식을 씁니다. 영구가치 = NOPAT(2032E) × (1 − g ÷ RONIC) ÷ (WACC − g). 성장에 필요한 재투자를 성장률과 수익률로 맞추므로, 마지막 해 설비투자 비율을 그대로 이어 붙이는 방식보다 가정이 일관됩니다.</li>
+        <li>기중 할인을 켜면 연도 현금흐름은 t − 0.5년, 영구성장 가치는 4.5년으로 할인합니다. 출구배수 가치는 매각 시점인 5년 그대로 할인합니다.</li>
+        <li>지분가치 = 기업가치 − 순차입금 − 비지배지분 + 비영업자산. 유사기업 배수는 2027E 실적에, 거래사례 배수는 2026E EBITDA에 적용하고 1사분위~3사분위를 범위로 씁니다. PER로 구한 지분가치는 같은 브리지로 기업가치로 바꿉니다. 대상회사 순이익의 이자비용은 순차입금 × 세전 타인자본비용으로 근사합니다.</li>
+        <li>필요 시너지는 제시가가 DCF 지분가치를 넘는 금액을 매년 g로 자라는 세후 시너지로 회수한다고 보고 역산합니다. 세전 시너지 = 초과액 × (WACC − g) ÷ (1 − t). 통합 비용과 실현 기간은 넣지 않았으므로 실제로는 더 큰 시너지가 필요합니다.</li>
+        <li>지분 50% 넘게 인수하면 대상회사의 EBITDA·영업이익·순차입금을 연결합니다. 판정 기준(순차입금/EBITDA 2.5배·3.5배, 영업이익 기준 이자보상배율 5배·3배)은 예시입니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/ma.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, E = window.MAEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  const GRID_ROWS = [
+    { key: "growth", label: "매출 성장률", unit: "%", min: -50, max: 200, step: 0.5 },
+    { key: "margin", label: "EBITDA 마진", unit: "%", min: -50, max: 90, step: 0.5 },
+    { key: "da", label: "감가상각", unit: "매출 대비 %", min: 0, max: 50, step: 0.5 },
+    { key: "capex", label: "설비투자", unit: "매출 대비 %", min: 0, max: 80, step: 0.5 },
+    { key: "nwc", label: "순운전자본", unit: "매출 대비 %", min: -50, max: 100, step: 0.5 }
+  ];
+  let peers = D.peers.map((p) => Object.assign({}, p));
+  let deals = D.deals.map((d) => Object.assign({}, d));
+
+  /* ---------- 가정 격자 만들기 ---------- */
+  function buildGrid() {
+    const head = $("agrid").tHead.rows[0];
+    head.textContent = "";
+    head.appendChild(F.el("th"));
+    E.YEARS.forEach((y) => head.appendChild(F.el("th", { scope: "col", text: y })));
+    const body = $("agrid").tBodies[0];
+    body.textContent = "";
+    GRID_ROWS.forEach((r) => {
+      const tr = F.el("tr");
+      tr.appendChild(F.el("th", { scope: "row" }, [r.label, F.el("small", { text: r.unit })]));
+      E.YEARS.forEach((y, i) => {
+        const inp = F.el("input", { id: "g-" + r.key + "-" + i, type: "number", inputmode: "decimal", step: r.step, min: r.min, max: r.max, value: D.grid[r.key][i], "aria-label": y + " " + r.label });
+        inp.addEventListener("input", render);
+        tr.appendChild(F.el("td", null, [inp]));
+      });
+      body.appendChild(tr);
+    });
+    [["rev", "매출", "억원"], ["fcff", "FCFF", "억원, 계산값"]].forEach((r) => {
+      const tr = F.el("tr");
+      tr.appendChild(F.el("th", { scope: "row" }, [r[1], F.el("small", { text: r[2] })]));
+      E.YEARS.forEach((y, i) => tr.appendChild(F.el("td", { class: "calc", id: "gc-" + r[0] + "-" + i })));
+      body.appendChild(tr);
+    });
+  }
+
+  /* ---------- 편집 표 ---------- */
+  function buildRows(tableId, list, cols, onChange) {
+    const body = $(tableId).tBodies[0];
+    body.textContent = "";
+    list.forEach((item, i) => {
+      const tr = F.el("tr");
+      cols.forEach((c) => {
+        const inp = F.el("input", c.num
+          ? { type: "number", inputmode: "decimal", step: c.step, min: c.min, max: c.max, value: item[c.key], id: tableId + "-" + c.key + "-" + i, "aria-label": (item.name || "행 " + (i + 1)) + " " + c.label }
+          : { type: "text", value: item[c.key], id: tableId + "-" + c.key + "-" + i, "aria-label": c.label + " " + (i + 1) });
+        inp.addEventListener("input", () => {
+          item[c.key] = c.num ? F.readNum(inp, null) : inp.value;
+          onChange();
+        });
+        tr.appendChild(F.el("td", c.num ? { class: "r" } : null, [inp]));
+      });
+      const del = F.el("button", { type: "button", class: "row-del", "aria-label": (item.name || "행") + " 삭제", title: "삭제", text: "×" });
+      del.disabled = list.length <= 3;
+      del.addEventListener("click", () => { list.splice(i, 1); buildAll(); render(); });
+      tr.appendChild(F.el("td", null, [del]));
+      body.appendChild(tr);
+    });
+  }
+  function buildAll() {
+    buildRows("peer-table", peers, [
+      { key: "name", label: "회사" },
+      { key: "ev", label: "EV/EBITDA", num: true, step: 0.1, min: 0, max: 80 },
+      { key: "pe", label: "PER", num: true, step: 0.1, min: 0, max: 200 }
+    ], render);
+    buildRows("deal-table", deals, [
+      { key: "name", label: "거래" },
+      { key: "ev", label: "EV/EBITDA", num: true, step: 0.1, min: 0, max: 80 }
+    ], render);
+    $("peer-add").disabled = peers.length >= 10;
+    $("deal-add").disabled = deals.length >= 10;
+  }
+  $("peer-add").addEventListener("click", () => { peers.push({ name: "피어 " + String.fromCharCode(65 + peers.length), ev: F.median(peers.map((p) => p.ev)) || 9, pe: F.median(peers.map((p) => p.pe)) || 15 }); buildAll(); render(); });
+  $("deal-add").addEventListener("click", () => { deals.push({ name: "거래 " + (deals.length + 1), ev: F.median(deals.map((d) => d.ev)) || 10 }); buildAll(); render(); });
+
+  /* ---------- 입력 읽기 ---------- */
+  const n = (id, fb) => F.readNum($(id), fb);
+  function read() {
+    const grid = {};
+    GRID_ROWS.forEach((r) => { grid[r.key] = E.YEARS.map((y, i) => n("g-" + r.key + "-" + i, D.grid[r.key][i])); });
+    return {
+      base: { revenue: n("b-rev", D.base.revenue), margin: n("b-margin", D.base.margin), da: n("b-da", D.base.da), nwc: n("b-nwc", D.base.nwc) },
+      grid: grid,
+      tax: n("m-tax", D.tax),
+      wacc: { rf: n("w-rf", D.wacc.rf), mrp: n("w-mrp", D.wacc.mrp), betaU: n("w-betaU", D.wacc.betaU), de: n("w-de", D.wacc.de), size: n("w-size", D.wacc.size), kd: n("w-kd", D.wacc.kd) },
+      tv: { method: $("tv-exit").checked ? "exit" : "gordon", g: n("tv-g", D.tv.g), ronic: n("tv-ronic", D.tv.ronic), exit: n("tv-exit-m", D.tv.exit) },
+      midYear: $("tv-mid").checked,
+      bridge: { netDebt: n("br-nd", D.bridge.netDebt), minority: n("br-mi", D.bridge.minority), nonop: n("br-nonop", D.bridge.nonop) },
+      peers: peers.filter((p) => p.ev !== null || p.pe !== null).map((p) => ({ name: p.name, ev: p.ev, pe: p.pe })),
+      deals: deals.filter((d) => d.ev !== null).map((d) => ({ name: d.name, ev: d.ev })),
+      offer: { equity: n("o-eq", D.offer.equity), stake: n("o-stake", D.offer.stake) },
+      acq: { ebitda: n("a-ebitda", D.acq.ebitda), ebit: n("a-ebit", D.acq.ebit), netDebt: n("a-nd", D.acq.netDebt), interest: n("a-int", D.acq.interest), rate: n("a-rate", D.acq.rate), debtShare: n("a-debt", D.acq.debtShare) }
+    };
+  }
+
+  const M = (x, d) => F.money(x, d === undefined ? 0 : d);
+  const won = (x) => M(x) + "억원";
+
+  /* ---------- 방법별 가치 범위 (풋볼필드) ---------- */
+  function drawFF(v, x) {
+    const rows = v.ranges, rowH = 50, padT = 40, padB = 30;
+    const H = padT + rows.length * rowH + padB;
+    const fr = F.plotFrame($("ff-chart"), H, "평가 방법별 기업가치 범위와 제시가를 비교한 가로 막대 그래프");
+    const svg = fr.svg, W = fr.W, narrow = W < 520;
+    const labW = narrow ? 112 : 168, padR = narrow ? 14 : 54;
+    const offer = v.offer.ev;
+    const vals = [offer].concat(rows.map((r) => r.lo), rows.map((r) => r.hi));
+    const lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), pad = (hi - lo) * 0.06 || 50;
+    const t = F.niceTicks(Math.max(0, lo - pad), hi + pad, narrow ? 4 : 6);
+    const X = (val) => labW + (val - t.lo) / (t.hi - t.lo) * (W - labW - padR);
+    const ink = F.css("--ink"), accent = F.css("--accent"), input = F.css("--input"), surface = F.css("--surface");
+    const every = X(t.ticks[1]) - X(t.ticks[0]) < 52 ? 2 : 1;
+    t.ticks.forEach((tv, i) => {
+      F.svgEl("line", { class: "grid", x1: X(tv), x2: X(tv), y1: padT - 8, y2: H - padB }, svg);
+      if (i % every === 0) F.svgText(svg, X(tv), H - padB + 17, M(tv), { "text-anchor": "middle" });
+    });
+    const tip = F.makeTip(fr.plot);
+    rows.forEach((r, i) => {
+      const cy = padT + i * rowH + rowH / 2;
+      const dcf = r.key === "gordon" || r.key === "exit", col = dcf ? accent : input;
+      const chosen = (r.key === "gordon" && v.method === "gordon") || (r.key === "exit" && v.method === "exit");
+      F.svgText(svg, labW - 12, narrow ? cy + 4 : cy - 2, r.label, { "text-anchor": "end", class: chosen ? "ff-lab sel" : "ff-lab" });
+      if (!narrow) F.svgText(svg, labW - 12, cy + 13, chosen ? "선택한 DCF 방법" : r.key === "deal" ? "경영권 프리미엄 포함" : dcf ? "민감도 범위" : "사분위 범위", { "text-anchor": "end", class: "ff-note" });
+      F.svgEl("rect", { x: X(r.lo), y: cy - 10, width: Math.max(2, X(r.hi) - X(r.lo)), height: 20, rx: 3, fill: col, "fill-opacity": chosen ? 0.38 : 0.24, stroke: col, "stroke-opacity": 0.75 }, svg);
+      F.svgEl("line", { x1: X(r.mid), x2: X(r.mid), y1: cy - 13, y2: cy + 13, stroke: col, "stroke-width": 3, "stroke-linecap": "round" }, svg);
+      if (!narrow) {
+        F.svgText(svg, X(r.lo) - 6, cy + 4, M(r.lo), { "text-anchor": "end", class: "ff-val" });
+        F.svgText(svg, X(r.hi) + 6, cy + 4, M(r.hi), { "text-anchor": "start", class: "ff-val" });
+      }
+      const hit = F.svgEl("rect", { class: "hit", x: labW, y: cy - rowH / 2, width: W - labW - padR, height: rowH }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({
+        title: r.label,
+        rows: [["낮은 값", won(r.lo), col], [dcf ? "기준값" : "중앙값", won(r.mid), col], ["높은 값", won(r.hi), col], ["기준", r.note, null]]
+      }));
+    });
+    const ox = X(offer);
+    F.svgEl("line", { x1: ox, x2: ox, y1: padT - 12, y2: H - padB, stroke: ink, "stroke-width": 1.6, "stroke-dasharray": "5 4" }, svg);
+    const lab = "제시가 " + M(offer);
+    const lx = F.clamp(ox, labW + 40, W - 46);
+    F.svgEl("rect", { x: lx - 50, y: padT - 34, width: 100, height: 18, rx: 3, fill: surface }, svg);
+    F.svgText(svg, lx, padT - 21, lab, { "text-anchor": "middle", class: "ff-offer" });
+  }
+
+  /* ---------- 상세 표 ---------- */
+  function drawCf(v, x) {
+    const tb = $("cf-table"), rows = v.proj.rows, t = x.tax / 100, r = v.w.wacc, mid = x.midYear;
+    tb.textContent = "";
+    const thead = F.el("thead"), hr = F.el("tr");
+    hr.appendChild(F.el("th", { class: "lft", text: "억원" }));
+    rows.forEach((row) => hr.appendChild(F.el("th", { text: row.year })));
+    hr.appendChild(F.el("th", { class: "hl", text: "영구가치" }));
+    thead.appendChild(hr); tb.appendChild(thead);
+    const body = F.el("tbody");
+    const line = (label, vals, opt) => {
+      opt = opt || {};
+      const tr = F.el("tr", { class: opt.cls || null });
+      tr.appendChild(F.el("th", { text: label }));
+      vals.forEach((val, i) => {
+        const td = F.el("td", { class: i === vals.length - 1 && opt.tv ? "hl" : null, text: val === null ? "" : opt.fmt ? opt.fmt(val) : F.money(val, 1) });
+        if (typeof val === "number" && val < 0 && !opt.fmt) td.classList.add("neg");
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    };
+    const col = (k) => rows.map((row) => row[k]);
+    const disc = rows.map((row, i) => 1 / Math.pow(1 + r, mid ? i + 0.5 : i + 1));
+    const tvT = v.method === "gordon" && mid ? rows.length - 0.5 : rows.length;
+    const tvDisc = 1 / Math.pow(1 + r, tvT);
+    line("매출", col("rev").concat([null]));
+    line("성장률", x.grid.growth.map((g) => g / 100).concat([null]), { fmt: (z) => F.pct(z), cls: "sub" });
+    line("EBITDA", col("ebitda").concat([null]));
+    line("EBITDA 마진", x.grid.margin.map((g) => g / 100).concat([null]), { fmt: (z) => F.pct(z), cls: "sub" });
+    line("감가상각", col("da").map((z) => -z).concat([null]));
+    line("영업이익(EBIT)", col("ebit").concat([null]));
+    line("법인세", col("ebit").map((z) => -z * t).concat([null]));
+    line("NOPAT", col("nopat").concat([null]));
+    line("감가상각 가산", col("da").concat([null]));
+    line("설비투자", col("capex").map((z) => -z).concat([null]));
+    line("순운전자본 증가", col("dnwc").map((z) => -z).concat([null]));
+    line("FCFF", col("fcff").concat([v.dcf.tv]), { cls: "sum", tv: true });
+    line("할인계수", disc.concat([tvDisc]), { fmt: (z) => z.toFixed(4), cls: "sub", tv: true });
+    line("현재가치", rows.map((row, i) => row.fcff * disc[i]).concat([v.dcf.pvTv]), { tv: true });
+    tb.appendChild(body);
+    const foot = F.el("tbody");
+    [["현재가치 합", v.dcf.pvFcff], ["영구가치 현재가치", v.dcf.pvTv], ["기업가치", v.dcf.ev], ["(−) 순차입금", -x.bridge.netDebt], ["(−) 비지배지분", -x.bridge.minority], ["(+) 비영업자산", x.bridge.nonop], ["지분가치 (100%)", v.equity]].forEach((p, i) => {
+      const tr = F.el("tr", { class: i === 2 || i === 6 ? "sum" : null });
+      tr.appendChild(F.el("th", { text: p[0] }));
+      const td = F.el("td", { colspan: rows.length + 1, text: F.money(p[1], 1) });
+      if (p[1] < 0) td.classList.add("neg");
+      tr.appendChild(td);
+      foot.appendChild(tr);
+    });
+    tb.appendChild(foot);
+  }
+
+  function drawSens(v, x) {
+    const s = v.sens, tb = $("sens-table"), offerEv = v.offer.ev;
+    tb.textContent = "";
+    const gordon = v.method === "gordon";
+    const hr = F.el("tr");
+    hr.appendChild(F.el("th", { class: "corner", text: (gordon ? "영구성장률" : "출구배수") + " ↓ · WACC →" }));
+    s.cols.forEach((c) => hr.appendChild(F.el("th", { text: F.pct(c, 1) })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody"), pos = F.css("--pos"), neg = F.css("--neg");
+    s.rows.forEach((rv, i) => {
+      const tr = F.el("tr");
+      tr.appendChild(F.el("th", { text: gordon ? F.pct(rv, 2) : F.mult(rv, 1) }));
+      s.cells[i].forEach((cell, j) => {
+        const td = F.el("td", { text: cell === null ? "–" : M(cell) });
+        if (i === 2 && j === 2) td.classList.add("base");
+        if (cell !== null) {
+          const ok = cell >= offerEv;
+          const k = Math.min(1, Math.abs(cell - offerEv) / (offerEv * 0.25));
+          td.style.background = "color-mix(in srgb, " + (ok ? pos : neg) + " " + Math.round(8 + 22 * k) + "%, transparent)";
+        }
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    tb.appendChild(body);
+    $("sens-cap").textContent = "칸마다 전체를 다시 계산한 기업가치(억원)입니다. 초록 칸은 제시가 기업가치 " + won(offerEv) + " 이상, 빨간 칸은 그 미만입니다. 굵은 테두리가 현재 가정입니다.";
+  }
+
+  function drawRel(v, x) {
+    const tb = $("rel-table"), ntm = v.proj.rows[0], ltm = v.proj.ltm, rel = v.rel;
+    tb.textContent = "";
+    const hr = F.el("tr");
+    ["", "EV/EBITDA", "→ 기업가치", "PER", "→ 기업가치"].forEach((h, i) => hr.appendChild(F.el("th", { class: i === 0 ? "lft" : null, text: h })));
+    tb.appendChild(F.el("thead", null, [hr]));
+    const body = F.el("tbody");
+    const grp = (label) => { const tr = F.el("tr", { class: "grp" }); tr.appendChild(F.el("th", { colspan: 5, text: label })); body.appendChild(tr); };
+    const row = (label, ev, evBase, pe, cls) => {
+      const tr = F.el("tr", { class: cls || null });
+      tr.appendChild(F.el("th", { text: label }));
+      tr.appendChild(F.el("td", { text: ev === null ? "–" : F.mult(ev) }));
+      tr.appendChild(F.el("td", { text: ev === null ? "–" : M(ev * evBase) }));
+      tr.appendChild(F.el("td", { text: pe === null || pe === undefined ? "" : F.mult(pe) }));
+      tr.appendChild(F.el("td", { text: pe === null || pe === undefined ? "" : M(E.toEV(x, pe * rel.niNtm)) }));
+      body.appendChild(tr);
+    };
+    grp("유사기업 · 2027E EBITDA " + M(ntm.ebitda) + "억원, 순이익 " + M(rel.niNtm) + "억원");
+    x.peers.forEach((p) => row(p.name, p.ev, ntm.ebitda, p.pe));
+    row("1사분위", rel.pEv.q1, ntm.ebitda, rel.pPe.q1, "sub");
+    row("중앙값", rel.pEv.med, ntm.ebitda, rel.pPe.med, "sum");
+    row("3사분위", rel.pEv.q3, ntm.ebitda, rel.pPe.q3, "sub");
+    grp("거래사례 · 2026E EBITDA " + M(ltm.ebitda) + "억원");
+    x.deals.forEach((d) => row(d.name, d.ev, ltm.ebitda, null));
+    row("1사분위", rel.dEv.q1, ltm.ebitda, null, "sub");
+    row("중앙값", rel.dEv.med, ltm.ebitda, null, "sum");
+    row("3사분위", rel.dEv.q3, ltm.ebitda, null, "sub");
+    tb.appendChild(body);
+  }
+
+  /* ---------- 결과판 ---------- */
+  function pill(node, cls, text) { node.className = "pill " + cls; node.textContent = text; }
+
+  function render() {
+    const x = read();
+    const v = E.value(x);
+    const w = v.w;
+    $("wacc-line").textContent = "레버드 베타 " + w.betaL.toFixed(2) + " · 자기자본비용 " + F.pct(w.ke, 2) + " · 세후 타인자본비용 " + F.pct(w.kdAfter, 2) + " · 부채 비중 " + F.pct(w.wd, 1) + " → WACC " + F.pct(w.wacc, 2);
+    $("sn-wacc").textContent = F.pct(w.wacc, 2);
+    $("sn-tv").textContent = x.tv.method === "gordon" ? "영구성장 " + F.pct(x.tv.g / 100, 2) : "출구 " + F.mult(x.tv.exit);
+    $("sn-proj").textContent = "2026E 매출 " + won(x.base.revenue);
+    $("sn-bridge").textContent = "순차입금 " + won(x.bridge.netDebt);
+    $("sn-peers").textContent = x.peers.length + "개사";
+    $("sn-deals").textContent = x.deals.length + "건";
+    $("sn-offer").textContent = won(x.offer.equity);
+    v.proj.rows.forEach((row, i) => { $("gc-rev-" + i).textContent = M(row.rev); $("gc-fcff-" + i).textContent = F.money(row.fcff, 0); });
+
+    if (!v.ok || x.peers.length < 1 || x.deals.length < 1) {
+      pill($("ff-pill"), "bad", "계산 불가");
+      $("ma-verdict").textContent = !v.ok ? "할인율(WACC " + F.pct(w.wacc, 2) + ")이 영구성장률보다 커야 영구가치를 계산할 수 있습니다. 영구성장률을 낮추거나 할인율 가정을 확인해 주세요." : "유사기업과 거래사례를 한 개 이상 넣어 주세요.";
+      return;
+    }
+    $("tv-cross").textContent = "영구성장법이 암시하는 2031E 출구배수 " + F.mult(v.impliedExit) + " · 출구배수법이 암시하는 영구성장률 " + F.pct(v.impliedG, 2) + ". 두 값이 서로의 가정과 크게 다르면 어느 한쪽이 무리한 것입니다.";
+
+    const o = v.offer, rs = v.ranges;
+    const inside = rs.filter((r) => o.ev >= r.lo && o.ev <= r.hi).length;
+    const aboveAll = rs.every((r) => o.ev > r.hi), belowAll = rs.every((r) => o.ev < r.lo);
+    if (aboveAll) pill($("ff-pill"), "bad", "모든 범위보다 높음");
+    else if (belowAll) pill($("ff-pill"), "ok", "모든 범위보다 낮음");
+    else if (inside >= 3 && o.premium <= 0.2) pill($("ff-pill"), "ok", "범위 안 " + inside + "/" + rs.length);
+    else pill($("ff-pill"), "warn", "범위 안 " + inside + "/" + rs.length);
+
+    F.setValue($("k-ev"), M(v.dcf.ev), "억원");
+    $("k-ev-sub").textContent = "EV/EBITDA " + F.mult(v.evLtm) + " · 2027E " + F.mult(v.evNtm);
+    F.setValue($("k-eq"), M(v.equity), "억원", v.equity < 0);
+    $("k-eq-sub").textContent = "영구가치 비중 " + F.pct(v.tvShare, 0);
+    F.setValue($("k-prem"), F.pctSigned(o.premium, 1), "", o.premium < 0);
+    $("k-prem-sub").textContent = "차액 " + F.signed(o.excess, 0) + "억원";
+    F.setValue($("k-syn"), o.synPre > 0 ? M(o.synPre) : "0", "억원/년");
+    $("k-syn-sub").textContent = o.synPre > 0 ? "세전, 2027E EBITDA의 " + F.pct(o.synShare, 1) : "제시가가 DCF 이하";
+
+    const where = aboveAll ? "다섯 가지 방법의 범위를 모두 넘습니다" : belowAll ? "모든 방법의 범위보다 낮습니다" : rs.length + "가지 방법 중 " + inside + "가지의 범위 안에 있습니다";
+    $("ma-verdict").innerHTML = "";
+    $("ma-verdict").append("제시가의 기업가치 ", F.el("b", { text: won(o.ev) }), "(2026E EBITDA의 " + F.mult(o.evLtm) + ")는 " + where + ".");
+
+    drawFF(v, x);
+
+    /* 인수 후 재무 */
+    const pf = v.proforma, box = $("pf");
+    box.textContent = "";
+    ["", "인수 전", "", "인수 후"].forEach((h) => box.appendChild(F.el("span", { class: "h", text: h })));
+    const levCls = (z) => (z <= 2.5 ? "ok" : z <= 3.5 ? "warn" : "bad"), icrCls = (z) => (z >= 5 ? "ok" : z >= 3 ? "warn" : "bad");
+    const levTxt = { ok: "여유", warn: "주의", bad: "부담" }, icrTxt = { ok: "여유", warn: "주의", bad: "부담" };
+    [["순차입금 / EBITDA", pf.before.lev, pf.after.lev, F.mult, levCls, levTxt], ["이자보상배율 (영업이익)", pf.before.icr, pf.after.icr, F.mult, icrCls, icrTxt]].forEach((r) => {
+      box.appendChild(F.el("span", { text: r[0] }));
+      box.appendChild(F.el("b", { text: r[3](r[1]) }));
+      box.appendChild(F.el("span", { class: "arrow", text: "→" }));
+      const after = F.el("b", null, [r[3](r[2]) + " "]);
+      const c = r[4](r[2]);
+      after.appendChild(F.el("span", { class: "pill " + c, text: r[5][c] }));
+      box.appendChild(after);
+    });
+    $("pf-note").textContent = "· 신규 차입 " + won(pf.newDebt) + (pf.consol ? ", 대상회사 연결" : ", 지분 50% 이하라 연결 안 함");
+
+    /* 보고 문장 */
+    const relLo = Math.min(rs[2].lo, rs[3].lo, rs[4].lo), relHi = Math.max(rs[2].hi, rs[3].hi, rs[4].hi);
+    const memo = $("ma-memo");
+    memo.textContent = "";
+    memo.append("대상회사 T의 DCF 기업가치는 ", F.el("b", { text: won(v.dcf.ev) }), "(2026E EBITDA의 " + F.mult(v.evLtm) + ")이고, 유사기업·거래사례 배수로 본 범위는 " + M(relLo) + "억~" + M(relHi) + "억원입니다. ");
+    if (o.excess > 0) {
+      memo.append("지분 100% 기준 제시가 " + won(x.offer.equity) + "은 DCF 지분가치보다 " + F.pct(o.premium, 1) + " 높아, 차액 " + won(o.excess) + "을 회수하려면 ", F.el("b", { text: "세전 연 " + won(o.synPre) }), "(2027E EBITDA의 " + F.pct(o.synShare, 1) + ")의 시너지가 필요합니다. ");
+    } else {
+      memo.append("지분 100% 기준 제시가 " + won(x.offer.equity) + "은 DCF 지분가치보다 " + F.pct(-o.premium, 1) + " 낮아, 시너지 없이도 가격이 설명됩니다. ");
+    }
+    memo.append("인수자금의 " + x.acq.debtShare + "%를 차입하면 인수회사의 순차입금/EBITDA는 " + F.mult(pf.before.lev) + "에서 " + F.mult(pf.after.lev) + "로 " + (pf.after.lev > pf.before.lev ? "올라갑니다." : "내려갑니다."));
+
+    /* 실시간 검산 */
+    const chk = $("ma-check");
+    chk.textContent = "";
+    const round = Math.abs(E.toEV(x, E.toEquity(x, v.dcf.ev)) - v.dcf.ev) < 1e-6;
+    const center = Math.abs(v.sens.cells[2][2] - v.dcf.ev) < 1e-6;
+    const xx = JSON.parse(JSON.stringify(x)); xx.tv.method = "exit"; xx.tv.exit = v.impliedExit; xx.midYear = false;
+    const xg = JSON.parse(JSON.stringify(x)); xg.tv.method = "gordon"; xg.midYear = false;
+    const same = Math.abs(E.value(xx).dcf.ev - E.value(xg).dcf.ev) < 1e-6;
+    [["기업가치↔지분가치 왕복 일치", round], ["민감도 가운데 칸 = 기준값", center], ["암시 출구배수로 두 DCF 일치", same]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+
+    drawCf(v, x);
+    drawSens(v, x);
+    drawRel(v, x);
+  }
+
+  /* ---------- 연결 ---------- */
+  const SIMPLE = {
+    "b-rev": D.base.revenue, "b-margin": D.base.margin, "b-da": D.base.da, "b-nwc": D.base.nwc, "m-tax": D.tax,
+    "w-rf": D.wacc.rf, "w-mrp": D.wacc.mrp, "w-betaU": D.wacc.betaU, "w-de": D.wacc.de, "w-size": D.wacc.size, "w-kd": D.wacc.kd,
+    "tv-g": D.tv.g, "tv-ronic": D.tv.ronic, "tv-exit-m": D.tv.exit,
+    "br-nd": D.bridge.netDebt, "br-mi": D.bridge.minority, "br-nonop": D.bridge.nonop,
+    "o-eq": D.offer.equity, "o-stake": D.offer.stake, "a-debt": D.acq.debtShare, "a-rate": D.acq.rate,
+    "a-ebitda": D.acq.ebitda, "a-ebit": D.acq.ebit, "a-nd": D.acq.netDebt, "a-int": D.acq.interest
+  };
+  Object.keys(SIMPLE).forEach((id) => $(id).addEventListener("input", render));
+  ["tv-gordon", "tv-exit", "tv-mid"].forEach((id) => $(id).addEventListener("change", render));
+  $("ma-form").addEventListener("submit", (e) => e.preventDefault());
+  $("ma-reset").addEventListener("click", () => {
+    Object.keys(SIMPLE).forEach((id) => { $(id).value = String(SIMPLE[id]); $(id).setAttribute("aria-invalid", "false"); });
+    $("tv-gordon").checked = true; $("tv-mid").checked = false;
+    peers = D.peers.map((p) => Object.assign({}, p));
+    deals = D.deals.map((d) => Object.assign({}, d));
+    buildGrid(); buildAll(); render();
+  });
+  F.tabs(["dt-cf", "dt-sens", "dt-rel"]);
+  buildGrid(); buildAll(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>
