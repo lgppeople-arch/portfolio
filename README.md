@@ -31,6 +31,17 @@
 | `examples/` | 월 손익 보고를 pandas로 다시 계산하는 예제(`python examples/pl_report.py`)와 예시 데이터 |
 | `assets/site.css`, `assets/theme.js` | 공용 스타일, 밝은 화면 기본과 테마 전환 |
 | `assets/report.css`, `assets/report.js` | 분석 리포트 템플릿: 캔버스 표지 그림(흐름·웨이퍼), 목차 강조, 스크롤 진입 애니메이션 |
+| `scripts/export-pdf.js`, `scripts/merge-pdf.py` | 모든 화면을 기본값 그대로 A4 가로 PDF로 내보내기(화면별 PDF + 표지·목차·책갈피가 붙은 합본) |
+
+## PDF 내보내기
+
+```bash
+node scripts/export-pdf.js pdf
+```
+
+- Playwright(Chromium)로 화면을 열어 탭·접힌 영역을 모두 펼친 뒤 찍습니다. 합본에는 python3와 pypdf가 필요합니다.
+- 쪽 나눔은 화면 배치로 직접 계산해 넣습니다. 카드·그래프·표의 행이 쪽 사이에서 잘리지 않고, 제목이 쪽 끝에 홀로 남지 않으며, 한 쪽보다 긴 표는 행 단위로 나뉘고 다음 쪽에 머리글이 다시 붙습니다.
+- `pdf/pages.json`의 예상 쪽수(`plan.pages`)가 실제 PDF 쪽수와 같으면 계산대로 나뉜 것입니다.
 
 ## 원칙
 
