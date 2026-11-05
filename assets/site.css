@@ -518,7 +518,7 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 @media (max-width: 1400px) { .brand span:not(.mono) { display: none; } }
 
 /* ---------- 홈: 분석 리포트 카드 ---------- */
-.reports { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.reports { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 @media (max-width: 1100px) { .reports { grid-template-columns: minmax(0, 1fr); } }
 .rcard { display: grid; grid-template-rows: auto 1fr; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--surface); color: inherit; text-decoration: none; transition: transform .2s, box-shadow .2s, border-color .2s; }
 .rcard:hover { transform: translateY(-2px); border-color: var(--ink-2); box-shadow: 0 10px 28px -18px rgba(0, 0, 0, 0.45); }

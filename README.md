@@ -11,6 +11,7 @@
 | `index.html` | 홈: 경력, 업무 사례, 분석 리포트, 투자 의사결정 단계별 도구 |
 | `tools/guide.html` | 쉬운 가이드: 화면 읽는 법, 도구별 사용법, 붕어빵 가게 비유 용어 사전, 미니 계산기 |
 | `tools/samsung.html` | 삼성전자 재무 분석(기업 리포트): 2025 사업보고서·2026 반기보고서의 재무제표·부문·주석을 원문 쪽수와 함께 옮기고 검산, 현금 흐름, 비율, 사이클 위치, PBR·ROE·COE |
+| `tools/sectors.html` | 업종별 재무제표 읽기(리포트 05): 리노공업(검사 소모품)과 한미반도체(장비)의 2025 사업보고서·2026 반기보고서를 원문 쪽수와 함께 검산해 비교. 자산 구성, 비용 구조, 운전자본, 이익의 질, 업종별 체크리스트 |
 | `tools/reading.html` | AI 인프라 읽기 노트: Situational Awareness, SemiAnalysis, Sequoia, Epoch AI, IEA 등 여덟 편의 출처·요약·재무기획 인사이트와 전력 전망 비교 |
 | `tools/fsa.html` | 재무제표 분석 프레임워크(리포트 형식): 세 재무제표 연결 모형, 읽는 순서, 꼭 읽는 주석, 비율 사전과 ROE 분해, 위험 신호 |
 | `tools/semi-cycle.html` | 반도체 사이클과 재무(산업 노트): 밸류체인 단계별 재무 체크, 국면별 재무제표 신호, 재고·가격·설비투자 사이클 개념 모형(재고평가손실·저조업 비용 회계 포함), 부품·소재 기업 체크포인트 |
@@ -27,6 +28,7 @@
 | `tools/checks.html` | 계산 검산: 모든 계산 엔진의 항등식·대조·실무 규칙 테스트 |
 | `assets/fin.js`, `assets/engines/` | 공용 계산 함수와 도구별 계산 엔진 (화면 코드와 분리) |
 | `assets/checks.js` | 검산 묶음. `node assets/checks.js`로도 실행 |
+| `assets/data/sectors.js` | 업종별 리포트의 공시 숫자(원 단위)와 출처 쪽수 |
 | `assets/data/samsung.js` | 삼성전자 공시에서 옮긴 숫자(백만원). 재무제표·부문·제품·지역은 PDF 텍스트를 파싱, 주석은 쪽수와 함께 입력 |
 | `examples/` | 월 손익 보고를 pandas로 다시 계산하는 예제(`python examples/pl_report.py`)와 예시 데이터 |
 | `assets/site.css`, `assets/theme.js` | 공용 스타일, 밝은 화면 기본과 테마 전환 |

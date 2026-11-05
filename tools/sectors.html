@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>업종별 재무제표 읽기 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="업종마다 재무제표의 생김새와 먼저 볼 숫자가 다릅니다. 리노공업(반도체 검사 소모품)과 한미반도체(반도체 장비)의 2025 사업보고서·2026 반기보고서를 원문 쪽수와 함께 옮기고 검산해 비교한 리포트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="업종별 재무제표 읽기 · 이기표">
+<meta property="og:description" content="같은 반도체인데 왜 재무제표가 다를까. 소모품 부품사와 장비사의 공시를 원문 쪽수와 함께 검산해 비교한 리포트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/sectors.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og-fsa.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 470px; }
+  .numband b span { font-size: inherit; color: inherit; }
+  .numband b small { font-size: 0.45em; font-weight: 700; margin-left: 2px; }
+  table.fs { border-collapse: collapse; width: 100%; min-width: 640px; font-size: var(--s-1); }
+  table.fs th, table.fs td { padding: 6px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule-soft); }
+  table.fs thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+  table.fs tbody th { text-align: left; font-weight: 500; color: var(--ink-2); }
+  table.fs td { font-family: var(--f-num); }
+  table.fs tr.grp th { font-size: 12px; font-weight: 600; color: var(--accent); padding-top: 14px; }
+  table.fs tr.tot th, table.fs tr.tot td { font-weight: 700; color: var(--ink); }
+  table.fs tr.ratio th, table.fs tr.ratio td { color: var(--muted); font-size: 12px; }
+  table.fs tr.chk td, table.fs tr.chk th { color: var(--pos); font-size: 12px; font-family: var(--f-body); }
+  table.fs td.neg { color: var(--neg-ink); }
+  table.fs th.hl, table.fs td.hl { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  table.cmp { min-width: 720px; }
+  table.cmp td.read { text-align: left; white-space: normal; font-family: var(--f-body); color: var(--ink-2); min-width: 280px; line-height: 1.55; }
+  table.cmp td.win { font-weight: 700; color: var(--ink); }
+  /* 100% 막대 */
+  .stack { display: grid; gap: 14px; }
+  .srow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 12px; align-items: center; }
+  .srow > b { font-size: var(--s-1); }
+  .srow > b small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .sbar { display: flex; height: 34px; border-radius: 4px; overflow: hidden; background: var(--rule-soft); }
+  .sbar span { display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-family: var(--f-num); color: #fff; white-space: nowrap; overflow: hidden; min-width: 0; }
+  .skey { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+  .skey i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  /* 기간 막대 */
+  .qbars { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; align-items: end; height: 220px; padding: 10px 4px 0; border-bottom: 1px solid var(--rule); }
+  .qbar { display: grid; grid-template-rows: auto 1fr; align-items: end; height: 100%; gap: 4px; }
+  .qbar .v { font-family: var(--f-num); font-size: 11.5px; color: var(--ink-2); text-align: center; }
+  .qbar .cols { display: flex; gap: 4px; align-items: flex-end; height: 100%; justify-content: center; }
+  .qbar .cols i { display: block; width: min(28px, 38%); border-radius: 3px 3px 0 0; }
+  .qlab { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; font-size: 12px; color: var(--muted); text-align: center; padding-top: 6px; }
+  .src, .rpt-body p.src { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .ncards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 14px 0 8px; }
+  @media (max-width: 760px) { .ncards { grid-template-columns: minmax(0, 1fr); } .srow { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+  .nc { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .nc .h { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .nc .h b { font-size: var(--s-2); }
+  .nc .h span { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .nc .big { font-family: var(--f-display); font-weight: 800; font-size: 24px; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .nc .big small { font-family: var(--f-body); font-size: 12.5px; font-weight: 500; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+  .rpt-body .nc p { margin: 0; max-width: none; font-size: var(--s-1); line-height: 1.7; }
+  .nc .so { color: var(--ink); border-top: 1px solid var(--rule-soft); padding-top: 8px; }
+  .nc .so::before { content: "읽기  "; font-weight: 700; color: var(--accent); white-space: pre; }
+  .co-head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; margin: 2px 0 12px; font-size: 12.5px; color: var(--muted); }
+  .co-head b { color: var(--ink-2); font-weight: 600; }
+  .look { list-style: none; margin: 10px 0; padding: 0; border-top: 1px solid var(--rule); }
+  .look li { display: grid; grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--rule-soft); font-size: var(--s-1); line-height: 1.6; color: var(--ink-2); }
+  .look li b { color: var(--ink); font-size: var(--s-2); }
+  .look li em { font-style: normal; display: block; font-size: 11.5px; color: var(--accent); font-weight: 600; margin-bottom: 2px; }
+  @media (max-width: 760px) { .look li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+  .next { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 12px 0; }
+  .next div { border: 1px dashed var(--rule); border-radius: var(--radius); padding: 12px 14px; font-size: var(--s-1); color: var(--ink-2); line-height: 1.6; }
+  .next b { display: block; color: var(--ink); font-size: var(--s-2); margin-bottom: 2px; }
+  .next span { font-size: 11.5px; color: var(--muted); }
+  .checks-list { margin: 10px 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: var(--s-1); color: var(--ink-2); }
+  .checks-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; }
+  .checks-list li::before { content: "✓"; color: var(--pos); font-weight: 700; }
+  .checks-list li.bad::before { content: "✕"; color: var(--neg); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav" aria-label="도구">
+      <a href="guide.html">가이드</a>
+      <a href="samsung.html">삼성전자</a>
+      <a href="sectors.html" aria-current="page">업종별 재무</a>
+      <a href="reading.html">AI 인프라 노트</a>
+      <a href="fsa.html">재무제표</a>
+      <a href="semi-cycle.html">반도체 사이클</a>
+      <a href="pl-report.html">손익보고</a>
+      <a href="mbo-kpi.html">성과평가</a>
+      <a href="doa.html">위임전결</a>
+      <a href="capex-kit.html">설비투자</a>
+      <a href="post-review.html">사후관리</a>
+      <a href="ma-process.html">M&amp;A 절차</a>
+      <a href="ma-valuation.html">가치평가</a>
+      <a href="holdco-nav.html">지주사</a>
+      <a href="cash-13w.html">자금수지</a>
+      <a href="fx-hedge.html">환리스크</a>
+      <a href="checks.html">검산</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 업종별 재무제표 읽기</div>
+      <div class="rpt-tag">Sector guide · 05</div>
+      <h1>같은 반도체,<br>다른 재무제표</h1>
+      <p class="dek">업종마다 재무제표의 생김새와 먼저 볼 숫자가 다릅니다. 반도체 검사 소모품을 파는 리노공업과 HBM 장비를 파는 한미반도체는 둘 다 영업이익률이 40%대지만, 매출이 들어오는 방식과 현금이 머무는 자리가 전혀 다릅니다. 두 회사의 공시를 원문 쪽수와 함께 옮기고 검산해 나란히 읽었습니다.</p>
+      <div class="rpt-meta"><span>자료<b>2025 사업보고서 · 2026 반기보고서</b></span><span>단위<b>억원</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>소모품은 매출이 잔잔하고 현금이 쌓입니다</b><p>리노공업은 3년 내내 영업이익률 44~48%를 지켰고, 2025년 말 자산의 57%가 현금과 금융자산입니다. 차입금이 없고 부채비율은 8%입니다.</p></div>
+      <div><b>장비는 출하가 몰린 분기에 숫자가 튑니다</b><p>한미반도체의 2026년 1분기 매출은 509억원, 2분기는 2,512억원입니다. 상반기 영업이익은 1,388억원인데 매출채권이 1,960억원 늘어 영업현금흐름은 −566억원입니다.</p></div>
+      <div><b>이익의 출처를 먼저 가립니다</b><p>한미반도체의 2023년 순이익 2,672억원은 영업이익 346억원의 7.7배입니다. 차이는 보유 주식의 평가이익과 관계기업 처분이익에서 나왔습니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-why">
+          <h2>업종마다 먼저 볼 숫자가 다릅니다</h2>
+          <p>재무제표를 읽는 순서는 같아도, 어느 숫자에서 멈출지는 업종이 정합니다. 소모품은 고객 공장이 돌아가는 한 계속 팔리므로 매출이 잔잔하고, 장비는 고객이 설비투자를 결정할 때 한 번에 팔리므로 분기마다 크게 출렁입니다. 그 차이가 재무상태표 생김새에 먼저 찍힙니다. 아래는 2025년 말 두 회사의 자산 구성과, 2025년 매출 100원이 어디로 갔는지입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>자산 구성 (2025년 말)</h4><span class="hint">자산총계 = 100</span></div>
+            <div class="fig-b"><div class="stack" id="st-assets"></div><div class="skey" id="key-assets"></div></div>
+            <div class="fig-s">출처: 리노공업 사업보고서 52쪽, 한미반도체 사업보고서 34쪽(연결). 금융자산은 단기 금융상품과 장기 투자자산을 합친 값입니다.</div>
+          </div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>매출 100원의 쓰임 (2025년)</h4><span class="hint">매출액 = 100</span></div>
+            <div class="fig-b"><div class="stack" id="st-cost"></div><div class="skey" id="key-cost"></div></div>
+            <div class="fig-s">출처: 리노공업 사업보고서 54쪽, 한미반도체 사업보고서 36쪽. 한미반도체는 연구개발비를 손익계산서에 따로 적습니다. 리노공업은 매출원가와 판관비 안에 들어 있습니다(2025년 연구개발비 131억원, 사업보고서 27쪽).</div>
+          </div>
+        </section>
+
+        <section id="s-cmp">
+          <h2>숫자로 나란히</h2>
+          <p>같은 지표를 두 회사에 대 보면 업종의 성격이 드러납니다. 굵은 칸은 그 지표에서 더 안정적인 쪽입니다.</p>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs cmp" id="t-cmp"></table></div>
+          <p class="src">2025년 연간 기준(재무상태표는 2025년 말). 매출채권 회수일 = 기말 매출채권 ÷ 매출 × 365. 리노공업은 별도, 한미반도체는 연결 재무제표입니다.</p>
+        </section>
+
+        <section id="s-rino">
+          <h2>리노공업: 소모품은 매출이 잔잔합니다</h2>
+          <div class="co-head"><b>리노공업 (058470, 코스닥)</b><span>반도체 검사용 소켓(IC TEST SOCKET)과 검사용 핀(LEENO PIN)</span><span>별도 재무제표 · 연결 대상 종속기업 없음</span></div>
+          <div class="numband" data-rv id="nb-rino"></div>
+          <p>칩을 검사할 때마다 닳는 소켓과 핀을 팝니다. 고객 공장의 검사 물량에 매출이 따라가므로 장비처럼 한 번에 몰리지 않고, 제품이 작고 단가가 낮아 재고와 매출채권도 가볍습니다. 대신 번 돈이 쌓이는 자리가 금융자산이라, 영업이익 밖의 이자수익이 순이익의 한 축이 됩니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>제품별 매출</h4><div class="legend"><span><i class="key-bar" style="background: var(--accent)"></i>검사 소켓</span><span><i class="key-bar" style="background: var(--input)"></i>검사 핀</span><span><i class="key-bar" style="background: var(--pos)"></i>의료기기 부품</span></div></div>
+            <div class="fig-b"><div class="qbars" id="q-rino" style="--n: 3"></div><div class="qlab" id="ql-rino" style="--n: 3"></div></div>
+            <div class="fig-s">출처: 사업보고서 19쪽(매출실적). 단위 억원, 막대 위 숫자는 합계입니다.</div>
+          </div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>요약 재무제표</h4><span class="hint">억원 · 별도</span></div>
+            <div class="fig-b"><div class="scroll" style="border: 0"><table class="fs" id="t-rino"></table></div></div>
+            <div class="fig-s">출처: 사업보고서 52·54·56쪽, 반기보고서 53·55·57쪽. 금융자산은 유동 기타금융자산(정기예금 등)입니다.</div>
+          </div>
+          <div class="ncards" id="nc-rino"></div>
+        </section>
+
+        <section id="s-hanmi">
+          <h2>한미반도체: 장비는 분기마다 출렁입니다</h2>
+          <div class="co-head"><b>한미반도체 (042700, 유가증권)</b><span>반도체 후공정 장비 · 주력은 HBM용 TC 본더</span><span>연결 재무제표</span></div>
+          <div class="numband" data-rv id="nb-hanmi"></div>
+          <p>고객이 HBM 증설을 결정하면 장비를 주문받아 만들고, 고객 입회 검사(Buy-Off)를 거쳐 출하할 때 매출이 잡힙니다. 그래서 매출은 고객의 투자 일정에 따라 분기마다 크게 움직이고, 출하가 몰린 분기 끝에는 매출채권이 한꺼번에 불어납니다. 주문형 장비라 부품과 재공품 재고도 매출 대비 큽니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>분기 매출과 영업이익</h4><div class="legend"><span><i class="key-bar" style="background: var(--mark-muted)"></i>매출</span><span><i class="key-bar" style="background: var(--accent)"></i>영업이익</span></div></div>
+            <div class="fig-b"><div class="qbars" id="q-hanmi" style="--n: 4"></div><div class="qlab" id="ql-hanmi" style="--n: 4"></div></div>
+            <div class="fig-s">출처: 반기보고서 34쪽(3개월·누적). 1분기 = 상반기 누적 − 2분기 3개월입니다. 막대 위 숫자는 매출입니다.</div>
+          </div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>요약 재무제표</h4><span class="hint">억원 · 연결</span></div>
+            <div class="fig-b"><div class="scroll" style="border: 0"><table class="fs" id="t-hanmi"></table></div></div>
+            <div class="fig-s">출처: 사업보고서 34·36·39쪽, 반기보고서 32·34·36쪽. 장기 투자자산은 기타투자자산(공정가치 측정 주식 등)과 지분법 투자를 합친 값입니다.</div>
+          </div>
+          <div class="ncards" id="nc-hanmi"></div>
+        </section>
+
+        <section id="s-look">
+          <h2>업종별로 먼저 볼 것</h2>
+          <p>두 사례에서 얻은 순서를 체크리스트로 정리했습니다. 같은 반도체 밸류체인 안에서도 무엇을 파느냐에 따라 첫 질문이 달라집니다.</p>
+          <ul class="look">
+            <li><b>매출의 성격</b><span><em>소모품 부품사</em>고객 공장의 가동률을 따라갑니다. 분기 매출이 연간의 4분의 1 근처에 모이는지, 제품별로 고르게 늘었는지 봅니다.</span><span><em>장비사</em>고객의 설비투자 일정을 따라갑니다. 분기 매출을 연간과 비교하지 말고, 반기·연간 단위로 보고 수주 공시와 함께 읽습니다.</span></li>
+            <li><b>운전자본</b><span><em>소모품 부품사</em>매출채권 회수일과 재고가 작고 안정적입니다. 갑자기 늘면 판매 조건이나 고객 구성이 바뀐 신호입니다.</span><span><em>장비사</em>분기 말 출하가 몰리면 매출채권이 매출보다 빨리 늘고 영업현금흐름이 음수가 될 수 있습니다. 재고 평가손실은 기술 세대가 바뀔 때 커집니다.</span></li>
+            <li><b>이익의 질</b><span><em>소모품 부품사</em>쌓인 금융자산의 이자수익이 영업외로 들어옵니다. 순이익과 영업이익의 차이가 이자인지 확인합니다.</span><span><em>장비사</em>보유 주식 평가손익이 순이익을 크게 흔들 수 있습니다. 영업이익과 순이익이 벌어지면 영업외 항목을 먼저 엽니다.</span></li>
+            <li><b>고객 집중</b><span><em>소모품 부품사</em>상위 고객 비중이 높아도 소모품은 대체 비용이 커 상대적으로 끈끈합니다.</span><span><em>장비사</em>한 고객이 매출의 절반을 넘기 쉽고, 해마다 주력 고객이 바뀌기도 합니다. 10% 이상 고객 주석을 해마다 대조합니다.</span></li>
+            <li><b>현금의 쓰임</b><span><em>소모품 부품사</em>증설은 몇 년에 한 번이고, 나머지는 배당과 금융자산으로 갑니다.</span><span><em>장비사</em>호황에 번 현금이 생산능력 확충과 자사주·배당으로 동시에 나갑니다. 다음 불황을 버틸 현금이 남는지 봅니다.</span></li>
+          </ul>
+        </section>
+
+        <section id="s-next">
+          <h2>다음에 붙일 업종</h2>
+          <p>같은 틀로 공시를 받아 두었고, 차례로 붙입니다.</p>
+          <div class="next">
+            <div><b>2차전지</b>LG에너지솔루션 <span>영업이익 속 미국 세액공제, 대규모 투자와 차입</span></div>
+            <div><b>자동차</b>현대자동차 <span>금융 자회사 연결로 커 보이는 부채비율</span></div>
+            <div><b>조선</b>HD현대중공업 <span>진행기준 매출, 계약자산·부채, 손실충당금</span></div>
+            <div><b>지주회사</b>㈜LG <span>별도와 연결의 차이, 배당·상표권 수익</span></div>
+            <div><b>플랫폼</b>NAVER <span>설비 대신 무형자산과 인건비 중심의 구조</span></div>
+          </div>
+        </section>
+
+        <section id="s-check">
+          <h2>출처와 검산</h2>
+          <p>숫자는 아래 공시에서 원 단위로 옮겼고, 화면에서는 억원으로 반올림해 보여 줍니다. 옮긴 숫자는 아래 항등식으로 검산했습니다.</p>
+          <ul class="checks-list" id="checks-list"></ul>
+          <p class="rpt-end">자료: 리노공업 사업보고서(제30기, 2026년 3월 18일 공시)·반기보고서(제31기 반기, 2026년 8월 14일 공시), 한미반도체 사업보고서(제46기, 2026년 3월 12일 공시)·반기보고서(제47기 반기, 2026년 8월 14일 공시), 전자공시시스템(dart.fss.or.kr). 쪽수는 각 공시 PDF 아래쪽의 쪽 번호입니다. 투자 권유가 아니라 재무제표를 읽는 방법을 보이기 위한 분석입니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/data/sectors.js"></script>
+<script src="../assets/checks.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, D = window.SectorsData, $ = F.$;
+  const R = D.companies.rino, H = D.companies.hanmi;
+  const E = (v) => v / 1e8;                                   /* 원 → 억원 */
+  const ek = (v, d) => F.money(E(v), d === undefined ? 1 : d);
+  const eok = (v) => F.num(E(v), 0);
+  const P = ["2023", "2024", "2025", "2025H1", "2026H1"], PL = ["2023", "2024", "2025", "2025 상반기", "2026 상반기"];
+  const BP = ["2023", "2024", "2025", "2026H1"];
+
+  /* ---------- 100% 막대 ---------- */
+  function stack(hostId, keyId, rows, parts) {
+    const host = $(hostId); host.textContent = "";
+    rows.forEach((r) => {
+      const bar = F.el("div", { class: "sbar", role: "img", "aria-label": r.label + ": " + parts.map((p, i) => p.name + " " + F.num(r.v[i] * 100, 0) + "%").join(", ") });
+      r.v.forEach((x, i) => { if (x <= 0) return; const s = F.el("span", { text: x >= 0.07 ? F.num(x * 100, 0) + "%" : "" }); s.style.width = (x * 100) + "%"; s.style.background = F.css(parts[i].c); bar.appendChild(s); });
+      host.appendChild(F.el("div", { class: "srow" }, [F.el("b", null, [r.label, F.el("small", { text: r.sub })]), bar]));
+    });
+    const key = $(keyId); key.textContent = "";
+    parts.forEach((p) => { const i = F.el("i"); i.style.background = F.css(p.c); key.appendChild(F.el("span", null, [i, p.name])); });
+  }
+  function drawStacks() {
+    const parts = [{ name: "현금", c: "--pos" }, { name: "금융자산", c: "--input" }, { name: "매출채권", c: "--accent" }, { name: "재고", c: "--neg" }, { name: "유형·무형자산", c: "--ink-2" }, { name: "기타", c: "--rule" }];
+    const a = (c) => { const B = c.bs, p = "2025", ta = B.ta[p], fin = B.stfin[p] + B.ltinv[p], fixed = B.ppe[p] + B.intang[p];
+      const v = [B.cash[p], fin, B.ar[p], B.inv[p], fixed]; v.push(ta - v.reduce((s, x) => s + x, 0)); return v.map((x) => x / ta); };
+    stack("st-assets", "key-assets", [{ label: R.name, sub: "자산 " + eok(R.bs.ta["2025"]) + "억원", v: a(R) }, { label: H.name, sub: "자산 " + eok(H.bs.ta["2025"]) + "억원", v: a(H) }], parts);
+    const cparts = [{ name: "매출원가", c: "--mark-muted" }, { name: "판관비", c: "--ink-2" }, { name: "연구개발비", c: "--input" }, { name: "영업이익", c: "--accent" }];
+    const c = (x) => { const I = x.is, p = "2025", r = I.rev[p]; return [I.cogs[p] / r, I.sga[p] / r, I.rnd[p] / r, I.op[p] / r]; };
+    stack("st-cost", "key-cost", [{ label: R.name, sub: "매출 " + eok(R.is.rev["2025"]) + "억원", v: c(R) }, { label: H.name, sub: "매출 " + eok(H.is.rev["2025"]) + "억원", v: c(H) }], cparts);
+  }
+
+  /* ---------- 비교표 ---------- */
+  function cmpTable() {
+    const p = "2025";
+    const m = (c) => {
+      const I = c.is, B = c.bs, C = c.cf;
+      const capex = C.capex[p] + C.intg[p];
+      return {
+        opm: I.op[p] / I.rev[p], growth: I.rev[p] / I.rev["2024"] - 1, nopGap: (I.ebt[p] - I.op[p]) / I.ebt[p],
+        cash: (B.cash[p] + B.stfin[p]) / B.ta[p], lev: B.tl[p] / B.te[p], dso: B.ar[p] / I.rev[p] * 365, inv: B.inv[p] / I.rev[p],
+        cfoNi: C.cfo[p] / I.ni[p], capex: capex / I.rev[p], ret: (C.div[p] + C.buyback[p]) / I.ni[p],
+        op3: [I.op["2023"] / I.rev["2023"], I.op["2024"] / I.rev["2024"], I.op[p] / I.rev[p]]
+      };
+    };
+    const a = m(R), b = m(H);
+    const spread = (x) => Math.max.apply(null, x.op3) - Math.min.apply(null, x.op3);
+    const rows = [
+      ["영업이익률", F.pct(a.opm), F.pct(b.opm), null, "둘 다 40%대입니다. 수익성만으로는 업종 차이가 보이지 않습니다."],
+      ["영업이익률 3년 폭", F.pct(spread(a), 1) + "p", F.pct(spread(b), 1) + "p", spread(a) < spread(b) ? 0 : 1, "2023~2025년 최고와 최저의 차이. 소모품은 좁고 장비는 넓습니다."],
+      ["매출 증가율", F.pctSigned(a.growth), F.pctSigned(b.growth), null, "한미반도체는 2024년에 이미 3.5배로 뛰어 2025년 증가율은 낮습니다."],
+      ["세전이익 중 영업외 몫", F.pct(a.nopGap), F.pct(b.nopGap), null, "리노공업은 이자수익이 중심이고, 한미반도체는 금융자산 평가·처분이익과 금융수익이 섞여 있습니다."],
+      ["현금·단기 금융자산 ÷ 자산", F.pct(a.cash), F.pct(b.cash), a.cash > b.cash ? 0 : 1, "리노공업은 번 돈을 정기예금 등으로 쌓아 둡니다."],
+      ["부채비율", F.pct(a.lev), F.pct(b.lev), a.lev < b.lev ? 0 : 1, "둘 다 차입금이 없습니다. 부채는 대부분 미지급 법인세와 영업 채무입니다."],
+      ["매출채권 회수일", F.num(a.dso, 0) + "일", F.num(b.dso, 0) + "일", null, "연말 한 시점 값입니다. 한미반도체는 2026년 6월 말 기준으로 계산하면 156일까지 늘어납니다."],
+      ["재고 ÷ 매출", F.pct(a.inv), F.pct(b.inv), a.inv < b.inv ? 0 : 1, "주문형 장비는 부품·재공품을 미리 쌓아야 합니다."],
+      ["영업현금흐름 ÷ 순이익", F.mult(a.cfoNi, 2), F.mult(b.cfoNi, 2), null, "연간으로는 둘 다 1배 근처지만, 한미반도체는 반기마다 음수와 양수를 오갑니다."],
+      ["설비투자 ÷ 매출", F.pct(a.capex), F.pct(b.capex), null, "리노공업은 공장 신설, 한미반도체는 생산능력 확충과 무형자산 취득이 겹친 해입니다."],
+      ["배당·자사주 ÷ 순이익", F.pct(a.ret), F.pct(b.ret), null, "그해 현금으로 나간 금액 기준. 한미반도체는 2024년에 자사주 1,899억원을 샀습니다."]
+    ];
+    const t = $("t-cmp"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, [F.el("th", { text: "지표", style: "text-align: left" }), F.el("th", { text: R.name }), F.el("th", { text: H.name }), F.el("th", { text: "읽는 법", style: "text-align: left" })])]));
+    const tb = F.el("tbody");
+    rows.forEach((r) => tb.appendChild(F.el("tr", null, [F.el("th", { text: r[0] }), F.el("td", { text: r[1], class: r[3] === 0 ? "win" : null }), F.el("td", { text: r[2], class: r[3] === 1 ? "win" : null }), F.el("td", { class: "read", text: r[4] })])));
+    t.appendChild(tb);
+  }
+
+  /* ---------- 요약 재무제표 ---------- */
+  function fsTable(id, c) {
+    const I = c.is, B = c.bs, C = c.cf;
+    const rows = [
+      { grp: "손익계산서" },
+      { l: "매출액", v: P.map((p) => I.rev[p]) },
+      { l: "매출원가", v: P.map((p) => -I.cogs[p]) },
+      { l: "매출총이익", v: P.map((p) => I.gp[p]), cls: "tot" },
+      { l: "판매비와관리비", v: P.map((p) => -I.sga[p]) }
+    ];
+    if (Object.values(I.rnd).some((x) => x)) rows.push({ l: "연구개발비", v: P.map((p) => -I.rnd[p]) });
+    rows.push(
+      { l: "영업이익", v: P.map((p) => I.op[p]), cls: "tot" },
+      { l: "영업외 손익(순액)", v: P.map((p) => I.ebt[p] - I.op[p]) },
+      { l: "법인세비용차감전순이익", v: P.map((p) => I.ebt[p]) },
+      { l: "법인세비용", v: P.map((p) => -I.tax[p]) },
+      { l: "당기순이익", v: P.map((p) => I.ni[p]), cls: "tot" },
+      { l: "영업이익률", v: P.map((p) => I.op[p] / I.rev[p]), fmt: (x) => F.pct(x), cls: "ratio" },
+      { grp: "재무상태표 (기말)" },
+      { l: "현금및현금성자산", v: P.map((p) => B.cash[p]) },
+      { l: "단기 금융자산", v: P.map((p) => B.stfin[p]) },
+      { l: "매출채권", v: P.map((p) => B.ar[p]) },
+      { l: "재고자산", v: P.map((p) => B.inv[p]) },
+      { l: "유형자산", v: P.map((p) => B.ppe[p]) },
+      { l: "장기 투자자산", v: P.map((p) => B.ltinv[p]) },
+      { l: "자산총계", v: P.map((p) => B.ta[p]), cls: "tot" },
+      { l: "부채총계", v: P.map((p) => B.tl[p]) },
+      { l: "자본총계", v: P.map((p) => B.te[p]) },
+      { l: "부채비율", v: P.map((p) => (B.tl[p] === undefined ? undefined : B.tl[p] / B.te[p])), fmt: (x) => F.pct(x), cls: "ratio" },
+      { grp: "현금흐름표" },
+      { l: "영업활동현금흐름", v: P.map((p) => C.cfo[p]), cls: "tot" },
+      { l: "유형·무형자산 취득", v: P.map((p) => -(C.capex[p] + C.intg[p])) },
+      { l: "투자활동현금흐름", v: P.map((p) => C.cfi[p]) },
+      { l: "배당금 지급", v: P.map((p) => -C.div[p]) },
+      P.some((p) => C.buyback[p]) ? { l: "자기주식 취득", v: P.map((p) => -C.buyback[p]) } : null,
+      { l: "재무활동현금흐름", v: P.map((p) => C.cff[p]) },
+      { l: "기말 현금", v: P.map((p) => C.close[p]), cls: "tot" }
+    );
+    const t = $(id); t.textContent = "";
+    const hr = F.el("tr", null, [F.el("th", { text: "" })]);
+    PL.forEach((l, i) => hr.appendChild(F.el("th", { text: l, class: i === 4 ? "hl" : null })));
+    t.appendChild(F.el("thead", null, [hr]));
+    const tb = F.el("tbody");
+    rows.forEach((r) => {
+      if (!r) return;
+      if (r.grp) { tb.appendChild(F.el("tr", { class: "grp" }, [F.el("th", { colspan: 6, text: r.grp })])); return; }
+      const tr = F.el("tr", { class: r.cls || null }, [F.el("th", { text: r.l })]);
+      r.v.forEach((v, i) => tr.appendChild(F.el("td", { text: v === undefined ? (r.grp ? "" : "–") : r.fmt ? r.fmt(v) : ek(v), class: (i === 4 ? "hl " : "") + (!r.fmt && v < 0 ? "neg" : "") })));
+      tb.appendChild(tr);
+    });
+    const ok = checkCo(c);
+    tb.appendChild(F.el("tr", { class: "chk" }, [F.el("th", { text: "검산" })].concat(P.map((p, i) => F.el("td", { class: i === 4 ? "hl" : null, text: ok[p] ? "✓ 일치" : "✕ 불일치" })))));
+    t.appendChild(tb);
+  }
+  function checkCo(c) {
+    const I = c.is, B = c.bs, C = c.cf, o = {};
+    P.forEach((p) => {
+      o[p] = I.gp[p] === I.rev[p] - I.cogs[p] && I.op[p] === I.gp[p] - I.sga[p] - I.rnd[p] && I.ebt[p] === I.op[p] + I.noi[p] - I.noe[p] + I.fi[p] - I.fc[p] + I.eq[p] &&
+        I.ni[p] === I.ebt[p] - I.tax[p] && C.close[p] === C.open[p] + C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] &&
+        (B.ta[p] === undefined || (B.ta[p] === B.tl[p] + B.te[p] && B.ta[p] === B.ca[p] + B.nca[p] && B.cash[p] === C.close[p]));
+    });
+    return o;
+  }
+
+  /* ---------- 숫자 띠 ---------- */
+  function band(id, items) {
+    const host = $(id); host.textContent = "";
+    items.forEach((it) => host.appendChild(F.el("div", null, [F.el("b", null, [F.el("span", { text: it[0] }), F.el("small", { text: it[1] })]), F.el("span", { text: it[2] })])));
+  }
+
+  /* ---------- 기간 막대 ---------- */
+  function bars(hostId, labId, groups, max) {
+    const host = $(hostId), lab = $(labId); host.textContent = ""; lab.textContent = "";
+    groups.forEach((g) => {
+      const cols = F.el("div", { class: "cols" });
+      g.parts.forEach((pt) => {
+        if (pt.stack) {
+          const tot = pt.stack.reduce((a, s) => a + s.v, 0);
+          const col = F.el("div", { style: "display: flex; flex-direction: column-reverse; width: min(46px, 60%); border-radius: 3px 3px 0 0; overflow: hidden" });
+          col.style.height = (tot / max * 100) + "%";
+          pt.stack.forEach((s) => { const i = F.el("i", { title: s.name + " " + F.num(s.v, 0) + "억원" }); i.style.width = "100%"; i.style.height = (s.v / tot * 100) + "%"; i.style.background = F.css(s.c); i.style.borderRadius = "0"; col.appendChild(i); });
+          cols.appendChild(col); return; }
+        const i = F.el("i", { title: pt.name + " " + F.num(pt.v, 0) + "억원" }); i.style.height = Math.max(0, pt.v / max * 100) + "%"; i.style.background = F.css(pt.c); cols.appendChild(i);
+      });
+      host.appendChild(F.el("div", { class: "qbar", role: "img", "aria-label": g.label + ": " + g.aria }, [F.el("span", { class: "v", text: g.top }), cols]));
+      lab.appendChild(F.el("span", { text: g.label }));
+    });
+  }
+  function drawRino() {
+    const M = R.notes.mix, k = (x) => x / 1e5;          /* 천원 → 억원 */
+    const groups = ["2023", "2024", "2025"].map((y) => {
+      const s = [{ name: "검사 소켓", v: k(M[y].socket + M[y].goods), c: "--accent" }, { name: "검사 핀", v: k(M[y].pin), c: "--input" }, { name: "의료기기 부품", v: k(M[y].medical), c: "--pos" }];
+      return { label: y, top: F.num(k(M[y].total), 0), aria: s.map((x) => x.name + " " + F.num(x.v, 0) + "억원").join(", "), parts: [{ stack: s }] };
+    });
+    bars("q-rino", "ql-rino", groups, 3900);
+    const I = R.is, B = R.bs, C = R.cf, top3 = R.notes.top3.a + R.notes.top3.b + R.notes.top3.c;
+    band("nb-rino", [
+      [F.num(E(I.rev["2025"]), 0), "억원", "2025년 매출 · 전년 대비 " + F.pctSigned(I.rev["2025"] / I.rev["2024"] - 1)],
+      [F.num(I.op["2025"] / I.rev["2025"] * 100, 1), "%", "2025년 영업이익률 · 2026년 2분기 " + F.pct(R.q2["2026"].op / R.q2["2026"].rev)],
+      [F.num((B.cash["2025"] + B.stfin["2025"]) / B.ta["2025"] * 100, 0), "%", "자산 중 현금과 단기 금융자산 (2025년 말)"],
+      [F.num(B.tl["2025"] / B.te["2025"] * 100, 1), "%", "부채비율 · 차입금 0원"]
+    ]);
+    const M25 = M["2025"], plant = R.notes.plant, rnd = R.notes.rnd;
+    const cards = [
+      ["수출이 매출의 80%", "사업 19쪽", F.num(M25.export / M25.total * 100, 1) + "%", "수출 비중", "2025년 매출 " + F.num(k(M25.total), 0) + "억원 중 수출이 " + F.num(k(M25.export), 0) + "억원입니다. 소켓은 수출이 " + F.num(k(228774242), 0) + "억원으로 소켓 매출의 94%입니다.", "원화 약세는 매출과 이익을 함께 키웁니다. 기타수익·기타비용의 외환차손익을 같이 봅니다."],
+      ["상위 3개 고객이 절반 이상", "사업 128쪽", F.num(top3 / I.rev["2025"] * 100, 1) + "%", "매출 10% 이상 고객 3곳", "회사는 고객 이름을 A~C로만 밝힙니다. 세 곳이 각각 " + [R.notes.top3.a, R.notes.top3.b, R.notes.top3.c].map((x) => F.num(E(x), 0)).join("·") + "억원입니다.", "소모품은 고객 공장의 검사 공정에 맞춰 설계돼 바꾸기 어렵습니다. 집중도는 높지만 이탈 위험은 장비보다 낮게 봅니다."],
+      ["공장 신설 972억원, 절반 집행", "사업 17쪽", F.num(E(plant.spent), 0) + " / " + F.num(E(plant.total), 0), "억원 · 기지출 / 총 소요", plant.what + ", 기간 " + plant.period + ". 유형자산이 2024년 말 " + eok(B.ppe["2024"]) + "억원에서 2026년 6월 말 " + eok(B.ppe["2026H1"]) + "억원으로 늘었습니다.", "완공 뒤에는 감가상각비가 매출원가에 더해집니다. 새 공장이 차는 속도가 내년 이익률을 정합니다."],
+      ["2026년 상반기 매출채권 두 배", "반기 53쪽", ek(B.ar["2026H1"], 0) + "", "억원 · 2025년 말 " + ek(B.ar["2025"], 0) + "억원", "상반기 매출이 " + F.pctSigned(I.rev["2026H1"] / I.rev["2025H1"] - 1) + " 늘었는데 매출채권은 " + F.pctSigned(B.ar["2026H1"] / B.ar["2025"] - 1) + " 늘었습니다. 순이익은 " + eok(I.ni["2026H1"]) + "억원인데 영업현금흐름은 " + eok(C.cfo["2026H1"]) + "억원입니다.", "2분기 매출이 커서 생긴 기말 효과일 수 있습니다. 하반기에 회수되는지가 이 회사의 첫 확인 포인트입니다."],
+      ["이익의 일부는 이자", "사업 54쪽", ek(I.fi["2025"], 0), "억원 · 2025년 금융수익", "금융자산 " + eok(B.stfin["2025"]) + "억원과 장기 금융자산에서 이자가 나옵니다. 2025년 세전이익의 " + F.pct((I.ebt["2025"] - I.op["2025"]) / I.ebt["2025"]) + "가 영업 밖에서 왔습니다.", "주가를 이익으로 나눠 볼 때는 금융자산과 그 이자를 따로 떼어 내야 본업의 가치가 제대로 보입니다."],
+      ["연구개발비는 매출의 3.5%", "사업 27쪽", ek(rnd["2025"], 0), "억원 · 2025년", "2023년 " + ek(rnd["2023"], 0) + "억원, 2024년 " + ek(rnd["2024"], 0) + "억원에서 늘었습니다. 판관비 전체는 매출의 " + F.pct(I.sga["2025"] / I.rev["2025"]) + "입니다.", "작은 조직이 높은 이익률을 내는 구조입니다. 이 비율이 갑자기 오르면 새 제품군으로 확장하는 신호입니다."]
+    ];
+    cardsTo("nc-rino", cards);
+  }
+  function drawHanmi() {
+    const I = H.is, B = H.bs, C = H.cf, Q = H.q2;
+    const q = (y) => { const h = y + "H1"; return [{ label: "1Q" + y.slice(2), rev: I.rev[h] - Q[y].rev, op: I.op[h] - Q[y].op }, { label: "2Q" + y.slice(2), rev: Q[y].rev, op: Q[y].op }]; };
+    const all = q("2025").concat(q("2026"));
+    bars("q-hanmi", "ql-hanmi", all.map((x) => ({ label: x.label, top: F.num(E(x.rev), 0), aria: "매출 " + F.num(E(x.rev), 0) + "억원, 영업이익 " + F.num(E(x.op), 0) + "억원",
+      parts: [{ name: "매출", v: E(x.rev), c: "--mark-muted" }, { name: "영업이익", v: E(x.op), c: "--accent" }] })), 2700);
+    const n = H.notes, c25 = n.cust["2025"], c24 = n.cust["2024"];
+    const share = (arr, y) => arr.reduce((s, x) => s + x[1], 0) * 1000 / I.rev[y];
+    band("nb-hanmi", [
+      [F.num(E(I.rev["2025"]), 0), "억원", "2025년 매출 · 2023년의 " + F.mult(I.rev["2025"] / I.rev["2023"], 1)],
+      [F.num(I.op["2025"] / I.rev["2025"] * 100, 1), "%", "2025년 영업이익률"],
+      [F.money(E(C.cfo["2026H1"]), 0), "억원", "2026년 상반기 영업현금흐름 · 순이익 " + eok(I.ni["2026H1"]) + "억원"],
+      [F.num(share(c25, "2025") * 100, 1), "%", "매출 10% 이상 고객 2곳의 비중 (2025년)"]
+    ]);
+    const q26 = q("2026");
+    const cards = [
+      ["2023년 순이익은 주식에서", "사업 36·39쪽", F.mult(I.ni["2023"] / I.op["2023"], 1), "순이익 ÷ 영업이익 (2023년)", "영업이익은 " + eok(I.op["2023"]) + "억원인데 순이익은 " + eok(I.ni["2023"]) + "억원입니다. 공정가치로 재는 보유 주식의 평가이익 " + eok(n.fvGain["2023"]) + "억원과 관계기업 처분이익 " + eok(n.assocGain2023) + "억원이 영업외수익으로 들어왔습니다. 2024년에는 반대로 평가손실 " + eok(n.fvLoss["2024"]) + "억원이 나왔습니다.", "순이익이 영업이익과 크게 벌어진 해는 PER이 왜곡됩니다. 장비 사업의 실력은 영업이익으로 따로 봅니다."],
+      ["한 분기에 상반기 매출의 83%", "반기 34쪽", F.num(E(q26[1].rev), 0) + "억원", "2026년 2분기 매출 · 1분기 " + F.num(E(q26[0].rev), 0) + "억원", "출하와 고객 검수가 2분기에 몰렸습니다. 2025년에도 1분기 " + F.num(E(q("2025")[0].rev), 0) + "억원, 2분기 " + F.num(E(q("2025")[1].rev), 0) + "억원으로 고르지 않았습니다.", "장비사의 분기 실적은 추세보다 출하 일정입니다. 반기·연간과 단일판매·공급계약 공시를 함께 봐야 합니다."],
+      ["매출채권이 1,960억원 늘었습니다", "반기 32·36쪽", ek(B.ar["2026H1"], 0), "억원 · 2026년 6월 말 (2025년 말 " + ek(B.ar["2025"], 0) + "억원)", "2분기 말 출하분이 아직 회수되지 않았습니다. 그래서 순이익 " + eok(I.ni["2026H1"]) + "억원에도 영업현금흐름은 " + F.money(E(C.cfo["2026H1"]), 0) + "억원이고, 배당 " + eok(C.div["2026H1"]) + "억원과 법인세 " + eok(C.taxpaid["2026H1"]) + "억원이 나가 현금이 " + eok(C.open["2026H1"]) + "억원에서 " + eok(C.close["2026H1"]) + "억원으로 줄었습니다.", "회수 조건은 발주 후 30%, 납품 전 60%, 검수 후 10%가 표준입니다(사업 21쪽). 실제 회수가 조건대로 들어오는지 하반기 현금흐름에서 확인합니다."],
+      ["주력 고객이 바뀌었습니다", "사업 111쪽", F.num(share(c24, "2024") * 100, 1) + "% → " + F.num(share(c25, "2025") * 100, 1) + "%", "매출 10% 이상 고객 비중 2024 → 2025", "2024년에는 거래처 C·D가 매출의 " + F.pct(share(c24, "2024")) + "였고, 2025년에는 A·B가 " + F.pct(share(c25, "2025")) + "입니다. 같은 기간 수출 비중은 " + F.pct(n.mix["2024"].export / (n.mix["2024"].export + n.mix["2024"].domestic)) + "에서 " + F.pct(n.mix["2025"].export / (n.mix["2025"].export + n.mix["2025"].domestic)) + "로 올랐습니다.", "고객 이름은 공개되지 않지만, 국내에서 해외로 매출처가 옮겨 간 것은 숫자로 확인됩니다. 고객 다변화인지 이동인지는 다음 해 주석으로 가립니다."],
+      ["재고가 매출의 4분의 1", "사업 34·39쪽", F.pct(B.inv["2025"] / I.rev["2025"]), "재고 ÷ 매출 (2025년)", "재고자산 " + eok(B.inv["2025"]) + "억원. 2025년 재고평가손실 " + eok(n.invWritedown["2025"]) + "억원이 비용으로 잡혔습니다(2024년 " + eok(n.invWritedown["2024"]) + "억원).", "장비 세대가 바뀌면 이전 세대 부품이 평가손실로 넘어옵니다. 평가손실이 매출총이익률을 몇 %p 깎는지 봅니다."],
+      ["호황의 현금은 주주에게도", "사업 39쪽", eok(C.buyback["2024"] + C.div["2024"]), "억원 · 2024년 자사주 + 배당", "2024년 자사주 " + eok(C.buyback["2024"]) + "억원, 배당 " + eok(C.div["2024"]) + "억원. 2025년 배당 " + eok(C.div["2025"]) + "억원, 2026년 상반기 배당 " + eok(C.div["2026H1"]) + "억원입니다. 차입금은 없습니다.", "설비투자와 주주환원이 동시에 커지는 시기에는, 다음 하강기에 버틸 현금이 남는지 반기 말 잔액으로 확인합니다."]
+    ];
+    cardsTo("nc-hanmi", cards);
+  }
+  function cardsTo(id, cards) {
+    const host = $(id); host.textContent = "";
+    cards.forEach((c) => host.appendChild(F.el("article", { class: "nc" }, [
+      F.el("div", { class: "h" }, [F.el("b", { text: c[0] }), F.el("span", { text: c[1] })]),
+      F.el("div", { class: "big" }, [c[2], F.el("small", { text: c[3] })]),
+      F.el("p", { text: c[4] }), F.el("p", { class: "so", text: c[5] })])));
+  }
+
+  function checks() {
+    const res = window.Checks.run({ Fin: F, Sectors: D }).filter((r) => r.group === "업종별 공시");
+    const ul = $("checks-list"); ul.textContent = "";
+    res.forEach((r) => ul.appendChild(F.el("li", { class: r.ok ? "" : "bad", text: r.name + (r.detail ? " — " + r.detail : "") })));
+  }
+
+  function render() { drawStacks(); cmpTable(); drawRino(); drawHanmi(); fsTable("t-rino", R); fsTable("t-hanmi", H); checks(); }
+  render();
+  F.onRedraw(render);
+
+  /* 표지: 2025년 두 회사의 영업이익이 어디로 갔나. 입자 수는 금액에 비례 */
+  const nP = (v) => Math.max(5, Math.round(E(Math.abs(v)) / 90));
+  Report.flows($("hero-art"), {
+    area: { span: 0.44, max: 600, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.06, y: 0.24, label: "리노공업", ly: -30 }, { x: 0.06, y: 0.80, label: "한미반도체" }, { x: 0.46, y: 0.52, label: "영업현금" },
+            { x: 0.90, y: 0.18, label: "설비투자", ly: -30 }, { x: 0.94, y: 0.52, label: "배당·자사주", ly: -28 }, { x: 0.90, y: 0.86, label: "현금·금융자산" }],
+    links: [
+      { from: 0, to: 2, bend: -0.12, c: 0, label: eok(R.cf.cfo["2025"]) + "억", dy: -10, n: nP(R.cf.cfo["2025"]) },
+      { from: 1, to: 2, bend: 0.12, c: 1, label: eok(H.cf.cfo["2025"]) + "억", dy: 18, n: nP(H.cf.cfo["2025"]) },
+      { from: 2, to: 3, bend: -0.10, c: 2, label: eok(R.cf.capex["2025"] + R.cf.intg["2025"] + H.cf.capex["2025"] + H.cf.intg["2025"]) + "억", dy: -8, n: nP(R.cf.capex["2025"] + H.cf.capex["2025"]) },
+      { from: 2, to: 4, bend: 0.0, c: 0, label: eok(R.cf.div["2025"] + H.cf.div["2025"] + H.cf.buyback["2025"]) + "억", dy: -8, n: nP(R.cf.div["2025"] + H.cf.div["2025"] + H.cf.buyback["2025"]) },
+      { from: 2, to: 5, bend: 0.10, c: 1, label: "+" + eok(R.cf.close["2025"] - R.cf.open["2025"] + H.cf.close["2025"] - H.cf.open["2025"]) + "억", dy: 18, n: nP(R.cf.close["2025"] - R.cf.open["2025"] + H.cf.close["2025"] - H.cf.open["2025"]) }
+    ]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>

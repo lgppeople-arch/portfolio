@@ -334,6 +334,15 @@
             <span class="rmeta">공시 원문 분석 · 재무제표·부문·주석 검산 통과 <span class="arr">→</span></span>
           </div>
         </a>
+        <a class="rcard" href="tools/sectors.html">
+          <div class="rcover" data-art="duo" aria-hidden="true"></div>
+          <div class="rbody">
+            <span class="rtag">Sector guide · 05</span>
+            <h3>같은 반도체, 다른 재무제표</h3>
+            <p>리노공업(검사 소모품)과 한미반도체(HBM 장비)의 공시를 원문 쪽수와 함께 검산해 나란히 읽었습니다. 매출이 들어오는 방식, 현금이 머무는 자리, 이익의 출처가 업종마다 어떻게 다른지 봅니다</p>
+            <span class="rmeta">공시 원문 분석 · 2개 업종 공개, 5개 업종 준비 중 <span class="arr">→</span></span>
+          </div>
+        </a>
         <a class="rcard" href="tools/fsa.html">
           <div class="rcover" data-art="flows" aria-hidden="true"></div>
           <div class="rbody">
@@ -507,6 +516,10 @@
         for (let i = 1; i <= l[4]; i++) { const u = i / (l[4] + 1) + (rnd() - 0.5) * 0.04, v = 1 - u; mk("circle", { cx: v * v * a[0] + 2 * v * u * c[0] + u * u * b[0], cy: v * v * a[1] + 2 * v * u * c[1] + u * u * b[1], r: 1 + rnd() * 1.6, fill: l[3], opacity: 0.4 + 0.6 * Math.sin(Math.PI * u) }, svg); }
       });
       N.forEach((n, i) => { mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 15 : 11, fill: "none", stroke: col[i], "stroke-width": 1.4, opacity: 0.55 }, svg); mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 5 : 4, fill: col[i] }, svg); });
+    } else if (box.dataset.art === "duo") {
+      const parts = [[0.11, 0.50, 0.07, 0.02, 0.29], [0.34, 0.03, 0.08, 0.18, 0.32]], cols = [C, B, A, "#C2453B", "#8A96A3"];
+      parts.forEach((row, r) => { let x = 150; const y = 42 + r * 56, w = 230;
+        row.forEach((v, i) => { mk("rect", { x: x, y: y, width: Math.max(1, v * w - 2), height: 30, rx: 2, fill: cols[i], opacity: 0.85 }, svg); x += v * w; }); });
     } else if (box.dataset.art === "flows") {
       const N = [[210, 52], [292, 132], [352, 60]], col = [A, C, B];
       const curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1]; return [mx - dy * k, my + dx * k]; };
@@ -541,13 +554,14 @@
 <script src="assets/engines/three.js"></script>
 <script src="assets/engines/cycle.js"></script>
 <script src="assets/data/samsung.js"></script>
+<script src="assets/data/sectors.js"></script>
 <script src="assets/engines/doa.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine });
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

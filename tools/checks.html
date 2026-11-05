@@ -41,6 +41,7 @@
     <nav class="site-nav" aria-label="도구">
       <a href="guide.html">가이드</a>
       <a href="samsung.html">삼성전자</a>
+      <a href="sectors.html">업종별 재무</a>
       <a href="reading.html">AI 인프라 노트</a>
       <a href="fsa.html">재무제표</a>
       <a href="semi-cycle.html">반도체 사이클</a>
@@ -97,6 +98,7 @@
 <script src="../assets/engines/three.js"></script>
 <script src="../assets/engines/cycle.js"></script>
 <script src="../assets/data/samsung.js"></script>
+<script src="../assets/data/sectors.js"></script>
 <script src="../assets/engines/doa.js"></script>
 <script src="../assets/checks.js"></script>
 <script>
@@ -107,7 +109,7 @@
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine });
+    res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }

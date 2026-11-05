@@ -14,6 +14,7 @@
     Three: require("./engines/three.js"),
     Cycle: require("./engines/cycle.js"),
     Samsung: require("./data/samsung.js"),
+    Sectors: require("./data/sectors.js"),
     Doa: require("./engines/doa.js")
   } : null;
   const api = factory();
@@ -61,7 +62,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -322,6 +323,20 @@
         eq.treasury["2025"].common + mv.bought - mv.granted - mv.cancelledCommon === eq.treasury["2026H1"].common &&
         eq.outstanding["2025"].pref === eq.outstanding["2026H1"].pref && eq.treasury["2025"].pref - mv.cancelledPref === eq.treasury["2026H1"].pref;
       add("삼성전자 공시", "주식 수: 유통주식·자기주식 변동(취득·지급·소각)이 맞는다", shOk, "소각 보통주 " + Fin.num(mv.cancelledCommon / 1e6, 1) + "백만 주");
+    }
+
+    /* ---------- 업종별 공시 원문 대조 (리포트 05) ---------- */
+    if (Sectors) {
+      Sectors.order.forEach((k) => {
+        const c = Sectors.companies[k], I = c.is, B = c.bs, C = c.cf, ps = Object.keys(I.rev), bp = Object.keys(B.ta);
+        add("업종별 공시", c.name + ": 손익계산서 소계(매출총이익·영업이익·세전이익·순이익) " + ps.length + "개 기간", ps.every((p) =>
+          I.gp[p] === I.rev[p] - I.cogs[p] && I.op[p] === I.gp[p] - I.sga[p] - I.rnd[p] &&
+          I.ebt[p] === I.op[p] + I.noi[p] - I.noe[p] + I.fi[p] - I.fc[p] + I.eq[p] && I.ni[p] === I.ebt[p] - I.tax[p]), "원 단위 일치");
+        add("업종별 공시", c.name + ": 재무상태표 자산 = 부채 + 자본, 유동 + 비유동 " + bp.length + "개 시점", bp.every((p) =>
+          B.ta[p] === B.ca[p] + B.nca[p] && B.ta[p] === B.tl[p] + B.te[p] && B.tl[p] === B.cl[p] + B.ncl[p]), "");
+        add("업종별 공시", c.name + ": 현금흐름표 기초 + 영업·투자·재무 + 환율 = 기말 = 재무상태표 현금", ps.every((p) =>
+          C.close[p] === C.open[p] + C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] && (B.cash[p] === undefined || B.cash[p] === C.close[p])), "");
+      });
     }
 
     /* ---------- 위임전결 기준 점검 ---------- */

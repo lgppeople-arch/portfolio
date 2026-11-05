@@ -15,22 +15,23 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE = "lgppeople-arch.github.io/portfolio/";
 const PAGES = [
   ["index.html", "01_홈", "홈"],
-  ["tools/samsung.html", "02_삼성전자_재무분석", "삼성전자 재무 분석"],
-  ["tools/reading.html", "03_AI인프라_읽기노트", "AI 인프라 읽기 노트"],
-  ["tools/fsa.html", "04_재무제표_분석_프레임워크", "재무제표 분석 프레임워크"],
-  ["tools/semi-cycle.html", "05_반도체_사이클과_재무", "반도체 사이클과 재무"],
-  ["tools/pl-report.html", "06_월_손익보고", "월 손익 보고"],
-  ["tools/mbo-kpi.html", "07_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
-  ["tools/doa.html", "08_위임전결_기준점검", "위임전결 기준 점검"],
-  ["tools/capex-kit.html", "09_설비투자_분석키트", "설비투자 분석 키트"],
-  ["tools/post-review.html", "10_투자_사후관리", "투자 사후관리"],
-  ["tools/ma-process.html", "11_MA_절차지도", "M&A 절차 지도"],
-  ["tools/ma-valuation.html", "12_MA_가치평가", "M&A 가치평가"],
-  ["tools/holdco-nav.html", "13_지주사_포트폴리오가치", "지주사 포트폴리오 가치"],
-  ["tools/cash-13w.html", "14_13주_자금수지", "13주 자금수지"],
-  ["tools/fx-hedge.html", "15_환리스크_헤지", "환리스크 헤지"],
-  ["tools/checks.html", "16_계산_검산", "계산 검산"],
-  ["tools/guide.html", "17_쉬운_가이드", "쉬운 가이드"]
+  ["tools/samsung.html", "02_삼성전자_재무_분석", "삼성전자 재무 분석"],
+  ["tools/sectors.html", "03_업종별_재무제표_읽기", "업종별 재무제표 읽기"],
+  ["tools/reading.html", "04_AI_인프라_읽기_노트", "AI 인프라 읽기 노트"],
+  ["tools/fsa.html", "05_재무제표_분석_프레임워크", "재무제표 분석 프레임워크"],
+  ["tools/semi-cycle.html", "06_반도체_사이클과_재무", "반도체 사이클과 재무"],
+  ["tools/pl-report.html", "07_월_손익_보고", "월 손익 보고"],
+  ["tools/mbo-kpi.html", "08_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
+  ["tools/doa.html", "09_위임전결_기준_점검", "위임전결 기준 점검"],
+  ["tools/capex-kit.html", "10_설비투자_분석_키트", "설비투자 분석 키트"],
+  ["tools/post-review.html", "11_투자_사후관리", "투자 사후관리"],
+  ["tools/ma-process.html", "12_M_A_절차_지도", "M&A 절차 지도"],
+  ["tools/ma-valuation.html", "13_M_A_가치평가", "M&A 가치평가"],
+  ["tools/holdco-nav.html", "14_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
+  ["tools/cash-13w.html", "15_13주_자금수지", "13주 자금수지"],
+  ["tools/fx-hedge.html", "16_환리스크_헤지", "환리스크 헤지"],
+  ["tools/checks.html", "17_계산_검산", "계산 검산"],
+  ["tools/guide.html", "18_쉬운_가이드", "쉬운 가이드"]
 ];
 
 /* A4 가로. 인쇄 배율 0.82면 본문 15px이 약 9pt로 찍히고, 화면은 1,277px 폭의 데스크톱 배치가 된다. */
@@ -528,7 +529,7 @@ async function frontMatter(ctx, out, results) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05"].includes(n) ? "리포트" : ["16", "17"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06"].includes(n) ? "리포트" : ["17", "18"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
@@ -549,7 +550,7 @@ async function frontMatter(ctx, out, results) {
   </style></head><body>
   <section class="page cover"><div class="brand"><b>LGP</b> 이기표</div><div class="kick">PORTFOLIO · 화면 PDF 모음</div>
     <h1>투자를 검토하고,<br>결과까지 확인하는 재무기획자</h1>
-    <p>포트폴리오 사이트의 모든 화면을 기본값 그대로 담았습니다. 분석 리포트 4편, 실무 도구 10개, 계산 검산과 쉬운 가이드까지 ${results.length}개 화면, ${start - 1}쪽입니다.</p>
+    <p>포트폴리오 사이트의 모든 화면을 기본값 그대로 담았습니다. 분석 리포트 5편, 실무 도구 10개, 계산 검산과 쉬운 가이드까지 ${results.length}개 화면, ${start - 1}쪽입니다.</p>
     <div class="meta"><span>${SITE.replace(/\/$/, "")}</span><span>${today.getFullYear()}년 ${today.getMonth() + 1}월 · A4 가로</span></div></section>
   <section class="page toc"><h2>목차</h2><p class="sub">쪽 번호는 이 합본 기준입니다. 각 화면의 쪽 아래 번호는 그 화면 안에서의 쪽 번호입니다.</p>
     <table>${rows}</table>
