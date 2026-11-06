@@ -164,7 +164,9 @@
     nav.textContent = "";
     const h = document.createElement("span"); h.className = "h"; h.textContent = "목차"; nav.appendChild(h);
     const links = secs.map((s) => {
-      const a = document.createElement("a"); a.href = "#" + s.id; a.textContent = s.querySelector("h2").textContent; nav.appendChild(a); return a;
+      /* data-group이 있으면 그 앞에 묶음 제목을, data-toc가 있으면 h2 대신 짧은 이름을 쓴다 */
+      if (s.dataset.group) { const g = document.createElement("span"); g.className = "g"; g.textContent = s.dataset.group; nav.appendChild(g); }
+      const a = document.createElement("a"); a.href = "#" + s.id; a.textContent = s.dataset.toc || s.querySelector("h2").textContent; nav.appendChild(a); return a;
     });
     if (!("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((a, i) => a.classList.toggle("on", secs[i] === e.target)); }), { rootMargin: "-30% 0px -60% 0px" });

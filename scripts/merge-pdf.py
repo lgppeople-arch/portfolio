@@ -1,6 +1,6 @@
 """export-pdf.js가 만든 화면별 PDF를 표지·목차와 함께 하나로 묶는다.
 목차의 각 줄은 해당 쪽으로 가는 링크이고, 화면마다 책갈피를 단다.
-사용법: python3 scripts/merge-pdf.py <출력 폴더>"""
+사용법: python3 scripts/merge-pdf.py <출력 폴더> [합본 파일 이름]"""
 import json
 import os
 import sys
@@ -39,7 +39,7 @@ for (x1, y1, x2, y2), d in zip(front["rects"], front["docs"]):
 
 w.add_metadata({"/Title": "이기표 · 재무기획 포트폴리오 화면 PDF 모음", "/Author": "이기표"})
 w.page_mode = "/UseOutlines"
-target = os.path.join(out, "이기표_포트폴리오_전체화면.pdf")
+target = os.path.join(out, sys.argv[2] if len(sys.argv) > 2 else "이기표_포트폴리오_전체화면.pdf")
 with open(target, "wb") as f:
     w.write(f)
 print(f"합본: {target} ({len(w.pages)}쪽, {os.path.getsize(target) // 1024}KB)")

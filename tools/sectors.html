@@ -147,6 +147,17 @@
   .checks-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; }
   .checks-list li::before { content: "✓"; color: var(--pos); font-weight: 700; }
   .checks-list li.bad::before { content: "✕"; color: var(--neg); }
+  /* 해석의 근거 */
+  .basis { margin: 16px 0 8px; border: 1px dashed var(--rule); border-radius: var(--radius); padding: 14px 16px; background: color-mix(in srgb, var(--surface) 60%, transparent); }
+  .basis h4 { margin: 0 0 8px; font-size: var(--s-2); }
+  .basis h4 small { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 6px; }
+  .basis ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .basis li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
+  .basis li > i { font-style: normal; font-size: 11px; font-weight: 700; text-align: center; border-radius: 3px; padding: 2px 0; align-self: start; margin-top: 2px; }
+  .basis li > i.f { color: var(--pos); border: 1px solid var(--pos); }
+  .basis li > i.r { color: var(--accent); border: 1px solid var(--accent); }
+  .basis .so { color: var(--ink); }
+  .basis ol + h4 { margin-top: 18px; }
   .srcs { margin: 14px 0 10px; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
   .srcs b { color: var(--ink); }
 </style>
@@ -155,23 +166,11 @@
 <header class="site-head">
   <div class="wrap wide">
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
-    <nav class="site-nav" aria-label="도구">
-      <a href="guide.html">가이드</a>
-      <a href="samsung.html">삼성전자</a>
-      <a href="sectors.html" aria-current="page">업종별 재무</a>
-      <a href="reading.html">AI 인프라 노트</a>
-      <a href="fsa.html">재무제표</a>
-      <a href="semi-cycle.html">반도체 사이클</a>
-      <a href="pl-report.html">손익보고</a>
-      <a href="mbo-kpi.html">성과평가</a>
-      <a href="doa.html">위임전결</a>
-      <a href="capex-kit.html">설비투자</a>
-      <a href="post-review.html">사후관리</a>
-      <a href="ma-process.html">M&amp;A 절차</a>
-      <a href="ma-valuation.html">가치평가</a>
-      <a href="holdco-nav.html">지주사</a>
-      <a href="cash-13w.html">자금수지</a>
-      <a href="fx-hedge.html">환리스크</a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html" aria-current="page">업종별 재무제표 읽기</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a></div><div><span class="nav-h">투자·M&A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
     </nav>
     <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
@@ -202,7 +201,7 @@
       <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
       <div class="rpt-body">
 
-        <section id="s-why">
+        <section id="s-why" data-toc="자산과 비용 구조" data-group="7개사 비교">
           <h2>업종이 재무제표의 생김새를 정합니다</h2>
           <p>재무제표를 읽는 순서는 같아도, 어느 숫자에서 멈출지는 업종이 정합니다. 소모품 회사는 번 돈이 금융자산으로 쌓이고, 배터리 회사는 공장에 묻히고, 자동차 회사는 고객에게 빌려준 할부채권으로 남습니다. 지주회사와 플랫폼은 다른 회사 지분이 자산의 절반을 넘습니다. 아래는 2025년 말 7개사의 자산 구성과, 2025년 매출 100원이 어디로 갔는지입니다.</p>
           <div class="fig" data-rv>
@@ -217,14 +216,14 @@
           </div>
         </section>
 
-        <section id="s-cmp">
+        <section id="s-cmp" data-toc="핵심 지표표">
           <h2>7개사 핵심 지표</h2>
           <p>같은 공식으로 계산한 지표를 한 표에 모았습니다. 숫자의 높고 낮음보다, 업종마다 왜 이 숫자가 나오는지를 읽는 것이 목적입니다. 다음 세 절에서 ROE, 운전자본, 현금 흐름을 하나씩 풀어 봅니다.</p>
           <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs mx" id="t-mx"></table></div>
           <p class="src">2025년 연간 기준, 재무상태표는 2025년 말. 리노공업은 별도, 나머지는 연결 재무제표. 순이익과 자본은 비지배지분을 포함합니다. NAVER는 매출원가를 따로 적지 않아 재고·매입 일수를 계산하지 않았습니다. LG에너지솔루션은 순이익이 매출의 0.3%라 영업현금흐름 ÷ 순이익과 주주환원 ÷ 순이익을 쓰지 않았습니다. 리노공업·한미반도체는 차입금이 없습니다.</p>
         </section>
 
-        <section id="s-dupont">
+        <section id="s-dupont" data-toc="ROE 분해">
           <h2>같은 ROE도 엔진이 다릅니다</h2>
           <p>ROE(자기자본이익률)는 순이익률, 총자산회전율, 자산 ÷ 자본 세 값의 곱입니다(듀폰 분해). 리노공업과 한미반도체는 높은 이익률 하나로 ROE를 만듭니다. 현대차와 HD현대중공업은 이익률이 낮아도 자본보다 자산이 3배 가까이 커서 ROE가 올라갑니다. ㈜LG와 NAVER는 이익률이 괜찮은데도 다른 회사 지분이 자산을 무겁게 만들어 회전율이 낮고, 그래서 ROE가 낮습니다.</p>
           <div class="fig" data-rv>
@@ -235,7 +234,7 @@
           <p>레버리지가 높다는 말도 업종마다 내용이 다릅니다. 현대차의 자산 ÷ 자본 2.89배는 금융 자회사의 차입금에서 나오고, HD현대중공업의 2.80배는 선주에게 미리 받은 계약부채에서 나옵니다. 앞의 것은 이자를 내는 빚이고, 뒤의 것은 배를 지어 넘기면 사라지는 의무입니다. 표의 '차입금 ÷ 자본'이 현대차 137%, HD현대중공업 7%로 갈리는 이유입니다.</p>
         </section>
 
-        <section id="s-wc">
+        <section id="s-wc" data-toc="운전자본">
           <h2>운전자본: 현금이 회사 안에 머무는 시간</h2>
           <p>물건을 팔고 돈을 받기까지(매출채권 회수일), 재료를 사서 팔기까지(재고 보유일)는 현금이 묶이는 시간이고, 거래처에 돈을 늦게 주는 기간(매입채무 지급일)은 현금을 빌리는 시간입니다. 둘의 차이가 현금전환주기입니다. 주문형 장비를 만드는 한미반도체는 재고가 길고, HD현대중공업은 지급일이 회수일과 보유일을 거의 덮습니다.</p>
           <div class="fig" data-rv>
@@ -246,7 +245,7 @@
           <p>조선사는 이 표보다 한 줄을 더 봐야 합니다. HD현대중공업은 2025년 말 계약부채(10.8조원)가 계약자산(5.1조원)보다 5.7조원 많습니다. 공사가 진행된 것보다 대금을 먼저 받았다는 뜻이라, 이 돈까지 넣으면 현금전환주기는 사실상 음수입니다. 반대로 현대차는 할부채권과 리스 차량이 운전자본처럼 움직여, 금융 자산이 늘수록 영업현금흐름이 줄어듭니다.</p>
         </section>
 
-        <section id="s-cash">
+        <section id="s-cash" data-toc="자금의 원천과 쓰임">
           <h2>번 돈은 어디로 갔나: 3년 자금의 원천과 쓰임</h2>
           <p>현금흐름표를 3년(2023~2025년) 합쳐 들어온 돈과 나간 돈으로 다시 나눴습니다. 두 막대의 길이는 항상 같습니다(기초 현금 + 들어온 돈 − 나간 돈 = 기말 현금). 영업에서 번 돈이 들어온 돈의 대부분인 회사와, 차입·증자로 투자를 메우는 회사가 한눈에 갈립니다.</p>
           <div class="fig" data-rv>
@@ -257,7 +256,7 @@
           <ul class="look three" id="su-read" style="margin-top: 4px"></ul>
         </section>
 
-        <section id="s-rino">
+        <section id="s-rino" data-toc="리노공업 · 소모품" data-group="회사별 읽기">
           <h2>리노공업: 소모품은 매출이 잔잔합니다</h2>
           <div class="co-head"><b>리노공업 (058470, 코스닥)</b><span>반도체 검사용 소켓(IC TEST SOCKET)과 검사용 핀(LEENO PIN)</span><span>별도 재무제표 · 연결 대상 종속기업 없음</span></div>
           <div class="numband" data-rv id="nb-rino"></div>
@@ -275,7 +274,7 @@
           <div class="ncards" id="nc-rino"></div>
         </section>
 
-        <section id="s-hanmi">
+        <section id="s-hanmi" data-toc="한미반도체 · 장비">
           <h2>한미반도체: 장비는 분기마다 출렁입니다</h2>
           <div class="co-head"><b>한미반도체 (042700, 유가증권)</b><span>반도체 후공정 장비 · 주력은 HBM용 TC 본더</span><span>연결 재무제표</span></div>
           <div class="numband" data-rv id="nb-hanmi"></div>
@@ -293,7 +292,7 @@
           <div class="ncards" id="nc-hanmi"></div>
         </section>
 
-        <section id="s-lges">
+        <section id="s-lges" data-toc="LG에너지솔루션 · 2차전지">
           <h2>LG에너지솔루션: 영업이익 안의 세액공제</h2>
           <div class="co-head"><b>LG에너지솔루션 (373220, 유가증권)</b><span>2차전지 셀·모듈 · 완성차와 미국 합작 공장</span><span>연결 재무제표</span></div>
           <div class="numband" data-rv id="nb-lges"></div>
@@ -309,9 +308,10 @@
             <div class="fig-s">출처: 사업보고서 33·34~35·37쪽, 반기보고서 32·33~34·35쪽. 차입금은 유동성차입금과 비유동성차입금의 합입니다.</div>
           </div>
           <div class="ncards" id="nc-lges"></div>
+          <div class="basis" id="bs-lges"></div>
         </section>
 
-        <section id="s-hmc">
+        <section id="s-hmc" data-toc="현대차 · 자동차">
           <h2>현대자동차: 차를 파는 회사와 돈을 빌려주는 회사</h2>
           <div class="co-head"><b>현대자동차 (005380, 유가증권)</b><span>완성차 · 현대캐피탈 등 금융 자회사 연결</span><span>연결 재무제표</span></div>
           <div class="numband" data-rv id="nb-hmc"></div>
@@ -327,9 +327,10 @@
             <div class="fig-s">출처: 사업보고서 73~74·75~76·79~80쪽, 반기보고서 66~67·68~69·71~72쪽. 장기 투자자산은 공동기업·관계기업 투자, 차입금은 단기차입금·유동성장기부채·사채·장기차입금의 합입니다. 금융업채권은 유동과 비유동을 합쳤습니다.</div>
           </div>
           <div class="ncards" id="nc-hmc"></div>
+          <div class="basis" id="bs-hmc"></div>
         </section>
 
-        <section id="s-hhi">
+        <section id="s-hhi" data-toc="HD현대중공업 · 조선">
           <h2>HD현대중공업: 수주잔고와 고객의 돈</h2>
           <div class="co-head"><b>HD현대중공업 (329180, 유가증권)</b><span>조선·해양플랜트·선박 엔진</span><span>연결 재무제표 · 2025년 12월 HD현대미포 흡수합병</span></div>
           <div class="numband" data-rv id="nb-hhi"></div>
@@ -348,7 +349,7 @@
           <div class="ncards" id="nc-hhi"></div>
         </section>
 
-        <section id="s-lg">
+        <section id="s-lg" data-toc="㈜LG · 지주회사">
           <h2>㈜LG: 연결과 별도를 같이 읽는 지주회사</h2>
           <div class="co-head"><b>㈜LG (003550, 유가증권)</b><span>순수지주회사 · 배당·상표권 수익</span><span>연결 재무제표 + 별도 재무제표</span></div>
           <div class="numband" data-rv id="nb-lg"></div>
@@ -371,7 +372,7 @@
           <div class="ncards" id="nc-lg"></div>
         </section>
 
-        <section id="s-naver">
+        <section id="s-naver" data-toc="NAVER · 플랫폼">
           <h2>NAVER: 원가 대신 수수료와 사람, 그리고 큰 지분</h2>
           <div class="co-head"><b>NAVER (035420, 유가증권)</b><span>검색·커머스·핀테크·콘텐츠·엔터프라이즈</span><span>연결 재무제표</span></div>
           <div class="numband" data-rv id="nb-naver"></div>
@@ -394,7 +395,7 @@
           <div class="ncards" id="nc-naver"></div>
         </section>
 
-        <section id="s-look">
+        <section id="s-look" data-toc="업종별 체크리스트" data-group="정리">
           <h2>업종별로 먼저 볼 것</h2>
           <p>7개사를 읽으며 얻은 순서를 정리했습니다. 어떤 회사든 아래 다섯 단계로 시작하고, 업종마다 표의 질문을 더합니다.</p>
           <ol class="order">
@@ -407,7 +408,7 @@
           <ul class="look" id="look"></ul>
         </section>
 
-        <section id="s-check">
+        <section id="s-check" data-toc="출처와 검산">
           <h2>출처와 검산</h2>
           <p>숫자는 아래 공시에서 원 단위로 옮겼습니다(원문 단위가 천원·백만원이면 원으로 환산). 화면에서는 억원 또는 조원으로 반올림해 보여 줍니다. 옮긴 숫자는 회사마다 아래 항등식으로 검산했고, 같은 검산이 <a href="checks.html">검산 페이지</a>에서도 돕니다.</p>
           <ul class="checks-list" id="checks-list"></ul>
@@ -695,6 +696,16 @@
       F.el("div", { class: "big" }, [c[2], F.el("small", { text: c[3] })]),
       F.el("p", { text: c[4] }), F.el("p", { class: "so", text: c[5] })])));
   }
+  /* 해석의 근거: [["f"|"r", 문장]] f = 공시에 적힌 사실, r = 그 사실로 한 해석 */
+  function basis(id, blocks) {
+    const host = $(id); host.textContent = "";
+    blocks.forEach((b) => {
+      host.appendChild(F.el("h4", null, [b[0], F.el("small", { text: b[1] })]));
+      const ol = F.el("ol");
+      b[2].forEach((it) => ol.appendChild(F.el("li", null, [F.el("i", { class: it[0], text: it[0] === "f" ? "공시" : "해석" }), F.el("span", { class: it[0] === "r" ? "so" : null, text: it[1] })])));
+      host.appendChild(ol);
+    });
+  }
   /* 띠에 넣을 조원 숫자와 단위 */
   const jb = (v, d) => [(v < 0 ? "−" : "") + F.num(Math.abs(J(v)), d === undefined ? 2 : d), "조원"];
 
@@ -813,6 +824,13 @@
       ["판매보증충당부채 " + won(w.close, 1), L.src.warranty, won(w.close, 2), "판매보증충당부채 (2025년 말)", "2025년에 " + won(w.add) + "을 새로 쌓고(판관비) " + won(w.use) + "을 썼습니다. 2024년 전입액은 " + won(w.add2024, 2) + "였습니다. 충당부채 전체는 2026년 6월 말 " + won(n.provTotal["2026H1"]) + "입니다.", "배터리는 리콜·교체 비용이 몇 년 뒤에 나옵니다. 전입액이 판관비를 크게 흔들 수 있어, 판관비율이 움직이면 이 줄부터 봅니다."],
       ["2026년 상반기는 영업적자", L.src.is, won(I.op["2026H1"]), "영업이익 (2026년 상반기)", "상반기 매출 및 기타수익은 " + won(I.rev["2026H1"]) + "로 1년 전보다 " + F.pctSigned(I.rev["2026H1"] / I.rev["2025H1"] - 1) + " 늘었지만, 영업이익은 " + won(I.op["2026H1"]) + ", 순이익은 " + won(I.ni["2026H1"]) + "입니다. 영업현금흐름도 " + won(C.cfo["2026H1"]) + "입니다.", "매출이 늘어도 판관비(" + won(I.sga["2025H1"]) + " → " + won(I.sga["2026H1"]) + ")와 원가가 더 빨리 늘면 이익이 따라오지 못합니다. 유형자산 " + won(B.ppe["2026H1"], 1) + "가 언제 제값을 하는지가 핵심입니다."]
     ]);
+    const jv = n.jv, u = jv[0];
+    basis("bs-lges", [["비지배지분 이익이 '합작 파트너 몫'이라는 근거", "공시 사실과 그로부터 한 해석을 나눠 적었습니다", [
+      ["f", "미국·인도네시아 합작 종속기업의 지분율은 " + jv.map((j) => j.name + " " + j.share + "%(" + j.partner + ")").join(", ") + "입니다. 과반 미만이어도 주주간 약정으로 의사결정을 지배해 연결합니다(사업 39쪽, 파트너는 약정 주석 134~135쪽)."],
+      ["f", u.name + "의 2025년 영업이익은 " + won(u.op) + "입니다(종속기업 요약재무, 내부거래 제거 전, 사업 41쪽). 연결 비지배지분 순이익 " + won(I.niN["2025"]) + "과 같은 규모입니다."],
+      ["f", "파트너가 낸 출자금이 3년 " + won(sum(C.nciIn, Y3), 1) + "입니다(현금흐름표 '비지배지분의 출자')."],
+      ["r", "이익이 나는 합작 공장일수록 이익의 절반 가까이가 파트너 몫으로 빠집니다. 그래서 연결 순이익은 흑자인데 지배기업 소유주 순이익은 적자인 해가 생깁니다. 회사별 정확한 배분액은 비지배지분 주석으로 다시 확인할 부분입니다."]
+    ]]]);
   }
 
   /* ---------- 현대자동차 ---------- */
@@ -846,11 +864,22 @@
     const br = n.cfoBridge2025, d = (y) => sg[y].op;
     cardsTo("nc-hmc", [
       ["부채비율 189%는 두 사업의 합", M.src.seg, pc(vDr, 0) + " / " + pc(fDr, 0), "차량 / 금융 부문 부채비율 (2025년 말)", "연결 부채비율은 " + pc(B.tl["2025"] / B.te["2025"], 0) + "입니다. 부문 정보로 나누면 차량 부문은 부채 " + won(sg["2025"].tl["차량"], 1) + ", 자본 " + won(sg["2025"].ta["차량"] - sg["2025"].tl["차량"], 1) + "으로 " + pc(vDr, 0) + "이고, 금융 부문은 부채 " + won(sg["2025"].tl["금융"], 1) + ", 자본 " + won(sg["2025"].ta["금융"] - sg["2025"].tl["금융"], 1) + "으로 " + pc(fDr, 0) + "입니다.", "금융 자회사는 빌려서 빌려주는 사업이라 부채비율이 높은 것이 정상입니다. 제조업으로서의 재무 안정성은 차량 부문 숫자로 봅니다."],
-      ["영업현금흐름이 마이너스인 이유", M.src.cf, won(C.cfo["2025"], 2), "영업활동현금흐름 (2025년)", "순이익 " + won(br.ni, 1) + "에 감가상각 등 조정 " + won(br.adj, 1) + "을 더해도, 영업 자산·부채 변동이 " + won(br.wc, 1) + "입니다. 금융업채권(" + won(B.finRecv["2024"], 1) + " → " + won(B.finRecv["2025"], 1) + ")과 운용리스자산(" + won(B.oplease["2024"], 1) + " → " + won(B.oplease["2025"], 1) + ")이 늘어난 만큼이 여기서 빠집니다.", "금융 자회사를 연결한 제조사는 영업현금흐름 하나로 현금 창출력을 판단하지 않습니다. 같은 해 재무활동으로 " + won(C.cff["2025"], 1) + "이 들어와 할부·리스 자산 증가를 받쳤습니다."],
+      ["영업현금흐름이 마이너스인 이유", "사업 79~80·201~202쪽", won(C.cfo["2025"], 2), "영업활동현금흐름 (2025년)", "순이익 " + won(br.ni, 1) + "에 감가상각 등 조정 " + won(br.adj, 1) + "을 더해도, 영업 자산·부채 변동이 " + won(br.wc, 1) + "입니다. 이 가운데 운용리스자산 증가가 " + won(br.leaseInc, 1) + ", 금융업채권 변동이 " + won(br.finRecvChg, 1) + "로 " + pc((br.leaseInc + br.finRecvChg) / br.wc, 0) + "를 차지합니다(현금흐름 주석, 사업 201~202쪽).", "금융 자회사를 연결한 제조사는 영업현금흐름 하나로 현금 창출력을 판단하지 않습니다. 같은 해 재무활동으로 " + won(C.cff["2025"], 1) + "이 들어와 할부·리스 자산 증가를 받쳤습니다."],
       ["차량 이익이 줄 때 금융이 받쳤습니다", M.src.seg, won(d("2024")["차량"], 1) + " → " + won(d("2025")["차량"], 1), "차량 부문 영업이익 2024 → 2025", "차량 부문 영업이익은 " + F.pctSigned(d("2025")["차량"] / d("2024")["차량"] - 1) + " 줄었고, 금융 부문은 " + won(d("2024")["금융"], 2) + "에서 " + won(d("2025")["금융"], 2) + "로 " + F.pctSigned(d("2025")["금융"] / d("2024")["금융"] - 1) + " 늘었습니다. 연결 영업이익률은 " + Y3.map((y) => pc(I.op[y] / I.rev[y])).join(" → ") + "입니다.", "부문별로 이익의 방향이 다를 때 연결 숫자만 보면 원인을 놓칩니다. 차량 부문 감익의 원인(판매량, 환율, 판매비 등)은 사업보고서 본문과 IR 자료로 확인합니다."],
       ["지분법이익이 세전이익의 " + pc(I.eq["2025"] / I.ebt["2025"], 0), M.src.is, won(I.eq["2025"], 2), "공동기업·관계기업 지분법이익 (2025년)", "관계기업 투자 장부가는 " + won(B.ltinv["2025"], 1) + "입니다. 지분법이익은 2024년 " + won(I.eq["2024"], 2) + ", 2025년 " + won(I.eq["2025"], 2) + "였고, 현금으로 받은 배당은 2025년 " + won(n.divRecv["2025"], 2) + "입니다.", "지분법이익은 장부상 이익이고, 현금은 배당으로 들어올 때 생깁니다. 지분법이익과 배당 수취의 차이가 순이익과 현금이 갈라지는 이유 중 하나입니다."],
       ["주주환원 " + won(C.div["2025"] + C.buyback["2025"], 1), M.src.cf, pc((C.div["2025"] + C.buyback["2025"]) / I.niP["2025"], 0), "배당 + 자사주 ÷ 지배주주 순이익 (2025년)", "2025년 배당 " + won(C.div["2025"], 2) + ", 자기주식 취득 " + won(C.buyback["2025"]) + "입니다. 2026년 상반기에도 배당 " + won(C.div["2026H1"], 2) + ", 자기주식 " + won(C.buyback["2026H1"]) + "가 나갔습니다.", "영업현금흐름이 음수인 해에도 환원할 수 있는 것은 금융 부문이 차입으로 자산을 늘리기 때문입니다. 환원 여력은 차량 부문의 현금으로 따집니다."],
-      ["이자보상배율 " + F.mult(I.op["2025"] / C.intpaid["2025"], 1) + "의 착시", M.src.cf, won(C.intpaid["2025"], 1), "이자 지급액 (2025년, 현금흐름표)", "차입금 " + won(B.debt["2025"], 1) + " 대부분이 금융 부문의 것이라, 현금흐름표의 이자 지급액에도 금융 부문이 고객에게 빌려줄 돈을 조달하며 낸 이자가 섞여 있습니다. 영업이익 " + won(I.op["2025"], 1) + "으로 나누면 " + F.mult(I.op["2025"] / C.intpaid["2025"], 1) + "가 나옵니다.", "금융업의 이자는 금융 부문의 원가입니다. 제조업의 이자 부담은 차량 부문 차입금과 이자로 따로 계산해야 의미가 있습니다."]
+      ["이자보상배율 " + F.mult(I.op["2025"] / C.intpaid["2025"], 1) + "의 착시", "사업 79~80·182~183쪽", won(C.intpaid["2025"], 1), "이자 지급액 (2025년, 현금흐름표)", "손익계산서 금융비용 속 이자비용은 " + won(n.finCostInt["2025"], 2) + "인데, 현금흐름표의 이자 지급액은 " + won(C.intpaid["2025"], 2) + "입니다. 차이는 금융 부문이 고객에게 빌려줄 돈을 조달하며 낸 이자로 보입니다(아래 근거). 이 금액으로 영업이익 " + won(I.op["2025"], 1) + "을 나누면 " + F.mult(I.op["2025"] / C.intpaid["2025"], 1) + "가 나옵니다.", "금융업의 이자는 금융 부문의 원가입니다. 제조업의 이자 부담은 차량 부문 차입금과 이자로 따로 계산해야 의미가 있습니다."]
+    ]);
+    basis("bs-hmc", [
+      ["영업현금흐름이 마이너스인 이유", "현금흐름 주석으로 확인한 사실", [
+        ["f", "2025년 영업 자산·부채 변동 " + won(br.wc, 1) + " 가운데 운용리스자산 증가 " + won(br.leaseInc, 1) + ", 금융업채권 변동 " + won(br.finRecvChg, 1) + "입니다(주석 33, 사업 201~202쪽). 둘을 합치면 " + pc((br.leaseInc + br.finRecvChg) / br.wc, 0) + "입니다."],
+        ["r", "고객에게 빌려준 할부와 리스 차량이 늘어난 만큼 영업에서 현금이 빠졌습니다. 이 자산을 마련한 차입은 재무활동(" + won(C.cff["2025"], 1) + ")으로 들어오므로, 현대차는 영업현금흐름과 재무현금흐름을 함께 봐야 합니다."]
+      ]],
+      ["이자 지급액에 금융 부문 이자가 섞여 있다는 근거", "공시 사실과 그로부터 한 해석", [
+        ["f", "손익계산서 금융비용 가운데 이자비용은 2025년 " + won(n.finCostInt["2025"], 2) + "입니다(주석 27, 사업 182~183쪽). 현금흐름표의 이자 지급은 " + won(C.intpaid["2025"], 2) + "입니다."],
+        ["f", "현금흐름 주석의 조정 항목에 '금융업수익비용' " + won(br.finRevExp, 1) + "이 따로 있고(사업 201쪽), 부문 정보에서 금융 부문의 매출원가는 " + won(n.finSegCogs2025, 1) + "입니다(사업 224쪽)."],
+        ["r", "금융 부문의 조달 이자는 금융비용이 아니라 금융 부문 매출원가로 잡히고, 실제로 낸 현금은 '이자의 지급'에 합쳐 나오는 구조로 보입니다. 두 숫자의 차이 " + won(C.intpaid["2025"] - n.finCostInt["2025"], 1) + "의 대부분이 이 이자일 가능성이 큽니다. 그래서 현금흐름표 이자로 계산한 이자보상배율은 제조업의 이자 부담을 과대평가합니다."]
+      ]]
     ]);
   }
 

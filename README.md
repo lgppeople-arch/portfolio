@@ -44,6 +44,7 @@ node scripts/export-pdf.js pdf
 - Playwright(Chromium)로 화면을 열어 탭·접힌 영역을 모두 펼친 뒤 찍습니다. 합본에는 python3와 pypdf가 필요합니다.
 - 쪽 나눔은 화면 배치로 직접 계산해 넣습니다. 카드·그래프·표의 행이 쪽 사이에서 잘리지 않고, 제목이 쪽 끝에 홀로 남지 않으며, 한 쪽보다 긴 표는 행 단위로 나뉘고 다음 쪽에 머리글이 다시 붙습니다.
 - `pdf/pages.json`의 예상 쪽수(`plan.pages`)가 실제 PDF 쪽수와 같으면 계산대로 나뉜 것입니다.
+- `node scripts/export-pdf.js pdf-pick --pick`은 대표 화면 4개(홈, 업종별 재무제표 읽기, 설비투자 분석 키트, 지주사 포트폴리오 가치)만 표지·목차와 함께 `이기표_포트폴리오_대표선별.pdf`로 묶습니다.
 
 ## 원칙
 

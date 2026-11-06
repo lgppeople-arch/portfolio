@@ -41,6 +41,8 @@
 .rpt-grid { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; align-items: start; padding-block: 40px 24px; }
 .rpt-toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); display: grid; gap: 2px; font-size: var(--s-1); }
 .rpt-toc .h { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+.rpt-toc .g { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.02em; margin: 12px 0 4px; }
+.rpt-toc .g:first-of-type { margin-top: 0; }
 .rpt-toc a { display: block; padding: 6px 10px; border-left: 2px solid var(--rule); color: var(--ink-2); text-decoration: none; line-height: 1.4; }
 .rpt-toc a:hover { color: var(--ink); }
 .rpt-toc a.on { border-left-color: var(--accent); color: var(--ink); font-weight: 600; background: color-mix(in srgb, var(--accent) 6%, transparent); }

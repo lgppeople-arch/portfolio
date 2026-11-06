@@ -28,6 +28,16 @@
       paint(btn);
     });
   }
+  /* 펼침 메뉴: 하나를 열면 나머지는 닫고, 바깥을 누르거나 Esc를 누르면 닫는다 */
+  function closeMenus(except) {
+    var open = document.querySelectorAll("details.nav-g[open]");
+    for (var i = 0; i < open.length; i++) if (open[i] !== except) open[i].removeAttribute("open");
+  }
+  document.addEventListener("click", function (e) {
+    var d = e.target.closest ? e.target.closest("details.nav-g") : null;
+    closeMenus(d);
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenus(null); });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);
   else wire();
 })();

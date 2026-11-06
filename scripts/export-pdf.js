@@ -495,9 +495,13 @@ const pdfOptions = (file, title, target) => {
 
 const newContext = (browser) => browser.newContext({ viewport: { width: VIEW_W, height: 900 }, deviceScaleFactor: 2, reducedMotion: "reduce", colorScheme: "light" });
 
+/* --pick: 지원서에 붙일 대표 화면만 골라 표지·목차와 함께 묶는다 */
+const PICK = ["index.html", "tools/sectors.html", "tools/capex-kit.html", "tools/holdco-nav.html"];
+
 async function main() {
-  const out = path.resolve(process.argv[2] || path.join(ROOT, "pdf"));
-  const only = process.argv.slice(3);
+  const args = process.argv.slice(2), pick = args.includes("--pick"), rest = args.filter((a) => !a.startsWith("--"));
+  const out = path.resolve(rest[0] || path.join(ROOT, "pdf"));
+  const only = pick ? PICK : rest.slice(1);
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch();
   const ctx = await newContext(browser);
@@ -514,16 +518,17 @@ async function main() {
     await page.close();
   }
   fs.writeFileSync(path.join(out, "pages.json"), JSON.stringify(results, null, 1));
-  if (!only.length) await frontMatter(ctx, out, results);
+  const merge = pick || !only.length;
+  if (merge) await frontMatter(ctx, out, results, pick);
   await browser.close();
-  if (!only.length) {
-    const r = spawnSync("python3", [path.join(__dirname, "merge-pdf.py"), out], { encoding: "utf8" });
+  if (merge) {
+    const r = spawnSync("python3", [path.join(__dirname, "merge-pdf.py"), out].concat(pick ? ["이기표_포트폴리오_대표선별.pdf"] : []), { encoding: "utf8" });
     console.log(r.status === 0 ? r.stdout.trim() : "합본은 건너뜀(python3 + pypdf 필요): " + (r.stderr || "").trim().split("\n").pop());
   }
 }
 
 /* 합본 앞에 붙일 표지와 목차. 쪽 번호는 실제 PDF 쪽수(pdfinfo)로 센다 */
-async function frontMatter(ctx, out, results) {
+async function frontMatter(ctx, out, results, pick) {
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let start = 3;
   for (const r of results) {
@@ -550,9 +555,11 @@ async function frontMatter(ctx, out, results) {
     td.p, td.c { text-align: right; width: 54px; } td.c { color: #5C666F; }
     .note { position: absolute; left: 24mm; right: 24mm; bottom: 14mm; font-size: 11px; color: #8A939B; line-height: 1.6; }
   </style></head><body>
-  <section class="page cover"><div class="brand"><b>LGP</b> 이기표</div><div class="kick">PORTFOLIO · 화면 PDF 모음</div>
-    <h1>투자를 검토하고,<br>결과까지 확인하는 재무기획자</h1>
-    <p>포트폴리오 사이트의 모든 화면을 기본값 그대로 담았습니다. 분석 리포트 5편, 실무 도구 10개, 계산 검산과 쉬운 가이드까지 ${results.length}개 화면, ${start - 1}쪽입니다.</p>
+  <section class="page cover"><div class="brand"><b>LGP</b> 이기표</div><div class="kick">PORTFOLIO · ${pick ? "대표 화면 선별본" : "화면 PDF 모음"}</div>
+    <h1>복잡한 사업을 재무로 읽고,<br>투자까지 잇는 기획자</h1>
+    <p>${pick
+      ? "포트폴리오 사이트에서 대표 화면 " + results.length + "개만 골랐습니다. 소개, 7개사 공시를 원문 쪽수와 함께 검산한 업종별 재무제표 리포트, 설비투자 타당성 도구, 지주사 포트폴리오 가치 도구입니다. 나머지 리포트와 도구는 사이트에서 볼 수 있습니다. " + (start - 1) + "쪽."
+      : "포트폴리오 사이트의 모든 화면을 기본값 그대로 담았습니다. 분석 리포트 5편, 실무 도구 10개, 계산 검산과 쉬운 가이드까지 " + results.length + "개 화면, " + (start - 1) + "쪽입니다."}</p>
     <div class="meta"><span>${SITE.replace(/\/$/, "")}</span><span>${today.getFullYear()}년 ${today.getMonth() + 1}월 · A4 가로</span></div></section>
   <section class="page toc"><h2>목차</h2><p class="sub">쪽 번호는 이 합본 기준입니다. 각 화면의 쪽 아래 번호는 그 화면 안에서의 쪽 번호입니다.</p>
     <table>${rows}</table>
