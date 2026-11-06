@@ -47,6 +47,8 @@ const PRINT_CSS = `
   .site-nav, .theme-btn, .tip, .pdf-hide, .rpt-toc { display: none !important; }
   .rpt-grid { display: block !important; }
   .scroll, .etable-wrap { overflow: visible !important; }
+  #cf-table { font-size: 11.5px !important; } #cf-table th, #cf-table td { padding-inline: 5px !important; }
+  table.mx { min-width: 0 !important; } table.mx th, table.mx td { padding-inline: 6px !important; } table.mx tbody th { min-width: 150px !important; }
   .pdf-tab-title { font-family: var(--f-display); font-weight: 800; font-size: 19px; color: var(--accent); margin: 26px 0 10px; padding-top: 12px; border-top: 2px solid var(--rule); }
   tr { break-inside: avoid; }
   .site-foot { margin-top: 28px !important; padding-block: 14px 0 !important; }
