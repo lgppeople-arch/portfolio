@@ -329,13 +329,17 @@
     if (Sectors) {
       Sectors.order.forEach((k) => {
         const c = Sectors.companies[k], I = c.is, B = c.bs, C = c.cf, ps = Object.keys(I.rev), bp = Object.keys(B.ta);
-        add("업종별 공시", c.name + ": 손익계산서 소계(매출총이익·영업이익·세전이익·순이익) " + ps.length + "개 기간", ps.every((p) =>
-          I.gp[p] === I.rev[p] - I.cogs[p] && I.op[p] === I.gp[p] - I.sga[p] - I.rnd[p] &&
-          I.ebt[p] === I.op[p] + I.noi[p] - I.noe[p] + I.fi[p] - I.fc[p] + I.eq[p] && I.ni[p] === I.ebt[p] - I.tax[p]), "원 단위 일치");
+        const z = (o, key, p) => (o[key] && o[key][p]) || 0;
+        /* 업종마다 손익계산서 모양이 달라 없는 줄은 0으로 본다: 매출총이익이 없는 회사(성격별 영업비용), 중단영업, 이자수익 별도 표시 */
+        add("업종별 공시", c.name + ": 손익계산서 소계(" + (I.gp ? "매출총이익·" : "") + "영업이익·세전이익·순이익" + (I.niP ? "·지배/비지배" : "") + ") " + ps.length + "개 기간", ps.every((p) =>
+          (!I.gp || I.gp[p] === I.rev[p] - I.cogs[p]) && (!I.sales || I.rev[p] === I.sales[p] + I.ampc[p]) &&
+          I.op[p] === (I.gp ? I.gp[p] : I.rev[p]) - z(I, "sga", p) - z(I, "rnd", p) - z(I, "opex", p) &&
+          I.ebt[p] === I.op[p] + z(I, "noi", p) - z(I, "noe", p) + z(I, "fi", p) - z(I, "fc", p) + z(I, "eq", p) + z(I, "int", p) &&
+          I.ni[p] === I.ebt[p] - I.tax[p] + z(I, "disc", p) && (!I.niP || I.niP[p] + I.niN[p] === I.ni[p])), "원 단위 일치");
         add("업종별 공시", c.name + ": 재무상태표 자산 = 부채 + 자본, 유동 + 비유동 " + bp.length + "개 시점", bp.every((p) =>
-          B.ta[p] === B.ca[p] + B.nca[p] && B.ta[p] === B.tl[p] + B.te[p] && B.tl[p] === B.cl[p] + B.ncl[p]), "");
+          B.ta[p] === B.ca[p] + B.nca[p] && B.ta[p] === B.tl[p] + B.te[p] && B.tl[p] === B.cl[p] + B.ncl[p] && (!B.teP || B.teP[p] + B.teN[p] === B.te[p])), "");
         add("업종별 공시", c.name + ": 현금흐름표 기초 + 영업·투자·재무 + 환율 = 기말 = 재무상태표 현금", ps.every((p) =>
-          C.close[p] === C.open[p] + C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] && (B.cash[p] === undefined || B.cash[p] === C.close[p])), "");
+          C.close[p] === C.open[p] + C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] + z(C, "other", p) && (B.cash[p] === undefined || B.cash[p] === C.close[p])), "");
       });
     }
 
