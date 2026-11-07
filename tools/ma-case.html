@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>M&amp;A 사례: HD현대중공업·미포 합병 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="HD현대중공업의 HD현대미포 흡수합병(2025.12.1)을 사업보고서 원문으로 읽은 공개 M&A 사례. 합병가액이 정해지는 방식, 동일지배 사업결합의 장부금액 회계, 재무제표와 지배구조에 찍힌 효과를 쪽수와 함께 검산했습니다.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="M&amp;A 사례: HD현대중공업·미포 합병 · 이기표">
+<meta property="og:description" content="같은 그룹 안의 상장사 합병을 공시 원문으로: 기준주가 합병가액, 영업권 없는 장부금액 회계, 수주잔고와 지분율 변화">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/ma-case.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og-fsa.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  :root { --bar-ink: #FFFFFF; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bar-ink: #0D1114; } }
+  :root[data-theme="dark"] { --bar-ink: #0D1114; }
+  .rpt-hero { min-height: 480px; }
+  .numband b span { font-size: inherit; color: inherit; }
+  .numband b small { font-size: 0.45em; font-weight: 700; margin-left: 2px; }
+  table.fs { border-collapse: collapse; width: 100%; min-width: 600px; font-size: var(--s-1); }
+  table.fs th, table.fs td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  table.fs thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+  table.fs tbody th { text-align: left; font-weight: 500; color: var(--ink-2); }
+  table.fs td { font-family: var(--f-num); white-space: nowrap; }
+  table.fs td.txt { font-family: var(--f-body); white-space: normal; text-align: left; color: var(--ink-2); line-height: 1.6; }
+  table.fs tr.tot th, table.fs tr.tot td { font-weight: 700; color: var(--ink); }
+  table.fs td.neg { color: var(--neg-ink); }
+  table.fs.tx thead th { text-align: left; }
+  /* 일정 */
+  .tl { position: relative; margin: 34px 8px 8px; height: 150px; }
+  .tl .line { position: absolute; left: 0; right: 0; top: 52px; border-top: 2px solid var(--rule); }
+  .tl .pt { position: absolute; top: 0; transform: translateX(-50%); display: grid; justify-items: center; gap: 6px; width: 118px; text-align: center; }
+  .tl .pt b { font-family: var(--f-num); font-size: 12px; color: var(--ink); }
+  .tl .pt i { width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); margin-top: 18px; }
+  .tl .pt.key i { background: var(--accent); }
+  .tl .pt span { font-size: 12px; color: var(--ink-2); line-height: 1.4; }
+  .tl .pt.low { top: 0; }
+  .tl .pt.low span { margin-top: 0; }
+  .tl .pt.up { top: 0; }
+  @media (max-width: 760px) {
+    .tl { height: auto; margin: 16px 0; }
+    .tl .line { display: none; }
+    .tl .pt { position: static; transform: none; width: auto; grid-template-columns: 82px 14px minmax(0, 1fr); text-align: left; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--rule-soft); }
+    .tl .pt i { margin: 0; }
+    .tl .pt span { text-align: left; }
+  }
+  /* 가로 막대 */
+  .hbars { display: grid; gap: 14px; }
+  .hrow { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; align-items: center; }
+  .hrow > b { font-size: var(--s-1); line-height: 1.3; }
+  .hrow > b small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .hbar { display: flex; height: 32px; border-radius: 4px; overflow: hidden; background: transparent; }
+  .hbar span { display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-family: var(--f-num); color: var(--bar-ink); white-space: nowrap; overflow: hidden; min-width: 0; }
+  .hbar span.lt { color: var(--ink); }
+  .hbar span.gap { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 22%, transparent) 0 6px, transparent 6px 12px); border: 1px dashed var(--accent); color: var(--ink); border-radius: 4px; }
+  .skey { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); margin-top: 12px; }
+  .skey i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  @media (max-width: 760px) { .hrow { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+  .src, .rpt-body p.src { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .ncards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 14px 0 8px; }
+  @media (max-width: 760px) { .ncards { grid-template-columns: minmax(0, 1fr); } }
+  .nc { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .nc .h { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .nc .h b { font-size: var(--s-2); }
+  .nc .h span { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .nc .big { font-family: var(--f-display); font-weight: 800; font-size: 24px; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .nc .big small { font-family: var(--f-body); font-size: 12.5px; font-weight: 500; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+  .rpt-body .nc p { margin: 0; max-width: none; font-size: var(--s-1); line-height: 1.7; }
+  .nc .so { color: var(--ink); border-top: 1px solid var(--rule-soft); padding-top: 8px; }
+  .nc .so::before { content: "읽기  "; font-weight: 700; color: var(--accent); white-space: pre; }
+  .look { list-style: none; margin: 10px 0; padding: 0; border-top: 1px solid var(--rule); }
+  .look li { display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--rule-soft); font-size: var(--s-1); line-height: 1.6; color: var(--ink-2); }
+  .look li b { color: var(--ink); font-size: var(--s-2); line-height: 1.35; }
+  .look li em { font-style: normal; display: block; font-size: 11.5px; color: var(--accent); font-weight: 600; margin-bottom: 2px; }
+  @media (max-width: 760px) { .look li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+  .checks-list { margin: 10px 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: var(--s-1); color: var(--ink-2); }
+  .checks-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; }
+  .checks-list li::before { content: "✓"; color: var(--pos); font-weight: 700; }
+  .checks-list li.bad::before { content: "✕"; color: var(--neg); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html" aria-current="page">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 공개 M&amp;A 사례</div>
+      <div class="rpt-tag">Deal case · 06</div>
+      <h1>같은 그룹 안의 합병,<br>숫자는 어디로 갔나</h1>
+      <p class="dek">HD현대중공업은 2025년 12월 1일 같은 그룹의 상장 조선사 HD현대미포를 흡수합병했습니다. 합병가액은 시장 주가로 정해졌고, 회계는 영업권 없이 장부금액으로 처리됐습니다. 사업보고서 원문으로 대가, 회계처리, 재무제표와 지배구조에 찍힌 효과를 따라가고 검산했습니다.</p>
+      <div class="rpt-meta"><span>자료<b>HD현대중공업 2025 사업보고서</b></span><span>거래<b>흡수합병 · 2025.12.1</b></span><span>단위<b>조원 · 억원</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>값은 시장 주가가 정했습니다</b><p>상장사끼리의 합병이라 자본시장법 시행령의 기준주가를 합병가액으로 썼고, 외부평가를 받지 않았습니다. HD현대중공업의 주당 합병가액은 470,833원, 새로 낸 주식은 16,188,109주입니다.</p></div>
+      <div><b>영업권은 한 푼도 생기지 않았습니다</b><p>같은 지배기업 아래의 합병이라, HD현대미포의 자산과 부채를 HD한국조선해양 연결장부금액 그대로 받았습니다. 받은 순자산은 2.41조원이고, 합병가액으로 환산한 신주 7.62조원과의 차이는 손익이나 영업권이 아니라 자본으로만 처리됐습니다.</p></div>
+      <div><b>재무제표가 한 달 만에 달라졌습니다</b><p>자산은 19.4조원에서 26.2조원이 됐고, 수주잔고에 11.4조원이 더해졌습니다. 2025년 손익에는 합병 뒤 한 달치만 들어가, 2026년 실적의 성장률은 합병 효과를 걸러 내고 읽어야 합니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-deal" data-toc="거래 한눈에">
+          <h2>거래 한눈에</h2>
+          <p>존속회사는 HD현대중공업, 소멸회사는 HD현대미포입니다. 두 회사 모두 HD한국조선해양이 최대주주인 유가증권시장 상장사라, 같은 지배기업 아래에서 몸을 합친 거래입니다. 이사회 결의부터 합병기일까지 약 3개월이 걸렸습니다.</p>
+          <div class="numband" data-rv id="nb-deal"></div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>합병 일정</h4><span class="hint">2025년</span></div>
+            <div class="fig-b"><div class="tl" id="tl"></div></div>
+            <div class="fig-s">출처: 사업보고서 427쪽(합병등의 사후정보, 주요일정). 합병종료보고 주주총회는 이사회 결의로 갈음했습니다.</div>
+          </div>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs tx" id="t-terms"></table></div>
+        </section>
+
+        <section id="s-price" data-toc="합병가액은 어떻게">
+          <h2>합병가액은 시장 주가로 정해졌습니다</h2>
+          <p>비상장사를 사고팔 때는 실사와 가치평가로 값을 정하지만, 상장사끼리의 합병은 법이 정한 공식을 씁니다. 이 거래는 자본시장법 제165조의4와 시행령 제176조의5 제1항 제1호에 따라 보통주의 기준주가를 합병가액으로 삼아 합병비율을 정했고, 외부평가기관의 평가를 받지 않았다고 공시했습니다(사업 427쪽).</p>
+          <div class="ncards" id="nc-price"></div>
+          <p class="src">기준주가 산식은 법령 요약입니다. 이사회 결의 전날을 기준으로 최근 1개월 평균종가, 최근 1주일 평균종가, 최근일 종가를 산술평균하고, 정해진 범위 안에서 할인·할증할 수 있습니다(계열회사 간 합병은 더 좁은 범위). 이 거래의 합병비율 숫자 자체는 주요사항보고서(2025.8.27)에 있고 사업보고서에는 옮겨 적혀 있지 않아 여기서는 쓰지 않았습니다.</p>
+        </section>
+
+        <section id="s-acct" data-toc="회계: 영업권 없는 합병">
+          <h2>회계: 영업권이 생기지 않는 합병</h2>
+          <p>보통의 인수는 취득법으로 처리합니다. 받은 자산과 부채를 공정가치로 다시 재고, 치른 대가가 순자산 공정가치보다 크면 그 차이를 영업권으로 잡습니다. 그런데 이 합병은 '상위지배기업의 동일지배하 사업결합'이라, 회사는 HD현대미포의 자산과 부채를 HD한국조선해양 연결재무제표에 있던 장부금액 그대로 인식했습니다(주석 46, 사업 186~187쪽).</p>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs tx" id="t-acct"></table></div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>받은 자산과 부채 (합병기일, 장부금액)</h4><span class="hint">조원</span></div>
+            <div class="fig-b"><div class="hbars" id="hb-net"></div><div class="skey" id="key-net"></div></div>
+            <div class="fig-s">출처: 사업보고서 186~187쪽(주석 46 사업결합). 자산 막대 길이가 기준입니다. 순자산 = 자산 − 부채.</div>
+          </div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>신주의 시장가치와 장부에 잡힌 금액</h4><span class="hint">조원</span></div>
+            <div class="fig-b"><div class="hbars" id="hb-gap"></div></div>
+            <div class="fig-s">신주 시장가치 = 발행 신주 16,188,109주 × 주당 합병가액 470,833원(사업 316쪽). 자본 증가는 연결 자본변동표의 '사업결합' 행(사업 65~66쪽), 취득 순자산은 주석 46입니다. 빗금 칸은 취득법이었다면 공정가치 재측정을 거쳐 일부가 영업권으로 잡혔을 수 있는 차이로, 단순 비교입니다.</div>
+          </div>
+          <div class="ncards" id="nc-acct"></div>
+        </section>
+
+        <section id="s-fs" data-toc="재무제표와 지분에 찍힌 효과">
+          <h2>재무제표와 지분에 찍힌 효과</h2>
+          <p>합병은 한 날짜에 재무상태표를 통째로 키우지만, 손익계산서에는 그날 이후만 들어갑니다. 그래서 합병한 해와 다음 해의 숫자를 그대로 비교하면 성장처럼 보이는 착시가 생깁니다. 지배구조도 바뀝니다. 최대주주가 소멸회사 주주로서 새 주식을 받았지만, 다른 주주들도 함께 받아 지분율은 낮아졌습니다.</p>
+          <div class="scroll" style="border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface)"><table class="fs" id="t-fx"></table></div>
+          <p class="src">출처: 연결 재무상태표·손익계산서는 업종별 리포트와 같은 사업보고서·반기보고서 값입니다(사업 61~63쪽, 반기 62~64쪽). 수주잔고는 사업 32~33쪽, 합병 전후 요약 재무상태표(2025.6.30 기준, 별도 단순합산 추정)는 사업 427~428쪽, 최대주주 주식 수는 372쪽입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>최대주주(HD한국조선해양) 지분율</h4><span class="hint">보통주 기준</span></div>
+            <div class="fig-b"><div class="hbars" id="hb-own"></div></div>
+            <div class="fig-s">출처: 사업보고서 372쪽(최대주주 주식 변동). 총 주식 수는 자본금 ÷ 액면 5,000원으로 계산했고, 공시된 지분율(74.11%, 69.23%)과 일치합니다.</div>
+          </div>
+        </section>
+
+        <section id="s-lesson" data-toc="재무기획이 볼 것">
+          <h2>재무기획 담당자가 이 거래에서 챙길 것</h2>
+          <p>합병을 실무로 지원한다면 무엇을 계산하고 무엇을 미리 설명해야 하는지로 정리했습니다. 공시로 확인한 사실과 일반적인 실무 원칙을 나눠 적었습니다.</p>
+          <ul class="look" id="look"></ul>
+        </section>
+
+        <section id="s-check" data-toc="출처와 검산">
+          <h2>출처와 검산</h2>
+          <p>숫자는 HD현대중공업 2025 사업보고서(제7기, 2026년 3월 20일 공시)에서 옮겼고, 원문이 천원인 항목은 백만원으로 환산했습니다. 공시 숫자끼리 서로 맞는지 아래 항등식으로 검산했습니다. 같은 검산이 <a href="checks.html">검산 페이지</a>에서도 돕니다.</p>
+          <ul class="checks-list" id="checks-list"></ul>
+          <p class="rpt-end">자료: HD현대중공업 2025 사업보고서, 2026 반기보고서, 전자공시시스템(dart.fss.or.kr). 쪽수는 공시 PDF 아래쪽의 쪽 번호입니다. 법령 설명은 요약이며 법률 자문이 아닙니다. 투자 권유가 아니라 공시로 M&A를 읽는 방법을 보이기 위한 분석입니다. 관련 도구: <a href="ma-process.html">M&amp;A 절차 지도</a>, <a href="ma-valuation.html">M&amp;A 가치평가</a>, <a href="sectors.html#s-hhi">업종별 리포트의 HD현대중공업</a>.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/data/sectors.js"></script>
+<script src="../assets/data/deal-hhi.js"></script>
+<script src="../assets/checks.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, X = window.DealHhi, S = window.SectorsData.companies.hhi, $ = F.$;
+  const T = X.terms, A = X.acquired, EQ = X.equityRow, O = X.owner, PF = X.proforma;
+  const J = (m) => m / 1e6;                         /* 백만원 → 조원 */
+  const jo = (m, d) => F.num(J(m), d === undefined ? 2 : d) + "조원";
+  const wonJ = (w, d) => F.num(w / 1e12, d === undefined ? 2 : d) + "조원";   /* 원 → 조원 */
+  const shareValue = T.newShares * T.mergerPrice;   /* 원 */
+  const eqTotal = EQ.total / 1e3;                  /* 천원 → 백만원 */
+  const sh0 = O.capitalBefore * 1e6 / T.par, sh1 = O.capitalAfter * 1e6 / T.par;
+  const LIGHT = ["--rule", "--mark-muted"];
+  const paint = (el, c) => { el.style.background = F.css(c); if (LIGHT.indexOf(c) >= 0) el.classList.add("lt"); };
+
+  function band(id, items) {
+    const host = $(id); host.textContent = "";
+    items.forEach((it) => host.appendChild(F.el("div", null, [F.el("b", null, [F.el("span", { text: it[0] }), F.el("small", { text: it[1] })]), F.el("span", { text: it[2] })])));
+  }
+  function cardsTo(id, cards) {
+    const host = $(id); host.textContent = "";
+    cards.forEach((c) => host.appendChild(F.el("article", { class: "nc" }, [
+      F.el("div", { class: "h" }, [F.el("b", { text: c[0] }), F.el("span", { text: c[1] })]),
+      F.el("div", { class: "big" }, [c[2], F.el("small", { text: c[3] })]),
+      F.el("p", { text: c[4] }), F.el("p", { class: "so", text: c[5] })])));
+  }
+  function table(id, head, rows) {
+    const t = $(id); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, head.map((h, i) => F.el("th", { text: h, style: i === 0 ? "text-align: left" : null })))]));
+    const tb = F.el("tbody");
+    rows.forEach((r) => tb.appendChild(F.el("tr", { class: r.cls || null }, [F.el("th", { text: r.c[0] })].concat(r.c.slice(1).map((v, i) => F.el("td", { text: v, class: (r.txt && r.txt.indexOf(i + 1) >= 0 ? "txt " : "") + (r.neg && r.neg.indexOf(i + 1) >= 0 ? "neg" : "") || null }))))));
+    t.appendChild(tb);
+  }
+  /* 가로 막대: segs = [{v, c, label, gap}], scale = 막대 전체 기준값 */
+  function hbar(segs, scale) {
+    const b = F.el("div", { class: "hbar" });
+    segs.forEach((s) => { const w = s.v / scale; const sp = F.el("span", { text: w >= 0.09 ? (s.label || "") : "", title: s.title || s.label || "" });
+      sp.style.width = (w * 100) + "%"; if (s.gap) sp.className = "gap"; else paint(sp, s.c); b.appendChild(sp); });
+    return b;
+  }
+
+  function drawDeal() {
+    band("nb-deal", [
+      [F.num(T.mergerPrice, 0), "원", "HD현대중공업 주당 합병가액 (기준주가)"],
+      [F.num(T.newShares / 1e4, 0), "만 주", "합병신주 · 시장가치 " + wonJ(shareValue)],
+      [jo(A.net).replace("조원", ""), "조원", "받은 순자산 (장부금액)"],
+      [F.num(O.after / sh1 * 100, 2), "%", "합병 후 HD한국조선해양 지분율 · 합병 전 " + F.pct(O.before / sh0, 2)]
+    ]);
+    /* 일정: 날짜 위치를 기간 안에서 비율로 */
+    const tl = $("tl");
+    tl.textContent = ""; tl.appendChild(F.el("div", { class: "line" }));
+    X.schedule.forEach((s, i) => {
+      /* 날짜 간격이 고르지 않아 글자가 겹치므로 순서대로 같은 간격에 놓는다(날짜는 글자로 표시) */
+      const x = i / (X.schedule.length - 1) * 100, key = /결의|승인|합병기일/.test(s[1]);
+      const pt = F.el("div", { class: "pt" + (key ? " key" : ""), title: s[2] }, [F.el("b", { text: s[0].slice(5).replace("-", ".") }), F.el("i"), F.el("span", { text: s[1] + (s[2] ? " · " + s[2] : "") })]);
+      pt.style.left = "calc(" + x + "% * 0.86 + 7%)";
+      tl.appendChild(pt);
+    });
+    table("t-terms", ["항목", "내용", "출처"], [
+      { c: ["구조", "흡수합병: HD현대중공업(존속) ← HD현대미포(소멸), 두 회사 모두 유가증권시장 상장", "사업 422~427쪽"], txt: [1, 2] },
+      { c: ["대가", "HD현대미포 주주에게 HD현대중공업 신주 " + F.num(T.newShares, 0) + "주 발행, 주당 발행가액 = 주당 합병가액 " + F.num(T.mergerPrice, 0) + "원", "사업 316쪽"], txt: [1, 2] },
+      { c: ["가격 결정", "자본시장법 제165조의4, 시행령 제176조의5 제1항 제1호의 기준주가. 외부평가 없음", "사업 427쪽"], txt: [1, 2] },
+      { c: ["반대주주", "주식매수청구권 행사와 단수주 처리로 자기주식 " + F.num(T.treasuryShares, 0) + "주 취득, 현금 " + F.num(T.treasuryCash * 1e6 / 1e8, 0) + "억원", "사업 14·65~66쪽"], txt: [1, 2] },
+      { c: ["회계", "동일지배하 사업결합: HD한국조선해양 연결장부금액으로 인식, 영업권 없음", "사업 186~187쪽"], txt: [1, 2] },
+      { c: ["목적(회사 설명)", "특수목적선 실적과 친환경 선박 기술을 결집해 규모와 경쟁력 강화", "사업 427쪽"], txt: [1, 2] }
+    ]);
+  }
+
+  function drawPrice() {
+    cardsTo("nc-price", [
+      ["협상 대신 공식", "사업 427쪽", "외부평가 없음", "상장사 간 합병, 기준주가 적용", "두 회사의 주가가 정해지면 합병비율도 정해집니다. 그래서 이사회 결의 직전 두 회사의 주가 흐름이 곧 거래 조건입니다.", "같은 그룹 안의 합병에서는 결의 시점의 주가가 어느 쪽 주주에게 유리했는지가 늘 논점이 됩니다. 재무 담당자는 기준주가 산정 기간과 두 회사 주가의 상대 흐름을 표로 남겨 둡니다."],
+      ["신주 가치 " + wonJ(shareValue, 1), "사업 316쪽", F.num(T.mergerPrice, 0) + "원", "주당 합병가액 × 신주 " + F.num(T.newShares, 0) + "주", "HD현대미포 주주가 받은 대가를 합병가액으로 환산한 값입니다. 같은 회사의 장부에는 이보다 훨씬 작은 순자산이 잡혔습니다(아래 회계 절).", "대가의 크기와 회계상 숫자가 다를 수 있다는 점을 먼저 설명해 두면, 합병 후 ROE·PBR이 왜 달라 보이는지 경영진 질문에 바로 답할 수 있습니다."],
+      ["반대주주에게 나간 현금", "사업 14·65~66쪽", F.num(T.treasuryCash * 1e6 / 1e8, 0) + "억원", "자기주식 " + F.num(T.treasuryShares, 0) + "주 취득", "합병에 반대한 주주의 주식매수청구와 단수주 처리로 회사가 자기주식을 샀습니다. 2025년 연결 현금흐름표의 '자기주식의 취득' 금액과 같습니다.", "매수청구가 몰리면 합병 자체가 무산되거나 현금이 크게 나갈 수 있습니다. 실무에서는 청구 예상 규모별 자금 계획과 '청구액이 얼마를 넘으면 계약을 해제한다'는 조항을 함께 봅니다."],
+      ["지분이 희석된 최대주주", "사업 372쪽", F.num(O.before / sh0 * 100, 2) + "% → " + F.num(O.after / sh1 * 100, 2) + "%", "HD한국조선해양 지분율", "최대주주도 HD현대미포 주주로서 신주 " + F.num(O.added, 0) + "주를 받았지만, 나머지 신주가 다른 주주에게 가서 지분율은 낮아졌습니다.", "그룹 내 합병은 지주회사의 지분율과 지배력, 지주회사 요건(자회사 최소 지분율)에 영향을 줍니다. 지주사 쪽 재무기획은 합병 전후 지분율을 미리 계산해 둡니다."]
+    ]);
+  }
+
+  function drawAcct() {
+    table("t-acct", ["", "취득법 (보통의 인수)", "동일지배하 사업결합 (이 거래)"], [
+      { c: ["자산·부채 측정", "합병기일 공정가치로 다시 잰다", "지배기업(HD한국조선해양) 연결재무제표의 장부금액을 그대로 받는다"], txt: [1, 2] },
+      { c: ["영업권", "대가 − 순자산 공정가치 > 0이면 영업권", "생기지 않는다"], txt: [1, 2] },
+      { c: ["대가와 순자산의 차이", "영업권(또는 염가매수차익)", "자본(자본잉여금 등)에서 조정"], txt: [1, 2] },
+      { c: ["이후 손익", "공정가치 상향분의 상각·영업권 손상 위험", "추가 상각 없이 기존 장부 흐름을 잇는다"], txt: [1, 2] },
+      { c: ["읽을 때 주의", "PPA(공정가치 배분) 주석", "합병 전후 숫자를 같은 기준으로 맞춰 비교"], txt: [1, 2] }
+    ]);
+    const parts = [
+      { v: A.ca.conA, c: "--accent", name: "계약자산" }, { v: A.nca.ppe, c: "--ink-2", name: "유형자산" }, { v: A.ca.other, c: "--input", name: "기타유동자산" },
+      { v: A.ca.cash + A.ca.ar + A.ca.inv, c: "--pos", name: "현금·매출채권·재고" }, { v: A.nca.invest + A.nca.intang + A.nca.other, c: "--mark-muted", name: "기타비유동자산" }
+    ];
+    const liab = [{ v: A.cl.conL, c: "--neg", name: "계약부채" }, { v: A.cl.ap, c: "--total", name: "매입채무·기타채무" }, { v: A.cl.other + A.ncl.total, c: "--rule", name: "기타 부채" }];
+    const ta = A.ca.total + A.nca.total, tl = A.cl.total + A.ncl.total, host = $("hb-net");
+    host.textContent = "";
+    const row = (label, sub, segs) => host.appendChild(F.el("div", { class: "hrow", role: "img", "aria-label": label + ": " + segs.map((s) => s.name + " " + F.num(J(s.v), 2) + "조원").join(", ") }, [F.el("b", null, [label, F.el("small", { text: sub })]), hbar(segs.map((s) => Object.assign({ label: F.num(J(s.v), 2), title: s.name + " " + F.num(J(s.v), 2) + "조원" }, s)), ta)]));
+    row("받은 자산", jo(ta), parts);
+    row("넘겨받은 부채 + 순자산", jo(tl) + " + " + jo(A.net), liab.concat([{ v: A.net, c: "--pos", name: "순자산" }]));
+    const key = $("key-net"); key.textContent = "";
+    parts.concat(liab, [{ c: "--pos", name: "순자산(아래 막대)" }]).forEach((p) => { const i = F.el("i"); i.style.background = F.css(p.c); key.appendChild(F.el("span", null, [i, p.name])); });
+
+    const g = $("hb-gap"); g.textContent = "";
+    const sv = shareValue / 1e6;   /* 원 → 백만원 */
+    const grow = (label, sub, segs) => g.appendChild(F.el("div", { class: "hrow" }, [F.el("b", null, [label, F.el("small", { text: sub })]), hbar(segs, sv)]));
+    grow("신주의 시장가치", "합병가액 기준", [{ v: sv, c: "--accent", label: jo(sv) }]);
+    grow("장부상 자본 증가", "자본변동표 사업결합 행", [{ v: eqTotal, c: "--ink-2", label: jo(eqTotal) }, { v: sv - eqTotal, gap: true, label: "차이 " + jo(sv - eqTotal) }]);
+    grow("받은 순자산", "주석 46, 장부금액", [{ v: A.net, c: "--pos", label: jo(A.net) }]);
+
+    cardsTo("nc-acct", [
+      ["자본은 이렇게 늘었습니다", "사업 65~66쪽", jo(eqTotal), "연결 자본변동표 '사업결합' 행", "자본금 " + F.num(EQ.capital / 1e5, 0) + "억원(신주 × 액면 5,000원), 자본잉여금 " + F.num(EQ.surplus / 1e9, 2) + "조원, 기타포괄손익누계액 " + F.num(EQ.aoci / 1e5, 0) + "억원입니다. 이익잉여금은 그대로입니다.", "자본금 증가가 신주 수 × 액면과 정확히 같은지부터 맞춰 보면, 나머지가 잉여금과 기타 항목으로 어떻게 나뉘었는지 따라갈 수 있습니다."],
+      ["순자산의 절반 이상이 계약 관련", "사업 186~187쪽", jo(A.ca.conA) + " / " + jo(A.cl.conL), "계약자산 / 계약부채", "받은 자산 가운데 계약자산이 " + jo(A.ca.conA) + ", 넘겨받은 부채 가운데 계약부채가 " + jo(A.cl.conL) + "입니다. 조선사를 합치면 진행 중인 선박 계약도 함께 넘어옵니다.", "수주산업의 합병은 '진행 중 계약의 남은 이익과 손실'을 함께 사는 일입니다. 실사에서 계약별 예정원가와 손실충당금을 따로 보는 이유입니다."],
+      ["ROE가 낮아 보이는 착시", "사업 61~63쪽", F.pct(S.is.ni["2025"] / S.bs.te["2025"]), "2025년 순이익 ÷ 기말 자본", "기말 자본에는 합병으로 늘어난 " + jo(eqTotal) + "이 다 들어가 있지만, 2025년 순이익에는 합병 뒤 한 달치만 들어갔습니다. 기초·기말 평균 자본으로 계산하면 " + F.pct(S.is.ni["2025"] / ((S.bs.te["2025"] + S.bs.te["2024"]) / 2)) + "입니다.", "합병한 해의 ROE·자산회전율은 분모와 분자의 기간이 맞지 않습니다. 비교는 합병 전 두 회사를 합친 기준(프로포마)으로 다시 맞춥니다."],
+      ["취득법이었다면", "단순 비교", jo(shareValue / 1e6 - A.net), "신주 시장가치 − 받은 순자산(장부)", "다른 그룹의 회사를 같은 값에 샀다면, 이 차이는 자산·부채를 공정가치로 다시 잰 뒤 남는 만큼 영업권으로 잡혔을 것입니다. 공정가치 재측정 전 금액이라 실제 영업권 크기를 뜻하지는 않습니다.", "같은 거래라도 회계처리 방식이 자본·자산 크기와 이후 손익을 바꿉니다. 그룹 내 재편의 효과를 설명할 때는 회계 숫자보다 현금과 지분 구조로 설명하는 편이 정확합니다."]
+    ]);
+  }
+
+  function drawFx() {
+    const I = S.is, B = S.bs, bl = S.notes.backlog;
+    const j = (w) => F.num(w / 1e12, 2);
+    table("t-fx", ["", "합병 전", "합병 후", "읽는 법"], [
+      { c: ["자산총계 (연결)", j(B.ta["2024"]) + " (2024년 말)", j(B.ta["2025"]) + " (2025년 말)", "합병분 자산 " + jo(A.ca.total + A.nca.total) + "이 한 번에 들어왔습니다."], txt: [3] },
+      { c: ["자본총계 (연결)", j(B.te["2024"]), j(B.te["2025"]), "사업결합 " + jo(eqTotal) + " + 2025년 순이익 등"], txt: [3] },
+      { c: ["계약부채 (연결)", j(B.conL["2024"]), j(B.conL["2025"]), "합병분 " + jo(A.cl.conL) + " 포함"], txt: [3] },
+      { c: ["수주잔고", j(bl.open) + " (기초)", j(bl.close) + " (기말)", "합병분 " + jo(X.backlogAdded) + "이 더해졌습니다(사업 32~33쪽)."], txt: [3] },
+      { c: ["매출 (상반기)", j(I.rev["2025H1"]) + " (2025)", j(I.rev["2026H1"]) + " (2026)", F.pctSigned(I.rev["2026H1"] / I.rev["2025H1"] - 1) + " 중 합병 효과는 따로 떼어 봐야 합니다."], txt: [3] },
+      { c: ["요약 재무상태표 (2025.6.30, 별도)", "HHI " + jo(PF.hhi.ta) + " + 미포 " + jo(PF.mipo.ta), jo(PF.after.ta), "회사가 공시한 합병 전후 추정치(단순합산)입니다(사업 427~428쪽)."], txt: [1, 3] }
+    ]);
+    const host = $("hb-own"); host.textContent = "";
+    [["합병 전", "총 " + F.num(sh0, 0) + "주", O.before, sh0], ["합병 후", "총 " + F.num(sh1, 0) + "주", O.after, sh1]].forEach((r) => {
+      const w = r[2] / r[3];
+      host.appendChild(F.el("div", { class: "hrow", role: "img", "aria-label": r[0] + " 지분율 " + F.pct(w, 2) }, [F.el("b", null, [r[0], F.el("small", { text: r[1] })]),
+        hbar([{ v: w, c: "--input", label: "HD한국조선해양 " + F.pct(w, 2) + " (" + F.num(r[2], 0) + "주)" }, { v: 1 - w, c: "--rule", label: "기타 주주 " + F.pct(1 - w, 2) }], 1)]));
+    });
+  }
+
+  function drawLook() {
+    const rows = [
+      ["합병비율과 시점", "공시: 기준주가로 합병가액을 정해 외부평가가 없었다.", "실무: 결의 전 두 회사 주가의 상대 흐름, 할인·할증 여지, 소수주주 반발 가능성을 표로 남기고 이사회 자료에 근거를 적는다."],
+      ["반대주주 현금", "공시: 매수청구·단수주로 자기주식 " + F.num(T.treasuryShares, 0) + "주, " + F.num(T.treasuryCash * 1e6 / 1e8, 0) + "억원.", "실무: 청구 예상액 시나리오별 자금 계획과 계약 해제 조건(청구액 한도)을 함께 검토한다."],
+      ["회계처리 방식", "공시: 동일지배하 사업결합, 장부금액 인식, 영업권 없음.", "실무: 합병 후 자본·ROE·PBR이 어떻게 보일지 미리 계산해 경영진과 투자자 설명 자료에 넣는다."],
+      ["성장률 착시", "공시: 2025년 손익에 합병 뒤 1개월치만 반영.", "실무: 합병 전 두 회사를 합친 프로포마로 전년 대비 성장률과 이익률을 다시 계산한다."],
+      ["지배구조", "공시: 최대주주 지분율 74.11% → 69.23%.", "실무: 지주회사 요건(자회사 최소 지분율), 지분법·연결 범위, 향후 자본정책에 주는 영향을 점검한다."],
+      ["통합 효과(PMI)", "공시: 회사는 규모와 경쟁력 강화를 목적으로 밝혔다.", "실무: 통합 전에 시너지 항목(조달, 설계, 도크 배분 등)과 측정 지표를 정하고 합병 뒤 계획 대비 실적으로 추적한다."]
+    ];
+    const ul = $("look"); ul.textContent = "";
+    rows.forEach((r) => ul.appendChild(F.el("li", null, [F.el("b", { text: r[0] }), F.el("span", null, [F.el("em", { text: "공시로 확인한 것" }), r[1].replace(/^공시: /, "")]), F.el("span", null, [F.el("em", { text: "재무기획이 할 일" }), r[2].replace(/^실무: /, "")])])));
+  }
+
+  function checks() {
+    const res = window.Checks.run({ Fin: F, Sectors: window.SectorsData, Deal: X }).filter((r) => r.group === "M&A 사례");
+    const ul = $("checks-list"); ul.textContent = "";
+    res.forEach((r) => ul.appendChild(F.el("li", { class: r.ok ? "" : "bad", text: r.name + (r.detail ? " — " + r.detail : "") })));
+  }
+
+  function render() { drawDeal(); drawPrice(); drawAcct(); drawFx(); drawLook(); checks(); }
+  render();
+  F.onRedraw(render);
+
+  Report.flows($("hero-art"), {
+    area: { span: 0.40, max: 560, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.10, y: 0.20, label: "HD현대미포" }, { x: 0.10, y: 0.80, label: "HD한국조선해양" }, { x: 0.50, y: 0.50, label: "HD현대중공업" },
+            { x: 0.92, y: 0.16, label: "자본 +" + F.num(J(eqTotal), 2) + "조" }, { x: 0.92, y: 0.50, label: "수주잔고 +" + F.num(J(X.backlogAdded), 1) + "조" }, { x: 0.92, y: 0.84, label: "지분율 " + F.num(O.after / sh1 * 100, 1) + "%" }],
+    links: [
+      { from: 0, to: 2, bend: -0.10, c: 0, label: "순자산 " + F.num(J(A.net), 2) + "조", n: 34 },
+      { from: 1, to: 2, bend: 0.10, c: 1, label: "신주 " + F.num(O.added / 1e4, 0) + "만 주", dy: 18, n: 16 },
+      { from: 2, to: 3, bend: -0.06, c: 2, n: 24 }, { from: 2, to: 4, bend: 0, c: 0, n: 40 }, { from: 2, to: 5, bend: 0.06, c: 1, n: 14 }
+    ]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>

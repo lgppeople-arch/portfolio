@@ -25,6 +25,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
+  .preset-bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 8px; }
+  .preset-bar .sample { margin: 0; }
+  #preset-more { margin: 0 0 18px; max-width: 900px; line-height: 1.65; }
   .summary { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 24px; }
   .summary > * { min-width: 0; }
   .summary .side { display: grid; gap: 18px; align-content: start; }
@@ -67,10 +70,11 @@
     <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
-      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a></div><div><span class="nav-h">투자·M&A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html" aria-current="page">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html" aria-current="page">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
     </nav>
     <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
   </div>
@@ -87,7 +91,14 @@
   </div>
 
   <div class="wrap wide tool-body">
-    <span class="sample">예시: 반도체·소재 자회사 다섯 곳을 둔 가상 지주회사 H · 모든 수치는 가상</span>
+    <div class="preset-bar">
+      <span class="seg" role="radiogroup" aria-label="불러올 값">
+        <label><input type="radio" name="preset" value="demo" checked>가상 예시</label>
+        <label><input type="radio" name="preset" value="lg">㈜LG 2025년 말 공시</label>
+      </span>
+      <span class="sample" id="preset-note">예시: 반도체·소재 자회사 다섯 곳을 둔 가상 지주회사 H · 모든 수치는 가상</span>
+    </div>
+    <p class="hint" id="preset-more" hidden>상장 관계사 5곳은 사업보고서의 연말 보유 주식 시가, 지주사 자체는 별도 재무제표 값입니다. LG씨엔에스는 상장사지만 연말 시가가 사업보고서에 없어 다른 종속기업과 함께 장부가로 '기타 투자자산'에 넣었습니다. 그래서 이 NAV는 실제보다 낮게 잡힌 쪽입니다. 주가는 2025년 12월 보통주 평균이고 우선주는 뺐습니다. 로열티 배수 8배는 가정입니다. 숫자를 바꿔 가며 할인율이 어디서 오는지 확인해 보세요. <a href="sectors.html#s-lg">업종별 리포트의 ㈜LG 분석 보기 →</a></p>
 
     <section class="summary" aria-live="polite">
       <div>
@@ -183,7 +194,7 @@
 </main>
 
 <footer class="site-foot">
-  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span>가상 예시의 수치는 모두 가상이고, ㈜LG 값은 공시에서 옮겼습니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
@@ -192,7 +203,8 @@
 (function () {
   "use strict";
   const F = window.Fin, E = window.HoldcoEngine, $ = F.$;
-  const D = E.DEFAULTS;
+  const DEMO = E.DEFAULTS;
+  let D = DEMO;
   const HFIELDS = { shares: "h-shares", treasury: "h-treasury", price: "h-price", netDebt: "h-nd", other: "h-other", royalty: "h-roy", opex: "h-opex", royaltyMult: "h-rmult", tax: "h-tax", assets: "h-assets", liab: "h-liab", equity: "h-equity" };
   let subs = D.subs.map((s) => Object.assign({ mcap: 0, ebitda: 0, mult: 7, netDebt: 0 }, s));
   const TARGET = 30;
@@ -410,7 +422,7 @@
     const subSum = F.sum(n.parts.map((p) => p.value));
     const memo = $("h-memo");
     memo.textContent = "";
-    memo.append("자회사 지분가치 " + won(subSum) + "에 로열티 순가치와 기타자산 " + won(n.royaltyValue + n.other) + "을 더하고 순차입금 " + won(n.netDebt) + "을 빼면 NAV는 ", F.el("b", { text: won(n.nav) }), "(주당 " + wonPS(n.perShare) + ")입니다. ");
+    memo.append("자회사 지분가치 " + won(subSum) + "에 로열티 순가치와 기타자산 " + won(n.royaltyValue + n.other) + (n.netDebt >= 0 ? "을 더하고 순차입금 " + won(n.netDebt) + "을 빼면 NAV는 " : ", 순현금 " + won(-n.netDebt) + "을 더하면 NAV는 "), F.el("b", { text: won(n.nav) }), "(주당 " + wonPS(n.perShare) + ")입니다. ");
     if (n.discount !== null) memo.append("현재 주가 " + wonPS(x.holdco.price) + "은 NAV보다 " + F.pct(Math.abs(n.discount), 1) + (n.discount >= 0 ? " 낮습니다. " : " 높습니다. "));
     memo.append(F.josa(top.name, "이", "가") + " NAV의 " + F.pct(top.value / n.nav, 0) + "를 차지해 그 주가가 지주사 가치를 크게 좌우합니다. 할인율이 " + F.pct(x.target, 0) + "로 줄면 적정 주가는 " + wonPS(tgtPrice) + "입니다.");
 
@@ -433,12 +445,21 @@
   ["h-target", "s-part", "s-prem"].forEach((id) => $(id).addEventListener("input", render));
   ["s-idx", "s-repay"].forEach((id) => $(id).addEventListener("change", render));
   $("h-form").addEventListener("submit", (e) => e.preventDefault());
-  $("h-reset").addEventListener("click", () => {
+  function load(key) {
+    D = key === "lg" ? E.PRESETS.lg : DEMO;
     subs = D.subs.map((s) => Object.assign({ mcap: 0, ebitda: 0, mult: 7, netDebt: 0 }, s));
-    fillHoldco(); buildSubs(); $("s-idx").value = ""; buildSaleOptions(); $("s-idx").value = String(D.sale.idx); render();
-  });
-  fillHoldco(); buildSubs(); buildSaleOptions(); $("s-idx").value = String(D.sale.idx);
-  render();
+    fillHoldco(); buildSubs(); $("s-idx").value = ""; buildSaleOptions(); $("s-idx").value = String(D.sale.idx);
+    $("preset-note").textContent = key === "lg" ? D.label + " · 출처 " + D.src : "예시: 반도체·소재 자회사 다섯 곳을 둔 가상 지주회사 H · 모든 수치는 가상";
+    $("preset-more").hidden = key !== "lg";
+    $("h-reset").textContent = key === "lg" ? "공시값으로 되돌리기" : "예시값으로 되돌리기";
+    render();
+  }
+  $("h-reset").addEventListener("click", () => load(D === DEMO ? "demo" : "lg"));
+  document.querySelectorAll('input[name="preset"]').forEach((r) => r.addEventListener("change", () => { if (r.checked) load(r.value); }));
+  /* ?preset=lg 로 열면 ㈜LG 값으로 시작 */
+  const want = new URLSearchParams(location.search).get("preset") === "lg" ? "lg" : "demo";
+  document.querySelector('input[name="preset"][value="' + want + '"]').checked = true;
+  load(want);
   F.onRedraw(render);
 })();
 </script>

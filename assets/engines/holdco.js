@@ -34,6 +34,37 @@
     sale: { idx: 2, part: 100, premium: 20, repay: true }
   };
 
+  /* ㈜LG 2025년 말 공시값(별도 기준). 출처: 2025 사업보고서. 금액 억원(백만원 ÷ 100), 주식 만 주.
+     - 상장 관계사 5곳: 보유 주식 시가(222쪽) ÷ 보통주 지분율(316쪽) = 100% 시가총액, 장부가액은 별도 원가(316쪽)
+     - 순차입금: 리스부채 9.56 − 현금 2,483.12 − 금융기관예치금 11,000 (별도 재무상태표 282~283쪽, 차입금 없음)
+     - 기타 투자자산: 종속기업투자 7,587.89(LG씨엔에스 1,943.55 포함) + ZKW 2곳 478.40 + 기타금융자산 10,546.05 + 투자부동산 6,918.47,
+       모두 장부가. LG씨엔에스는 상장사지만 연말 시가가 사업보고서에 없어 장부가로 넣었다(NAV를 낮게 잡는 쪽)
+     - 로열티 수입 = 상표권사용수익 3,490.40, 운영비 = 별도 영업비용 2,878.57 (284쪽). 임대수익은 투자부동산을 따로 넣어 뺐다
+     - 주식: 보통주 154,221,585주, 자기주식 3,029,581주(26쪽). 주가 = 2025년 12월 보통주 평균 82,329원(475쪽). 우선주는 뺐다
+     - 법인세율 26.4%(법인세 최고 24% + 지방소득세) */
+  const PRESETS = {
+    lg: {
+      label: "㈜LG 2025년 말 공시값 (별도 기준)",
+      src: "2025 사업보고서 26·222·282~284·316·475쪽",
+      holdco: {
+        shares: 15422.1585, treasury: 302.9581, price: 82329,
+        netDebt: 9.56 - 2483.12 - 11000, other: 7587.89 + 478.40 + 10546.05 + 6918.47,
+        royalty: 3490.40, opex: 2878.57, royaltyMult: 8, tax: 26.4,
+        assets: 103878.23, liab: 5217.05, equity: 98661.18
+      },
+      /* 시가총액 입력칸이 읽기 쉽게 0.1억원 단위로 반올림 (보유 지분가치 오차 0.02억원 이내) */
+      subs: [
+        { name: "LG화학", listed: true, stake: 34.95, mcap: 235056.4, book: 19212.08, newRule: false },
+        { name: "LG전자", listed: true, stake: 35.26, mcap: 149690.7, book: 30046.23, newRule: false },
+        { name: "LG유플러스", listed: true, stake: 38.25, mcap: 63275.7, book: 12520.52, newRule: false },
+        { name: "LG생활건강", listed: true, stake: 34.74, mcap: 39552.6, book: 1416.08, newRule: false },
+        { name: "HS애드", listed: true, stake: 35.78, mcap: 1419.7, book: 394.96, newRule: false }
+      ],
+      sale: { idx: 4, part: 100, premium: 20, repay: false },
+      heldMarket: 82152.20 + 52780.95 + 24202.97 + 13740.57 + 507.96
+    }
+  };
+
   /* 자회사 100% 지분가치: 상장은 시가총액, 비상장은 EV/EBITDA − 순차입금 (음수면 0) */
   function equity100(s) {
     return s.listed ? s.mcap : Math.max(s.ebitda * s.mult - s.netDebt, 0);
@@ -108,5 +139,5 @@
     return { nav: nav(x.holdco, x.subs), comp: compliance(x.holdco, x.subs), sale: sale(x.holdco, x.subs, x.sale) };
   }
 
-  return { RULES, DEFAULTS, equity100, nav, compliance, sale, analyze };
+  return { RULES, DEFAULTS, PRESETS, equity100, nav, compliance, sale, analyze };
 });

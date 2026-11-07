@@ -8,6 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="반도체 부품·건설소재 제조사 재무기획 실무자 이기표의 경력, 업무 사례, 분석 리포트, 직접 돌려 볼 수 있는 투자·손익 분석 도구">
 <meta name="robots" content="noindex, nofollow">
+<link rel="alternate" hreflang="en" href="https://lgppeople-arch.github.io/portfolio/en.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="이기표 재무기획 포트폴리오">
 <meta property="og:title" content="이기표 재무기획 포트폴리오">
@@ -38,6 +39,7 @@
       <a href="#skills" data-sec="skills">역량</a>
       <a href="#contact" data-sec="contact">연락</a>
       <a href="tools/guide.html">쉬운 가이드</a>
+      <a href="en.html" lang="en" hreflang="en">EN</a>
     </nav>
     <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
   </div>
@@ -181,7 +183,7 @@
     <div class="wrap wide">
       <div class="block-head">
         <div class="kicker">REPORTS</div>
-        <div><h2>분석 리포트</h2><p>기업과 산업을 분석할 때 쓰는 틀과, 그 틀로 실제 공시를 읽은 리포트입니다. 그래프와 모형은 직접 움직여 볼 수 있습니다. 분석 틀의 예시 수치는 가상이고, 삼성전자·업종별 리포트는 공시 원문 숫자를 옮겨 검산했습니다.</p></div>
+        <div><h2>분석 리포트</h2><p>기업과 산업을 분석할 때 쓰는 틀과, 그 틀로 실제 공시를 읽은 리포트입니다. 그래프와 모형은 직접 움직여 볼 수 있습니다. 분석 틀의 예시 수치는 가상이고, 삼성전자·업종별·M&amp;A 사례 리포트는 공시 원문 숫자를 옮겨 검산했습니다.</p></div>
       </div>
       <div class="reports">
         <a class="rcard feature" href="tools/samsung.html">
@@ -193,13 +195,22 @@
             <span class="rmeta">공시 원문 분석 · 재무제표·부문·주석 검산 통과 <span class="arr">→</span></span>
           </div>
         </a>
-        <a class="rcard" href="tools/sectors.html">
+        <a class="rcard feature" href="tools/sectors.html">
           <div class="rcover" data-art="duo" aria-hidden="true"></div>
           <div class="rbody">
             <span class="rtag">Sector guide · 05</span>
             <h3>업종이 다르면 재무제표도 다릅니다</h3>
             <p>반도체 소모품·장비, 2차전지, 자동차, 조선, 지주회사, 플랫폼 대표 7개사의 공시를 원문 쪽수와 함께 검산했습니다. 듀폰 ROE·운전자본·자금의 원천과 쓰임으로 나란히 놓고, AMPC·금융 자회사·수주잔고·지분법처럼 업종마다 먼저 열어야 할 주석을 따라 읽었습니다.</p>
             <span class="rmeta">공시 원문 분석 · 6개 업종 7개사 · 검산 21개 통과 <span class="arr">→</span></span>
+          </div>
+        </a>
+        <a class="rcard" href="tools/ma-case.html">
+          <div class="rcover" data-art="merge" aria-hidden="true"></div>
+          <div class="rbody">
+            <span class="rtag">Deal case · 06</span>
+            <h3>같은 그룹 안의 합병, 숫자는 어디로 갔나</h3>
+            <p>HD현대중공업의 HD현대미포 흡수합병을 사업보고서 원문으로 읽었습니다. 기준주가로 정한 합병가액, 영업권 없는 장부금액 회계, 자본·수주잔고·최대주주 지분율에 찍힌 효과를 검산했습니다.</p>
+            <span class="rmeta">공개 M&amp;A 사례 · 공시 숫자 검산 통과 <span class="arr">→</span></span>
           </div>
         </a>
         <a class="rcard" href="tools/fsa.html">
@@ -343,8 +354,9 @@
           <a class="stage-more" href="#ma-practice">M&amp;A·투자 실무 보기 ↓</a>
           <div class="tools">
             <a class="tool-link" href="tools/ma-valuation.html">M&amp;A 가치평가 <span class="arr">→</span></a>
-            <a class="tool-link" href="tools/holdco-nav.html">지주사 포트폴리오 가치 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/holdco-nav.html?preset=lg">지주사 가치 (㈜LG 공시값) <span class="arr">→</span></a>
             <a class="tool-link" href="tools/ma-process.html">M&amp;A 절차 지도 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/ma-case.html">M&amp;A 사례: 합병 공시 읽기 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -518,6 +530,15 @@
         for (let i = 1; i <= l[4]; i++) { const u = i / (l[4] + 1) + (rnd() - 0.5) * 0.04, v = 1 - u; mk("circle", { cx: v * v * a[0] + 2 * v * u * c[0] + u * u * b[0], cy: v * v * a[1] + 2 * v * u * c[1] + u * u * b[1], r: 1 + rnd() * 1.6, fill: l[3], opacity: 0.4 + 0.6 * Math.sin(Math.PI * u) }, svg); }
       });
       N.forEach((n, i) => { mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 15 : 11, fill: "none", stroke: col[i], "stroke-width": 1.4, opacity: 0.55 }, svg); mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 5 : 4, fill: col[i] }, svg); });
+    } else if (box.dataset.art === "merge") {
+      /* 두 회사가 하나로: 왼쪽 두 점에서 오른쪽 큰 점으로 모인다 */
+      const N = [[170, 46], [170, 126], [330, 86]], col = [A, B, C];
+      [[0, 2, -0.18, A, 10], [1, 2, 0.18, B, 7]].forEach((l) => {
+        const a = N[l[0]], b = N[l[1]], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, c = [mx - (b[1] - a[1]) * l[2], my + (b[0] - a[0]) * l[2]];
+        mk("path", { d: "M" + a + " Q" + c + " " + b, fill: "none", stroke: l[3], "stroke-width": 1.4, opacity: 0.45 }, svg);
+        for (let i = 1; i <= l[4]; i++) { const u = i / (l[4] + 1), v = 1 - u; mk("circle", { cx: v * v * a[0] + 2 * v * u * c[0] + u * u * b[0], cy: v * v * a[1] + 2 * v * u * c[1] + u * u * b[1], r: 1 + rnd() * 1.6, fill: l[3], opacity: 0.4 + 0.6 * Math.sin(Math.PI * u) }, svg); }
+      });
+      N.forEach((n, i) => { mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 19 : 11, fill: "none", stroke: col[i], "stroke-width": 1.4, opacity: 0.55 }, svg); mk("circle", { cx: n[0], cy: n[1], r: i === 2 ? 6 : 4, fill: col[i] }, svg); });
     } else if (box.dataset.art === "duo") {
       const parts = [[0.11, 0.50, 0.07, 0.02, 0.29], [0.34, 0.03, 0.08, 0.18, 0.32]], cols = [C, B, A, "#C2453B", "#8A96A3"];
       parts.forEach((row, r) => { let x = 150; const y = 42 + r * 56, w = 230;
@@ -557,13 +578,14 @@
 <script src="assets/engines/cycle.js"></script>
 <script src="assets/data/samsung.js"></script>
 <script src="assets/data/sectors.js"></script>
+<script src="assets/data/deal-hhi.js"></script>
 <script src="assets/engines/doa.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData });
+    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

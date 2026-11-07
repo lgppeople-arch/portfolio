@@ -15,6 +15,7 @@
     Cycle: require("./engines/cycle.js"),
     Samsung: require("./data/samsung.js"),
     Sectors: require("./data/sectors.js"),
+    Deal: require("./data/deal-hhi.js"),
     Doa: require("./engines/doa.js")
   } : null;
   const api = factory();
@@ -62,7 +63,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors } = env;
+    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -151,6 +152,16 @@
       const manual = Fin.sum(n.parts.map((p) => p.value)) + n.royaltyValue + x.holdco.other - x.holdco.netDebt;
       add("지주사", "NAV = 자회사 지분가치 합 + 로열티 순가치 + 기타자산 − 순차입금", near(n.nav, manual), n.nav.toFixed(2) + "억원");
       add("지주사", "주당 NAV × 유통주식수 = NAV (단위 환산)", near(n.perShare * (x.holdco.shares - x.holdco.treasury) / 1e4, n.nav), Math.round(n.perShare).toLocaleString("ko-KR") + "원");
+      if (Holdco.PRESETS && Holdco.PRESETS.lg) {
+        const L = Holdco.PRESETS.lg, nl = Holdco.nav(L.holdco, L.subs), held = Fin.sum(nl.parts.map((p) => p.value));
+        add("지주사", "㈜LG 공시값: 상장 관계사 보유 지분가치 합 = 사업보고서 시가 합 " + Fin.num(L.heldMarket, 0) + "억원", near(held, L.heldMarket, 1e-6), "NAV " + Fin.num(nl.nav, 0) + "억원 · 할인율 " + (nl.discount * 100).toFixed(1) + "%");
+        const bsGap = L.holdco.assets - L.holdco.liab - L.holdco.equity;
+        add("지주사", "㈜LG 공시값: 별도 자산총계 = 부채총계 + 자본총계", near(bsGap, 0, 0.01), "자산 " + Fin.num(L.holdco.assets, 0) + "억원");
+        if (Sectors && Sectors.companies.lg) {
+          const sec = Sectors.companies.lg.notes.listed.reduce((t, r) => t + r[2], 0) / 1e8;
+          add("지주사", "㈜LG 공시값의 시가 합이 업종별 리포트 데이터(같은 공시)와 같다", near(sec, L.heldMarket, 1e-6), Fin.num(sec, 2) + "억원");
+        }
+      }
 
       const y = clone(x), s = y.subs[y.sale.idx];
       s.book = Holdco.equity100(s) * s.stake / 100;
@@ -341,6 +352,22 @@
         add("업종별 공시", c.name + ": 현금흐름표 기초 + 영업·투자·재무 + 환율 = 기말 = 재무상태표 현금", ps.every((p) =>
           C.close[p] === C.open[p] + C.cfo[p] + C.cfi[p] + C.cff[p] + C.fx[p] + z(C, "other", p) && (B.cash[p] === undefined || B.cash[p] === C.close[p])), "");
       });
+    }
+
+    /* ---------- 공개 M&A 사례 (리포트 06): 공시 숫자끼리 맞는지 ---------- */
+    if (Deal) {
+      const A = Deal.acquired, sumv = (o) => Object.keys(o).filter((k) => k !== "total").reduce((t, k) => t + o[k], 0);
+      add("M&A 사례", "취득 순자산 = 유동자산 + 비유동자산 − 유동부채 − 비유동부채, 세부 항목 합 = 소계", A.ca.total + A.nca.total - A.cl.total - A.ncl.total === A.net &&
+        sumv(A.ca) === A.ca.total && sumv(A.nca) === A.nca.total && sumv(A.cl) === A.cl.total, Fin.num(A.net, 0) + "백만원");
+      const T = Deal.terms, E2 = Deal.equityRow;
+      add("M&A 사례", "신주 수 × 액면 5,000원 = 자본변동표의 자본금 증가", T.newShares * T.par === E2.capital * 1000, Fin.num(E2.capital, 0) + "천원");
+      add("M&A 사례", "자본변동표 사업결합 행: 자본금 + 자본잉여금 + 자본조정 + 기타포괄손익 + 이익잉여금 = 합계", E2.capital + E2.surplus + E2.adj + E2.aoci + E2.retained === E2.total, Fin.num(E2.total, 0) + "천원");
+      const O = Deal.owner, sh0 = O.capitalBefore * 1e6 / T.par, sh1 = O.capitalAfter * 1e6 / T.par;
+      add("M&A 사례", "합병 전 주식 수 + 신주 = 합병 후 주식 수, 최대주주 지분 74.11% → 69.23%", sh0 + T.newShares === sh1 && O.before + O.added === O.after &&
+        Math.abs(O.before / sh0 - 0.7411) < 5e-5 && Math.abs(O.after / sh1 - 0.6923) < 5e-5, Fin.num(sh0, 0) + " → " + Fin.num(sh1, 0) + "주");
+      const P = Deal.proforma;
+      add("M&A 사례", "합병 전후 요약 재무상태표: 두 회사 단순합 = 합병 후(원문 단수차이 1백만원 이내)", ["ta", "tl", "te"].every((k) => Math.abs(P.hhi[k] + P.mipo[k] - P.after[k]) <= 1), Fin.num(P.after.ta, 0) + "백만원");
+      if (Sectors && Sectors.companies.hhi) add("M&A 사례", "수주잔고 합병분이 업종별 리포트 데이터(같은 공시)와 같다", Sectors.companies.hhi.notes.backlog.merger === Deal.backlogAdded * 1e6, Fin.num(Deal.backlogAdded, 0) + "백만원");
     }
 
     /* ---------- 위임전결 기준 점검 ---------- */

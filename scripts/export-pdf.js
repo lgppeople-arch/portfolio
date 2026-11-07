@@ -17,21 +17,23 @@ const PAGES = [
   ["index.html", "01_홈", "홈"],
   ["tools/samsung.html", "02_삼성전자_재무_분석", "삼성전자 재무 분석"],
   ["tools/sectors.html", "03_업종별_재무제표_읽기", "업종별 재무제표 읽기"],
-  ["tools/reading.html", "04_AI_인프라_읽기_노트", "AI 인프라 읽기 노트"],
-  ["tools/fsa.html", "05_재무제표_분석_프레임워크", "재무제표 분석 프레임워크"],
-  ["tools/semi-cycle.html", "06_반도체_사이클과_재무", "반도체 사이클과 재무"],
-  ["tools/pl-report.html", "07_월_손익_보고", "월 손익 보고"],
-  ["tools/mbo-kpi.html", "08_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
-  ["tools/doa.html", "09_위임전결_기준_점검", "위임전결 기준 점검"],
-  ["tools/capex-kit.html", "10_설비투자_분석_키트", "설비투자 분석 키트"],
-  ["tools/post-review.html", "11_투자_사후관리", "투자 사후관리"],
-  ["tools/ma-process.html", "12_M_A_절차_지도", "M&A 절차 지도"],
-  ["tools/ma-valuation.html", "13_M_A_가치평가", "M&A 가치평가"],
-  ["tools/holdco-nav.html", "14_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
-  ["tools/cash-13w.html", "15_13주_자금수지", "13주 자금수지"],
-  ["tools/fx-hedge.html", "16_환리스크_헤지", "환리스크 헤지"],
-  ["tools/checks.html", "17_계산_검산", "계산 검산"],
-  ["tools/guide.html", "18_쉬운_가이드", "쉬운 가이드"]
+  ["tools/ma-case.html", "04_M_A_사례_HD현대중공업_미포_합병", "M&A 사례: HD현대중공업·미포 합병"],
+  ["tools/reading.html", "05_AI_인프라_읽기_노트", "AI 인프라 읽기 노트"],
+  ["tools/fsa.html", "06_재무제표_분석_프레임워크", "재무제표 분석 프레임워크"],
+  ["tools/semi-cycle.html", "07_반도체_사이클과_재무", "반도체 사이클과 재무"],
+  ["tools/pl-report.html", "08_월_손익_보고", "월 손익 보고"],
+  ["tools/mbo-kpi.html", "09_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
+  ["tools/doa.html", "10_위임전결_기준_점검", "위임전결 기준 점검"],
+  ["tools/capex-kit.html", "11_설비투자_분석_키트", "설비투자 분석 키트"],
+  ["tools/post-review.html", "12_투자_사후관리", "투자 사후관리"],
+  ["tools/ma-process.html", "13_M_A_절차_지도", "M&A 절차 지도"],
+  ["tools/ma-valuation.html", "14_M_A_가치평가", "M&A 가치평가"],
+  ["tools/holdco-nav.html", "15_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
+  ["tools/cash-13w.html", "16_13주_자금수지", "13주 자금수지"],
+  ["tools/fx-hedge.html", "17_환리스크_헤지", "환리스크 헤지"],
+  ["tools/checks.html", "18_계산_검산", "계산 검산"],
+  ["tools/guide.html", "19_쉬운_가이드", "쉬운 가이드"],
+  ["en.html", "20_English_summary", "English summary"]
 ];
 
 /* A4 가로. 인쇄 배율 0.82면 본문 15px이 약 9pt로 찍히고, 화면은 1,277px 폭의 데스크톱 배치가 된다. */
@@ -496,7 +498,9 @@ const pdfOptions = (file, title, target) => {
 const newContext = (browser) => browser.newContext({ viewport: { width: VIEW_W, height: 900 }, deviceScaleFactor: 2, reducedMotion: "reduce", colorScheme: "light" });
 
 /* --pick: 지원서에 붙일 대표 화면만 골라 표지·목차와 함께 묶는다 */
-const PICK = ["index.html", "tools/sectors.html", "tools/capex-kit.html", "tools/holdco-nav.html"];
+const PICK = ["index.html", "tools/sectors.html", "tools/ma-case.html", "tools/holdco-nav.html"];
+/* 선별본에서는 지주사 도구를 ㈜LG 공시값으로 연다 */
+const PICK_URL = { "tools/holdco-nav.html": ["tools/holdco-nav.html?preset=lg", "지주사 포트폴리오 가치 (㈜LG 공시값)"] };
 
 async function main() {
   const args = process.argv.slice(2), pick = args.includes("--pick"), rest = args.filter((a) => !a.startsWith("--"));
@@ -506,8 +510,9 @@ async function main() {
   const browser = await chromium.launch();
   const ctx = await newContext(browser);
   const results = [];
-  for (const [file, name, title] of PAGES) {
-    if (only.length && !only.some((o) => file.includes(o))) continue;
+  for (const [file0, name, title0] of PAGES) {
+    if (only.length && !only.some((o) => file0 === o || (!pick && file0.includes(o)))) continue;
+    const alt = pick && PICK_URL[file0], file = alt ? alt[0] : file0, title = alt ? alt[1] : title0;
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message));
@@ -536,7 +541,7 @@ async function frontMatter(ctx, out, results, pick) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06"].includes(n) ? "리포트" : ["17", "18"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07"].includes(n) ? "리포트" : ["18", "19", "20"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
@@ -558,8 +563,8 @@ async function frontMatter(ctx, out, results, pick) {
   <section class="page cover"><div class="brand"><b>LGP</b> 이기표</div><div class="kick">PORTFOLIO · ${pick ? "대표 화면 선별본" : "화면 PDF 모음"}</div>
     <h1>복잡한 사업을 재무로 읽고,<br>투자까지 잇는 기획자</h1>
     <p>${pick
-      ? "포트폴리오 사이트에서 대표 화면 " + results.length + "개만 골랐습니다. 소개, 7개사 공시를 원문 쪽수와 함께 검산한 업종별 재무제표 리포트, 설비투자 타당성 도구, 지주사 포트폴리오 가치 도구입니다. 나머지 리포트와 도구는 사이트에서 볼 수 있습니다. " + (start - 1) + "쪽."
-      : "포트폴리오 사이트의 모든 화면을 기본값 그대로 담았습니다. 분석 리포트 5편, 실무 도구 10개, 계산 검산과 쉬운 가이드까지 " + results.length + "개 화면, " + (start - 1) + "쪽입니다."}</p>
+      ? "포트폴리오 사이트에서 대표 화면 " + results.length + "개만 골랐습니다. 소개, 7개사 공시를 원문 쪽수와 함께 검산한 업종별 재무제표 리포트, HD현대중공업·미포 합병 사례, ㈜LG 공시값을 넣은 지주사 가치 도구입니다. 나머지 리포트와 도구는 사이트에서 볼 수 있습니다. " + (start - 1) + "쪽."
+      : "포트폴리오 사이트의 모든 화면을 기본값 그대로 담았습니다. 분석 리포트 6편, 실무 도구 10개, 계산 검산과 쉬운 가이드, 영문 요약까지 " + results.length + "개 화면, " + (start - 1) + "쪽입니다."}</p>
     <div class="meta"><span>${SITE.replace(/\/$/, "")}</span><span>${today.getFullYear()}년 ${today.getMonth() + 1}월 · A4 가로</span></div></section>
   <section class="page toc"><h2>목차</h2><p class="sub">쪽 번호는 이 합본 기준입니다. 각 화면의 쪽 아래 번호는 그 화면 안에서의 쪽 번호입니다.</p>
     <table>${rows}</table>
