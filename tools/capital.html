@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>적정 부채와 파산 위험 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="현금흐름 기반 부도확률, 머튼 부도거리, 사내 기준별 부채 한도, 절세효과와 부실비용의 맞교환으로 적정 부채를 찾는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="적정 부채와 파산 위험 · 이기표">
+<meta property="og:description" content="현금흐름 기반 부도확률, 머튼 부도거리, 사내 기준별 부채 한도, 절세효과와 부실비용의 맞교환으로 적정 부채를 찾는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/capital.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .summary { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 24px; }
+  .summary > * { min-width: 0; }
+  .summary .side { display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 1000px) { .summary { grid-template-columns: minmax(0, 1fr); } }
+  .kpis.k2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpis.k2 .kpi:last-child { grid-column: auto; }
+  .target { margin-top: 16px; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); display: grid; gap: 10px; }
+  .target .top { display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; font-size: var(--s-1); color: var(--ink-2); }
+  .target .top b { font-family: var(--f-num); color: var(--ink); }
+  .target .meter { margin: 4px 0 18px; }
+  .target .meter i.cur { background: var(--ink); }
+  .target .meter .tk { position: absolute; top: 14px; transform: translateX(-50%); font-family: var(--f-num); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .block2 > h2 .muted { font-family: var(--f-body); font-weight: 400; font-size: var(--s-1); }
+  .block2 > p.hint { max-width: 900px; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .card .field input { background: var(--surface); }
+  .years { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .years label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); font-family: var(--f-num); }
+  .years input { width: 100%; font-family: var(--f-num); font-size: var(--s-1); text-align: right; padding: 6px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  @media (max-width: 480px) { .years { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  /* 분해 목록 */
+  .rules { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+  .rule { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 8px 0; border-bottom: 1px solid var(--rule-soft); align-items: baseline; }
+  .rule .what { font-size: var(--s-1); color: var(--ink-2); }
+  .rule .what small { display: block; color: var(--muted); font-size: 12px; }
+  .rule .val { font-family: var(--f-num); font-size: var(--s-1); text-align: right; white-space: nowrap; }
+  .rule.tot .what, .rule.tot .val { font-weight: 700; color: var(--ink); }
+  /* 표 */
+  .cmp { width: 100%; border-collapse: collapse; font-size: var(--s-1); }
+  .cmp th, .cmp td { padding: 7px 6px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  .cmp th:first-child, .cmp td:first-child { text-align: left; white-space: normal; }
+  .cmp thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  .cmp td { font-family: var(--f-num); }
+  .cmp td:first-child { font-family: var(--f-body); }
+  .cmp td.bad, table.st td.bad { color: var(--neg-ink); font-weight: 600; }
+  table.st { border-collapse: collapse; width: 100%; min-width: 980px; font-size: 12.5px; }
+  table.st th, table.st td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--rule-soft); white-space: nowrap; font-family: var(--f-num); }
+  table.st thead th { color: var(--muted); font-weight: 500; font-family: var(--f-body); border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+  table.st tbody th { text-align: left; font-weight: 500; color: var(--ink-2); font-family: var(--f-body); }
+  table.st tr.cur td, table.st tr.cur th { background: color-mix(in srgb, var(--input) 8%, transparent); }
+  table.st .tag { display: inline-block; margin-left: 6px; font-size: 11px; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-2); }
+  /* 민감도 */
+  table.heat { border-collapse: separate; border-spacing: 3px; width: 100%; min-width: 460px; font-size: var(--s-1); }
+  table.heat th { font-weight: 500; color: var(--muted); font-size: 12px; padding: 4px 6px; text-align: center; }
+  table.heat tbody th { text-align: left; color: var(--ink-2); white-space: nowrap; }
+  table.heat td { font-family: var(--f-num); text-align: center; padding: 10px 6px; border-radius: 4px; color: var(--ink); }
+  table.heat td.base { outline: 2px solid var(--ink); outline-offset: -2px; font-weight: 700; }
+  /* Altman 구간 막대 */
+  .zbar { position: relative; height: 14px; border-radius: 999px; overflow: visible; display: flex; margin: 26px 0 22px; }
+  .zbar > span { height: 100%; }
+  .zbar > span:first-child { border-radius: 999px 0 0 999px; }
+  .zbar > span:nth-child(3) { border-radius: 0 999px 999px 0; }
+  .zbar .mk { position: absolute; top: -6px; width: 3px; height: 26px; background: var(--ink); border-radius: 2px; }
+  .zbar .mk b { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); font-family: var(--f-num); font-size: var(--s-2); white-space: nowrap; }
+  .zbar .cut { position: absolute; top: 18px; transform: translateX(-50%); font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  .zbar .cut.zn { color: var(--ink-2); font-family: var(--f-body); font-size: 12px; }
+  .cbar { display: inline-block; height: 8px; border-radius: 2px; vertical-align: middle; background: var(--total); }
+  svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  svg.plot text.c-acc { fill: var(--accent); font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html" aria-current="page">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 적정 부채와 파산 위험</div>
+      <h1>적정 부채와 파산 위험</h1>
+      <p>빚을 얼마나 더 질 수 있는지, 빚이 늘면 부도 위험이 얼마나 빨리 커지는지를 네 가지 눈으로 봅니다. 현금흐름(내년 EBITDA가 흔들릴 때 원리금을 못 갚을 확률), 재무상태(기업가치가 부채 밑으로 떨어질 확률인 머튼 부도거리), 사내 기준(레버리지·이자보상·DSCR·부도확률 상한), 그리고 절세효과와 부실비용을 맞바꾸는 최적점입니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 단위 억원</span><span><a class="guide-link" href="guide.html#how-capital">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample"><span>예시: <a href="cash-13w.html">13주 자금수지</a>와 같은 가상 제조사(총차입금 1,800억 · EBITDA 560억) · 2026년 말 기준 · 모든 수치는 가상</span></span>
+
+    <section class="summary" aria-live="polite">
+      <div>
+        <div class="board-head" style="margin-bottom: 10px"><h2>부채 규모별 기업가치</h2><span class="pill" id="k-pill"></span></div>
+        <div class="chart" id="to-chart">
+          <div class="legend" style="margin-bottom: 6px">
+            <span><i class="key-line" style="background: var(--ink)"></i>기업가치</span>
+            <span><i class="key-dash" style="border-color: var(--pos)"></i>무부채 가치 + 절세효과</span>
+            <span><i class="key-bar" style="background: color-mix(in srgb, var(--neg) 22%, transparent)"></i>기대 부실비용</span>
+            <span><i class="key-bar" style="background: var(--pos); border-radius: 50%; width: 9px; height: 9px"></i>가치 극대 <b class="num" id="lg-opt"></b></span>
+            <span><i class="key-dash" style="border-color: var(--neg)"></i>정책 한도 <b class="num" id="lg-cap"></b></span>
+            <span><i class="key-dash" style="border-color: var(--ink-2)"></i>현재 <b class="num" id="lg-cur"></b></span>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+        <div class="target" id="k-target"></div>
+      </div>
+      <div class="side">
+        <div class="kpis k2">
+          <div class="kpi"><div class="label">1년 상환 부족 확률</div><div class="v num" id="k-pd"></div><div class="sub" id="k-pd-sub"></div></div>
+          <div class="kpi"><div class="label">1년 지급불능 확률</div><div class="v num" id="k-pdd"></div><div class="sub" id="k-pdd-sub"></div></div>
+          <div class="kpi"><div class="label">정책 기준 부채 한도</div><div class="v num" id="k-cap"></div><div class="sub" id="k-cap-sub"></div></div>
+          <div class="kpi"><div class="label">기업가치 극대 부채</div><div class="v num" id="k-opt"></div><div class="sub" id="k-opt-sub"></div></div>
+          <div class="kpi"><div class="label">머튼 부도거리</div><div class="v num" id="k-dd"></div><div class="sub" id="k-dd-sub"></div></div>
+          <div class="kpi"><div class="label">Altman Z′</div><div class="v num" id="k-z"></div><div class="sub" id="k-z-sub"></div></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="k-memo"></p></div>
+        <div class="selfcheck" id="k-check"></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="가정">
+      <div class="two">
+        <form class="card" id="f-co" novalidate>
+          <h3>회사 숫자</h3>
+          <p class="hint"><b>최근 5년 EBITDA</b> · 마지막 해를 내년 평균으로, 5년의 표준편차를 내년 변동성으로 씁니다.</p>
+          <div class="years" id="years"></div>
+          <div class="fs-grid">
+            <div class="field"><label for="k-da">감가상각비<small>연간</small></label><input id="k-da" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="field"><label for="k-capex">유지 설비투자<small>꼭 써야 하는 연간 투자</small></label><input id="k-capex" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="field"><label for="k-tax">법인세율<small>%</small></label><input id="k-tax" type="number" inputmode="decimal" step="1" min="0" max="60"></div>
+            <div class="field"><label for="k-debt">총차입금<small>2026년 말</small></label><input id="k-debt" type="number" inputmode="decimal" step="50" min="0"></div>
+            <div class="field"><label for="k-cash">현금<small>2026년 말</small></label><input id="k-cash" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="field"><label for="k-min">최소 보유현금<small>사내 기준</small></label><input id="k-min" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="field"><label for="k-rcf">한도대출 약정<small>미인출 한도</small></label><input id="k-rcf" type="number" inputmode="decimal" step="10" min="0"></div>
+            <div class="field"><label for="k-tenor">평균 잔존만기<small>년</small></label><input id="k-tenor" type="number" inputmode="decimal" step="0.5" min="0.5" max="30"></div>
+            <div class="field"><label for="k-roll">만기 원금 차환 비율<small>%</small></label><input id="k-roll" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+          </div>
+        </form>
+        <form class="card" id="f-mk" novalidate>
+          <h3>시장·모형 가정</h3>
+          <div class="fs-grid">
+            <div class="field"><label for="k-rf">무위험금리<small>%</small></label><input id="k-rf" type="number" inputmode="decimal" step="0.25" min="0" max="20"></div>
+            <div class="field"><label for="k-spread">기본 가산금리<small>부도위험 0일 때, %</small></label><input id="k-spread" type="number" inputmode="decimal" step="0.1" min="0" max="20"></div>
+            <div class="field"><label for="k-lgd">부도 시 손실률<small>LGD, %</small></label><input id="k-lgd" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+            <div class="field"><label for="k-mult">EV/EBITDA 배수<small>기업가치 추정</small></label><input id="k-mult" type="number" inputmode="decimal" step="0.5" min="0.5" max="40"></div>
+            <div class="field"><label for="k-vol">자산가치 변동성<small>연 %, 머튼 모형</small></label><input id="k-vol" type="number" inputmode="decimal" step="5" min="1" max="150"></div>
+            <div class="field"><label for="k-dist">부실비용<small>무부채 가치 대비 %</small></label><input id="k-dist" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+            <div class="field"><label for="k-hor">누적 기간<small>부실확률 누적, 년</small></label><input id="k-hor" type="number" inputmode="numeric" step="1" min="1" max="20"></div>
+          </div>
+          <p class="hint">차입금리는 무위험금리 + 기본 가산금리 + 손실률 × 머튼 부도확률로, 부채가 늘어 부도 위험이 커지면 함께 오릅니다. 부실비용은 부실에 빠졌을 때 잃는 고객·인력·협상력과 구조조정 비용을 기업가치 대비 비율로 둔 값입니다.</p>
+          <div class="form-actions"><button type="button" class="btn" id="k-reset">예시값으로 되돌리기</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="정책 기준별 부채 한도">
+      <h2>부채 한도: 사내 기준별로 <span class="muted">가장 먼저 걸리는 기준이 한도</span></h2>
+      <p class="hint">재무약정은 은행이 정한 최소선입니다. 회사가 스스로 정하는 기준은 그보다 촘촘해야 하고, 그중 하나는 확률 기준이어야 합니다. 같은 레버리지라도 이익 변동이 큰 회사는 더 위험하기 때문입니다.</p>
+      <div class="two">
+        <div class="card">
+          <h3>기준별로 질 수 있는 총차입금 <span class="pill" id="cap-pill"></span></h3>
+          <div class="gauges" id="cap-list"></div>
+          <p class="hint">막대는 각 기준을 지키는 최대 총차입금, 세로선은 현재 총차입금입니다. 금리가 부채에 따라 오르므로 이자보상배율·DSCR·확률 기준은 이분법으로 풉니다.</p>
+        </div>
+        <div class="card">
+          <h3>현재 지표와 기준</h3>
+          <table class="cmp" id="cur-table"></table>
+          <form class="fs-grid" id="f-pol" novalidate>
+            <div class="field"><label for="p-lev">순차입금/EBITDA<small>상한, 배</small></label><input id="p-lev" type="number" inputmode="decimal" step="0.25" min="0"></div>
+            <div class="field"><label for="p-icr">이자보상배율<small>하한, 배</small></label><input id="p-icr" type="number" inputmode="decimal" step="0.25" min="0"></div>
+            <div class="field"><label for="p-dscr">DSCR<small>하한, 배</small></label><input id="p-dscr" type="number" inputmode="decimal" step="0.1" min="0"></div>
+            <div class="field"><label for="p-pd">1년 상환 부족 확률<small>상한, %</small></label><input id="p-pd" type="number" inputmode="decimal" step="0.5" min="0.01" max="50"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="현금흐름으로 본 부도 확률">
+      <h2>현금흐름으로 본 부도 확률 <span class="muted">내년 EBITDA의 분포와 갚아야 할 돈</span></h2>
+      <p class="hint">내년 EBITDA가 과거 5년만큼 흔들린다고 보고, 이자·차환하지 못하는 원금·유지 설비투자·세금을 영업현금으로 못 메울 확률(DSCR &lt; 1)을 계산합니다. 모자란 돈을 쓸 수 있는 현금과 한도대출로도 못 메우면 지급불능입니다.</p>
+      <div class="two">
+        <div class="card">
+          <div class="chart" id="dist-chart">
+            <div class="chart-head"><h4>내년 EBITDA 분포</h4>
+              <div class="legend"><span><i class="key-line" style="background: var(--ink-2)"></i>정규분포</span><span><i class="key-bar" style="background: color-mix(in srgb, var(--accent) 45%, transparent)"></i>상환 부족 구간</span><span><i class="key-bar" style="background: var(--neg)"></i>지급불능 구간</span><span><i class="key-bar" style="background: var(--input); width: 3px"></i>과거 5년 실적</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <div class="rules" id="need-list"></div>
+        </div>
+        <div class="card">
+          <div class="chart" id="pd-chart">
+            <div class="chart-head"><h4>부채 규모별 1년 부도·부족 확률 <span class="muted">(세로축 로그 눈금)</span></h4>
+              <div class="legend"><span><i class="key-line" style="background: var(--accent)"></i>상환 부족</span><span><i class="key-line" style="background: var(--neg)"></i>지급불능</span><span><i class="key-line" style="background: var(--input)"></i>머튼 부도</span><span><i class="key-dash" style="border-color: var(--ink-2)"></i>사내 기준 · 현재 부채</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <p class="hint" id="pd-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="부채 시나리오">
+      <h2>부채 시나리오 <span class="muted">절세효과와 부실비용의 맞교환</span></h2>
+      <p class="hint">부채를 늘리면 이자가 비용으로 인정돼 세금이 줄지만(절세효과), 부실 확률과 부실비용도 커집니다. 둘의 차이가 가장 큰 곳이 기업가치를 극대화하는 부채이고, 사내 기준 한도와 함께 '목표 부채 범위'를 정하는 근거가 됩니다.</p>
+      <div class="scroll"><table class="st" id="sc-table"></table></div>
+    </section>
+
+    <section class="block2" aria-label="Altman Z 점수">
+      <h2>재무상태로 본 부실 신호 <span class="muted">Altman Z′ (비상장 제조업 모형)</span></h2>
+      <div class="two">
+        <div class="card">
+          <h3>Z′ 점수와 구간 <span class="pill" id="z-pill"></span></h3>
+          <div class="zbar" id="zbar"></div>
+          <table class="cmp" id="z-table"></table>
+        </div>
+        <form class="card" id="f-bs" novalidate>
+          <h3>재무상태표·손익 <small class="muted" style="font-weight: 400; font-size: 12px">2026년 말</small></h3>
+          <div class="fs-grid">
+            <div class="field"><label for="b-ta">자산총계</label><input id="b-ta" type="number" inputmode="decimal" step="50" min="1"></div>
+            <div class="field"><label for="b-ca">유동자산</label><input id="b-ca" type="number" inputmode="decimal" step="50" min="0"></div>
+            <div class="field"><label for="b-cl">유동부채</label><input id="b-cl" type="number" inputmode="decimal" step="50" min="0"></div>
+            <div class="field"><label for="b-re">이익잉여금</label><input id="b-re" type="number" inputmode="decimal" step="50"></div>
+            <div class="field"><label for="b-sales">매출액</label><input id="b-sales" type="number" inputmode="decimal" step="100" min="0"></div>
+            <div class="field"><label for="b-ebit">영업이익(EBIT)</label><input id="b-ebit" type="number" inputmode="decimal" step="10"></div>
+            <div class="field"><label for="b-te">자본총계<small>장부가</small></label><input id="b-te" type="number" inputmode="decimal" step="50"></div>
+            <div class="field"><label for="b-tl">부채총계</label><input id="b-tl" type="number" inputmode="decimal" step="50" min="1"></div>
+          </div>
+          <p class="hint">Z′는 과거 부도 기업과 정상 기업을 가른 판별식이라 업종·국가가 다르면 기준선이 맞지 않을 수 있습니다. 절대 판정보다 같은 회사의 해마다 추이와 어느 항목이 점수를 끌어내리는지를 보는 데 씁니다.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="민감도">
+      <h2>민감도: EBITDA가 줄거나 더 흔들리면 <span class="muted">현재 부채의 1년 상환 부족 확률</span></h2>
+      <div class="card">
+        <div class="scroll"><table class="heat" id="sens-table"></table></div>
+        <p class="hint" id="sens-note"></p>
+      </div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li><b>상환 부족 확률(1년)</b>: 내년 EBITDA ~ 정규분포(평균 = 올해 EBITDA, 표준편차 = 최근 5년 EBITDA의 표본표준편차). 상환 필요액 = 이자 + 차환하지 못하는 원금(총차입금 ÷ 평균 잔존만기 × (1 − 차환 비율)) + 유지 설비투자 + 법인세. P(EBITDA &lt; 상환 필요액) = Φ((필요액 − 평균) ÷ 표준편차)이고, 이는 DSCR &lt; 1과 같습니다. 법인세는 평균 EBITDA 기준으로 고정해 분포를 단순하게 유지했습니다.</li>
+        <li><b>지급불능 확률(1년)</b>: 부족분이 쓸 수 있는 유동성(현금 − 최소 보유현금 + 한도대출 미인출액)까지 넘을 확률 = Φ((필요액 − 유동성 − 평균) ÷ 표준편차).</li>
+        <li><b>머튼 부도거리</b>: 기업가치 V = 올해 EBITDA × EV/EBITDA 배수, 부도점 D = 총차입금, 기간 1년. DD = (ln(V ÷ D) + (r − σ²/2)) ÷ σ, 부도확률 = Φ(−DD). 실무(KMV)는 부도점을 단기부채 + 장기부채의 절반으로, σ를 주가 변동성에서 역산하지만 여기서는 입력값으로 둡니다.</li>
+        <li><b>차입금리</b> = 무위험금리 + 기본 가산금리 + 손실률 × 머튼 부도확률. 부도확률이 오르면 가산금리가 함께 오르는 구조를 단순하게 반영합니다.</li>
+        <li><b>정책 기준 부채 한도</b>: 순차입금/EBITDA ≤ 상한이면 총차입금 ≤ 상한 × EBITDA + 현금. 이자보상배율(영업이익 ÷ 이자), DSCR((EBITDA − 유지 설비투자 − 법인세) ÷ (이자 + 상환 원금)), 1년 상환 부족 확률은 금리가 부채에 따라 바뀌므로 이분법으로 경계를 찾습니다. 네 값 중 가장 작은 값이 한도입니다.</li>
+        <li><b>기업가치 극대 부채(상충이론)</b>: 기업가치 = 무부채 가치(V) + 절세효과 − 누적 부실확률 × (부실비용 + 절세효과). 절세효과 = 법인세율 × 부채 × min(1, 영업이익 ÷ 이자)로, 이자가 영업이익을 넘는 몫은 공제받지 못합니다. 누적 부실확률 = 1 − (1 − 1년 상환 부족 확률)^누적 기간. 부실에 빠지면 남은 절세효과도 잃는다고 보아 부채가 아주 클 때 가치가 다시 오르는 왜곡을 막았습니다. 격자(121점)로 찾은 뒤 황금분할 탐색으로 다듬습니다.</li>
+        <li><b>Altman Z′</b> = 0.717 × 운전자본/총자산 + 0.847 × 이익잉여금/총자산 + 3.107 × EBIT/총자산 + 0.420 × 자본 장부가/부채총계 + 0.998 × 매출/총자산. 1.23 미만 부실, 2.90 초과 안전, 사이는 회색지대(Altman, 1983).</li>
+        <li><b>한계</b>: 정규분포는 극단적인 하락(꼬리)을 과소평가합니다. 5개 연도로 잰 표준편차는 표본오차가 커서, 실제 적용 때는 분기 EBITDA 20개 이상이나 업종 변동성을 함께 씁니다. 결과는 판단을 돕는 숫자이며 신용등급·재무약정·차환 시장 상황과 함께 봐야 합니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/capital.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, S = window.Stats, E = window.CapitalEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  const YEARS = ["2022", "2023", "2024", "2025", "2026"];
+  const SIMPLE = {
+    "k-da": ["da"], "k-capex": ["capex"], "k-tax": ["tax"], "k-debt": ["debt"], "k-cash": ["cash"], "k-min": ["minCash"], "k-rcf": ["rcf"],
+    "k-tenor": ["tenor"], "k-roll": ["rollover"], "k-rf": ["rf"], "k-spread": ["spread0"], "k-lgd": ["lgd"], "k-mult": ["multiple"], "k-vol": ["assetVol"],
+    "k-dist": ["distress"], "k-hor": ["horizon"],
+    "p-lev": ["policy", "maxLev"], "p-icr": ["policy", "minIcr"], "p-dscr": ["policy", "minDscr"], "p-pd": ["policy", "maxPd"],
+    "b-ta": ["bs", "ta"], "b-ca": ["bs", "ca"], "b-cl": ["bs", "cl"], "b-re": ["bs", "re"], "b-sales": ["bs", "sales"], "b-ebit": ["bs", "ebit"], "b-te": ["bs", "te"], "b-tl": ["bs", "tl"]
+  };
+  const get = (o, path) => path.reduce((a, k) => a[k], o);
+  const won = (v, d) => F.money(v, d === undefined ? 0 : d) + "억원";
+  const eok = (v) => F.money(v, 0) + "억";
+  /* 확률은 크기에 따라 자릿수를 바꾼다 */
+  const fp = (p) => (!isFinite(p) ? "–" : p <= 0 ? "0%" : p < 1e-5 ? "0.001% 미만" : p < 1e-3 ? F.pct(p, 3) : p < 0.01 ? F.pct(p, 2) : F.pct(p, 1));
+  const BIND = { lev: "순차입금/EBITDA", icr: "이자보상배율", dscr: "DSCR", pd: "상환 부족 확률" };
+  const ZONE = { distress: ["부실 구간", "bad"], grey: ["회색지대", "warn"], safe: ["안전 구간", "ok"] };
+
+  /* ---------- 입력 ---------- */
+  function buildYears() {
+    const box = $("years"); box.textContent = "";
+    YEARS.forEach((y, i) => {
+      const inp = F.el("input", { id: "eb-" + i, type: "number", inputmode: "decimal", step: 10, min: 1, value: D.ebitdaHist[i], "aria-label": y + "년 EBITDA" });
+      inp.addEventListener("input", render);
+      box.appendChild(F.el("label", null, [y + (i === YEARS.length - 1 ? " (올해)" : ""), inp]));
+    });
+  }
+  function fill() {
+    Object.keys(SIMPLE).forEach((id) => { $(id).value = get(D, SIMPLE[id]); $(id).setAttribute("aria-invalid", "false"); });
+    YEARS.forEach((y, i) => { $("eb-" + i).value = D.ebitdaHist[i]; });
+  }
+  function read() {
+    const x = JSON.parse(JSON.stringify(D));
+    Object.keys(SIMPLE).forEach((id) => {
+      const path = SIMPLE[id], last = path[path.length - 1], parent = path.slice(0, -1).reduce((a, k) => a[k], x);
+      parent[last] = F.readNum($(id), get(D, path));
+    });
+    x.ebitdaHist = YEARS.map((y, i) => F.readNum($("eb-" + i), D.ebitdaHist[i]));
+    x.horizon = Math.max(1, Math.round(x.horizon));
+    return x;
+  }
+
+  /* ---------- 상충이론 곡선 ---------- */
+  const fr0H = () => (window.innerWidth > 1000 ? 360 : 280);
+  function drawTradeoff(a, x) {
+    const t = a.tradeoff, cap = a.capacity.cap, H = fr0H(), padL = 52, padR = 14, padT = 14, padB = 32;
+    const fr = F.plotFrame($("to-chart"), H, "부채 규모별 기업가치, 절세효과와 기대 부실비용"), svg = fr.svg, W = fr.W;
+    const P = t.pts, vals = P.map((p) => p.value).concat(P.map((p) => t.vu + p.shield), [t.vu]);
+    const ty = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5), tx = F.niceTicks(0, t.top, 6);
+    const X = (d) => padL + d / t.top * (W - padL - padR), Y = (v) => padT + (ty.hi - v) / (ty.hi - ty.lo) * (H - padT - padB);
+    ty.ticks.forEach((v) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.money(v, 0), { "text-anchor": "end" }); });
+    tx.ticks.filter((v) => v <= t.top * 0.97).forEach((v) => F.svgText(svg, X(v), H - 10, F.money(v, 0), { "text-anchor": "middle" }));
+    F.svgText(svg, W - padR, H - 22, "총차입금 →", { "text-anchor": "end" });
+    /* 부실비용 영역: 절세효과 선과 기업가치 선 사이 */
+    F.svgEl("path", { d: "M" + P.map((p) => X(p.D) + "," + Y(t.vu + p.shield)).join("L") + "L" + P.slice().reverse().map((p) => X(p.D) + "," + Y(p.value)).join("L") + "Z", fill: F.css("--neg"), opacity: 0.16 }, svg);
+    F.svgEl("line", { x1: padL, x2: W - padR, y1: Y(t.vu), y2: Y(t.vu), stroke: F.css("--muted"), "stroke-dasharray": "2 4" }, svg);
+    F.svgText(svg, padL + 6, Y(t.vu) + 14, "무부채 가치 " + F.money(t.vu, 0), { class: "c-lab" });
+    F.svgEl("path", { d: "M" + P.map((p) => X(p.D) + "," + Y(t.vu + p.shield)).join("L"), fill: "none", stroke: F.css("--pos"), "stroke-width": 1.5, "stroke-dasharray": "6 4" }, svg);
+    F.svgEl("path", { d: "M" + P.map((p) => X(p.D) + "," + Y(p.value)).join("L"), fill: "none", stroke: F.css("--ink"), "stroke-width": 2.5 }, svg);
+    const vline = (d, c) => { if (d >= 0 && d <= t.top) F.svgEl("line", { x1: X(d), x2: X(d), y1: padT, y2: H - padB, stroke: c, "stroke-width": 1.5, "stroke-dasharray": "5 4" }, svg); };
+    vline(cap, F.css("--neg")); vline(x.debt, F.css("--ink-2"));
+    F.svgEl("circle", { cx: X(x.debt), cy: Y(t.current.value), r: 4.5, fill: F.css("--surface"), stroke: F.css("--ink"), "stroke-width": 2 }, svg);
+    F.svgEl("circle", { cx: X(t.opt.D), cy: Y(t.opt.value), r: 5, fill: F.css("--pos") }, svg);
+    const tip = F.makeTip(fr.plot), step = (X(P[1].D) - X(P[0].D));
+    P.forEach((p) => {
+      const hit = F.svgEl("rect", { class: "hit", x: X(p.D) - step / 2, y: padT, width: step, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "총차입금 " + won(p.D), rows: [
+        ["순차입금/EBITDA", F.mult(p.lev, 2)], ["1년 상환 부족", fp(p.pd), F.css("--accent")], ["절세효과", "+" + F.money(p.shield, 0), F.css("--pos")],
+        ["기대 부실비용", "−" + F.money(p.cost, 0), F.css("--neg")], ["기업가치", F.money(p.value, 0), F.css("--ink")]] }));
+    });
+  }
+
+  /* ---------- 부채 한도 ---------- */
+  function drawCapacity(a, x) {
+    const c = a.capacity, box = $("cap-list"); box.textContent = "";
+    const scale = Math.max.apply(null, c.items.map((i) => i.v).concat([x.debt])) * 1.12 || 1;
+    c.items.forEach((it) => {
+      const bind = it.key === c.bind, room = it.v - x.debt;
+      const bar = F.el("div", { class: "bar" }), fillEl = F.el("div", { class: "fill" }), lim = F.el("div", { class: "lim" });
+      fillEl.style.width = Math.min(100, it.v / scale * 100) + "%";
+      fillEl.style.background = bind ? F.css(room < 0 ? "--neg" : "--accent") : F.css("--total");
+      lim.style.left = "calc(" + Math.min(100, x.debt / scale * 100) + "% - 1px)";
+      bar.appendChild(fillEl); bar.appendChild(lim);
+      box.appendChild(F.el("div", { class: "gauge" }, [
+        F.el("div", { class: "top" }, [F.el("span", { text: it.label }), F.el("span", null, [F.el("b", { text: eok(it.v) }), " ", bind ? F.el("span", { class: "pill " + (room < 0 ? "bad" : "warn"), text: "가장 먼저 걸림" }) : null])]),
+        bar,
+        F.el("div", { class: "foot" }, [F.el("span", { text: room >= 0 ? "현재보다 " + won(room) + " 더 질 수 있음" : "현재가 " + won(-room) + " 넘음" })])
+      ]));
+    });
+    const p = $("cap-pill"); p.className = "pill " + (c.room < 0 ? "bad" : c.room < c.cap * 0.1 ? "warn" : "ok");
+    p.textContent = "한도 " + eok(c.cap) + " · " + (c.room < 0 ? won(-c.room) + " 초과" : "여력 " + won(c.room));
+
+    const cur = a.current, P = x.policy, t = $("cur-table"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["지표", "현재", "기준", "판정"].map((h) => F.el("th", { text: h })))]));
+    const tb = F.el("tbody");
+    [["순차입금/EBITDA", F.mult(cur.lev, 2), "≤ " + F.mult(P.maxLev, 2), cur.lev <= P.maxLev],
+     ["이자보상배율", F.mult(cur.icr, 2), "≥ " + F.mult(P.minIcr, 2), cur.icr >= P.minIcr],
+     ["DSCR", F.mult(cur.dscr, 2), "≥ " + F.mult(P.minDscr, 2), cur.dscr >= P.minDscr],
+     ["1년 상환 부족 확률", fp(cur.pdShort), "≤ " + F.num(P.maxPd, 1) + "%", cur.pdShort * 100 <= P.maxPd]
+    ].forEach((r) => tb.appendChild(F.el("tr", null, [F.el("td", { text: r[0] }), F.el("td", { class: r[3] ? null : "bad", text: r[1] }), F.el("td", { text: r[2] }), F.el("td", null, [F.el("span", { class: "pill " + (r[3] ? "ok" : "bad"), text: r[3] ? "충족" : "미달" })])])));
+    t.appendChild(tb);
+  }
+
+  /* ---------- EBITDA 분포 ---------- */
+  function drawDist(a, x) {
+    const b = a.base, cur = a.current, H = 230, padL = 14, padR = 14, padT = 22, padB = 30;
+    const fr = F.plotFrame($("dist-chart"), H, "내년 EBITDA 정규분포와 상환 필요액"), svg = fr.svg, W = fr.W;
+    const cut = cur.need, cutD = cur.need - cur.liq;
+    const lo0 = Math.min(b.mu - 4 * b.sd, cut - b.sd * 0.6, Math.min.apply(null, x.ebitdaHist) - b.sd * 0.3), hi0 = Math.max(b.mu + 4 * b.sd, Math.max.apply(null, x.ebitdaHist) + b.sd * 0.3);
+    const tx = F.niceTicks(lo0, hi0, 6), X = (v) => padL + (v - tx.lo) / (tx.hi - tx.lo) * (W - padL - padR);
+    const pdf = (v) => S.normPdf((v - b.mu) / b.sd) / b.sd, top = pdf(b.mu), Y = (d) => padT + (1 - d / top) * (H - padT - padB);
+    const N = 180, xs = []; for (let i = 0; i <= N; i++) xs.push(tx.lo + (tx.hi - tx.lo) * i / N);
+    const area = (lim, color, op) => {
+      if (lim <= tx.lo) return;
+      const pts = xs.filter((v) => v < lim).concat([Math.min(lim, tx.hi)]);
+      F.svgEl("path", { d: "M" + X(tx.lo) + "," + Y(0) + "L" + pts.map((v) => X(v) + "," + Y(pdf(v))).join("L") + "L" + X(pts[pts.length - 1]) + "," + Y(0) + "Z", fill: color, opacity: op }, svg);
+    };
+    area(cut, F.css("--accent"), 0.45); area(cutD, F.css("--neg"), 0.9);
+    F.svgEl("line", { class: "base", x1: padL, x2: W - padR, y1: Y(0), y2: Y(0) }, svg);
+    F.svgEl("path", { d: "M" + xs.map((v) => X(v) + "," + Y(pdf(v))).join("L"), fill: "none", stroke: F.css("--ink-2"), "stroke-width": 1.8 }, svg);
+    tx.ticks.forEach((v) => F.svgText(svg, X(v), H - 10, F.money(v, 0), { "text-anchor": "middle" }));
+    if (cut >= tx.lo && cut <= tx.hi) {
+      F.svgEl("line", { x1: X(cut), x2: X(cut), y1: padT - 8, y2: Y(0), stroke: F.css("--accent"), "stroke-width": 1.5, "stroke-dasharray": "5 4" }, svg);
+      F.svgText(svg, X(cut) - 4, padT - 10 + 12, "필요 " + F.money(cut, 0), { class: "c-acc", "text-anchor": "end" });
+    }
+    F.svgEl("line", { x1: X(b.mu), x2: X(b.mu), y1: padT - 8, y2: Y(0), stroke: F.css("--ink-2"), "stroke-width": 1 }, svg);
+    F.svgText(svg, X(b.mu) + 4, padT - 10 + 12, "평균 " + F.money(b.mu, 0), { class: "c-lab" });
+    const tip = F.makeTip(fr.plot);
+    x.ebitdaHist.forEach((v, i) => {
+      const cx = X(v);
+      F.svgEl("rect", { x: cx - 1.5, y: Y(0) - 12, width: 3, height: 12, fill: F.css("--input") }, svg);
+      const hit = F.svgEl("rect", { class: "hit", x: cx - 7, y: Y(0) - 20, width: 14, height: 22 }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: YEARS[i] + "년 EBITDA", rows: [["실적", won(v)], ["평균과의 거리", F.num((v - b.mu) / b.sd, 2) + "σ"]] }));
+    });
+
+    const box = $("need-list"); box.textContent = "";
+    const row = (w, s, v, tot) => box.appendChild(F.el("div", { class: "rule" + (tot ? " tot" : "") }, [F.el("div", { class: "what" }, [w, s ? F.el("small", { text: s }) : null]), F.el("div", { class: "val", text: v })]));
+    row("이자", "총차입금 × 차입금리 " + F.pct(cur.rate, 2), F.money(cur.interest, 1));
+    row("차환하지 못하는 원금", "총차입금 ÷ " + F.num(x.tenor, 1) + "년 × (1 − 차환 " + F.num(x.rollover, 0) + "%)", F.money(cur.principal, 1));
+    row("유지 설비투자", null, F.money(x.capex, 1));
+    row("법인세", "(평균 EBITDA − 감가상각비 − 이자) × " + F.num(x.tax, 0) + "%", F.money(cur.taxv, 1));
+    row("상환 필요액", "이보다 EBITDA가 낮으면 DSCR < 1", F.money(cur.need, 1), true);
+    row("내년 EBITDA 평균 ± 표준편차", "최근 5년 표준편차 · 변동계수 " + F.pct(b.cv, 1), F.money(b.mu, 0) + " ± " + F.money(b.sd, 1));
+    row("필요액까지 거리", "(필요액 − 평균) ÷ 표준편차", F.num(cur.z, 2) + "σ → " + fp(cur.pdShort), true);
+    row("쓸 수 있는 유동성", "현금 − 최소 보유현금 + 한도대출", F.money(cur.liq, 0));
+    row("지급불능까지 거리", "(필요액 − 유동성 − 평균) ÷ 표준편차", F.num(cur.zD, 2) + "σ → " + fp(cur.pdDefault), true);
+  }
+
+  /* ---------- 부채별 확률 곡선(로그) ---------- */
+  function drawPd(a, x) {
+    const t = a.tradeoff, P = t.pts, H = 260, padL = 52, padR = 14, padT = 12, padB = 32, FLOOR = 1e-5;
+    const fr = F.plotFrame($("pd-chart"), H, "부채 규모별 1년 상환 부족, 지급불능, 머튼 부도확률"), svg = fr.svg, W = fr.W;
+    const tx = F.niceTicks(0, t.top, 6), X = (d) => padL + d / t.top * (W - padL - padR);
+    const lg = (p) => Math.log10(Math.max(FLOOR, Math.min(1, p))), Y = (p) => padT + (0 - lg(p)) / 5 * (H - padT - padB);
+    [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1].forEach((p) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(p), y2: Y(p) }, svg); F.svgText(svg, padL - 6, Y(p) + 4, p >= 0.01 ? F.pct(p, 0) : F.pct(p, Math.round(-Math.log10(p)) - 2), { "text-anchor": "end" }); });
+    tx.ticks.filter((v) => v <= t.top * 0.97).forEach((v) => F.svgText(svg, X(v), H - 10, F.money(v, 0), { "text-anchor": "middle" }));
+    const line = (key, color, w) => F.svgEl("path", { d: "M" + P.map((p) => X(p.D) + "," + Y(p[key])).join("L"), fill: "none", stroke: color, "stroke-width": w }, svg);
+    line("merton", F.css("--input"), 2); line("pdDefault", F.css("--neg"), 2); line("pd", F.css("--accent"), 2.5);
+    F.svgEl("line", { x1: padL, x2: W - padR, y1: Y(x.policy.maxPd / 100), y2: Y(x.policy.maxPd / 100), stroke: F.css("--ink-2"), "stroke-dasharray": "5 4" }, svg);
+    F.svgText(svg, padL + 6, Y(x.policy.maxPd / 100) - 5, "사내 기준 " + F.num(x.policy.maxPd, 1) + "%", { class: "c-lab" });
+    if (x.debt <= t.top) {
+      F.svgEl("line", { x1: X(x.debt), x2: X(x.debt), y1: padT, y2: H - padB, stroke: F.css("--ink-2"), "stroke-dasharray": "5 4" }, svg);
+      F.svgText(svg, X(x.debt) + 4, H - padB - 6, "현재", { class: "c-lab" });
+    }
+    const tip = F.makeTip(fr.plot), step = X(P[1].D) - X(P[0].D);
+    P.forEach((p) => {
+      const hit = F.svgEl("rect", { class: "hit", x: X(p.D) - step / 2, y: padT, width: step, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "총차입금 " + won(p.D), rows: [["상환 부족", fp(p.pd), F.css("--accent")], ["지급불능", fp(p.pdDefault), F.css("--neg")], ["머튼 부도", fp(p.merton), F.css("--input")], ["차입금리", F.pct(p.rate, 2)]] }));
+    });
+    const m = a.merton;
+    $("pd-note").textContent = "세 확률은 서로 다른 질문에 답합니다. 상환 부족은 '올해 영업현금으로 원리금을 못 낼 확률', 지급불능은 '현금과 한도대출까지 써도 못 낼 확률', 머튼 부도는 '기업가치가 부채 밑으로 떨어질 확률'입니다. 지금 부채에서 머튼 부도거리는 " + F.num(m.dd, 2) + "σ(부도확률 " + fp(m.pd) + ")로, 기업가치가 1년 안에 " + F.pct(1 - x.debt / a.base.ev, 0) + " 넘게 떨어져야 부채에 닿습니다.";
+  }
+
+  /* ---------- 시나리오 표 ---------- */
+  function drawScenario(a, x) {
+    const t = a.tradeoff, cap = a.capacity.cap, P = x.policy, tb = $("sc-table"); tb.textContent = "";
+    const rows = [[x.debt * 0.5, ""], [x.debt * 0.75, ""], [t.opt.D, "가치 극대"], [cap, "정책 한도"], [x.debt, "현재"], [x.debt * 1.25, ""], [x.debt * 1.5, ""]]
+      .sort((p, q) => p[0] - q[0]).filter((r, i, arr) => i === 0 || Math.abs(r[0] - arr[i - 1][0]) > 1 || r[1]);
+    const head = ["총차입금", "순차입금/<br>EBITDA", "차입금리", "이자<br>보상배율", "DSCR", "1년<br>상환 부족", x.horizon + "년 누적<br>부실확률", "머튼<br>부도확률", "절세효과", "기대<br>부실비용", "기업가치", "현재 대비"];
+    const thr = F.el("tr"); head.forEach((h, i) => { const th = F.el("th"); th.innerHTML = h; if (i === 0) th.style.textAlign = "left"; thr.appendChild(th); });
+    tb.appendChild(F.el("thead", null, [thr]));
+    const body = F.el("tbody"), curV = t.current.value;
+    rows.forEach((r) => {
+      const v = E.valueAt(r[0], x), tr = F.el("tr", { class: r[1] === "현재" ? "cur" : null });
+      const th = F.el("th", null, [F.money(r[0], 0), r[1] ? F.el("span", { class: "tag", text: r[1] }) : null]);
+      tr.appendChild(th);
+      [[F.mult(v.lev, 2), v.lev > P.maxLev], [F.pct(v.rate, 2), false], [F.mult(v.icr, 2), v.icr < P.minIcr], [F.mult(v.dscr, 2), v.dscr < P.minDscr], [fp(v.pd), v.pd * 100 > P.maxPd + 1e-9],
+       [fp(v.cum), false], [fp(v.merton), false], ["+" + F.money(v.shield, 0), false], ["−" + F.money(v.cost, 0), false], [F.money(v.value, 0), false], [F.signed(v.value - curV, 0), false]]
+        .forEach((c) => tr.appendChild(F.el("td", { class: c[1] ? "bad" : null, text: c[0] })));
+      body.appendChild(tr);
+    });
+    tb.appendChild(body);
+  }
+
+  /* ---------- Altman ---------- */
+  function drawAltman(a) {
+    const z = a.altman, zb = $("zbar"); zb.textContent = "";
+    const max = Math.max(4.5, z.z + 0.5), min = Math.min(0, z.z - 0.3), w = (v) => (v - min) / (max - min) * 100;
+    [[min, 1.23, "--neg"], [1.23, 2.9, "--accent"], [2.9, max, "--pos"]].forEach((s) => { const sp = F.el("span"); sp.style.width = (w(s[1]) - w(s[0])) + "%"; sp.style.background = "color-mix(in srgb, " + F.css(s[2]) + " 32%, transparent)"; zb.appendChild(sp); });
+    [1.23, 2.9].forEach((c) => { const sp = F.el("span", { class: "cut", text: F.num(c, 2) }); sp.style.left = w(c) + "%"; zb.appendChild(sp); });
+    [[min, 1.23, "부실"], [1.23, 2.9, "회색지대"], [2.9, max, "안전"]].forEach((s) => { const sp = F.el("span", { class: "cut zn", text: s[2] }); sp.style.left = (w(s[0]) + w(s[1])) / 2 + "%"; zb.appendChild(sp); });
+    const mk = F.el("span", { class: "mk" }, [F.el("b", { text: "Z′ " + F.num(z.z, 2) })]); mk.style.left = "calc(" + w(z.z) + "% - 1.5px)"; zb.appendChild(mk);
+    const zp = $("z-pill"); zp.className = "pill " + ZONE[z.zone][1]; zp.textContent = ZONE[z.zone][0];
+    const t = $("z-table"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["항목", "비율", "가중치", "기여", ""].map((h) => F.el("th", { text: h })))]));
+    const tb = F.el("tbody"), names = ["운전자본 ÷ 총자산", "이익잉여금 ÷ 총자산", "EBIT ÷ 총자산", "자본 장부가 ÷ 부채총계", "매출 ÷ 총자산"];
+    const maxPart = Math.max.apply(null, z.parts.map(Math.abs)) || 1;
+    z.parts.forEach((p, i) => {
+      const bar = F.el("span", { class: "cbar" }); bar.style.width = Math.max(1, Math.abs(p) / maxPart * 60) + "px"; if (p < 0) bar.style.background = F.css("--neg");
+      tb.appendChild(F.el("tr", null, [F.el("td", { text: "X" + (i + 1) + " " + names[i] }), F.el("td", { text: F.num(z.X[i], 3) }), F.el("td", { text: F.num(z.W[i], 3) }), F.el("td", { text: F.num(p, 3) }), F.el("td", null, [bar])]));
+    });
+    tb.appendChild(F.el("tr", null, [F.el("td", null, [F.el("b", { text: "Z′ 합계" })]), F.el("td"), F.el("td"), F.el("td", null, [F.el("b", { text: F.num(z.z, 3) })]), F.el("td")]));
+    t.appendChild(tb);
+  }
+
+  /* ---------- 민감도 ---------- */
+  function drawSens(a, x) {
+    const s = a.sens, b = a.base, t = $("sens-table"); t.textContent = "";
+    const hr = F.el("tr", null, [F.el("th", { text: "EBITDA 평균 ↓ · 변동성 →" })]);
+    s.vols.forEach((m) => hr.appendChild(F.el("th", { text: "× " + F.num(m, 2) + " (σ " + F.money(b.sd * m, 0) + ")" })));
+    t.appendChild(F.el("thead", null, [hr]));
+    const tb = F.el("tbody");
+    s.levels.forEach((lv, i) => {
+      const tr = F.el("tr", null, [F.el("th", { text: (lv === 0 ? "올해 수준" : "올해 " + lv + "%") + " (" + F.money(b.mu * (1 + lv / 100), 0) + ")" })]);
+      s.vols.forEach((m, j) => {
+        const p = s.grid[i][j], td = F.el("td", { class: lv === 0 && m === 1 ? "base" : null, text: fp(p) });
+        td.style.background = "color-mix(in srgb, " + F.css("--neg") + " " + Math.round(Math.min(55, Math.sqrt(p) * 70)) + "%, transparent)";
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    const need = a.current.need, under = s.levels.filter((lv) => b.mu * (1 + lv / 100) < need);
+    $("sens-note").textContent = "굵은 칸이 지금 가정입니다. 같은 부채라도 EBITDA 평균이 10% 줄면 확률은 " + fp(s.grid[1][1]) + ", 변동성이 1.5배가 되면 " + fp(s.grid[0][2]) + "가 됩니다." +
+      (under.length ? " 평균이 상환 필요액(" + F.money(need, 0) + "억원)보다 낮은 줄에서는 변동성이 클수록 확률이 오히려 줄어듭니다. 나쁜 평균에서 운 좋게 벗어날 여지가 생기기 때문이며, 이 구간은 확률보다 평균 자체(이익 체력)를 고쳐야 하는 상태입니다." : "");
+  }
+
+  /* ---------- 목표 부채 범위: 가치 극대점과 정책 한도 사이 ---------- */
+  function drawTarget(a, x) {
+    const lo = Math.min(a.tradeoff.opt.D, a.capacity.cap), hi = Math.max(a.tradeoff.opt.D, a.capacity.cap), top = a.tradeoff.top, box = $("k-target");
+    box.textContent = "";
+    const act = x.debt > hi ? won(x.debt - hi) + " ~ " + won(x.debt - lo) + " 줄여야 범위 안" : x.debt < lo ? won(lo - x.debt) + " ~ " + won(hi - x.debt) + " 더 질 여력" : "현재 부채가 범위 안";
+    box.appendChild(F.el("div", { class: "top" }, [F.el("span", null, ["목표 부채 범위(가치 극대 ~ 정책 한도) ", F.el("b", { text: F.money(lo, 0) + " ~ " + F.money(hi, 0) + "억원" })]), F.el("span", null, [F.el("b", { text: act })])]));
+    const m = F.el("div", { class: "meter" }), sp = F.el("div", { class: "span" }), cur = F.el("i", { class: "cur" });
+    const pc = (v) => Math.max(0, Math.min(100, v / top * 100));
+    sp.style.left = pc(lo) + "%"; sp.style.width = Math.max(0.6, pc(hi) - pc(lo)) + "%"; cur.style.left = "calc(" + pc(x.debt) + "% - 1px)";
+    m.appendChild(sp); m.appendChild(cur);
+    [[0, "0"], [x.debt, "현재 " + F.money(x.debt, 0)]].forEach((q) => { const t = F.el("span", { class: "tk", text: q[1] }); t.style.left = pc(q[0]) + "%"; if (q[0] === 0) t.style.transform = "none"; m.appendChild(t); });
+    box.appendChild(m);
+  }
+
+  /* ---------- 요약 ---------- */
+  function render() {
+    const x = read(), a = E.analyze(x), cur = a.current, c = a.capacity, t = a.tradeoff, m = a.merton, z = a.altman, P = x.policy;
+    const p = $("k-pill");
+    if (c.room < 0) { p.className = "pill bad"; p.textContent = "정책 한도 초과"; }
+    else if (c.room < c.cap * 0.1) { p.className = "pill warn"; p.textContent = "한도 근접"; }
+    else { p.className = "pill ok"; p.textContent = "한도 안"; }
+    $("lg-opt").textContent = eok(t.opt.D); $("lg-cap").textContent = eok(c.cap); $("lg-cur").textContent = eok(x.debt);
+
+    F.setValue($("k-pd"), fp(cur.pdShort), null, cur.pdShort * 100 > P.maxPd);
+    $("k-pd-sub").textContent = "DSCR " + F.mult(cur.dscr, 2) + " · " + x.horizon + "년 누적 " + fp(cur.cum);
+    F.setValue($("k-pdd"), fp(cur.pdDefault), null, cur.pdDefault > 0.005);
+    $("k-pdd-sub").textContent = "유동성 " + eok(cur.liq) + "까지 써도 부족";
+    F.setValue($("k-cap"), F.money(c.cap, 0), "억원");
+    $("k-cap-sub").textContent = (c.room < 0 ? "현재 " + eok(-c.room) + " 초과" : "여력 " + eok(c.room)) + " · " + BIND[c.bind];
+    F.setValue($("k-opt"), F.money(t.opt.D, 0), "억원");
+    $("k-opt-sub").textContent = "순차입금/EBITDA " + F.mult(t.opt.lev, 2) + " · 가치 " + F.signed(t.gain, 0);
+    F.setValue($("k-dd"), F.num(m.dd, 2), "σ", m.dd < 2);
+    $("k-dd-sub").textContent = "부도확률 " + fp(m.pd) + " · 차입금리 " + F.pct(cur.rate, 2);
+    F.setValue($("k-z"), F.num(z.z, 2), null, z.zone === "distress");
+    $("k-z-sub").textContent = ZONE[z.zone][0] + " (1.23 ~ 2.90)";
+
+    drawTarget(a, x); drawTradeoff(a, x); drawCapacity(a, x); drawDist(a, x); drawPd(a, x); drawScenario(a, x); drawAltman(a); drawSens(a, x);
+
+    const memo = $("k-memo"); memo.textContent = "";
+    const levOk = cur.lev <= P.maxLev, pdOk = cur.pdShort * 100 <= P.maxPd;
+    memo.append("현재 총차입금 " + won(x.debt) + "(순차입금/EBITDA " + F.mult(cur.lev, 2) + ")은 레버리지 기준 " + F.mult(P.maxLev, 1) + (levOk ? " 안에 있지만, " : "를 넘고, "));
+    memo.append("내년 EBITDA가 과거 5년만큼 흔들리면(표준편차 " + won(a.base.sd) + ") 이자·원금·유지 설비투자·세금 " + won(cur.need) + "을 영업현금으로 못 메울 확률이 1년 ", F.el("b", { text: fp(cur.pdShort) }), "(" + x.horizon + "년 누적 " + fp(cur.cum) + ")로 사내 기준 " + F.num(P.maxPd, 1) + "%를 " + (pdOk ? "밑돕니다. " : "넘습니다. "));
+    memo.append("네 가지 기준을 모두 지키는 한도는 ", F.el("b", { text: won(c.cap) }), "(먼저 걸리는 기준: " + BIND[c.bind] + ")로 " + (c.room < 0 ? "지금보다 " + won(-c.room) + " 적습니다. " : "지금보다 " + won(c.room) + " 여유가 있습니다. "));
+    const near = Math.abs(t.opt.D - x.debt) < Math.max(30, x.debt * 0.03);
+    memo.append("절세효과와 부실비용을 맞바꾸면 기업가치가 가장 큰 부채는 " + won(t.opt.D) + "(순차입금/EBITDA " + F.mult(t.opt.lev, 2) + ")" + (near ? "로 지금 부채가 그 근처입니다. " : "이고, 지금 대비 가치 차이는 " + won(t.gain) + "입니다. "));
+    memo.append("쓸 수 있는 유동성 " + won(cur.liq) + "을 감안한 1년 지급불능 확률은 " + fp(cur.pdDefault) + ", 머튼 부도거리는 " + F.num(m.dd, 2) + "σ이고, Altman Z′는 " + F.num(z.z, 2) + "로 " + ZONE[z.zone][0] + "입니다.");
+
+    const chk = $("k-check"); chk.textContent = "";
+    const minCap = Math.min.apply(null, c.items.map((i) => i.v));
+    const atCap = E.cashPd(c.cap, x), bindVal = { lev: (c.cap - x.cash) / a.base.mu - P.maxLev, icr: atCap.icr - P.minIcr, dscr: atCap.dscr - P.minDscr, pd: atCap.pdShort * 100 - P.maxPd }[c.bind];
+    const mono = t.pts.every((q, i) => i === 0 || q.merton >= t.pts[i - 1].merton - 1e-15);
+    const zsum = z.X.reduce((s, v, i) => s + v * z.W[i], 0);
+    [["한도 = 네 기준 중 가장 작은 값", Math.abs(c.cap - minCap) < 1e-9],
+     ["한도에서 먼저 걸리는 기준이 정확히 경계", c.cap === 0 || Math.abs(bindVal) < 1e-6],
+     ["가치 극대점 ≥ 곡선의 모든 점", t.pts.every((q) => q.value <= t.opt.value + 1e-9)],
+     ["기업가치 = 무부채 가치 + 절세효과 − 부실비용", Math.abs(t.opt.value - (t.vu + t.opt.shield - t.opt.cost)) < 1e-9],
+     ["부채가 늘면 머튼 부도확률 증가", mono],
+     ["Z′ = Σ 가중치 × 비율", Math.abs(zsum - z.z) < 1e-12]
+    ].forEach((k) => chk.appendChild(F.el("span", { class: k[1] ? null : "fail", text: k[0] })));
+  }
+
+  /* ---------- 연결 ---------- */
+  Object.keys(SIMPLE).forEach((id) => $(id).addEventListener("input", render));
+  ["f-co", "f-mk", "f-pol", "f-bs"].forEach((id) => $(id).addEventListener("submit", (e) => e.preventDefault()));
+  $("k-reset").addEventListener("click", () => { fill(); render(); });
+  buildYears(); fill(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

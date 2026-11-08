@@ -27,6 +27,30 @@
 <style>
   .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; }
   .controls .grp { display: flex; align-items: center; gap: 10px; font-size: var(--s-1); color: var(--ink-2); }
+  /* 추세와 변동성 */
+  .stat-head { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .stat-head h3 { margin: 0; }
+  .stat-ctl { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: var(--s-1); color: var(--ink-2); }
+  .skpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--rule); border-radius: var(--radius); margin: 12px 0; }
+  .skpis > div { padding: 12px 14px; border-left: 1px solid var(--rule-soft); display: grid; gap: 3px; }
+  .skpis > div:first-child { border-left: 0; }
+  .skpis .l { font-size: 12px; color: var(--muted); }
+  .skpis .v { font-family: var(--f-num); font-size: 19px; font-weight: 600; color: var(--ink); }
+  .skpis .s { font-size: 11.5px; color: var(--ink-2); }
+  @media (max-width: 760px) { .skpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .skpis > div:nth-child(3) { border-left: 0; } .skpis > div:nth-child(n+3) { border-top: 1px solid var(--rule-soft); } }
+  table.st { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 12.5px; }
+  table.st th, table.st td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--rule-soft); white-space: nowrap; font-family: var(--f-num); }
+  table.st thead th { color: var(--muted); font-weight: 500; font-family: var(--f-body); border-bottom: 1px solid var(--rule); }
+  table.st tbody th { text-align: left; font-weight: 500; color: var(--ink-2); }
+  table.st td.watch { color: var(--accent); font-weight: 600; }
+  table.st td.alert { color: var(--neg-ink); font-weight: 700; }
+  table.st td.txt { font-family: var(--f-body); text-align: left; white-space: normal; }
+  .bias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  @media (max-width: 760px) { .bias { grid-template-columns: minmax(0, 1fr); } }
+  .bias > div { border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 6px; }
+  .bias b { font-size: var(--s-1); }
+  .bias p { margin: 0; font-size: var(--s-1); color: var(--ink-2); line-height: 1.6; }
+  .bias p.so { color: var(--ink); font-weight: 600; }
   .controls select { font: inherit; font-size: var(--s-1); padding: 6px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
   .grid2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 18px; }
   .grid2 > * { min-width: 0; }
@@ -67,7 +91,7 @@
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
       <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html" aria-current="page">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html" aria-current="page">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
       <a href="../en.html" lang="en">EN</a>
@@ -87,7 +111,7 @@
   </div>
 
   <div class="wrap wide tool-body">
-    <span class="sample">예시: 두 사업부를 가진 가상 제조사의 2026년 계획과 1~9월 실적 · 모든 수치는 가상</span>
+    <span class="sample">예시: 두 사업부를 가진 가상 제조사의 2025년 실적, 2026년 계획과 1~9월 실적 · 모든 수치는 가상</span>
 
     <div class="controls" role="group" aria-label="보고 기준">
       <span class="grp"><label for="asof">기준월</label><select id="asof"></select></span>
@@ -136,11 +160,39 @@
       </div>
     </div>
 
+    <section class="card" id="trend" style="margin-top: 18px" aria-labelledby="st-title">
+      <div class="stat-head">
+        <h3 id="st-title">추세와 변동성 <span class="hint">전년 1월부터 기준월까지 월 실적</span></h3>
+        <div class="stat-ctl">
+          <span class="seg" role="radiogroup" aria-label="분석 지표">
+            <label><input type="radio" name="metric" value="rev" checked>매출액</label>
+            <label><input type="radio" name="metric" value="op">영업이익</label>
+            <label><input type="radio" name="metric" value="opm">영업이익률</label>
+          </span>
+          <label><input type="checkbox" id="seasonal" checked> 계절조정</label>
+        </div>
+      </div>
+      <div class="skpis" id="skpis"></div>
+      <div class="chart" id="t-chart">
+        <div class="chart-head"><h4 id="t-title">추세선과 ±1σ·±2σ 밴드</h4>
+          <div class="legend"><span><i class="key-line" style="background: var(--ink)"></i>실적</span><span><i class="key-line" style="background: var(--input)"></i>추세선</span><span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 22%, transparent)"></i>±1σ</span><span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 9%, transparent)"></i>±2σ</span><span><i class="key-dash" style="border-color: var(--accent)"></i>추정 ±1σ</span></div>
+        </div>
+        <div class="plot-host"></div>
+      </div>
+      <div class="memo"><span class="label">통계 해석</span><p id="t-memo"></p></div>
+      <div class="bias" id="bias"></div>
+      <details class="fs" style="margin-top: 12px">
+        <summary>월별 이격도와 z점수 <span class="sum-note" id="sn-st"></span></summary>
+        <div class="fs-body"><div class="scroll" style="border: 0"><table class="st" id="t-st"></table></div></div>
+      </details>
+      <div class="selfcheck" id="t-check"></div>
+    </section>
+
     <div style="display: grid; gap: 14px; margin-top: 20px">
       <details class="fs">
         <summary>데이터 붙여넣기 <span class="sum-note" id="sn-data"></span></summary>
         <div class="fs-body">
-          <p class="hint">한 줄에 <b>기간, 사업부, 계정, 계획, 실적</b> 순서입니다. 엑셀에서 복사한 탭 구분 표도 됩니다. 계정은 매출액·재료비·노무비·제조경비·판매관리비를 씁니다. 실적이 아직 없는 달은 비워 두세요.</p>
+          <p class="hint">한 줄에 <b>기간, 사업부, 계정, 계획, 실적</b> 순서입니다. 엑셀에서 복사한 탭 구분 표도 됩니다. 계정은 매출액·재료비·노무비·제조경비·판매관리비를 씁니다. 실적이 아직 없는 달은 비워 두세요. 전년(2025) 실적 행을 함께 넣으면 추세와 변동성 분석에 씁니다.</p>
           <textarea id="csv" spellcheck="false" aria-label="손익 데이터"></textarea>
           <ul class="errs" id="errs" hidden></ul>
           <div class="btn-row"><button type="button" class="btn primary" id="apply">이 데이터로 보고서 만들기</button><button type="button" class="btn" id="reset">예시 데이터로 되돌리기</button></div>
@@ -179,6 +231,8 @@ def bridge(p, a):
         <li>매출원가 = 재료비 + 노무비 + 제조경비, 영업이익 = 매출 − 매출원가 − 판매관리비. 재료비를 변동비, 나머지를 고정비로 보고 공헌이익률 = (매출 − 재료비) ÷ 매출로 계산합니다.</li>
         <li>차이는 실적 − 계획입니다. 매출과 이익은 줄면, 비용은 늘면 불리한 차이로 빨갛게 표시합니다.</li>
         <li>영업이익 차이 분해: 매출 증감 효과 = 매출 차이 × 계획 공헌이익률, 공헌이익률 효과 = 공헌이익률 차이 × 실적 매출, 고정비는 항목별 계획 − 실적. 다섯 효과의 합은 영업이익 차이와 정확히 같습니다. 전사로 보면 사업부 구성(믹스) 변화가 매출 증감과 공헌이익률 효과에 섞여, 사업부별 분해의 단순 합과 다를 수 있습니다.</li>
+        <li>추세와 변동성: 전년 1월부터 기준월까지 월 실적에 최소제곱 직선(추세선)을 맞춥니다. 매출액·영업이익은 계획 매출의 월별 비중(계절지수)으로 나눠 계절성을 걷어 낸 뒤 추세를 잡습니다. σ는 잔차의 표준오차(자유도 n − 2)이고, 밴드는 추세선 ±1σ·±2σ입니다. 이격도 = 실적 ÷ 추세 − 1(비율 지표는 %p 차이), z = 잔차 ÷ σ이며 |z| ≥ 1이면 주의, ≥ 2면 이상치로 표시합니다. 기울기의 p값은 t분포(자유도 n − 2)로 계산하고, 추정 구간은 t분위수로 만든 ±1σ(약 68%) 예측 구간입니다.</li>
+        <li>계획 편향: 보고 연도의 월별 달성률(실적 ÷ 계획)이 평균적으로 100%와 다른지 한 표본 t검정으로 봅니다. p값이 0.05보다 작으면 계획이 체계적으로 높거나 낮게 세워졌다고 읽습니다. MAPE는 월별 계획 오차 크기의 평균입니다.</li>
         <li>추정: 기준월 다음 3개월에 계획 × 달성률을 계정별로 적용합니다. 누계 달성률은 1월부터 기준월까지, 최근 3개월은 최근 석 달의 실적 ÷ 계획입니다. 그 뒤 달은 계획을 씁니다. 연간 전망 = 누계 실적 + 3개월 추정 + 남은 계획.</li>
       </ul>
     </div>
@@ -190,6 +244,7 @@ def bridge(p, a):
 </footer>
 
 <script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
 <script src="../assets/engines/pl.js"></script>
 <script>
 (function () {
@@ -308,6 +363,98 @@ def bridge(p, a):
     });
   }
 
+  /* ---------- 추세와 변동성 ---------- */
+  function drawTrend(asOf, scope) {
+    const metric = radio("metric"), T = E.trend(rows, scope, metric, asOf, { seasonal: $("seasonal").checked });
+    $("seasonal").disabled = metric === "opm";
+    const host = $("skpis"); host.textContent = "";
+    if (!T.ok) { host.appendChild(F.el("div", null, [F.el("span", { class: "l", text: "데이터 부족" }), F.el("span", { class: "s", text: "실적이 6개월 이상 있어야 합니다(지금 " + T.n + "개월)." })])); $("t-memo").textContent = ""; return null; }
+    const fv = (v) => (T.ratio ? F.pct(v, 1) : F.money(v, 1));
+    const sg = (v, d) => (v < 0 ? "−" : "+") + F.num(Math.abs(v), d);   /* 기울기는 괄호 대신 부호로 */
+    const fg = (v) => (T.ratio ? F.pp(v, 1) : F.pctSigned(v, 1));
+    const sig = T.slopeP < 0.05 ? "유의" : "유의하지 않음";
+    [["추세 기울기", (T.ratio ? F.pp(T.slope, 2) : sg(T.slope, 2) + "억원") + "/월", T.ratio ? "p값 " + F.num(T.slopeP, 3) + " · " + sig : "연환산 " + F.pctSigned(T.growth, 1) + " · p값 " + F.num(T.slopeP, 3) + " · " + sig],
+     ["설명력 R²", F.num(T.r2, 2), "추세가 설명하는 변동의 비율 · " + T.pts.length + "개월"],
+     ["변동성 σ", T.ratio ? F.pp(T.sigma, 1) : F.money(T.sigma, 1) + "억원", T.ratio ? "잔차 표준오차" : "잔차 ÷ 평균 수준 " + F.pct(T.cvResid, 1) + " · ±1σ 안 " + F.pct(T.share1, 0)],
+     ["최근월 이격도", fg(T.last.gap), "z = " + F.num(T.last.z, 2) + (T.last.flag === "alert" ? " · 이상치" : T.last.flag === "watch" ? " · 주의" : " · 정상 범위")]
+    ].forEach((k) => host.appendChild(F.el("div", null, [F.el("span", { class: "l", text: k[0] }), F.el("span", { class: "v", text: k[1] }), F.el("span", { class: "s", text: k[2] })])));
+    $("t-title").textContent = T.label + (T.seasonal ? " (계절조정)" : "") + " 추세선과 ±1σ·±2σ 밴드";
+
+    /* 그래프 */
+    const H = 280, padL = 54, padR = 14, padT = 18, padB = 30;
+    const fr = F.plotFrame($("t-chart"), H, T.label + " 월별 실적과 추세선, ±1σ·±2σ 밴드");
+    const svg = fr.svg, W = fr.W, P = T.pts, A = T.ahead, N = P.length + A.length;
+    const vals = P.map((p) => p.v).concat(P.map((p) => p.fit + 2 * T.sigma), P.map((p) => p.fit - 2 * T.sigma), A.map((a) => a.hi), A.map((a) => a.lo));
+    const t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const X = (i) => padL + (W - padL - padR) * (i - 0.5) / N, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((tv) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, T.ratio ? F.pct(tv, 0) : F.money(tv, 0), { "text-anchor": "end" }); });
+    const inp = F.css("--input"), ink = F.css("--ink"), acc = F.css("--accent"), neg = F.css("--neg"), surf = F.css("--surface");
+    const line = (pts) => "M" + pts.map((q) => q[0] + "," + q[1]).join("L");
+    const fitAt = (i) => T.a + T.slope * i;
+    const band = (k, op) => {
+      const xs = []; for (let i = 1; i <= P.length; i++) xs.push(i);
+      const up = xs.map((i) => [X(i), Y(fitAt(i) + k * T.sigma)]), dn = xs.slice().reverse().map((i) => [X(i), Y(fitAt(i) - k * T.sigma)]);
+      F.svgEl("path", { d: line(up.concat(dn)) + "Z", fill: inp, opacity: op }, svg);
+    };
+    band(2, 0.09); band(1, 0.2);
+    /* 연도 경계 */
+    const yb = P.findIndex((p) => p.y === E.YEAR);
+    if (yb > 0) { const xb = (X(yb) + X(yb + 1)) / 2; F.svgEl("line", { x1: xb, x2: xb, y1: padT, y2: H - padB, stroke: F.css("--rule"), "stroke-dasharray": "3 3" }, svg); F.svgText(svg, xb + 4, padT + 10, String(E.YEAR), { class: "m-now" }); }
+    F.svgEl("path", { d: line([[X(1), Y(fitAt(1))], [X(P.length), Y(fitAt(P.length))]]), stroke: inp, "stroke-width": 1.8, fill: "none" }, svg);
+    if (A.length) {
+      F.svgEl("path", { d: line(A.map((a, i) => [X(P.length + i + 1), Y(a.hi)]).concat(A.slice().reverse().map((a, i) => [X(P.length + A.length - i), Y(a.lo)]))) + "Z", fill: acc, opacity: 0.12 }, svg);
+      F.svgEl("path", { d: line([[X(P.length), Y(fitAt(P.length))]].concat(A.map((a, i) => [X(P.length + i + 1), Y(a.v)]))), stroke: acc, "stroke-width": 1.8, "stroke-dasharray": "5 4", fill: "none" }, svg);
+    }
+    F.svgEl("path", { d: line(P.map((p, i) => [X(i + 1), Y(p.v)])), stroke: ink, "stroke-width": 1.6, fill: "none", "stroke-linejoin": "round" }, svg);
+    P.forEach((p, i) => F.svgEl("circle", { cx: X(i + 1), cy: Y(p.v), r: p.flag ? 4.2 : 3, fill: p.flag === "alert" ? neg : p.flag === "watch" ? acc : ink, stroke: surf, "stroke-width": 1.4 }, svg));
+    const lab = P.map((p) => p.label).concat(A.map((a) => a.label));
+    lab.forEach((l, i) => { if (i % 3 === 0 || i === lab.length - 1) F.svgText(svg, X(i + 1), H - 10, l, { "text-anchor": "middle" }); });
+    const tip = F.makeTip(fr.plot);
+    P.forEach((p, i) => {
+      const hit = F.svgEl("rect", { class: "hit", x: X(i + 1) - (W - padL - padR) / N / 2, y: padT, width: (W - padL - padR) / N, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "20" + p.label.replace(".", "년 ") + "월", rows: [["실적" + (T.seasonal ? "(조정)" : ""), fv(p.v), ink], ["추세", fv(p.fit), inp], ["이격도", fg(p.gap), acc], ["z", F.num(p.z, 2), p.flag === "alert" ? neg : acc]] }));
+    });
+    A.forEach((a, i) => {
+      const hit = F.svgEl("rect", { class: "hit", x: X(P.length + i + 1) - (W - padL - padR) / N / 2, y: padT, width: (W - padL - padR) / N, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "20" + a.label.replace(".", "년 ") + "월 추정", rows: [["추세 추정", fv(a.v), acc], ["±1σ 구간", fv(a.lo) + " ~ " + fv(a.hi), acc]].concat(T.seasonal ? [["계절 반영", F.money(a.raw, 1) + "억원", ink]] : []) }));
+    });
+
+    /* 표 */
+    const tb = $("t-st"); tb.textContent = "";
+    tb.appendChild(F.el("thead", null, [F.el("tr", null, ["월", "실적", T.seasonal ? "계절지수" : "", T.seasonal ? "조정 실적" : "", "추세", "이격도", "z점수", "판정"].filter((x, i) => x !== "" || i < 2).map((h, i) => F.el("th", { text: h, style: i === 0 ? "text-align: left" : null })))]));
+    const body = F.el("tbody");
+    P.slice().reverse().forEach((p) => {
+      const cells = [F.el("th", { text: "20" + p.label })].concat([fv(p.raw)].concat(T.seasonal ? [F.num(p.si, 3), fv(p.v)] : []).map((v) => F.el("td", { text: v })),
+        [F.el("td", { text: fv(p.fit) }), F.el("td", { text: fg(p.gap), class: p.flag || null }), F.el("td", { text: F.num(p.z, 2), class: p.flag || null }), F.el("td", { class: "txt", text: p.flag === "alert" ? "이상치(|z| ≥ 2)" : p.flag === "watch" ? "주의(|z| ≥ 1)" : "" })]);
+      body.appendChild(F.el("tr", null, cells));
+    });
+    tb.appendChild(body);
+    const nA = P.filter((p) => p.flag === "alert").length, nW = P.filter((p) => p.flag === "watch").length;
+    $("sn-st").textContent = "주의 " + nW + "개월 · 이상치 " + nA + "개월";
+
+    /* 계획 편향 */
+    const bias = $("bias"); bias.textContent = "";
+    [["rev", "매출액"], ["op", "영업이익"]].forEach((q) => {
+      const b = E.planBias(rows, scope, asOf, q[0]);
+      if (!b.ok) return;
+      const dir = b.p < 0.05 ? (b.mean < 1 ? "계획이 체계적으로 높게(낙관적으로) 세워졌습니다" : "계획이 체계적으로 낮게(보수적으로) 세워졌습니다") : "체계적인 편향은 통계적으로 확인되지 않습니다";
+      bias.appendChild(F.el("div", null, [F.el("b", { text: q[1] + " 계획 편향 (" + E.YEAR + "년 " + b.n + "개월)" }),
+        F.el("p", { text: "월평균 달성률 " + F.pct(b.mean, 1) + "(표준편차 " + F.num(b.sd * 100, 1) + "%p), t = " + F.num(b.t, 2) + ", p = " + F.num(b.p, 4) + ". 계획을 넘긴 달은 " + b.hits + "개월이고, 월별 계획 오차는 평균 " + F.pct(b.mape, 1) + "(MAPE)입니다." }),
+        F.el("p", { class: "so", text: dir + "." })]));
+    });
+
+    /* 해석 */
+    const memo = $("t-memo"); memo.textContent = "";
+    memo.append(scope + " " + T.label + (T.seasonal ? "(계절조정)" : "") + "는 " + T.pts.length + "개월 동안 월 " + (T.ratio ? F.pp(Math.abs(T.slope), 2).replace("+", "") : F.num(Math.abs(T.slope), 2) + "억원") + "씩 " + (T.slope >= 0 ? "늘어나는" : "줄어드는") + " 추세" + (T.ratio ? "" : "(연환산 " + F.pctSigned(T.growth, 1) + ")") + "이고, 이 기울기는 " + (T.slopeP < 0.05 ? "통계적으로 유의합니다(p = " + F.num(T.slopeP, 3) + "). " : "통계적으로 유의하지 않아 방향을 단정하기 어렵습니다(p = " + F.num(T.slopeP, 3) + "). "));
+    memo.append("추세 밖 변동의 크기(σ)는 " + (T.ratio ? F.pp(T.sigma, 1) : F.money(T.sigma, 1) + "억원") + "이고, " + "최근월은 추세 대비 ", F.el("b", { text: fg(T.last.gap) }), "(z = " + F.num(T.last.z, 2) + ")" + (Math.abs(T.last.z) >= 2 ? "로 이상치 수준입니다. 일회성 요인인지 먼저 확인합니다. " : Math.abs(T.last.z) >= 1 ? "로 주의 구간입니다. 다음 달에도 같은 방향이면 추세 변화로 봅니다. " : "로 평소 변동 범위 안입니다. "));
+    memo.append("최근 3개월 평균은 추세보다 " + F.num(Math.abs(T.momentum), 2) + "σ " + (T.momentum >= 0 ? "위" : "아래") + "에 있습니다.");
+    if (A.length && !T.ratio) memo.append(" 추세가 이어지면 다음 달은 " + F.money(A[0].raw, 1) + "억원(±1σ " + F.money(A[0].rawLo, 1) + "~" + F.money(A[0].rawHi, 1) + "억원" + (T.seasonal ? ", 계절 반영" : "") + ") 수준입니다.");
+    const chk = $("t-check"); chk.textContent = "";
+    const rs = T.pts.reduce((s0, p) => s0 + p.res, 0);
+    [["잔차 합 = 0 (최소제곱)", Math.abs(rs) < 1e-6 * Math.max(1, T.sigma * T.pts.length)], ["이격도·z점수 계산 일치", T.pts.every((p) => Math.abs(p.z * T.sigma - p.res) < 1e-9)]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+    return T;
+  }
+
   function render() {
     const asOf = Number($("asof").value), scope = radio("scope"), method = radio("method");
     const r = E.report(rows, asOf, scope, method);
@@ -325,6 +472,7 @@ def bridge(p, a):
     drawTable(r);
     drawBridge(r);
     drawChart(r);
+    drawTrend(asOf, scope);
 
     /* 보고 문장 */
     const memo = $("memo"), items = r.bridge.items.slice().sort((a, b) => a.v - b.v);
@@ -365,7 +513,8 @@ def bridge(p, a):
   $("apply").addEventListener("click", apply);
   $("reset").addEventListener("click", () => { rows = E.sample(); $("csv").value = E.toCsv(rows); $("errs").hidden = true; buildAsOf(); $("asof").value = String(E.lastActualMonth(rows)); render(); });
   $("asof").addEventListener("change", render);
-  document.querySelectorAll("input[name=scope], input[name=method]").forEach((i) => i.addEventListener("change", render));
+  document.querySelectorAll("input[name=scope], input[name=method], input[name=metric]").forEach((i) => i.addEventListener("change", render));
+  $("seasonal").addEventListener("change", render);
   $("csv").value = E.toCsv(rows);
   buildAsOf(); $("asof").value = String(E.lastActualMonth(rows));
   render();

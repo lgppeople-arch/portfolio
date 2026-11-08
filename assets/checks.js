@@ -4,6 +4,8 @@
   const node = typeof module === "object" && module.exports;
   const env = node ? {
     Fin: require("./fin.js"),
+    Stats: require("./stats.js"),
+    Capital: require("./engines/capital.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -63,7 +65,7 @@
   }
 
   function run(env) {
-    const { Fin, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -411,6 +413,85 @@
 
       const z = clone(x); z.stress = { salesDrop: 0, delayWeeks: 0, capexPull: 0 };
       add("자금수지", "스트레스를 0으로 두면 기본 결과와 같다", near(Cash.forecast(z).close, base.close), base.close.toFixed(2) + "억원");
+    }
+    /* ---------- 통계 모듈: 알려진 값과 대조 ---------- */
+    if (Stats) {
+      const S = Stats;
+      add("통계", "정규분포: Φ(1.96) = 0.975002, Φ⁻¹(0.975) = 1.959964", Math.abs(S.normCdf(1.96) - 0.9750021) < 1e-6 && Math.abs(S.normInv(0.975) - 1.959964) < 1e-6,
+        S.normCdf(1.96).toFixed(7) + " · " + S.normInv(0.975).toFixed(6));
+      add("통계", "t·카이제곱·F 분포 임계값이 통계표와 같다 (t₀.₉₇₅,₂₀ = 2.086, χ²₀.₉₅,₁ = 3.841, F₀.₉₅,₁,₂₀ = 4.351)",
+        Math.abs(S.tInv(0.975, 20) - 2.085963) < 1e-4 && Math.abs(S.chi2Sf(3.841459, 1) - 0.05) < 1e-4 && Math.abs(S.fSf(4.351244, 1, 20) - 0.05) < 1e-4,
+        "t " + S.tInv(0.975, 20).toFixed(4) + " · χ² p " + S.chi2Sf(3.841459, 1).toFixed(4) + " · F p " + S.fSf(4.351244, 1, 20).toFixed(4));
+      const xs = [1, 2, 3, 4, 5, 6, 7, 8], exact = S.linreg(xs, xs.map((v) => 2 + 3 * v)), noisy = S.linreg(xs, [3, 9, 7, 15, 16, 21, 22, 27]);
+      add("통계", "회귀: 직선 위의 점은 절편·기울기를 그대로 찾고(R² = 1), 잔차의 합은 0", near(exact.a, 2, 1e-12) && near(exact.b, 3, 1e-12) && near(exact.r2, 1, 1e-12) && Math.abs(Fin.sum(noisy.resid)) < 1e-9,
+        "기울기 " + noisy.b.toFixed(4) + ", R² " + noisy.r2.toFixed(4));
+      const av = S.anova([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+      add("통계", "분산분석: 손으로 푼 예제와 같다 (F = 27, η² = 0.9)", near(av.f, 27, 1e-12) && near(av.eta2, 0.9, 1e-12) && av.p < 0.002, "F " + av.f.toFixed(2) + ", p " + av.p.toFixed(5));
+      const g = S.gini([0, 0, 0, 1]), h = S.hhi([1, 1, 1, 1]), q = S.quantile([1, 2, 3, 4], 0.25);
+      add("통계", "지니계수·HHI·사분위수 기준값 (한 명이 전부 = 0.75, 넷이 같으면 HHI 0.25, PERCENTILE.INC)", near(g, 0.75) && near(h, 0.25) && q === Fin.quantile([1, 2, 3, 4], 0.25), "Gini " + g + " · HHI " + h);
+      const r1 = S.rng(7), r2 = S.rng(7), a1 = [], a2 = [];
+      for (let i = 0; i < 20000; i++) { a1.push(r1.normal()); a2.push(r2.normal()); }
+      const same = a1.every((v, i) => v === a2[i]), m = S.mean(a1), sd = S.sd(a1);
+      add("통계", "난수: 같은 시드면 같은 수열, 정규난수 2만 개의 평균 ≈ 0·표준편차 ≈ 1", same && Math.abs(m) < 0.03 && Math.abs(sd - 1) < 0.03, "평균 " + m.toFixed(4) + ", 표준편차 " + sd.toFixed(4));
+    }
+
+    /* ---------- 월 손익 보고: 추세와 계획 편향 ---------- */
+    if (Pl && Stats) {
+      const rows = Pl.sample(), T = Pl.trend(rows, "전사", "rev", 9, { seasonal: true });
+      const resSum = Fin.sum(T.pts.map((p) => p.res)), zOk = T.pts.every((p) => near(p.z * T.sigma, p.res, 1e-9));
+      add("손익보고", "추세선 잔차의 합 = 0, 각 달의 z × 표준편차 = 잔차", T.ok && Math.abs(resSum) < 1e-6 && zOk, T.pts.length + "개월, 잔차 합 " + fmt(resSum));
+      const band = T.ahead.every((f) => f.lo < f.v && f.v < f.hi && near(f.v - f.lo, f.hi - f.v, 1e-9));
+      add("손익보고", "추세 예측의 ±1σ 구간은 추정치를 가운데 둔 대칭 구간", T.ahead.length > 0 && band, T.ahead.length + "개월 앞");
+      const B = Pl.planBias(rows, "전사", 9, "rev"), rates = B.months.map((r) => r.rate);
+      const tHand = (Stats.mean(rates) - 1) / (Stats.sd(rates) / Math.sqrt(rates.length));
+      add("손익보고", "계획 편향 t값 = (평균 달성률 − 1) ÷ (표준편차 ÷ √n)", B.ok && near(B.t, tHand, 1e-9), "평균 달성률 " + (B.mean * 100).toFixed(1) + "%, t " + B.t.toFixed(2));
+    }
+
+    /* ---------- 성과평가: 분포·평가자 보정 ---------- */
+    if (Mbo && Stats) {
+      const x = clone(Mbo.DEFAULTS), teams = Mbo.sampleTeams(), r = Mbo.distribution(teams, x.grades, x.pool);
+      const cnt = (o) => Fin.sum(Object.keys(o).map((k) => o[k]));
+      add("성과평가", "등급 인원의 합 = 팀 수 (보정 전·후), 기대 인원의 합 = 팀 수", cnt(r.grades0) === r.n && cnt(r.grades1) === r.n && near(Fin.sum(r.fit.exp), r.n), r.n + "팀");
+      add("성과평가", "보정 전·후 모두 인센티브 합계 = 총액", near(Fin.sum(r.alloc0), x.pool) && near(Fin.sum(r.alloc1), x.pool), x.pool + "억원");
+      const raterOk = r.byRater.keys.every((k) => {
+        const v = r.adj.filter((_, i) => teams[i].rater === k);
+        return near(Stats.mean(v), r.d.mean, 1e-9) && near(Stats.sd(v), r.d.sd, 1e-9);
+      });
+      add("성과평가", "평가자 보정 뒤 모든 평가자의 평균·표준편차가 전체와 같아진다", near(Stats.mean(r.adj), r.d.mean, 1e-9) && raterOk, "평균 " + r.d.mean.toFixed(2) + ", 표준편차 " + r.d.sd.toFixed(2));
+    }
+
+    /* ---------- 13주 자금수지: 몬테카를로 ---------- */
+    if (Cash && Stats) {
+      const x = clone(Cash.DEFAULTS);
+      const z = Cash.simulate(x, { salesSd: 0, p1: 0, p2: 0, n: 20 });
+      const base = Cash.forecast(Object.assign({}, x, { rcf: Object.assign({}, x.rcf, { auto: false }) }));
+      const baseMin = Math.min.apply(null, base.daily.map((d) => d.cash));
+      add("자금수지", "변동성 0이면 모든 시뮬레이션 경로가 기본 계획과 같다", Math.abs(z.p5 - baseMin) < 1e-9 && z.minSd < 1e-9, "최저 현금 " + baseMin.toFixed(1) + "억원");
+      const s1 = Cash.simulate(x, { n: 300 }), s2 = Cash.simulate(x, { n: 300 });
+      add("자금수지", "확률 순서(지급불능 ≤ 한도 소진 ≤ 한도 필요)와 같은 시드의 재현성", s1.insolv.p <= s1.short.p && s1.short.p <= s1.need.p && s1.need.p === s2.need.p && s1.p5 === s2.p5,
+        "300회, 한도 필요 " + (s1.need.p * 100).toFixed(1) + "%");
+    }
+
+    /* ---------- 적정 부채와 파산 위험 ---------- */
+    if (Capital && Stats) {
+      const x = clone(Capital.DEFAULTS), a = Capital.analyze(x), c = a.capacity, t = a.tradeoff;
+      const cd = Cash ? Cash.DEFAULTS : null;
+      add("적정부채", "13주 자금수지와 같은 가상 회사 (차입금·현금·한도·EBITDA 일치, 연 이자 차이 1억원 이내)",
+        !cd || (x.debt === cd.cov.debt0 && x.cash === cd.opening && x.rcf === cd.rcf.limit && x.minCash === cd.minCash && x.ebitdaHist[x.ebitdaHist.length - 1] === cd.cov.ebitda && Math.abs(a.current.interest - cd.cov.intLtm) < 1),
+        "이자 " + a.current.interest.toFixed(1) + " vs " + (cd ? cd.cov.intLtm : "-") + "억원");
+      add("적정부채", "상환 부족 확률 = Φ((상환 필요액 − 평균 EBITDA) ÷ 표준편차)", near(a.current.pdShort, Stats.normCdf((a.current.need - a.base.mu) / a.base.sd), 1e-12), (a.current.pdShort * 100).toFixed(2) + "%");
+      const atCap = Capital.cashPd(c.cap, x), P = x.policy;
+      const edge = { lev: (c.cap - x.cash) / a.base.mu - P.maxLev, icr: atCap.icr - P.minIcr, dscr: atCap.dscr - P.minDscr, pd: atCap.pdShort * 100 - P.maxPd }[c.bind];
+      add("적정부채", "부채 한도 = 네 기준 중 가장 작은 값이고, 그 점에서 먼저 걸리는 기준이 정확히 경계", near(c.cap, Math.min.apply(null, c.items.map((i) => i.v))) && Math.abs(edge) < 1e-6,
+        c.cap.toFixed(0) + "억원, 기준 " + c.bind);
+      add("적정부채", "가치 극대 부채의 기업가치 ≥ 곡선의 모든 점, 부채 0이면 기업가치 = 무부채 가치", t.pts.every((p) => p.value <= t.opt.value + 1e-9) && near(Capital.valueAt(0, x).value, t.vu),
+        t.opt.D.toFixed(0) + "억원");
+      const mono = t.pts.every((p, i) => i === 0 || (p.merton >= t.pts[i - 1].merton - 1e-15 && p.rate >= t.pts[i - 1].rate - 1e-15));
+      const shieldOk = t.pts.every((p) => p.shield <= x.tax / 100 * p.D + 1e-9);
+      add("적정부채", "부채가 늘면 머튼 부도확률과 차입금리가 오르고, 절세효과는 법인세율 × 부채를 넘지 않는다", mono && shieldOk, t.pts.length + "점");
+      const z = Capital.altman({ ta: 100, ca: 50, cl: 30, re: 20, sales: 150, te: 40, tl: 60, ebit: 10 });
+      const hand = 0.717 * 0.2 + 0.847 * 0.2 + 3.107 * 0.1 + 0.420 * (40 / 60) + 0.998 * 1.5;
+      add("적정부채", "Altman Z′ = 0.717·X1 + 0.847·X2 + 3.107·X3 + 0.420·X4 + 0.998·X5 (손 계산 예제)", near(z.z, hand, 1e-12) && z.zone === "grey", "Z′ " + z.z.toFixed(4));
     }
     return out;
   }

@@ -1,10 +1,11 @@
 /* 13주 자금수지 엔진: 날짜별 입출금을 영업일 규칙에 맞춰 놓고, 일별 잔액과 주차별 합계, 한도대출 인출·상환,
    분기말 재무약정 비율을 계산한다. 금액은 억원, 날짜는 "YYYY-MM-DD". */
 (function (root, factory) {
-  const api = factory(typeof module === "object" && module.exports ? require("../fin.js") : root.Fin);
+  const node = typeof module === "object" && module.exports;
+  const api = factory(node ? require("../fin.js") : root.Fin, node ? require("../stats.js") : root.Stats);
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.CashEngine = api;
-})(typeof self !== "undefined" ? self : this, function (Fin) {
+})(typeof self !== "undefined" ? self : this, function (Fin, Stats) {
   "use strict";
 
   /* 이 기간의 공휴일 (토·일은 따로 처리) */
@@ -62,7 +63,9 @@
     const salesOf = (y, m) => {
       const v = x.sales[monthKey(y, m)];
       if (v === undefined) return null;
-      return y * 12 + m >= startMonth ? v * drop : v;     /* 이미 확정된 지난달 매출은 그대로 */
+      if (y * 12 + m < startMonth) return v;              /* 이미 확정된 지난달 매출은 그대로 */
+      const k = x.mc && x.mc.mult[monthKey(y, m)];        /* 시뮬레이션: 달마다 다른 매출 충격 */
+      return v * drop * (k === undefined ? 1 : k);
     };
     const lag = Math.max(0, Math.round(x.collectLag)), plag = Math.max(0, Math.round(x.payLag));
 
@@ -71,7 +74,8 @@
       const sv = salesOf(c.y, c.m);
       if (sv !== null) {
         const cm = ym(c.y, c.m + lag);
-        push(addDays(prevBiz(lastDay(cm.y, cm.m)), x.stress.delayWeeks * 7), "collect", sv, monthKey(c.y, c.m) + " 매출 회수");
+        const extra = (x.mc && x.mc.delay[monthKey(c.y, c.m)]) || 0;   /* 시뮬레이션: 그 달 회수만 늦어지는 경우 */
+        push(addDays(prevBiz(lastDay(cm.y, cm.m)), (x.stress.delayWeeks + extra) * 7), "collect", sv, monthKey(c.y, c.m) + " 매출 회수");
         const pm = ym(c.y, c.m + plag);
         push(prevBiz(lastDay(pm.y, pm.m)), "purchase", -sv * x.purchaseRatio / 100, monthKey(c.y, c.m) + " 매입대금");
       }
@@ -168,5 +172,51 @@
     };
   }
 
-  return { DEFAULTS, LINES, HOLIDAYS, parse, fmt, isBiz, prevBiz, nextBiz, events, forecast };
+  /* ---------- 몬테카를로: 확률로 보는 자금 위험 ----------
+     기간 안에 매출이 생기는 달마다 매출 충격 = 1 + σ(√ρ·공통 충격 + √(1−ρ)·개별 충격)을 곱하고(0 아래는 0),
+     달마다 회수가 1주(p1) 또는 2주(p2) 늦어질 수 있다고 둔다. 한도대출 없이 굴린 '자체 현금' 경로의 최저값 m으로
+       한도대출 필요: m < 최소 보유현금, 한도 소진 뒤 최소 보유현금 미달: m < 최소 보유현금 − 한도, 지급불능: m < −한도
+     를 판정한다(한도대출이 최소 보유현금까지 채워 준다고 볼 때 성립하는 관계). 같은 시드면 결과가 같다. */
+  const MC_DEFAULTS = { n: 2000, seed: 2026, salesSd: 8, rho: 0.5, p1: 25, p2: 5 };
+  function simulate(x, o) {
+    o = Object.assign({}, MC_DEFAULTS, o || {});
+    const r = Stats.rng(o.seed), t0 = parse(x.start), sm = new Date(t0).getUTCFullYear() * 12 + new Date(t0).getUTCMonth();
+    const keys = Object.keys(x.sales).filter((k) => { const p = k.split("-").map(Number); return p[0] * 12 + p[1] - 1 >= sm; });
+    const allKeys = Object.keys(x.sales);
+    const L = x.rcf.limit, mins = [], weekLows = [], covFail = [], testOwn = [];
+    let need = 0, short = 0, insolv = 0, cov = 0;
+    const sd = o.salesSd / 100, rho = Math.max(0, Math.min(1, o.rho));
+    for (let i = 0; i < o.n; i++) {
+      const zc = r.normal(), mult = {}, delay = {};
+      keys.forEach((k) => { mult[k] = Math.max(0, 1 + sd * (Math.sqrt(rho) * zc + Math.sqrt(1 - rho) * r.normal())); });
+      allKeys.forEach((k) => { const u = r.u(); delay[k] = u < o.p2 / 100 ? 2 : u < (o.p1 + o.p2) / 100 ? 1 : 0; });
+      const xi = Object.assign({}, x, { rcf: Object.assign({}, x.rcf, { auto: false }), mc: { mult: mult, delay: delay } });
+      const f = forecast(xi), m = Math.min.apply(null, f.daily.map((d) => d.cash));
+      mins.push(m); weekLows.push(f.weeks.map((w) => w.low));
+      if (m < x.minCash) need++;
+      if (m < x.minCash - L) short++;
+      if (m < -L) insolv++;
+      if (f.cov) {
+        /* 약정: 한도대출 인출액은 차입과 현금에 똑같이 더해져 순차입금에는 영향이 없다. 부채비율에는 인출액만큼 부채가 는다 */
+        const at = f.daily.find((d) => d.date === x.cov.testDate), drawn = Math.min(L, Math.max(0, x.minCash - at.cash));
+        const c = x.cov, nd = c.debt0 + at.debtDelta - at.cash, lev = nd / c.ebitda, dr = (c.liab0 + at.debtDelta + drawn) / c.equity0 * 100, icr = c.ebit / c.intLtm;
+        const bad = lev > c.maxLev || dr > c.maxDebtRatio || icr < c.minIcr;
+        if (bad) cov++;
+        covFail.push(bad); testOwn.push(at.cash);
+      }
+    }
+    const n = o.n, pr = (k) => ({ p: k / n, se: Math.sqrt((k / n) * (1 - k / n) / n) });
+    const W = weekLows[0].length, fan = [];
+    for (let w = 0; w < W; w++) { const col = weekLows.map((a) => a[w]); fan.push({ w: w + 1, p5: Stats.quantile(col, 0.05), p25: Stats.quantile(col, 0.25), p50: Stats.quantile(col, 0.5), p75: Stats.quantile(col, 0.75), p95: Stats.quantile(col, 0.95) }); }
+    const q = (p) => Stats.quantile(mins, p);
+    return {
+      opts: o, n: n, months: keys, need: pr(need), short: pr(short), insolv: pr(insolv), cov: pr(cov),
+      minMean: Stats.mean(mins), minSd: Stats.sd(mins), p1: q(0.01), p5: q(0.05), p50: q(0.5), p95: q(0.95), mins: mins, fan: fan,
+      /* 95%·99% 확률로 최소 보유현금을 지키는 데 필요한 추가 유동성(한도대출 포함 필요액) */
+      buffer95: Math.max(0, x.minCash - q(0.05)), buffer99: Math.max(0, x.minCash - q(0.01)), rcf: L, minCash: x.minCash,
+      hist: Stats.histogram(mins, 24)
+    };
+  }
+
+  return { DEFAULTS, MC_DEFAULTS, LINES, HOLIDAYS, parse, fmt, isBiz, prevBiz, nextBiz, events, forecast, simulate };
 });

@@ -47,6 +47,21 @@
   .flags li.bad::before { content: "✕"; color: var(--neg-ink); }
   .flags li.ok::before { content: "✓"; color: var(--pos); }
   .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  /* 분포 분석 */
+  .dkpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: var(--radius); }
+  .dkpis > div { padding: 12px 14px; border-left: 1px solid var(--rule-soft); display: grid; gap: 3px; }
+  .dkpis > div:first-child { border-left: 0; }
+  .dkpis .l { font-size: 12px; color: var(--muted); }
+  .dkpis .v { font-family: var(--f-num); font-size: 19px; font-weight: 600; }
+  .dkpis .s { font-size: 11.5px; color: var(--ink-2); }
+  @media (max-width: 760px) { .dkpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dkpis > div:nth-child(3) { border-left: 0; } .dkpis > div:nth-child(n+3) { border-top: 1px solid var(--rule-soft); } }
+  table.dt { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  table.dt th, table.dt td { padding: 6px 8px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; font-family: var(--f-num); }
+  table.dt thead th { color: var(--muted); font-weight: 500; font-family: var(--f-body); border-bottom: 1px solid var(--rule); }
+  table.dt tbody th { text-align: left; font-family: var(--f-body); font-weight: 600; }
+  table.dt td.hi { color: var(--accent); font-weight: 700; }
+  table.dt td.lo { color: var(--input); font-weight: 700; }
+  .stat-line { font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
   .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
   .two { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   .two > * { min-width: 0; }
@@ -77,7 +92,7 @@
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
       <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html" aria-current="page">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html" aria-current="page">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
       <a href="../en.html" lang="en">EN</a>
@@ -132,12 +147,69 @@
       <div id="kpi-tables" style="display: grid; gap: 18px"></div>
     </section>
 
+    <section class="block2" id="dist" aria-label="팀 평가 결과 분포 분석">
+      <h2>팀 평가 결과의 분포 분석</h2>
+      <p class="hint" style="max-width: 900px">평가가 끝난 뒤 점수가 얼마나 퍼져 있는지(산포), 한쪽이나 가운데로 몰렸는지(집중), 평가자마다 기준이 달랐는지를 통계로 봅니다. 예시는 세 본부 48개 팀, 평가자 4명의 가상 결과이고, 위의 등급 기준과 인센티브 총액을 그대로 씁니다.</p>
+      <div class="dkpis" id="dkpis"></div>
+      <div class="two">
+        <div class="card">
+          <div class="chart" id="d-hist">
+            <div class="chart-head"><h4>점수 분포 <span class="muted">(팀 수)</span></h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--total)"></i>팀 수</span><span><i class="key-line" style="background: var(--accent)"></i>정규분포</span><span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 18%, transparent)"></i>평균 ±1σ</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <div class="scroll" style="border: 0"><table class="dt" id="d-grades"></table></div>
+          <p class="stat-line" id="d-fit"></p>
+        </div>
+        <div class="card">
+          <div class="chart" id="d-box">
+            <div class="chart-head"><h4>평가자별 점수 상자그림</h4>
+              <div class="legend"><span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 30%, transparent)"></i>Q1~Q3</span><span><i class="key-line" style="background: var(--ink)"></i>중앙값</span><span><i class="key-bar" style="background: var(--accent)"></i>평균</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <div class="scroll" style="border: 0"><table class="dt" id="d-raters"></table></div>
+          <p class="stat-line" id="d-anova"></p>
+        </div>
+      </div>
+      <div class="two">
+        <div class="card">
+          <h3>평가자 보정 전후</h3>
+          <p class="stat-line">평가자마다 평균과 퍼진 정도가 다르면, 같은 성과라도 누구에게 평가받았는지에 따라 등급이 갈립니다. 평가자 안에서 점수를 z점수로 바꾼 뒤 전체 평균·표준편차로 되돌리면(보정) 평가자의 관대화·중심화 경향이 걷힙니다.</p>
+          <div class="scroll" style="border: 0"><table class="dt" id="d-calib"></table></div>
+        </div>
+        <div class="card">
+          <div class="chart" id="d-lorenz">
+            <div class="chart-head"><h4>인센티브 1인당 금액의 로렌츠 곡선</h4>
+              <div class="legend"><span><i class="key-line" style="background: var(--ink)"></i>보정 전</span><span><i class="key-dash" style="border-color: var(--accent)"></i>보정 후</span><span><i class="key-line" style="background: var(--rule)"></i>완전 균등</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <p class="stat-line" id="d-gini"></p>
+        </div>
+      </div>
+      <div class="memo"><span class="label">통계 해석</span><p id="d-memo"></p></div>
+      <div class="selfcheck" id="d-check"></div>
+      <details class="fs">
+        <summary>팀 평가 데이터 붙여넣기 <span class="sum-note" id="sn-teams"></span></summary>
+        <div class="fs-body">
+          <p class="hint">한 줄에 <b>팀, 본부, 평가자, 인원, 점수</b> 순서입니다. 엑셀에서 복사한 탭 구분 표도 됩니다.</p>
+          <textarea id="tcsv" spellcheck="false" aria-label="팀 평가 데이터" style="width: 100%; min-height: 160px; font-family: var(--f-num); font-size: 12px"></textarea>
+          <ul class="errs" id="terrs" hidden></ul>
+          <div class="btn-row"><button type="button" class="btn primary" id="tapply">이 데이터로 분석</button><button type="button" class="btn" id="treset">예시 데이터로 되돌리기</button></div>
+        </div>
+      </details>
+    </section>
+
     <div class="method">
       <h4>계산 기준</h4>
       <ul>
         <li>KPI 점수: 하한 미달 0점, 하한 60점, 목표 100점, 도전 목표 120점(상한)이고 그 사이는 직선으로 잇습니다. 작을수록 좋은 지표(원가율, 회전일수, 사고 건수)는 방향을 뒤집어 같은 식을 씁니다. 도전 목표가 목표와 같으면 목표 점수가 최고점입니다.</li>
         <li>조직 점수 = KPI 점수 × 가중치의 합. 가중치 합이 100%가 아니면 합으로 나눠 계산하고 점검 목록에 표시합니다.</li>
         <li>인센티브 배분액 = 총액 × (인원 × 등급 배수) ÷ 전체 (인원 × 등급 배수). 모든 조직의 등급이 같으면 인원 비례가 됩니다. 실제로는 연봉 총액이나 직급을 기준으로 쓰기도 합니다.</li>
+        <li>분포 분석: 표준편차·변동계수(σ ÷ 평균)·사분위범위(Q3 − Q1)로 산포를, 왜도·첨도(엑셀 SKEW·KURT와 같은 식)와 중앙값 ±5점 안의 팀 비중으로 집중(중심화) 정도를 봅니다. 등급 분포가 가이드(S 10·A 20·B 40·C 20·D 10%)와 같은지는 카이제곱 적합도 검정, 평가자 간 평균 차이는 일원분산분석(F검정, η² = 평가자가 설명하는 분산 비율)으로 판단합니다. 기대 도수가 5보다 작은 칸이 있으면 카이제곱 결과는 참고로만 봅니다.</li>
+        <li>평가자 보정: 보정 점수 = 전체 평균 + 전체 표준편차 × (점수 − 평가자 평균) ÷ 평가자 표준편차. 인센티브 불평등은 1인당 금액의 지니계수(0 = 완전 균등)와 상위 20% 비중으로 봅니다.</li>
         <li>설계 점검: 가중치 합, 지표 수, 하한·목표·도전 순서, 전년 실적보다 쉬운 목표, 너무 작거나 쏠린 가중치, 조직이 통제하기 어려운 지표를 봅니다. 점수 구간과 등급 기준은 회사마다 다르므로 예시입니다.</li>
       </ul>
     </div>
@@ -149,11 +221,12 @@
 </footer>
 
 <script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
 <script src="../assets/engines/mbo.js"></script>
 <script>
 (function () {
   "use strict";
-  const F = window.Fin, E = window.MboEngine, $ = F.$;
+  const F = window.Fin, E = window.MboEngine, Stats = window.Stats, $ = F.$;
   const D = E.DEFAULTS;
   let x = JSON.parse(JSON.stringify(D));
   const GCOL = () => ({ S: F.css("--pos"), A: F.css("--input"), B: F.css("--total"), C: "#B7791F", D: F.css("--neg") });
@@ -312,7 +385,115 @@
     const rs = E.evaluate(same), hs = F.sum(rs.orgs.map((o) => o.heads));
     const prop = rs.orgs.every((o) => Math.abs(o.alloc - x.pool * o.heads / hs) < 1e-9);
     [["배분액 합 = 인센티브 총액", Math.abs(r.allocSum - x.pool) < 1e-9], ["배수가 같으면 인원 비례 배분", prop]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+    drawDist();
   }
+
+  /* ---------- 팀 평가 결과 분포 ---------- */
+  let teams = E.sampleTeams();
+  function drawDist() {
+    const r = E.distribution(teams, x.grades, x.pool), d = r.d, gc = GCOL();
+    const host = $("dkpis"); host.textContent = "";
+    [["평균 ± 표준편차", F.num(d.mean, 1) + " ± " + F.num(d.sd, 1), "변동계수 " + F.pct(d.cv, 1) + " · 팀 " + r.n + "개"],
+     ["중앙값 · 사분위범위", F.num(d.median, 1) + " · " + F.num(d.iqr, 1), "Q1 " + F.num(d.q1, 1) + " ~ Q3 " + F.num(d.q3, 1) + " · 범위 " + F.num(d.min, 1) + "~" + F.num(d.max, 1)],
+     ["왜도 · 첨도", F.num(d.skew, 2) + " · " + F.num(d.kurt, 2), (d.skew < -0.5 ? "높은 점수 쪽으로 몰림" : d.skew > 0.5 ? "낮은 점수 쪽으로 몰림" : "대체로 좌우 대칭") + " · " + (d.kurt > 0.5 ? "가운데가 뾰족" : d.kurt < -0.5 ? "넓게 퍼짐" : "정규분포와 비슷한 두께")],
+     ["중심화 비중", F.pct(r.center, 0), "중앙값 ±5점 안 팀 비중 · ±1σ 안 " + F.pct(d.within1sd, 0)]
+    ].forEach((k) => host.appendChild(F.el("div", null, [F.el("span", { class: "l", text: k[0] }), F.el("span", { class: "v", text: k[1] }), F.el("span", { class: "s", text: k[2] })])));
+
+    /* 히스토그램 + 정규분포 */
+    { const H = 230, padL = 34, padR = 10, padT = 14, padB = 28, fr = F.plotFrame($("d-hist"), H, "팀 점수 히스토그램과 정규분포 곡선"), svg = fr.svg, W = fr.W, h = r.hist;
+      const maxC = Math.max.apply(null, h.counts.concat([h.w * r.n * Stats.normPdf(0) / d.sd])), t = F.niceTicks(0, maxC, 4);
+      const X = (v) => padL + (v - h.lo) / (h.hi - h.lo) * (W - padL - padR), Y = (c) => padT + (t.hi - c) / (t.hi - t.lo) * (H - padT - padB);
+      F.svgEl("rect", { x: X(d.mean - d.sd), y: padT, width: X(d.mean + d.sd) - X(d.mean - d.sd), height: H - padT - padB, fill: F.css("--input"), opacity: 0.12 }, svg);
+      t.ticks.forEach((tv) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
+      h.counts.forEach((c, i) => { const x0 = X(h.edges[i]) + 1, x1 = X(h.edges[i] + h.w) - 1; if (c) F.svgEl("path", { d: F.barPath(x0, x1 - x0, Y(0), Y(c), 2), fill: F.css("--total") }, svg); });
+      const pts = []; for (let v = h.lo; v <= h.hi; v += 0.5) pts.push(X(v) + "," + Y(h.w * r.n * Stats.normPdf((v - d.mean) / d.sd) / d.sd));
+      F.svgEl("path", { d: "M" + pts.join("L"), fill: "none", stroke: F.css("--accent"), "stroke-width": 2 }, svg);
+      F.svgEl("line", { x1: X(d.mean), x2: X(d.mean), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-dasharray": "3 3" }, svg);
+      F.svgText(svg, X(d.mean) + 4, padT + 10, "평균 " + F.num(d.mean, 1), { class: "m-now" });
+      for (let v = 60; v <= 120; v += 10) F.svgText(svg, X(v), H - 9, String(v), { "text-anchor": "middle" });
+    }
+
+    /* 등급 분포 */
+    const gt = $("d-grades"); gt.textContent = "";
+    gt.appendChild(F.el("thead", null, [F.el("tr", null, ["등급", "가이드", "실제", "실제 비중", "보정 후", "보정 후 비중"].map((h, i) => F.el("th", { text: h, style: i === 0 ? "text-align: left" : null })))]));
+    const gb = F.el("tbody");
+    r.order.forEach((g) => { const a = r.grades0[g], b = r.grades1[g], gd = (r.guide[g] || 0) / 100, cls = (v) => (v / r.n > gd + 0.05 ? "hi" : v / r.n < gd - 0.05 ? "lo" : null);
+      const th = F.el("th"); const dot = F.el("i", { style: "display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px" }); dot.style.background = gc[g] || F.css("--ink-2"); th.append(dot, g);
+      gb.appendChild(F.el("tr", null, [th, F.el("td", { text: F.pct(gd, 0) }), F.el("td", { text: a + "팀" }), F.el("td", { text: F.pct(a / r.n, 0), class: cls(a) }), F.el("td", { text: b + "팀" }), F.el("td", { text: F.pct(b / r.n, 0), class: cls(b) })])); });
+    gt.appendChild(gb);
+    $("d-fit").textContent = "가이드 분포와의 차이: 카이제곱 " + F.num(r.fit.x2, 1) + " (자유도 " + r.fit.df + ", p = " + F.num(r.fit.p, 4) + ") → " + (r.fit.p < 0.05 ? "가이드와 통계적으로 다릅니다." : "가이드와 다르다고 보기 어렵습니다.") + " 실질적인 등급 수(1 ÷ HHI)는 " + F.num(r.effGrades, 1) + "개" + (r.fit.minExp < 5 ? "이고, 기대 도수가 5 미만인 등급이 있어 검정은 참고용입니다." : "입니다.");
+
+    /* 상자그림 */
+    { const S = r.byRater.stats, H = 40 + S.length * 44, padL = 70, padR = 14, padT = 10, padB = 24, fr = F.plotFrame($("d-box"), H, "평가자별 점수 상자그림"), svg = fr.svg, W = fr.W;
+      const X = (v) => padL + (v - 55) / 65 * (W - padL - padR);
+      for (let v = 60; v <= 120; v += 10) { F.svgEl("line", { class: "grid", x1: X(v), x2: X(v), y1: padT, y2: H - padB }, svg); F.svgText(svg, X(v), H - 8, String(v), { "text-anchor": "middle" }); }
+      F.svgEl("line", { x1: X(d.mean), x2: X(d.mean), y1: padT, y2: H - padB, stroke: F.css("--accent"), "stroke-dasharray": "4 3" }, svg);
+      S.forEach((q, i) => { const y = padT + 22 + i * 44;
+        F.svgText(svg, padL - 10, y + 4, "평가자 " + q.key, { "text-anchor": "end" });
+        F.svgEl("line", { x1: X(q.min), x2: X(q.max), y1: y, y2: y, stroke: F.css("--ink-2") }, svg);
+        F.svgEl("rect", { x: X(q.q1), y: y - 11, width: Math.max(2, X(q.q3) - X(q.q1)), height: 22, fill: F.css("--input"), opacity: 0.3, stroke: F.css("--input") }, svg);
+        F.svgEl("line", { x1: X(q.median), x2: X(q.median), y1: y - 11, y2: y + 11, stroke: F.css("--ink"), "stroke-width": 2 }, svg);
+        F.svgEl("circle", { cx: X(q.mean), cy: y, r: 4, fill: F.css("--accent") }, svg); });
+    }
+    const rt = $("d-raters"); rt.textContent = "";
+    rt.appendChild(F.el("thead", null, [F.el("tr", null, ["평가자", "팀", "평균", "표준편차", "전체 대비", "p값"].map((h, i) => F.el("th", { text: h, style: i === 0 ? "text-align: left" : null })))]));
+    const rb = F.el("tbody");
+    r.byRater.stats.forEach((q) => rb.appendChild(F.el("tr", null, [F.el("th", { text: q.key }), F.el("td", { text: q.n }), F.el("td", { text: F.num(q.mean, 1) }), F.el("td", { text: F.num(q.sd, 1), class: q.sd < d.sd * 0.5 ? "lo" : null }), F.el("td", { text: (q.diff >= 0 ? "+" : "−") + F.num(Math.abs(q.diff), 1), class: q.p !== null && q.p < 0.05 ? (q.diff > 0 ? "hi" : "lo") : null }), F.el("td", { text: q.p === null ? "–" : F.num(q.p, 3) })])));
+    rt.appendChild(rb);
+    const av = r.byRater.anova, avd = r.byDiv.anova;
+    $("d-anova").textContent = "평가자 간 평균 차이: F = " + F.num(av.f, 2) + " (자유도 " + av.dfb + ", " + av.dfw + "), p = " + F.num(av.p, 4) + ", η² = " + F.pct(av.eta2, 0) + " → " + (av.p < 0.05 ? "평가자에 따라 점수 수준이 다릅니다." : "평가자 간 차이는 유의하지 않습니다.") + (avd ? " 본부 간: F = " + F.num(avd.f, 2) + ", p = " + F.num(avd.p, 4) + "." : "");
+
+    /* 보정 전후 */
+    const ct = $("d-calib"); ct.textContent = "";
+    ct.appendChild(F.el("thead", null, [F.el("tr", null, ["", "보정 전", "보정 후"].map((h, i) => F.el("th", { text: h, style: i === 0 ? "text-align: left" : null })))]));
+    const cb = F.el("tbody"), sdOf = (arr) => Stats.sd(arr);
+    const raterSd = (vals) => Math.max.apply(null, r.byRater.keys.map((k) => Stats.mean(teams.map((t, i) => [t, vals[i]]).filter((z) => z[0].rater === k).map((z) => z[1])))) - Math.min.apply(null, r.byRater.keys.map((k) => Stats.mean(teams.map((t, i) => [t, vals[i]]).filter((z) => z[0].rater === k).map((z) => z[1]))));
+    const sc0 = teams.map((t) => t.score);
+    [["평가자 평균의 최대 차이", F.num(raterSd(sc0), 1) + "점", F.num(raterSd(r.adj), 1) + "점"],
+     ["전체 표준편차", F.num(sdOf(sc0), 1), F.num(sdOf(r.adj), 1)],
+     ["등급이 바뀐 팀", "", r.changed + "팀 (" + F.pct(r.changed / r.n, 0) + ")"],
+     ["가이드 분포 적합 p값", F.num(r.fit.p, 4), F.num(r.fit1.p, 4)],
+     ["1인당 인센티브 지니계수", F.num(r.ineq0.gini, 3), F.num(r.ineq1.gini, 3)],
+     ["상위 20% 인원의 몫", F.pct(r.ineq0.top20, 1), F.pct(r.ineq1.top20, 1)]
+    ].forEach((q) => cb.appendChild(F.el("tr", null, [F.el("th", { text: q[0] }), F.el("td", { text: q[1] }), F.el("td", { text: q[2] })])));
+    ct.appendChild(cb);
+
+    /* 로렌츠 곡선 */
+    { const H = 230, padL = 38, padR = 12, padT = 12, padB = 28, fr = F.plotFrame($("d-lorenz"), H, "1인당 인센티브의 로렌츠 곡선"), svg = fr.svg, W = fr.W;
+      const S = Math.min(W - padL - padR, H - padT - padB), X = (u) => padL + u * S, Y = (v) => padT + (1 - v) * S;
+      [0, 0.25, 0.5, 0.75, 1].forEach((v) => { F.svgEl("line", { class: "grid", x1: X(0), x2: X(1), y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.pct(v, 0), { "text-anchor": "end" }); F.svgText(svg, X(v), padT + S + 16, F.pct(v, 0), { "text-anchor": "middle" }); });
+      F.svgEl("line", { x1: X(0), y1: Y(0), x2: X(1), y2: Y(1), stroke: F.css("--rule"), "stroke-width": 1.5 }, svg);
+      const path = (L) => "M" + L.map((q) => X(q[0]) + "," + Y(q[1])).join("L");
+      F.svgEl("path", { d: path(r.ineq0.lorenz), fill: "none", stroke: F.css("--ink"), "stroke-width": 2 }, svg);
+      F.svgEl("path", { d: path(r.ineq1.lorenz), fill: "none", stroke: F.css("--accent"), "stroke-width": 2, "stroke-dasharray": "5 4" }, svg);
+      F.svgText(svg, X(1) + 2 - S, Y(1) - 2, "", {});
+    }
+    $("d-gini").textContent = "지니계수는 보정 전 " + F.num(r.ineq0.gini, 3) + ", 보정 후 " + F.num(r.ineq1.gini, 3) + "입니다. 곡선이 대각선에서 멀수록 몇몇 팀에 인센티브가 몰린 것입니다. 1인당 금액 상위 20%가 총액의 " + F.pct(r.ineq0.top20, 1) + "를 받습니다(완전 균등이면 20%).";
+
+    /* 해석 */
+    const hi = r.byRater.stats.filter((q) => q.p !== null && q.p < 0.05 && q.diff > 0), narrow = r.byRater.stats.filter((q) => q.sd < d.sd * 0.5);
+    const memo = $("d-memo"); memo.textContent = "";
+    memo.append("팀 점수는 평균 " + F.num(d.mean, 1) + "점, 표준편차 " + F.num(d.sd, 1) + "점(변동계수 " + F.pct(d.cv, 1) + ")이고, 목표 점수 100점과의 차이는 " + (r.leniency.p < 0.05 ? "통계적으로 유의합니다(p = " + F.num(r.leniency.p, 3) + "). " : "통계적으로 유의하지 않습니다(p = " + F.num(r.leniency.p, 3) + "). "));
+    memo.append("등급은 가이드보다 " + (r.grades0[r.order[1]] / r.n > (r.guide[r.order[1]] || 0) / 100 ? r.order[1] + " 등급에 몰려" : "다르게 분포해") + " 있고(카이제곱 p = " + F.num(r.fit.p, 4) + "), ");
+    memo.append(av.p < 0.05 ? F.el("b", { text: "평가자에 따라 점수 수준이 다릅니다" }) : "평가자 간 차이는 크지 않습니다", "(F검정 p = " + F.num(av.p, 4) + ", 평가자가 점수 분산의 " + F.pct(av.eta2, 0) + "를 설명). ");
+    if (hi.length) memo.append("평가자 " + hi.map((q) => q.key).join("·") + "는 평균보다 후하게 줬고" + (narrow.length ? ", " : ". "));
+    if (narrow.length) memo.append("평가자 " + narrow.map((q) => q.key).join("·") + "는 점수를 좁게 몰아(표준편차 " + narrow.map((q) => F.num(q.sd, 1)).join("·") + "점) 팀 간 차이를 드러내지 못했습니다. ");
+    memo.append("평가자 보정을 하면 " + r.changed + "개 팀의 등급이 바뀝니다. 보정은 평가자의 기준 차이를 걷어 내는 참고 지표이고, 실제 조정은 평가 위원회에서 근거와 함께 결정합니다.");
+
+    const chk = $("d-check"); chk.textContent = "";
+    const aSum = F.sum(r.alloc0), bSum = F.sum(r.alloc1), cnt = r.order.reduce((s0, g) => s0 + r.grades0[g], 0);
+    const adjOk = Math.abs(Stats.mean(r.adj) - d.mean) < 1e-9;
+    [["등급별 팀 수 합 = 전체 팀 수", cnt === r.n], ["보정 전후 인센티브 합 = 총액", Math.abs(aSum - x.pool) < 1e-9 && Math.abs(bSum - x.pool) < 1e-9], ["보정 뒤 전체 평균 유지", adjOk]].forEach((q) => chk.appendChild(F.el("span", { class: q[1] ? null : "fail", text: q[0] })));
+    $("sn-teams").textContent = teams.length + "개 팀";
+  }
+  function applyTeams() {
+    const res = E.parseTeams($("tcsv").value), ul = $("terrs"); ul.textContent = "";
+    res.errors.slice(0, 6).forEach((e) => ul.appendChild(F.el("li", { text: e }))); ul.hidden = res.errors.length === 0;
+    if (res.rows.length >= 8) { teams = res.rows; drawDist(); } else if (!res.errors.length) { ul.hidden = false; ul.appendChild(F.el("li", { text: "팀이 8개 이상 있어야 분포를 볼 수 있습니다." })); }
+  }
+  $("tapply").addEventListener("click", applyTeams);
+  $("treset").addEventListener("click", () => { teams = E.sampleTeams(); $("tcsv").value = E.teamsToCsv(teams); $("terrs").hidden = true; drawDist(); });
+  $("tcsv").value = E.teamsToCsv(teams);
 
   $("reset").addEventListener("click", () => { x = JSON.parse(JSON.stringify(D)); fillSimple(); buildGrades(); buildTables(); render(); });
   ["pool", "sc-th", "sc-tg", "sc-st"].forEach((id) => $(id).addEventListener("input", render));

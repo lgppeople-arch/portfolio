@@ -291,6 +291,7 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/pl-report.html">3개월 추정 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/pl-report.html#trend">추세선·±1σ 이상치 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/capex-kit.html#var">계획 대비 실적 <span class="arr">→</span></a>
           </div>
         </li>
@@ -303,6 +304,7 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/mbo-kpi.html">성과평가 MBO·KPI <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/mbo-kpi.html#dist">평가 분포·평가자 보정 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -368,6 +370,8 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/cash-13w.html">13주 자금수지 · 약정 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/cash-13w.html#mc">자금 부족 확률 (몬테카를로) <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/capital.html">적정 부채 · 파산 위험 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/fx-hedge.html">환리스크 헤지 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/doa.html">위임전결 기준 점검 <span class="arr">→</span></a>
           </div>
@@ -567,6 +571,7 @@
 })();
 </script>
 <script src="assets/fin.js"></script>
+<script src="assets/stats.js"></script>
 <script src="assets/engines/post.js"></script>
 <script src="assets/engines/ma.js"></script>
 <script src="assets/engines/holdco.js"></script>
@@ -580,12 +585,13 @@
 <script src="assets/data/sectors.js"></script>
 <script src="assets/data/deal-hhi.js"></script>
 <script src="assets/engines/doa.js"></script>
+<script src="assets/engines/capital.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    const res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

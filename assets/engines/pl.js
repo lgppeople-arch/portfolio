@@ -1,10 +1,11 @@
 /* 월 손익 보고 엔진: 기간·사업부·계정별 계획과 실적(SAP 관리손익 조회 형식)으로
    당월·누계 손익, 영업이익 차이 분해, 3개월 추정과 연간 전망을 만든다. 금액은 억원. */
 (function (root, factory) {
-  const api = factory(typeof module === "object" && module.exports ? require("../fin.js") : root.Fin);
+  const node = typeof module === "object" && module.exports;
+  const api = factory(node ? require("../fin.js") : root.Fin, node ? require("../stats.js") : root.Stats);
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.PlEngine = api;
-})(typeof self !== "undefined" ? self : this, function (Fin) {
+})(typeof self !== "undefined" ? self : this, function (Fin, Stats) {
   "use strict";
 
   const YEAR = 2026;
@@ -22,6 +23,17 @@
       "2사업부": { sales: 100, mat: 0.45, lab: 15, ovh: 13, sga: 10, sAct: [0.95, 0.93, 0.92, 0.90, 0.92, 0.91, 0.90, 0.89, 0.88], matAct: 0.455, labAct: 14.8, ovhAct: 12.6, sgaAct: 9.7 }
     };
     const rows = [];
+    /* 전년(2025) 실적: 추세·변동성 분석용. 1사업부는 완만히 성장, 2사업부는 완만히 감소. 월별 흔들림은 고정값 */
+    const H = { "1사업부": { base: 138, g: 0.009, mat: 0.385 }, "2사업부": { base: 108, g: -0.006, mat: 0.448 } };
+    const NOISE = { "1사업부": [0.012, -0.018, 0.025, -0.006, 0.031, -0.022, 0.004, -0.035, 0.016, 0.009, -0.011, 0.020],
+                    "2사업부": [-0.015, 0.022, -0.008, 0.017, -0.028, 0.006, 0.019, -0.012, 0.024, -0.020, 0.010, -0.004] };
+    for (let m = 1; m <= 12; m++) {
+      BUS.forEach((bu) => {
+        const h = H[bu], p = P[bu], rev = r1(h.base * (1 + h.g * (m - 1)) * SEASON[m - 1] * (1 + NOISE[bu][m - 1]));
+        const v = { "매출액": rev, "재료비": r1(rev * h.mat), "노무비": r1(p.lab * 0.97), "제조경비": r1(p.ovh * 0.98), "판매관리비": r1(p.sga * 0.97) };
+        ACCTS.forEach((a) => rows.push({ ym: (YEAR - 1) + "-" + String(m).padStart(2, "0"), bu: bu, acct: a, plan: v[a], act: v[a] }));
+      });
+    }
     for (let m = 1; m <= 12; m++) {
       BUS.forEach((bu) => {
         const p = P[bu], rev = r1(p.sales * SEASON[m - 1]);
@@ -67,10 +79,11 @@
   }
 
   /* 사업부(또는 전사)·월별 계획/실적 묶음 */
-  function cube(rows, scope) {
-    const months = [];
+  function cube(rows, scope, year) {
+    const months = [], y = String(year || YEAR);
     for (let m = 1; m <= 12; m++) months.push({ plan: blank(), act: blank(), hasAct: false });
     rows.forEach((r) => {
+      if (r.ym.slice(0, 4) !== y) return;          /* 보고 연도만. 전년 행은 추세 분석에만 쓴다 */
       if (scope !== "전사" && r.bu !== scope) return;
       const m = Number(r.ym.slice(5)) - 1;
       if (m < 0 || m > 11) return;
@@ -133,9 +146,72 @@
 
   function lastActualMonth(rows) {
     let last = 0;
-    rows.forEach((r) => { if (r.act !== null) last = Math.max(last, Number(r.ym.slice(5))); });
+    rows.forEach((r) => { if (r.act !== null && r.ym.slice(0, 4) === String(YEAR)) last = Math.max(last, Number(r.ym.slice(5))); });
     return last;
   }
 
-  return { YEAR, ACCTS, BUS, sample, toCsv, parse, cube, derive, bridge, forecast, report, lastActualMonth };
+  /* ---------- 추세와 변동성 ----------
+     전년부터 기준월까지의 월 실적으로 선형 추세를 잡고, 잔차 표준편차(σ)로 ±1σ·±2σ 밴드, 이격도(실적 ÷ 추세 − 1),
+     z점수를 계산한다. 매출·영업이익은 계획의 월별 비중으로 계절성을 걷어 낸 뒤 추세를 잡는다(계절조정).
+     metric: rev | op | opm | cmr */
+  const METRICS = { rev: "매출액", op: "영업이익", opm: "영업이익률", cmr: "공헌이익률" };
+  function trend(rows, scope, metric, asOf, opts) {
+    opts = Object.assign({ seasonal: true, ahead: 3 }, opts || {});
+    const ratio = metric === "opm" || metric === "cmr";
+    const plan = cube(rows, scope, YEAR).map((m) => derive(m.plan).rev);
+    const pm = Fin.sum(plan) / 12;
+    const si = plan.map((v) => (pm ? v / pm : 1));          /* 계절지수: 계획 매출의 월별 비중 */
+    const pts = [];
+    [YEAR - 1, YEAR].forEach((y) => {
+      const c = cube(rows, scope, y);
+      c.forEach((mm, i) => {
+        if (!mm.hasAct || (y === YEAR && i + 1 > asOf)) return;
+        const raw = derive(mm.act)[metric];
+        const k = !ratio && opts.seasonal ? si[i] : 1;
+        pts.push({ y: y, m: i + 1, label: String(y).slice(2) + "." + String(i + 1).padStart(2, "0"), raw: raw, si: k, v: raw / k });
+      });
+    });
+    if (pts.length < 6) return { ok: false, n: pts.length };
+    pts.forEach((p, i) => { p.t = i + 1; });
+    const reg = Stats.linreg(pts.map((p) => p.t), pts.map((p) => p.v));
+    const sig = reg.se, mLevel = Stats.mean(pts.map((p) => p.v));
+    pts.forEach((p, i) => {
+      p.fit = reg.fit[i]; p.res = reg.resid[i]; p.z = sig > 0 ? p.res / sig : 0;
+      p.gap = ratio ? p.v - p.fit : (p.fit ? p.v / p.fit - 1 : null);       /* 비율 지표는 %p 차이 */
+      p.flag = Math.abs(p.z) >= 2 ? "alert" : Math.abs(p.z) >= 1 ? "watch" : "";
+    });
+    /* 다음 몇 달 추정과 ±1σ 예측 구간(t분포, 약 68%) */
+    const tq = Stats.tInv(Stats.normCdf(1), reg.df), ahead = [];
+    for (let j = 1; j <= opts.ahead; j++) {
+      const t = pts.length + j, mi = (asOf + j - 1) % 12;
+      if (asOf + j > 12) break;
+      const k = !ratio && opts.seasonal ? si[mi] : 1, f = reg.at(t), h = reg.predHalf(t, tq);
+      ahead.push({ t: t, m: mi + 1, label: String(YEAR).slice(2) + "." + String(mi + 1).padStart(2, "0"), v: f, lo: f - h, hi: f + h, raw: f * k, rawLo: (f - h) * k, rawHi: (f + h) * k });
+    }
+    /* 최근 3개월 평균의 추세 대비 위치(모멘텀) */
+    const last3 = pts.slice(-3), mom = Stats.mean(last3.map((p) => p.res)) / (sig || 1);
+    return {
+      ok: true, metric: metric, label: METRICS[metric], ratio: ratio, seasonal: !ratio && opts.seasonal, si: si, pts: pts, ahead: ahead,
+      slope: reg.b, slopeT: reg.t, slopeP: reg.p, r2: reg.r2, sigma: sig, cvResid: mLevel ? sig / Math.abs(mLevel) : null,
+      growth: !ratio && mLevel ? reg.b * 12 / Math.abs(mLevel) : null, a: reg.a, last: pts[pts.length - 1], momentum: mom, df: reg.df,
+      share1: pts.filter((p) => Math.abs(p.z) <= 1).length / pts.length
+    };
+  }
+
+  /* ---------- 계획 편향 ----------
+     보고 연도의 월별 달성률(실적 ÷ 계획)이 체계적으로 100%에서 벗어나는지 한 표본 t검정으로 본다. MAPE는 계획 오차의 평균 크기 */
+  function planBias(rows, scope, asOf, key) {
+    const c = cube(rows, scope, YEAR), r = [];
+    for (let i = 0; i < asOf; i++) {
+      if (!c[i].hasAct) continue;
+      const p = derive(c[i].plan)[key], a = derive(c[i].act)[key];
+      if (p) r.push({ m: i + 1, rate: a / p, err: (a - p) / Math.abs(p) });
+    }
+    if (r.length < 3) return { ok: false, n: r.length };
+    const rates = r.map((x) => x.rate), tt = Stats.tTest1(rates, 1);
+    return { ok: true, key: key, n: r.length, months: r, mean: tt.mean, sd: Stats.sd(rates), t: tt.t, p: tt.p, mape: Stats.mean(r.map((x) => Math.abs(x.err))),
+      hits: r.filter((x) => x.rate >= 1).length };
+  }
+
+  return { YEAR, ACCTS, BUS, METRICS, sample, toCsv, parse, cube, derive, bridge, forecast, report, lastActualMonth, trend, planBias };
 });

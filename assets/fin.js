@@ -8,7 +8,7 @@
   "use strict";
 
   /* ---------- 숫자 표기: 금액 음수는 괄호(회계 관행), 비율은 마이너스 기호 ---------- */
-  const NF = [0, 1, 2, 3].map((d) => new Intl.NumberFormat("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d }));
+  const NF = [0, 1, 2, 3, 4, 5, 6].map((d) => new Intl.NumberFormat("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d }));
   const ok = (x) => x !== null && x !== undefined && isFinite(x);
   const tidy = (x, d) => (Math.abs(x) < 0.5 * Math.pow(10, -d) ? 0 : x);
 
@@ -105,7 +105,7 @@
     const e = document.createElement(tag);
     if (attrs) for (const k in attrs) {
       if (k === "text") e.textContent = attrs[k];
-      else if (k === "class") e.className = attrs[k];
+      else if (k === "class") { if (attrs[k]) e.className = attrs[k]; }
       else if (attrs[k] !== null && attrs[k] !== undefined && attrs[k] !== false) e.setAttribute(k, attrs[k]);
     }
     (children || []).forEach((c) => { if (c !== null && c !== undefined) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });

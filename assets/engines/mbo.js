@@ -1,10 +1,11 @@
 /* 성과평가(MBO·KPI) 엔진: KPI별 구간 점수, 조직 가중 점수와 등급, 인센티브 배분, KPI 설계 점검.
    점수 구간은 하한 = 60점, 목표 = 100점, 도전 목표 = 120점(상한)이고, 하한에 못 미치면 0점이다. */
 (function (root, factory) {
-  const api = factory(typeof module === "object" && module.exports ? require("../fin.js") : root.Fin);
+  const node = typeof module === "object" && module.exports;
+  const api = factory(node ? require("../fin.js") : root.Fin, node ? require("../stats.js") : root.Stats);
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.MboEngine = api;
-})(typeof self !== "undefined" ? self : this, function (Fin) {
+})(typeof self !== "undefined" ? self : this, function (Fin, Stats) {
   "use strict";
 
   /* 가상의 제조사 세 조직. dir: up = 클수록 좋음, down = 작을수록 좋음. ctrl: 조직이 통제할 수 있는 지표인지 */
@@ -93,5 +94,80 @@
     return { orgs: orgs, pool: x.pool, allocSum: Fin.sum(orgs.map((o) => o.alloc)) };
   }
 
-  return { DEFAULTS, score, gradeOf, checks, evaluate };
+  /* ---------- 팀 평가 결과의 분포 ----------
+     가상 예시: 세 본부 48개 팀, 평가자 4명. 평가자 C는 점수를 후하고 가운데로 몰아 주고(관대화·중심화),
+     평가자 D는 짜고 넓게 퍼뜨린다. 같은 시드로 만들어 매번 같은 값이 나온다. */
+  const GUIDE = { S: 10, A: 20, B: 40, C: 20, D: 10 };     /* 등급 분포 가이드(%) */
+  function sampleTeams() {
+    const r = Stats.rng(2026), out = [];
+    const plan = [
+      ["영업본부", "A", 12, 101, 7.5], ["생산본부", "B", 12, 99, 7.0], ["생산본부", "C", 12, 106, 3.2], ["연구소", "D", 12, 95, 10.5]
+    ];
+    plan.forEach((p) => {
+      for (let i = 0; i < p[2]; i++) {
+        const score = Math.max(55, Math.min(120, Math.round((p[3] + p[4] * r.normal()) * 10) / 10));
+        const heads = 6 + Math.floor(r.u() * 20);
+        out.push({ team: p[0].slice(0, 2) + "-" + p[1] + String(i + 1).padStart(2, "0"), div: p[0], rater: p[1], heads: heads, score: score });
+      }
+    });
+    return out;
+  }
+  function teamsToCsv(t) { return ["팀,본부,평가자,인원,점수"].concat(t.map((x) => [x.team, x.div, x.rater, x.heads, x.score].join(","))).join("\n"); }
+  function parseTeams(text) {
+    const rows = [], errors = [];
+    String(text).split(/\r?\n/).map((l) => l.trim()).filter((l) => l).forEach((line, i) => {
+      const c = line.split(/\t|,/).map((v) => v.trim());
+      if (i === 0 && /팀/.test(c[0])) return;
+      const h = Number(c[3]), sc = Number(c[4]);
+      if (c.length < 5 || !isFinite(h) || !isFinite(sc) || h <= 0) { errors.push((i + 1) + "번째 줄: 팀, 본부, 평가자, 인원, 점수 순서인지 확인하세요"); return; }
+      rows.push({ team: c[0], div: c[1], rater: c[2], heads: h, score: sc });
+    });
+    return { rows: rows, errors: errors };
+  }
+
+  /* 인원 가중 지니: 팀별 1인당 금액을 인원만큼 펼쳐 계산 */
+  function personGini(teams, alloc) {
+    const per = []; teams.forEach((t, i) => { const v = alloc[i] / t.heads; for (let k = 0; k < Math.round(t.heads); k++) per.push(v); });
+    return { gini: Stats.gini(per), top20: Stats.topShare(per, 0.2), lorenz: Stats.lorenz(per) };
+  }
+
+  function distribution(teams, grades, pool, opts) {
+    opts = Object.assign({ target: 100, band: 5 }, opts || {});
+    const sc = teams.map((t) => t.score), d = Stats.describe(sc);
+    const gOf = (v) => gradeOf(v, grades);
+    const order = grades.slice().sort((a, b) => b.min - a.min).map((g) => g.g);
+    const count = (arr) => { const o = {}; order.forEach((g) => { o[g] = 0; }); arr.forEach((g) => { o[g] = (o[g] || 0) + 1; }); return o; };
+    const g0 = teams.map((t) => gOf(t.score).g), c0 = count(g0);
+    const fit = Stats.chi2Fit(order.map((g) => c0[g]), order.map((g) => GUIDE[g] || 0));
+    const shares = order.map((g) => c0[g]);
+    /* 평가자별·본부별 */
+    const groupBy = (key) => {
+      const keys = Array.from(new Set(teams.map((t) => t[key]))).sort();
+      const groups = keys.map((k) => teams.filter((t) => t[key] === k).map((t) => t.score));
+      const av = groups.every((g) => g.length >= 2) && keys.length >= 2 ? Stats.anova(groups) : null;
+      return { keys: keys, stats: keys.map((k, i) => { const g = groups[i], dd = Stats.describe(g); const tt = g.length >= 2 ? Stats.tTest1(g, d.mean) : null;
+        return { key: k, n: g.length, mean: dd.mean, sd: dd.sd, q1: dd.q1, median: dd.median, q3: dd.q3, min: dd.min, max: dd.max, diff: dd.mean - d.mean, t: tt ? tt.t : null, p: tt ? tt.p : null }; }), anova: av };
+    };
+    const byRater = groupBy("rater"), byDiv = groupBy("div");
+    /* 보정: 평가자 안에서 z점수로 바꾼 뒤 전체 평균·표준편차로 되돌린다(평가자별 관대화·산포 차이 제거) */
+    const rs = {}; byRater.stats.forEach((q) => { rs[q.key] = q; });
+    const adj = teams.map((t) => { const q = rs[t.rater]; return q.sd > 0 ? d.mean + d.sd * (t.score - q.mean) / q.sd : t.score; });
+    const g1 = adj.map((v) => gOf(v).g), c1 = count(g1), changed = g1.filter((g, i) => g !== g0[i]).length;
+    const fit1 = Stats.chi2Fit(order.map((g) => c1[g]), order.map((g) => GUIDE[g] || 0));
+    /* 인센티브: 인원 × 등급 배수 비례 */
+    const allocOf = (gs) => { const base = teams.map((t, i) => t.heads * gOf(gs === g0 ? t.score : adj[i]).mult), s = Fin.sum(base); return base.map((b) => (s ? pool * b / s : 0)); };
+    const a0 = allocOf(g0), a1 = allocOf(g1);
+    return {
+      n: teams.length, d: d, order: order, guide: GUIDE,
+      center: sc.filter((v) => Math.abs(v - d.median) <= opts.band).length / sc.length,     /* 중앙값 ±band점 안 비중(중심화 경향) */
+      leniency: Stats.tTest1(sc, opts.target),                                                /* 평균이 목표 점수와 다른가 */
+      grades0: c0, fit: fit, hhi: Stats.hhi(shares), effGrades: 1 / Stats.hhi(shares),
+      byRater: byRater, byDiv: byDiv,
+      adj: adj, grades1: c1, fit1: fit1, changed: changed, g0: g0, g1: g1,
+      alloc0: a0, alloc1: a1, ineq0: personGini(teams, a0), ineq1: personGini(teams, a1),
+      hist: Stats.histogram(sc, 13, 55, 120)
+    };
+  }
+
+  return { DEFAULTS, GUIDE, score, gradeOf, checks, evaluate, sampleTeams, teamsToCsv, parseTeams, distribution };
 });

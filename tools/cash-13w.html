@@ -33,6 +33,17 @@
   .stressbar .field { grid-template-columns: auto 80px; gap: 8px; }
   .stressbar .t { font-weight: 700; font-size: var(--s-2); margin-right: 4px; align-self: center; }
   .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  /* 몬테카를로 */
+  .mc-ctl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+  .mc-ctl .field { grid-template-columns: auto 76px; gap: 8px; }
+  .pk { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: var(--radius); }
+  .pk > div { padding: 12px 14px; border-left: 1px solid var(--rule-soft); display: grid; gap: 3px; }
+  .pk > div:first-child { border-left: 0; }
+  .pk .l { font-size: 12px; color: var(--muted); }
+  .pk .v { font-family: var(--f-num); font-size: 21px; font-weight: 600; }
+  .pk .v.bad { color: var(--neg-ink); }
+  .pk .s { font-size: 11.5px; color: var(--ink-2); }
+  @media (max-width: 760px) { .pk { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pk > div:nth-child(3) { border-left: 0; } .pk > div:nth-child(n+3) { border-top: 1px solid var(--rule-soft); } }
   .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
   .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
   .two > * { min-width: 0; }
@@ -58,7 +69,7 @@
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
       <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html" aria-current="page">13주 자금수지</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html" aria-current="page">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
       <a href="../en.html" lang="en">EN</a>
@@ -159,6 +170,39 @@
       </div>
     </section>
 
+    <section class="block2" id="mc" aria-label="확률로 보는 자금 위험">
+      <h2>확률로 보는 자금 위험 <span class="muted" style="font-family: var(--f-body); font-weight: 400; font-size: var(--s-1)">몬테카를로 시뮬레이션</span></h2>
+      <p class="hint" style="max-width: 900px">위의 스트레스는 '나쁜 경우 하나'를 봅니다. 여기서는 매출과 회수 시점이 흔들리는 경우를 수천 번 굴려, 한도대출이 필요할 확률, 한도를 다 써도 최소 보유현금을 못 지킬 확률, 현금이 바닥나 지급불능이 될 확률을 계산합니다.</p>
+      <div class="mc-ctl">
+        <div class="field"><label for="mc-sd">월 매출 변동성<small>표준편차 %</small></label><input id="mc-sd" type="number" inputmode="decimal" step="1" min="0" max="60"></div>
+        <div class="field"><label for="mc-rho">달 사이 상관<small>0~1</small></label><input id="mc-rho" type="number" inputmode="decimal" step="0.1" min="0" max="1"></div>
+        <div class="field"><label for="mc-p1">회수 1주 지연<small>확률 %</small></label><input id="mc-p1" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+        <div class="field"><label for="mc-p2">회수 2주 지연<small>확률 %</small></label><input id="mc-p2" type="number" inputmode="decimal" step="1" min="0" max="100"></div>
+        <div class="field"><label for="mc-n">반복 횟수</label><input id="mc-n" type="number" inputmode="numeric" step="500" min="200" max="10000"></div>
+      </div>
+      <div class="pk" id="mc-k"></div>
+      <div class="two">
+        <div class="card">
+          <div class="chart" id="mc-hist">
+            <div class="chart-head"><h4>13주 중 최저 현금의 분포 <span class="muted">(한도대출 없이)</span></h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--total)"></i>시뮬레이션 횟수</span><span><i class="key-dash" style="border-color: var(--accent)"></i>최소 보유현금</span><span><i class="key-dash" style="border-color: var(--neg)"></i>한도 소진선</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chart" id="mc-fan">
+            <div class="chart-head"><h4>주차별 최저 잔액의 확률 범위</h4>
+              <div class="legend"><span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 15%, transparent)"></i>5~95%</span><span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 35%, transparent)"></i>25~75%</span><span><i class="key-line" style="background: var(--input)"></i>중앙값</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+        </div>
+      </div>
+      <div class="memo"><span class="label">해석</span><p id="mc-memo"></p></div>
+      <div class="selfcheck" id="mc-check"></div>
+    </section>
+
     <section class="block2" aria-label="예정된 입출금">
       <h2>예정된 입출금</h2>
       <div class="two">
@@ -193,6 +237,7 @@
         <li>매출채권은 매출이 난 달에서 회수 기간만큼 뒤 달의 마지막 영업일에, 원재료 매입대금은 지급 기간만큼 뒤 달의 마지막 영업일에 오갑니다. 매입액은 매출 대비 비율로 잡아 매출이 줄면 함께 줄어듭니다.</li>
         <li>급여는 25일이 휴일이면 앞당겨 주고, 원천세·4대보험(10일)과 부가세(25일)는 세법 기한 규칙대로 다음 영업일에 냅니다. 이 기간의 공휴일은 성탄절과 신정입니다.</li>
         <li>한도대출 자동 인출을 켜면 영업일 마감 잔액이 최소 보유현금보다 낮을 때 부족분을 한도 안에서 꺼내고, 여유가 생기면 먼저 갚습니다. 최저 잔액은 인출 전 기준입니다.</li>
+        <li>몬테카를로: 기간 안에 매출이 생기는 달마다 매출 × (1 + σ(√ρ·Z공통 + √(1 − ρ)·Z월별))을 쓰고(음수는 0), 달마다 회수가 1주·2주 늦어질 확률을 둡니다. 한도대출 없이 굴린 자체 현금의 최저값 m으로 한도대출 필요(m &lt; 최소 보유현금), 한도 소진 뒤 최소 보유현금 미달(m &lt; 최소 보유현금 − 한도), 지급불능(m &lt; −한도)을 판정합니다. 확률 옆의 ± 값은 시뮬레이션 횟수에서 오는 표준오차입니다. Cash-at-Risk는 최저 현금 분포의 하위 5% 값이고, 필요 유동성은 95%·99% 확률로 최소 보유현금을 지키기 위해 필요한 금액입니다. 같은 시드(2026)로 굴려 결과가 매번 같습니다.</li>
         <li>재무약정은 12월 31일 잔액으로 계산합니다. 순차입금 = 총차입금 − 현금, 부채비율 = 부채총계 ÷ 자본총계, 이자보상배율 = 영업이익 ÷ 이자비용(직전 12개월).</li>
       </ul>
     </div>
@@ -204,6 +249,7 @@
 </footer>
 
 <script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
 <script src="../assets/engines/cash.js"></script>
 <script>
 (function () {
@@ -471,7 +517,63 @@
 
     drawWeekTable(r, x);
     drawEvents(r);
+    scheduleMc();
   }
+
+  /* ---------- 몬테카를로 ---------- */
+  const MC = E.MC_DEFAULTS;
+  ["mc-sd", "mc-rho", "mc-p1", "mc-p2", "mc-n"].forEach((id, i) => { $(id).value = [MC.salesSd, MC.rho, MC.p1, MC.p2, MC.n][i]; });
+  let mcTimer = 0;
+  function scheduleMc() { clearTimeout(mcTimer); mcTimer = setTimeout(drawMc, 180); }
+  function drawMc() {
+    const x = read();
+    const o = { salesSd: F.readNum($("mc-sd"), MC.salesSd), rho: F.readNum($("mc-rho"), MC.rho), p1: F.readNum($("mc-p1"), MC.p1), p2: F.readNum($("mc-p2"), MC.p2), n: Math.max(200, Math.min(10000, Math.round(F.readNum($("mc-n"), MC.n)))) };
+    const s = E.simulate(x, o);
+    const pf = (q) => F.pct(q.p, 1) + (q.p > 0 && q.p < 1 ? " ± " + F.num(q.se * 100, 1) + "%p" : "");
+    const host = $("mc-k"); host.textContent = "";
+    [["한도대출이 필요할 확률", pf(s.need), "자체 현금이 최소 보유현금 " + won(x.minCash) + " 밑으로", s.need.p > 0.5],
+     ["한도를 다 써도 미달할 확률", pf(s.short), "한도 " + won(x.rcf.limit) + "를 써도 최소 보유현금 미달", s.short.p > 0.05],
+     ["지급불능 확률", pf(s.insolv), "한도를 다 써도 현금이 0 밑으로", s.insolv.p > 0.01],
+     ["Cash-at-Risk (하위 5%)", won(s.p5), "필요 유동성 95% " + won(s.buffer95) + " · 99% " + won(s.buffer99), s.buffer95 > x.rcf.limit]
+    ].forEach((k) => host.appendChild(F.el("div", null, [F.el("span", { class: "l", text: k[0] }), F.el("span", { class: "v" + (k[3] ? " bad" : ""), text: k[1] }), F.el("span", { class: "s", text: k[2] })])));
+
+    /* 히스토그램 */
+    { const H = 240, padL = 40, padR = 12, padT = 16, padB = 30, fr = F.plotFrame($("mc-hist"), H, "13주 최저 현금 분포 히스토그램"), svg = fr.svg, W = fr.W, h = s.hist;
+      const lo = Math.min(h.lo, x.minCash - x.rcf.limit - 20), hi = Math.max(h.hi, x.minCash + 20);
+      const tx = F.niceTicks(lo, hi, 6), ty = F.niceTicks(0, Math.max.apply(null, h.counts), 4);
+      const X = (v) => padL + (v - tx.lo) / (tx.hi - tx.lo) * (W - padL - padR), Y = (c) => padT + (ty.hi - c) / (ty.hi - ty.lo) * (H - padT - padB);
+      ty.ticks.forEach((tv) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
+      tx.ticks.forEach((tv) => F.svgText(svg, X(tv), H - 10, F.money(tv, 0), { "text-anchor": "middle" }));
+      h.counts.forEach((c, i) => { const x0 = X(h.edges[i]) + 0.5, x1 = X(h.edges[i] + h.w) - 0.5; if (c) F.svgEl("rect", { x: x0, width: Math.max(1, x1 - x0), y: Y(c), height: Y(0) - Y(c), fill: h.edges[i] + h.w <= x.minCash ? F.css("--accent") : F.css("--total"), rx: 1 }, svg); });
+      const vline = (v, c, lab) => { F.svgEl("line", { x1: X(v), x2: X(v), y1: padT, y2: H - padB, stroke: c, "stroke-width": 1.5, "stroke-dasharray": "5 4" }, svg); F.svgText(svg, X(v) + 4, padT + 10, lab, { class: "c-lab" }); };
+      vline(x.minCash, F.css("--accent"), "최소 보유현금");
+      vline(x.minCash - x.rcf.limit, F.css("--neg"), "한도 소진");
+    }
+    /* 팬 차트 */
+    { const H = 240, padL = 44, padR = 12, padT = 16, padB = 30, fr = F.plotFrame($("mc-fan"), H, "주차별 최저 잔액의 5·25·50·75·95 백분위"), svg = fr.svg, W = fr.W, P = s.fan;
+      const vals = P.map((q) => q.p5).concat(P.map((q) => q.p95), [x.minCash, 0]), t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+      const band = (W - padL - padR) / P.length, X = (i) => padL + band * i + band / 2, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+      t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.money(tv, 0), { "text-anchor": "end" }); });
+      const area = (a, b, op) => F.svgEl("path", { d: "M" + P.map((q, i) => X(i) + "," + Y(q[a])).join("L") + "L" + P.slice().reverse().map((q, i) => X(P.length - 1 - i) + "," + Y(q[b])).join("L") + "Z", fill: F.css("--input"), opacity: op }, svg);
+      area("p95", "p5", 0.15); area("p75", "p25", 0.3);
+      F.svgEl("path", { d: "M" + P.map((q, i) => X(i) + "," + Y(q.p50)).join("L"), fill: "none", stroke: F.css("--input"), "stroke-width": 2 }, svg);
+      F.svgEl("line", { x1: padL, x2: W - padR, y1: Y(x.minCash), y2: Y(x.minCash), stroke: F.css("--accent"), "stroke-dasharray": "5 4" }, svg);
+      P.forEach((q, i) => { if (i % 2 === 0) F.svgText(svg, X(i), H - 10, q.w + "주", { "text-anchor": "middle" }); });
+      const tip = F.makeTip(fr.plot);
+      P.forEach((q, i) => { const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+        F.wireHit(hit, fr.plot, tip, () => ({ title: q.w + "주차 최저 잔액", rows: [["95%", won(q.p95), F.css("--input")], ["중앙값", won(q.p50), F.css("--input")], ["5%", won(q.p5), F.css("--accent")]] })); });
+    }
+    const memo = $("mc-memo"); memo.textContent = "";
+    memo.append(F.num(s.n, 0) + "번 굴린 결과, 한도대출 없이 버틴다면 13주 중 최저 현금은 중앙값 " + won(s.p50) + ", 하위 5% " + won(s.p5) + "입니다. ");
+    memo.append("한도대출이 필요할 확률은 ", F.el("b", { text: F.pct(s.need.p, 1) }), "이고, 한도 " + won(x.rcf.limit) + "를 다 써도 최소 보유현금을 못 지킬 확률은 " + F.pct(s.short.p, 1) + ", 지급불능 확률은 " + F.pct(s.insolv.p, 1) + "입니다. ");
+    memo.append("95% 확률로 최소 보유현금을 지키려면 " + won(s.buffer95) + "의 추가 유동성이 필요하고, 지금 한도 " + won(x.rcf.limit) + "는 이를 " + (x.rcf.limit >= s.buffer95 ? "충분히 덮습니다." : "덮지 못합니다. 한도 증액이나 지급 일정 조정이 필요합니다."));
+    if (s.cov.p > 0) memo.append(" 분기말 재무약정 위반 확률은 " + F.pct(s.cov.p, 1) + "입니다.");
+    const chk = $("mc-check"); chk.textContent = "";
+    const z = E.simulate(x, { salesSd: 0, p1: 0, p2: 0, n: 20 }), base = E.forecast(Object.assign({}, x, { rcf: Object.assign({}, x.rcf, { auto: false }) }));
+    const baseMin = Math.min.apply(null, base.daily.map((d) => d.cash));
+    [["변동성 0이면 모든 경로 = 기본 계획", Math.abs(z.p5 - baseMin) < 1e-9 && z.minSd < 1e-9], ["확률 순서: 지급불능 ≤ 한도 소진 ≤ 한도 필요", s.insolv.p <= s.short.p && s.short.p <= s.need.p]].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+  ["mc-sd", "mc-rho", "mc-p1", "mc-p2", "mc-n"].forEach((id) => $(id).addEventListener("input", scheduleMc));
 
   /* ---------- 연결 ---------- */
   function setStress(a, b, c) { $("st-drop").value = a; $("st-delay").value = b; $("st-pull").value = c; render(); }
