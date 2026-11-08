@@ -211,8 +211,10 @@ body::before { background: var(--paper); }
 /* ---------- 홈: 히어로 ---------- */
 .hero2 { padding-block: clamp(40px, 8vw, 96px) 40px; }
 .hero2 .grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 56px; align-items: end; }
-.hero2 h1 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-6); line-height: 1.04; letter-spacing: -0.035em; margin-top: 18px; }
+.hero2 h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(34px, 4.6vw, 62px); line-height: 1.1; letter-spacing: -0.035em; margin-top: 18px; }
 .hero2 h1 em { font-style: normal; color: var(--accent); }
+.hero2 h1 .nw { white-space: nowrap; }
+html[lang="en"] .hero2 h1 { font-size: clamp(32px, 4vw, 54px); }
 .hero2 .lede { font-size: var(--s-3); color: var(--ink-2); max-width: 40em; margin-top: 24px; line-height: 1.75; }
 .hero2 .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
 .btn.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); }
