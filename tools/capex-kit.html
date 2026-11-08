@@ -24,6 +24,37 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
+<style>
+  .mc-block { margin-top: 28px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 22px; display: grid; gap: 16px; }
+  .mc-block > * { min-width: 0; }
+  .mc-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .mc-head h3 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .mc-head h3 .muted { font-family: var(--f-body); font-weight: 400; font-size: var(--s-1); }
+  .mc-ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 14px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+  .mc-ctl .field { grid-template-columns: auto 72px; gap: 8px; }
+  .mc-ctl .field input { background: var(--surface); }
+  .mc-ctl .grp { font-weight: 700; font-size: var(--s-1); align-self: center; color: var(--ink); }
+  .mc-k { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: var(--radius); }
+  .mc-k > div { padding: 12px 14px; border-left: 1px solid var(--rule-soft); display: grid; gap: 3px; }
+  .mc-k > div:first-child { border-left: 0; }
+  .mc-k .l { font-size: 12px; color: var(--muted); }
+  .mc-k .v { font-family: var(--f-num); font-size: 21px; font-weight: 600; }
+  .mc-k .v.bad { color: var(--neg-ink); }
+  .mc-k .v.good { color: var(--pos); }
+  .mc-k .s { font-size: 11.5px; color: var(--ink-2); font-family: var(--f-num); }
+  @media (max-width: 760px) { .mc-k { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mc-k > div:nth-child(3) { border-left: 0; } .mc-k > div:nth-child(n+3) { border-top: 1px solid var(--rule-soft); } }
+  .mc-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+  .mc-two > * { min-width: 0; }
+  @media (max-width: 1000px) { .mc-two { grid-template-columns: minmax(0, 1fr); } }
+  table.mc-tab { width: 100%; border-collapse: collapse; font-size: var(--s-1); min-width: 560px; }
+  table.mc-tab th, table.mc-tab td { padding: 7px 8px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.mc-tab th:first-child, table.mc-tab td:first-child { text-align: left; }
+  table.mc-tab thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.mc-tab td { font-family: var(--f-num); }
+  table.mc-tab td:first-child { font-family: var(--f-body); }
+  table.mc-tab td.neg { color: var(--neg-ink); }
+  svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+</style>
 </head>
 <body class="tools-page">
 <header class="site-head">
@@ -32,7 +63,7 @@
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
       <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html" aria-current="page">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html" aria-current="page">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
       <a href="../en.html" lang="en">EN</a>
@@ -156,6 +187,40 @@
             </div>
           </div>
         </div>
+        <div class="mc-block" id="mc" aria-label="확률로 보는 투자 타당성">
+          <div class="mc-head"><h3>확률로 보는 투자 타당성 <span class="muted">몬테카를로 3,000회 · 단계 투자의 옵션가치</span></h3><span class="pill" id="mc-pill"></span></div>
+          <p class="hint" style="max-width: 900px">위 NPV는 모든 가정이 맞을 때의 한 점입니다. 수요·판매단가·원가·투자비가 함께 흔들리면 NPV는 분포가 되고, 투자심의에서 따져야 할 것은 그 아래쪽 꼬리입니다. 또 한 번에 다 짓지 않고 나눠 지으면, 수요를 보고 2단계를 접을 수 있는 선택권(실물옵션)이 생깁니다. 위 입력값을 그대로 씁니다.</p>
+          <div class="mc-ctl" role="group" aria-label="불확실성과 단계 투자 조건">
+            <span class="grp">흔들림</span>
+            <div class="field"><label for="mc-su">수요<small>σ %</small></label><input id="mc-su" type="number" inputmode="decimal" step="5" min="0" max="60"></div>
+            <div class="field"><label for="mc-sa">판매단가<small>σ %</small></label><input id="mc-sa" type="number" inputmode="decimal" step="1" min="0" max="40"></div>
+            <div class="field"><label for="mc-rho">수요·단가 상관</label><input id="mc-rho" type="number" inputmode="decimal" step="0.1" min="-0.9" max="0.9"></div>
+            <div class="field"><label for="mc-cx">투자비 초과<small>최대 %</small></label><input id="mc-cx" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+            <span class="grp">단계 투자</span>
+            <div class="field"><label for="mc-s1">1단계 CAPA<small>%</small></label><input id="mc-s1" type="number" inputmode="decimal" step="10" min="10" max="100"></div>
+            <div class="field"><label for="mc-c1">1단계 투자비<small>전체 대비 %</small></label><input id="mc-c1" type="number" inputmode="decimal" step="5" min="10" max="100"></div>
+            <div class="field"><label for="mc-p2">2단계 추가비용<small>%</small></label><input id="mc-p2" type="number" inputmode="decimal" step="5" min="0" max="100"></div>
+            <div class="field"><label for="mc-yr">2단계 결정<small>몇 년차 말</small></label><input id="mc-yr" type="number" inputmode="numeric" step="1" min="1" max="5"></div>
+          </div>
+          <div class="mc-k" id="mc-k"></div>
+          <div class="mc-two">
+            <div class="chart" id="mc-hist">
+              <div class="chart-head"><h4>NPV 분포 <span class="muted">(억원)</span></h4>
+                <div class="legend"><span><i class="key-line" style="background: var(--ink-2)"></i>한 번에 짓기</span><span><i class="key-line" style="background: var(--input)"></i>나눠 짓기</span><span><i class="key-dash" style="border-color: var(--neg)"></i>NPV 0</span></div>
+              </div>
+              <div class="plot-host"></div>
+            </div>
+            <div class="chart" id="mc-sweep">
+              <div class="chart-head"><h4>수요 변동성별 기대 NPV</h4>
+                <div class="legend"><span><i class="key-line" style="background: var(--ink-2)"></i>한 번에 짓기</span><span><i class="key-line" style="background: var(--input)"></i>나눠 짓기</span><span><i class="key-bar" style="background: color-mix(in srgb, var(--pos) 25%, transparent)"></i>옵션가치</span></div>
+              </div>
+              <div class="plot-host"></div>
+            </div>
+          </div>
+          <div class="scroll" style="border: 0"><table class="mc-tab" id="mc-tab"></table></div>
+          <p class="verdict" id="mc-memo"></p>
+          <div class="selfcheck" id="mc-check"></div>
+        </div>
         <div class="method">
           <h4>계산 기준</h4>
           <ul>
@@ -164,6 +229,8 @@
             <li>FCF = 영업이익 − 법인세 + 감가상각 − 유지보수 투자 − 운전자본 증가. 마지막 해에 세후 잔존가치와 운전자본을 회수합니다. 이자비용은 할인율에 반영돼 있어 현금흐름에서 빼지 않습니다.</li>
             <li>감가상각은 세법 내용연수 정액법입니다. 초기 적자의 법인세 효과는 회사 전체 이익과 상계된다고 봅니다. 유지보수 투자의 상각 효과는 보수적으로 넣지 않았습니다.</li>
             <li>투자비는 0년차, 이후 현금흐름은 연말 기준으로 할인합니다. IRR은 이분법으로 찾습니다.</li>
+            <li>확률 분석: 수요 수준·판매단가(상관 ρ)·변동비·고정비는 평균 1의 로그정규 계수, 투자비는 삼각분포(−5%, 0%, +최대 초과%)로 3,000번 뽑습니다(시드 2024). 판매량 = CAPA × min(설비 비중, 계획 가동률 × 수요 계수)라 수요가 설비보다 크면 팔지 못합니다. 그래서 기대 NPV는 기본 가정 NPV보다 낮아질 수 있습니다.</li>
+            <li>단계 투자: 1단계에 CAPA 일부와 공용 설비(투자비 비중), 고정비 85%로 시작하고, 결정 시점 말에 관측한 수요(관측 오차 σ 5%)로 2단계 NPV가 플러스면 남은 설비를 추가비용을 얹어 짓습니다. 옵션가치 = 나눠 짓기 기대 NPV − 한 번에 짓기 기대 NPV이며, 같은 난수로 짝지어 비교해 표준오차를 줄였습니다.</li>
             <li>손익분기 가동률은 1·2년차 램프업 비율을 유지한 채 NPV가 0이 되는 정상 가동률입니다. 손익분기 판매단가도 같은 방식입니다. 민감도 표의 각 칸은 근사치가 아니라 전체를 다시 계산한 값입니다.</li>
           </ul>
         </div>
@@ -912,6 +979,124 @@
   renderNpv(); renderBep(); renderVar();
   /* 웹폰트가 늦게 들어오면 차트 글자 폭이 달라지므로 다시 그림 */
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(redrawAll);
+})();
+</script>
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/capexmc.js"></script>
+<script>
+/* 확률로 보는 투자 타당성: 위 입력값으로 몬테카를로와 단계 투자 옵션을 계산한다 */
+(function () {
+  "use strict";
+  const F = window.Fin, M = window.CapexMcEngine, $ = F.$;
+  const U = M.UNC, ST = M.STAGE, KEYS = Object.keys(M.P0);
+  const CTL = { "mc-su": ["u", "sdU"], "mc-sa": ["u", "sdA"], "mc-rho": ["u", "rho"], "mc-cx": ["u", "capexHi"], "mc-s1": ["s", "share1"], "mc-c1": ["s", "capex1"], "mc-p2": ["s", "prem2"], "mc-yr": ["s", "year"] };
+  const sw = (v, d) => (v < -0.05 ? "−" + F.num(-v, d === undefined ? 1 : d) : F.num(v, d === undefined ? 1 : d));
+  let last = null;
+
+  function fill() { Object.keys(CTL).forEach((id) => { const c = CTL[id]; $(id).value = (c[0] === "u" ? U : ST)[c[1]]; }); }
+  function readP() {
+    const p = {};
+    for (const k of KEYS) { const el = $("i-" + k); const v = el ? parseFloat(el.value) : NaN; if (!isFinite(v)) return null; p[k] = v; }
+    return p;
+  }
+  function readO() {
+    const u = Object.assign({}, U), s = Object.assign({}, ST);
+    Object.keys(CTL).forEach((id) => { const c = CTL[id], tgt = c[0] === "u" ? u : s; tgt[c[1]] = F.readNum($(id), tgt[c[1]]); });
+    s.year = Math.max(1, Math.round(s.year)); return { u: u, s: s };
+  }
+
+  function compute() {
+    const p = readP(); if (!p) return;
+    const o = readO();
+    if (o.s.year >= p.years) o.s.year = Math.max(1, Math.round(p.years) - 1);
+    const sim = M.simulate(p, o.u, o.s), sweep = M.sweep(p, o.u, o.s);
+    last = { p: p, o: o, sim: sim, sweep: sweep };
+    draw();
+  }
+
+  function drawHist(sim) {
+    const H = 250, padL = 40, padR = 12, padT = 16, padB = 30, fr = F.plotFrame($("mc-hist"), H, "일괄 투자와 단계 투자의 NPV 분포"), svg = fr.svg, W = fr.W;
+    const all = sim.fullVals.concat(sim.stagedVals).slice().sort((a, b) => a - b), lo = F.niceTicks(S_q(all, 0.005), S_q(all, 0.995), 6);
+    const bins = 36, hf = window.Stats.histogram(sim.fullVals, bins, lo.lo, lo.hi), hs = window.Stats.histogram(sim.stagedVals, bins, lo.lo, lo.hi);
+    const ty = F.niceTicks(0, Math.max.apply(null, hf.counts.concat(hs.counts)), 4);
+    const X = (v) => padL + (v - lo.lo) / (lo.hi - lo.lo) * (W - padL - padR), Y = (c) => padT + (ty.hi - c) / (ty.hi - ty.lo) * (H - padT - padB);
+    ty.ticks.forEach((v) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.num(v, 0), { "text-anchor": "end" }); });
+    lo.ticks.forEach((v) => F.svgText(svg, X(v), H - 10, F.money(v, 0), { "text-anchor": "middle" }));
+    const step = (h) => "M" + X(h.lo) + "," + Y(0) + h.counts.map((c, i) => "V" + Y(c) + "H" + X(h.edges[i] + h.w)).join("") + "V" + Y(0);
+    F.svgEl("path", { d: step(hs) + "Z", fill: F.css("--input"), opacity: 0.16 }, svg);
+    F.svgEl("path", { d: step(hs), fill: "none", stroke: F.css("--input"), "stroke-width": 2 }, svg);
+    F.svgEl("path", { d: step(hf), fill: "none", stroke: F.css("--ink-2"), "stroke-width": 1.8 }, svg);
+    if (0 > lo.lo && 0 < lo.hi) F.svgEl("line", { x1: X(0), x2: X(0), y1: padT - 6, y2: H - padB, stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, svg);
+    const tip = F.makeTip(fr.plot), bw = X(lo.lo + hf.w) - X(lo.lo);
+    hf.counts.forEach((c, i) => { const a = hf.edges[i], hit = F.svgEl("rect", { class: "hit", x: X(a), width: bw, y: padT, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "NPV " + F.money(a, 0) + " ~ " + F.money(a + hf.w, 0) + "억원", rows: [["한 번에 짓기", F.num(c, 0) + "회", F.css("--ink-2")], ["나눠 짓기", F.num(hs.counts[i], 0) + "회", F.css("--input")]] })); });
+  }
+  const S_q = (a, p) => window.Stats.quantile(a, p);
+
+  function drawSweep(sweep, cur) {
+    const H = 250, padL = 40, padR = 12, padT = 16, padB = 30, fr = F.plotFrame($("mc-sweep"), H, "수요 변동성별 기대 NPV와 옵션가치"), svg = fr.svg, W = fr.W;
+    const vals = sweep.map((r) => r.full).concat(sweep.map((r) => r.staged), sweep.map((r) => r.option), [0]), t = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const xs = sweep.map((r) => r.sd), X = (v) => padL + (v - xs[0]) / (xs[xs.length - 1] - xs[0]) * (W - padL - padR), Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((v) => { F.svgEl("line", { class: v === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.money(v, 0), { "text-anchor": "end" }); });
+    xs.forEach((v) => F.svgText(svg, X(v), H - 10, v + "%", { "text-anchor": "middle" }));
+    const bw = Math.min(26, (W - padL - padR) / xs.length * 0.5);
+    sweep.forEach((r) => F.svgEl("path", { d: F.barPath(X(r.sd) - bw / 2, bw, Y(0), Y(r.option), 2), fill: r.option >= 0 ? F.css("--pos") : F.css("--neg"), opacity: 0.3 }, svg));
+    const line = (k, c) => F.svgEl("path", { d: "M" + sweep.map((r) => X(r.sd) + "," + Y(r[k])).join("L"), fill: "none", stroke: c, "stroke-width": 2.2 }, svg);
+    line("full", F.css("--ink-2")); line("staged", F.css("--input"));
+    if (cur >= xs[0] && cur <= xs[xs.length - 1]) { F.svgEl("line", { x1: X(cur), x2: X(cur), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-dasharray": "4 4" }, svg); F.svgText(svg, X(cur) + 4, padT + 10, "현재 가정", { class: "c-lab" }); }
+    const tip = F.makeTip(fr.plot), band = (W - padL - padR) / (xs.length - 1);
+    sweep.forEach((r) => { const hit = F.svgEl("rect", { class: "hit", x: X(r.sd) - band / 2, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "수요 변동성 " + r.sd + "%", rows: [["한 번에 짓기", sw(r.full) + "억원", F.css("--ink-2")], ["나눠 짓기", sw(r.staged) + "억원", F.css("--input")], ["옵션가치", sw(r.option) + "억원"]] })); });
+  }
+
+  function draw() {
+    if (!last) return;
+    const { p, o, sim, sweep } = last, f = sim.full, s = sim.staged;
+    const pill = $("mc-pill"); pill.className = "pill " + (f.pLoss <= 0.25 ? "ok" : f.pLoss <= 0.4 ? "warn" : "bad");
+    pill.textContent = "한 번에 짓기 손실 확률 " + F.pct(f.pLoss, 0);
+    const k = $("mc-k"); k.textContent = "";
+    [["기대 NPV · 한 번에 짓기", sw(f.mean) + "억원", "기본 가정 " + sw(sim.base) + " · 표준편차 " + F.num(f.sd, 0), f.mean < 0 ? "bad" : ""],
+     ["NPV가 마이너스일 확률", F.pct(f.pLoss, 1), "하위 5% " + sw(f.p5, 0) + " · 상위 5% " + sw(f.p95, 0), f.pLoss > 0.4 ? "bad" : ""],
+     ["기대 NPV · 나눠 짓기", sw(s.mean) + "억원", "손실 확률 " + F.pct(s.pLoss, 1) + " · 2단계 " + F.pct(sim.pExpand, 0) + " 실행", ""],
+     ["단계 투자의 옵션가치", (sim.option >= 0 ? "+" : "") + sw(sim.option) + "억원", "± " + F.num(sim.optionSe, 1) + " (표준오차)", sim.option > 0 ? "good" : "bad"]
+    ].forEach((q) => k.appendChild(F.el("div", null, [F.el("span", { class: "l", text: q[0] }), F.el("span", { class: "v " + q[3], text: q[1] }), F.el("span", { class: "s", text: q[2] })])));
+    drawHist(sim); drawSweep(sweep, o.u.sdU);
+    const t = $("mc-tab"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["", "기본 가정 NPV", "기대 NPV", "표준편차", "하위 5%", "상위 5%", "손실 확률"].map((h) => F.el("th", { text: h })))]));
+    const tb = F.el("tbody");
+    [["한 번에 짓기", sim.base, f], ["나눠 짓기 (" + F.num(o.s.share1, 0) + "% → " + o.s.year + "년차 말 결정)", sim.baseStaged, s]].forEach((r) => tb.appendChild(F.el("tr", null, [F.el("td", { text: r[0] }), F.el("td", { text: sw(r[1]) }), F.el("td", { text: sw(r[2].mean) }), F.el("td", { text: F.num(r[2].sd, 1) }), F.el("td", { class: r[2].p5 < 0 ? "neg" : null, text: sw(r[2].p5) }), F.el("td", { text: sw(r[2].p95) }), F.el("td", { text: F.pct(r[2].pLoss, 1) })])));
+    t.appendChild(tb);
+    /* 옵션가치가 0을 넘는 수요 변동성(선형 보간) */
+    let cross = null;
+    for (let i = 1; i < sweep.length; i++) if (sweep[i - 1].option < 0 && sweep[i].option >= 0) { const a = sweep[i - 1], b = sweep[i]; cross = a.sd + (0 - a.option) / (b.option - a.option) * (b.sd - a.sd); }
+    const memo = $("mc-memo"); memo.textContent = "";
+    memo.append("수요(σ " + F.num(o.u.sdU, 0) + "%)·판매단가·원가·투자비가 흔들린다고 보면, 한 번에 다 짓는 안의 NPV는 평균 " + sw(f.mean) + "억원으로 기본 가정(" + sw(sim.base) + "억원)" + (f.mean < sim.base ? "보다 낮습니다. 투자비 초과는 위쪽으로 길게 치우쳐 있고, 수요가 설비 용량을 넘는 상단은 팔 수 없어 잘리기 때문입니다. " : "과 비슷합니다. "));
+    memo.append("NPV가 마이너스일 확률은 ", F.el("b", { text: F.pct(f.pLoss, 0) }), ", 하위 5%는 " + sw(f.p5, 0) + "억원입니다" + (sim.irr ? "(IRR 10~90% 범위 " + F.pct(sim.irr.p10, 1) + "~" + F.pct(sim.irr.p90, 1) + "). " : ". "));
+    memo.append("CAPA " + F.num(o.s.share1, 0) + "%(투자비 " + F.num(Math.max(o.s.share1, o.s.capex1), 0) + "%)로 먼저 짓고 " + o.s.year + "년차 말 수요를 보고 2단계를 정하면 기대 NPV가 " + sw(s.mean) + "억원으로 ");
+    memo.append(F.el("b", { text: (sim.option >= 0 ? sw(sim.option) + "억원 높아지고" : sw(-sim.option) + "억원 낮아지고") }), ", 손실 확률은 " + F.pct(s.pLoss, 0) + ", 하위 5%는 " + sw(s.p5, 0) + "억원이 됩니다. 2단계는 " + F.pct(sim.pExpand, 0) + "의 경우에만 짓습니다. ");
+    if (cross !== null) memo.append("기본 가정에서는 한 번에 짓는 편이 낫지만, 수요 변동성이 약 " + F.num(cross, 0) + "%를 넘으면 나눠 짓는 편이 유리해집니다. 불확실성이 클수록 기다릴 권리의 값이 커지기 때문입니다.");
+    const chk = $("mc-check"); chk.textContent = "";
+    const z = M.simulate(p, { sdU: 0, sdA: 0, sdV: 0, sdF: 0, capexLo: 0, capexHi: 0, n: 20 }, Object.assign({}, o.s, { obs: 0 }));
+    const one = M.staged(p, {}, Object.assign({}, o.s, { share1: 100 })).res.npv;
+    const kpi = $("k-npv") ? $("k-npv").textContent.replace(/[,억원\s]/g, "") : "", kpiV = /^\(.*\)$/.test(kpi) ? -parseFloat(kpi.replace(/[()]/g, "")) : parseFloat(kpi);
+    [["흔들림 0이면 모든 경로 NPV = 기본 가정 NPV", z.full.sd < 1e-9 && Math.abs(z.full.mean - sim.base) < 1e-9],
+     ["확률 모형의 기본 NPV = 위 계산 NPV", !isFinite(kpiV) || Math.abs(kpiV - sim.base) < 0.051],
+     ["1단계 CAPA 100%면 나눠 짓기 = 한 번에 짓기", Math.abs(one - sim.base) < 1e-9],
+     ["옵션가치 = 짝지은 경로 차이의 평균", Math.abs(sim.option - (s.mean - f.mean)) < 1e-9]
+    ].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  let timer = 0;
+  const schedule = () => { clearTimeout(timer); timer = setTimeout(compute, 300); };
+  fill();
+  Object.keys(CTL).forEach((id) => $(id).addEventListener("input", schedule));
+  $("npv-form").addEventListener("input", schedule);
+  $("npv-form").addEventListener("change", schedule);
+  $("npv-reset").addEventListener("click", () => setTimeout(compute, 50));
+  $("tab-npv").addEventListener("click", () => setTimeout(draw, 30));
+  F.onRedraw(draw);
+  compute();
 })();
 </script>
 <script>

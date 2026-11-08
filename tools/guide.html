@@ -93,7 +93,7 @@
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
       <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html" aria-current="page"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html">검산</a>
       <a href="../en.html" lang="en">EN</a>
@@ -209,6 +209,7 @@
             <li>왼쪽 파란 칸에서 투자비, 가동률, 판매단가를 바꿔 보세요.</li>
             <li>오른쪽 위 <b>NPV 양수</b> 또는 <b>NPV 음수</b> 배지와 NPV·IRR 숫자를 보세요.</li>
             <li><b>민감도 표</b>와 <b>영향이 큰 가정</b>에서 어떤 가정이 결과를 가장 크게 흔드는지 확인하세요.</li>
+            <li>아래 <b>확률로 보는 투자 타당성</b>에서 손해 볼 확률과, 나눠 지을 때 얼마나 안전해지는지 보세요.</li>
           </ol>
           <p class="read"><b>읽는 법</b> · NPV가 0보다 크면 할 만한 투자예요. IRR이 할인율보다 높아도 같은 뜻이에요. 실제 가동률이 <b>손익분기 가동률</b>보다 높을수록 안전해요.</p>
           <a class="btn go" href="capex-kit.html">도구 열기 →</a>
@@ -279,6 +280,39 @@
           </ol>
           <p class="read"><b>읽는 법</b> · 은행과 맺은 약속(재무약정)을 지켜도, 이익이 많이 흔들리는 회사는 빚을 갚지 못할 확률이 높을 수 있어요. 그래서 배수만이 아니라 <b>확률</b>로도 한도를 정해요. <b>목표 부채 범위</b>는 가치가 가장 큰 부채와 기준 한도 사이예요.</p>
           <a class="btn go" href="capital.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-planrisk">
+          <h3>사업계획 달성 확률</h3>
+          <p class="one">내년 계획 영업이익을 실제로 낼 확률이 얼마인지, 무엇이 가장 크게 흔드는지 알려 줘요.</p>
+          <ol>
+            <li><b>계획과 변동성</b> 표에 판매량·단가·환율·원재료 같은 숫자의 계획과, 한 해 동안 얼마나 흔들리는지(%)를 넣으세요.</li>
+            <li><b>동인 사이의 상관</b>에서 같이 움직이는 것끼리 숫자를 넣으세요. 경기가 좋으면 판매량과 단가가 함께 오르는 식이에요.</li>
+            <li>맨 위 막대그래프에서 초록 막대(목표 이상)가 얼마나 되는지, <b>목표를 어디에 둘까</b>에서 확률별 영업이익을 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 달성 확률 50%면 반반이에요. 토네이도는 하나씩만 움직였을 때, 변동 기여도는 함께 움직일 때 누가 더 흔드는지예요. 둘이 다르면 함께 움직이는 효과가 크다는 뜻이에요.</p>
+          <a class="btn go" href="plan-risk.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-budget">
+          <h3>비용예산 증액 우선순위</h3>
+          <p class="one">부서들이 요청한 예산이 한도보다 많을 때, 어떤 요청을 들어줘야 효과가 가장 큰지 골라 줘요.</p>
+          <ol>
+            <li>위쪽에 <b>승인 한도</b>를 넣으세요.</li>
+            <li><b>요청 목록</b>에 요청액과 효과(나쁠 때·보통·좋을 때), 성공 확률을 넣으세요. 법으로 꼭 해야 하는 일은 <b>필수</b>에 체크하세요.</li>
+            <li>초록 줄이 승인, 회색이 보류예요. <b>근거</b> 칸에서 왜 그렇게 정해졌는지 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 효율이 높은 것부터 채우면 한도가 어중간하게 남아 손해를 볼 수 있어요. 이 도구는 모든 조합을 따진 것과 같은 답을 빠르게 찾아요. <b>예산 1억원의 한계가치</b>는 예산을 1억 더 받으면 얻는 효과로, 증액을 요청할 때의 근거예요.</p>
+          <a class="btn go" href="budget-opt.html">도구 열기 →</a>
+        </article>
+        <article class="howcard" id="how-cost">
+          <h3>원가 행태와 불량 관리도</h3>
+          <p class="one">공장 원가 중 얼마가 고정비이고 얼마가 많이 만들수록 느는 변동비인지, 불량이 갑자기 늘었는지 알려 줘요.</p>
+          <ol>
+            <li>맨 위 점 그래프에서 생산량이 늘 때 원가가 어떻게 오르는지 보세요. 선이 세로축과 만나는 높이가 고정비, 기울기가 변동비예요.</li>
+            <li><b>증설 시점</b>을 바꿔 보며 증설 전후로 선이 달라졌는지 확인하세요.</li>
+            <li><b>불량률 관리도</b>에서 빨간 점과 <b>신호가 나온 구간</b> 표를 보세요.</li>
+          </ol>
+          <p class="read"><b>읽는 법</b> · 빨간 점선(관리 한계) 밖은 "평소와 다른 일"이 생긴 달이에요. 선 안이어도 몇 달 연속 위쪽에 있으면 서서히 나빠지는 신호예요. 회사 표를 <b>데이터 붙여넣기</b>에 넣으면 같은 분석이 돼요.</p>
+          <a class="btn go" href="cost-stats.html">도구 열기 →</a>
         </article>
         <article class="howcard" id="how-fx">
           <h3>환리스크 헤지</h3>
@@ -405,6 +439,11 @@
         <article class="term" id="t-pd"><h4>부도확률과 부도거리<span>Probability of default · Distance to default</span></h4><p class="easy">내년에 빚을 못 갚게 될 확률이에요. 부도거리는 "가게 가치가 빚 밑으로 떨어지려면 평소 흔들림(표준편차)의 몇 배만큼 떨어져야 하는지"예요. 클수록 안전해요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게 가치 2억, 빚 1억이면 가치가 반 넘게 떨어져야 빚에 닿아요. 가치가 1년에 25%쯤 흔들리면 부도거리는 약 2.8이에요.</p><p class="where">이 사이트에서는 <a href="capital.html">적정 부채</a></p></article>
         <article class="term" id="t-opt-debt"><h4>적정 부채<span>Trade-off theory</span></h4><p class="easy">빚을 지면 이자가 비용으로 인정돼 세금이 줄어요(절세효과). 하지만 빚이 너무 많으면 망할 위험과 그 비용이 커져요. 둘을 저울질해 회사 가치가 가장 큰 지점이 적정 부채예요.</p><p class="ex"><b>붕어빵 가게라면</b> 빚을 조금 지면 세금이 줄어 이득이지만, 장사가 안 되는 겨울에 이자를 못 내면 기계를 헐값에 팔아야 할 수도 있어요.</p><p class="where">이 사이트에서는 <a href="capital.html">적정 부채</a></p></article>
         <article class="term" id="t-z"><h4>Altman Z′<span>부실 예측 점수</span></h4><p class="easy">재무상태표와 손익계산서의 비율 다섯 개에 가중치를 곱해 더한 점수예요. 옛날에 망한 회사와 안 망한 회사를 가장 잘 가른 공식이라, 점수가 낮을수록 망한 회사와 닮았다는 뜻이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 1.23 밑이면 위험, 2.90 위면 안전, 그 사이는 지켜봐야 하는 구간이에요.</p><p class="where">이 사이트에서는 <a href="capital.html">적정 부채</a></p></article>
+        <article class="term" id="t-ear"><h4>Earnings-at-Risk<span>이익 위험 · EaR</span></h4><p class="easy">나쁜 해(보통 20년에 한 번)에 이익이 계획보다 얼마나 줄 수 있는지예요. 계획 이익에서 하위 5% 이익을 뺀 값이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 계획 이익이 1,000만원인데 20년 중 가장 나쁜 해에 200만원이면 EaR은 800만원이에요.</p><p class="where">이 사이트에서는 <a href="plan-risk.html">사업계획 달성 확률</a></p></article>
+        <article class="term" id="t-corr"><h4>상관관계<span>Correlation</span></h4><p class="easy">두 숫자가 같이 오르내리는 정도를 −1~1로 나타내요. 1이면 늘 같이, −1이면 늘 반대로, 0이면 상관없이 움직여요.</p><p class="ex"><b>붕어빵 가게라면</b> 추운 날엔 손님도 많고 밀가루값도 오른다면 둘은 양의 상관이에요. 같이 움직이면 이익은 더 크게 흔들려요.</p><p class="where">이 사이트에서는 <a href="plan-risk.html">사업계획 달성 확률</a></p></article>
+        <article class="term" id="t-knap"><h4>정수계획(배낭 문제)<span>Integer programming · Knapsack</span></h4><p class="easy">가방(예산)에 넣을 수 있는 무게가 정해져 있을 때, 값어치 합이 가장 큰 물건 조합을 고르는 문제예요. 물건은 통째로 넣거나 빼야 해요.</p><p class="ex"><b>붕어빵 가게라면</b> 30만원으로 새 틀(20만원), 간판(15만원), 전단지(10만원) 중 고를 때, 값어치 순서대로만 넣으면 돈이 어중간하게 남을 수 있어요.</p><p class="where">이 사이트에서는 <a href="budget-opt.html">비용예산 증액 우선순위</a></p></article>
+        <article class="term" id="t-ce"><h4>확실성등가<span>Certainty equivalent</span></h4><p class="easy">결과가 들쭉날쭉한 선택을, "이만큼 확실히 받으면 똑같이 좋다"고 느끼는 금액으로 바꾼 값이에요. 위험을 싫어할수록 기대값보다 작아져요.</p><p class="ex"><b>붕어빵 가게라면</b> 반반 확률로 0원 또는 200만원 버는 일보다 확실한 80만원이 좋다면, 그 일의 확실성등가는 80만원쯤이에요.</p><p class="where">이 사이트에서는 <a href="budget-opt.html">비용예산 증액 우선순위</a></p></article>
+        <article class="term" id="t-ro"><h4>실물옵션<span>Real option</span></h4><p class="easy">지금 다 정하지 않고, 상황을 보고 나중에 고를 수 있는 권리의 값이에요. 미래가 불확실할수록 이 권리가 비싸져요.</p><p class="ex"><b>붕어빵 가게라면</b> 가게를 두 칸 다 빌리지 않고 한 칸만 빌린 뒤 손님이 많으면 옆 칸을 빌리기로 하면, 손님이 적을 때 손해를 줄일 수 있어요.</p><p class="where">이 사이트에서는 <a href="capex-kit.html#mc">설비투자 분석 키트</a></p></article>
         <article class="term" id="t-mc"><h4>몬테카를로 시뮬레이션<span>Monte Carlo</span></h4><p class="easy">미래를 한 번만 예상하지 않고, 주사위를 수천 번 굴리듯 여러 경우를 만들어 결과가 어떻게 퍼지는지 보는 방법이에요.</p><p class="ex"><b>붕어빵 가게라면</b> 손님 수가 매일 조금씩 다르다고 보고 1년을 2,000번 굴려 보면, "통장이 바닥나는 경우가 2,000번 중 몇 번인지"를 셀 수 있어요.</p><p class="where">이 사이트에서는 <a href="cash-13w.html#mc">13주 자금수지</a></p></article>
         <article class="term" id="t-bizday"><h4>영업일<span>Business day</span></h4><p class="easy">은행이 일하는 날이에요(주말·공휴일 제외). 급여일이 휴일이면 보통 하루 앞당겨 주고, 세금 내는 날이 휴일이면 다음 영업일로 미뤄져요.</p></article>
       </div></div>
@@ -425,6 +464,9 @@
         <article class="term" id="t-trend"><h4>추세선과 이격도<span>Trend · Deviation</span></h4><p class="easy">추세선은 들쭉날쭉한 실적 사이로 그은 가장 그럴듯한 직선이에요. 이격도는 이번 달 실적이 그 선에서 몇 % 떨어져 있는지예요. 계절 영향은 먼저 걷어 내고 봐요.</p><p class="ex"><b>붕어빵 가게라면</b> 겨울엔 원래 잘 팔리니 겨울 실적을 그대로 비교하면 안 돼요. 계절을 빼고 봐도 추세선보다 15% 높다면 정말 잘한 달이에요.</p><p class="where">이 사이트에서는 <a href="pl-report.html#trend">월 손익 보고</a></p></article>
         <article class="term" id="t-p"><h4>p값과 유의성<span>p-value</span></h4><p class="easy">"우연히 이 정도 차이가 날 확률"이에요. 보통 5%보다 작으면 우연으로 보기 어렵다고(유의하다고) 판단해요.</p><p class="ex"><b>붕어빵 가게라면</b> 9달 연속 계획보다 조금씩 덜 팔렸다면, 하나하나는 작아도 우연일 확률이 낮아요. 계획을 너무 높게 세우는 버릇이 있다는 신호예요.</p><p class="where">이 사이트에서는 <a href="pl-report.html#trend">계획 편향</a>, <a href="mbo-kpi.html#dist">평가자 편향</a></p></article>
         <article class="term" id="t-anova"><h4>분산분석과 평가자 보정<span>ANOVA · Calibration</span></h4><p class="easy">여러 무리의 평균 차이가 우연인지 보는 방법이에요. 평가자마다 점수가 체계적으로 다르면, 각자의 평균과 흔들림을 맞춘 뒤(z점수) 다시 비교해 공정하게 만들어요.</p><p class="ex"><b>붕어빵 가게라면</b> 맛 평가를 두 사람이 하는데 한 명은 늘 후하고 한 명은 늘 짜다면, 각자 기준으로 바꿔서 봐야 붕어빵끼리 공정하게 비교돼요.</p><p class="where">이 사이트에서는 <a href="mbo-kpi.html#dist">성과평가</a></p></article>
+        <article class="term" id="t-ci"><h4>신뢰구간<span>Confidence interval</span></h4><p class="easy">추정한 숫자가 있을 법한 범위예요. 95% 신뢰구간이면 같은 방식으로 여러 번 재었을 때 100번 중 95번은 진짜 값을 품는 범위예요.</p><p class="ex"><b>붕어빵 가게라면</b> "붕어빵 한 개 원가는 300원"보다 "280~320원 사이일 가능성이 높다"가 더 정직한 말이에요.</p><p class="where">이 사이트에서는 <a href="cost-stats.html">원가 행태</a></p></article>
+        <article class="term" id="t-reg"><h4>회귀로 나누는 고정비·변동비<span>Cost regression</span></h4><p class="easy">여러 달의 생산량과 원가를 점으로 찍고 가장 잘 맞는 직선을 그어요. 직선이 0개일 때의 높이가 고정비, 기울기가 한 개 더 만들 때 느는 변동비예요.</p><p class="ex"><b>붕어빵 가게라면</b> 월세·인건비는 안 팔아도 나가는 고정비, 밀가루·팥은 한 개 만들 때마다 드는 변동비예요.</p><p class="where">이 사이트에서는 <a href="cost-stats.html">원가 행태</a></p></article>
+        <article class="term" id="t-spc"><h4>관리도와 넬슨 규칙<span>Control chart · Nelson rules</span></h4><p class="easy">평소 흔들림의 범위(관리 한계)를 그어 두고, 그 밖으로 나가거나 이상한 패턴(몇 달 연속 한쪽, 계속 오름)이 보이면 원인을 찾는 방법이에요. EWMA는 지난달들의 흐름을 누적해 작은 변화도 빨리 잡아요.</p><p class="ex"><b>붕어빵 가게라면</b> 탄 붕어빵이 하루 2~4개는 평소예요. 10개면 뭔가 고장 났고, 3개·4개·4개·5개처럼 매일 조금씩 늘면 틀이 닳고 있다는 신호예요.</p><p class="where">이 사이트에서는 <a href="cost-stats.html">불량 관리도</a></p></article>
         <article class="term" id="t-gini"><h4>지니계수<span>Gini coefficient</span></h4><p class="easy">나눠 준 돈이 얼마나 고르지 않은지 0~1로 나타내요. 0이면 모두 같고, 1이면 한 사람이 다 가져요.</p><p class="ex"><b>붕어빵 가게라면</b> 성과급을 네 명이 똑같이 나누면 0, 한 명이 다 받으면 0.75예요(네 명일 때).</p><p class="where">이 사이트에서는 <a href="mbo-kpi.html#dist">성과평가</a></p></article>
       </div></div>
 

@@ -613,3 +613,15 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
   #career, #cases, #skills { break-before: auto; }
   .site-foot { margin-top: 18pt; padding-block: 8pt 0; }
 }
+
+/* 홈: 분석 질문 카드 */
+.qgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.qcard { position: relative; display: grid; gap: 8px; align-content: start; padding: 16px 16px 40px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); color: inherit; text-decoration: none; min-width: 0; transition: border-color .15s, transform .15s; }
+.qcard:hover, .qcard:focus-visible { border-color: var(--accent); transform: translateY(-2px); }
+.qcard .qk { font-family: var(--f-num); font-size: 11.5px; letter-spacing: .04em; color: var(--accent); font-weight: 600; }
+.qcard h3 { font-size: var(--s-3); font-weight: 700; line-height: 1.4; }
+.qcard p { font-size: var(--s-1); color: var(--ink-2); line-height: 1.6; }
+.qcard .qx { font-family: var(--f-num); font-size: 12px; color: var(--ink); background: var(--ledger); border: 1px solid var(--rule-soft); border-radius: 4px; padding: 3px 7px; justify-self: start; }
+.qcard .arr { position: absolute; right: 14px; bottom: 12px; color: var(--accent); }
+@media (max-width: 1100px) { .qgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .qgrid { grid-template-columns: minmax(0, 1fr); } }

@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>비용예산 증액 우선순위 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="증액 요청의 효과 범위와 성공 확률로 기대가치를 매기고, 승인 한도 안에서 정수계획으로 최적 조합과 예산의 한계가치를 찾는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="비용예산 증액 우선순위 · 이기표">
+<meta property="og:description" content="증액 요청의 효과 범위와 성공 확률로 기대가치를 매기고, 승인 한도 안에서 정수계획으로 최적 조합과 예산의 한계가치를 찾는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/budget-opt.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .summary { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 24px; }
+  .summary > * { min-width: 0; }
+  .summary .side { display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 1000px) { .summary { grid-template-columns: minmax(0, 1fr); } }
+  .kpis.k2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpis.k2 .kpi:last-child { grid-column: auto; }
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .block2 > h2 .muted { font-family: var(--f-body); font-weight: 400; font-size: var(--s-1); }
+  .block2 > p.hint { max-width: 900px; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: end; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+  .ctl .field { grid-template-columns: auto 86px; gap: 8px; }
+  .ctl .field input { background: var(--surface); }
+  .cmp { width: 100%; border-collapse: collapse; font-size: var(--s-1); }
+  .cmp th, .cmp td { padding: 7px 6px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  .cmp th:first-child, .cmp td:first-child { text-align: left; white-space: normal; }
+  .cmp thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  .cmp td { font-family: var(--f-num); }
+  .cmp td:first-child { font-family: var(--f-body); }
+  .cmp td.neg { color: var(--neg-ink); }
+  .cmp tr.hl td { background: color-mix(in srgb, var(--pos) 9%, transparent); font-weight: 600; }
+  .cmp .cbar { display: inline-block; height: 8px; border-radius: 2px; vertical-align: middle; margin-left: 8px; }
+  /* 요청표 */
+  table.req { border-collapse: collapse; width: 100%; min-width: 1180px; font-size: 12.5px; }
+  table.req th, table.req td { padding: 5px 5px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.req thead th { color: var(--muted); font-weight: 500; font-family: var(--f-body); border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+  table.req th.l, table.req td.l { text-align: left; }
+  table.req td { font-family: var(--f-num); }
+  table.req td.l { font-family: var(--f-body); }
+  table.req input[type=number] { width: 56px; font-family: var(--f-num); font-size: 12.5px; text-align: right; padding: 4px 5px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  table.req input[type=text] { width: 100%; min-width: 150px; font-size: 12.5px; padding: 4px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  table.req input.dept { min-width: 64px; width: 72px; }
+  table.req tr.in td { background: color-mix(in srgb, var(--pos) 7%, transparent); }
+  table.req td.neg { color: var(--neg-ink); }
+  table.req td.why { font-family: var(--f-body); color: var(--ink-2); text-align: left; white-space: normal; min-width: 150px; }
+  table.req .dec { display: inline-block; font-family: var(--f-body); font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+  table.req .dec.in { background: color-mix(in srgb, var(--pos) 18%, transparent); color: var(--pos); }
+  table.req .dec.out { background: var(--rule-soft); color: var(--muted); }
+  table.req .dec.must { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+  svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  svg.plot text.c-neg { fill: var(--neg-ink); font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html" aria-current="page">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 비용예산 증액 우선순위</div>
+      <h1>비용예산 증액 우선순위</h1>
+      <p>부서들의 증액 요청은 늘 승인 한도보다 많습니다. 요청마다 효과의 범위와 성공 확률을 받아 기대가치를 매기고, 한도 안에서 가치 합이 가장 큰 조합을 수학적으로 찾습니다(정수계획). 예산을 1억원 더 받으면 무엇이 달라지는지, 위험을 얼마나 줄일지도 숫자로 봅니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 단위 억원</span><span><a class="guide-link" href="guide.html#how-budget">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample"><span>예시: 가상 제조사의 연간 비용예산 증액 요청 15건(43.8억원), 승인 한도 30억원 · 모든 수치는 가상</span></span>
+
+    <div class="ctl" role="group" aria-label="예산 조건">
+      <div class="field"><label for="b-budget">승인 한도<small>억원</small></label><input id="b-budget" type="number" inputmode="decimal" step="1" min="0"></div>
+      <div class="field"><label for="b-rate">할인율<small>%</small></label><input id="b-rate" type="number" inputmode="decimal" step="1" min="0" max="30"></div>
+      <div class="field"><label for="b-ra">위험회피 계수 a<small>0이면 기대값만</small></label><input id="b-ra" type="number" inputmode="decimal" step="0.05" min="0" max="2"></div>
+      <div class="btn-row"><button type="button" class="btn sm" id="b-reset">예시값으로 되돌리기</button></div>
+    </div>
+
+    <section class="summary" aria-live="polite" style="margin-top: 18px">
+      <div>
+        <div class="board-head" style="margin-bottom: 10px"><h2>예산 규모별 최대 효과</h2><span class="pill" id="k-pill"></span></div>
+        <div class="chart" id="fr-chart">
+          <div class="legend" style="margin-bottom: 6px">
+            <span><i class="key-line" style="background: var(--input)"></i>최적 조합(정수계획)</span>
+            <span><i class="key-line" style="background: var(--muted)"></i>효율 순으로 채우기</span>
+            <span><i class="key-dash" style="border-color: var(--ink)"></i>승인 한도</span>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="kpis k2">
+          <div class="kpi"><div class="label">승인 조합의 기대 순효과</div><div class="v num" id="k-val"></div><div class="sub" id="k-val-sub"></div></div>
+          <div class="kpi"><div class="label">승인액</div><div class="v num" id="k-used"></div><div class="sub" id="k-used-sub"></div></div>
+          <div class="kpi"><div class="label">예산 1억원의 한계가치</div><div class="v num" id="k-shadow"></div><div class="sub" id="k-shadow-sub"></div></div>
+          <div class="kpi"><div class="label">순효과가 마이너스일 확률</div><div class="v num" id="k-loss"></div><div class="sub" id="k-loss-sub"></div></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="k-memo"></p></div>
+        <div class="selfcheck" id="k-check"></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="요청 목록과 결정">
+      <h2>요청 목록과 결정 <span class="muted">효과는 연간 기준, 최저·최빈·최고 세 값으로</span></h2>
+      <p class="hint">요청 부서에 효과를 한 숫자로 받지 말고 세 값(나쁠 때·보통·좋을 때)과 성공 확률로 받으면, 낙관적인 요청과 확실한 요청을 같은 잣대로 비교할 수 있습니다. 기대 순효과 = 성공 확률 × 효과 평균 × 기간 현가계수 − 요청액입니다.</p>
+      <div class="scroll"><table class="req" id="req"></table></div>
+    </section>
+
+    <section class="block2" aria-label="방식 비교와 위험">
+      <h2>배분 방식 비교와 위험 <span class="muted">같은 예산, 다른 결과</span></h2>
+      <div class="two">
+        <div class="card">
+          <h3>세 가지 배분 방식</h3>
+          <table class="cmp" id="cmp"></table>
+          <p class="hint" id="cmp-note"></p>
+        </div>
+        <div class="card">
+          <div class="chart" id="mc-chart">
+            <div class="chart-head"><h4>승인 조합의 순효과 분포 <span class="muted">(5,000회 시뮬레이션)</span></h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--pos)"></i>이익</span><span><i class="key-bar" style="background: var(--neg)"></i>손실</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>위험을 얼마나 피할까 <span class="muted" style="font-weight: 400; font-size: 12px">위험회피 계수별 최적 조합</span></h3>
+        <div class="scroll"><table class="cmp" id="ra-table" style="min-width: 640px"></table></div>
+        <p class="hint">위험회피 계수 a를 키우면 효과가 크게 흔들리는 요청(분산이 큰 요청)의 점수가 깎여, 기대 순효과를 조금 양보하는 대신 손실 확률과 하위 5% 손실이 줄어듭니다. 확실성등가 = 기대값 − (a/2) × 분산으로, 지수효용을 가진 의사결정자가 위험한 결과와 같다고 느끼는 확실한 금액입니다.</p>
+      </div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li><b>요청의 가치</b>: 연간 효과 ~ 삼각분포(최저, 최빈, 최고), 성공하지 못하면 효과 0(성공 확률 p의 베르누이). 기대 순효과 = p × (최저 + 최빈 + 최고)/3 × 연금현가계수(할인율, 기간) − 요청액. 분산 = 계수² × (p(σ²_T + μ_T²) − p²μ_T²).</li>
+        <li><b>위험조정</b>: 확실성등가 = 기대 순효과 − (a/2) × 분산. 요청끼리 독립이면 분산이 더해지므로 조합의 확실성등가도 요청별 값의 합이 됩니다.</li>
+        <li><b>최적 조합</b>: 필수 요청(법정·안전)을 먼저 넣고, 남은 한도에서 확실성등가 합을 최대화하는 0-1 배낭 문제를 동적계획법(0.1억원 단위)으로 풉니다. 같은 계산에서 모든 예산 수준의 최적값(효율적 경계)이 함께 나옵니다. 검산 페이지에서 2ⁿ 조합을 모두 따진 결과와 같은지 확인합니다.</li>
+        <li><b>비교 방식</b>: 효율 순 채우기는 확실성등가 ÷ 요청액이 높은 순으로 들어가는 만큼 넣습니다. 일률 삭감은 모든 요청을 같은 비율로 깎고 효과도 같은 비율로 난다고 가정합니다(실제보다 관대한 가정).</li>
+        <li><b>한계가치</b>: 효율적 경계에서 한도 ±1억원일 때 최적값의 차이입니다. 증액 품의의 근거(예산 1억원 추가 시 기대 순효과)로 씁니다.</li>
+        <li><b>근거 열</b>: 승인된 요청은 그 요청을 뺐을 때 최적값이 줄어드는 폭, 보류된 요청은 억지로 넣었을 때 줄어드는 폭(= 승인되려면 가치가 그만큼 더 커야 함)입니다.</li>
+        <li><b>몬테카를로</b>: 승인 조합의 순효과를 5,000번 뽑아(시드 2026) 손실 확률과 하위 5%를 계산합니다. 평균은 해석해(기대 순효과 합)와 표준오차 안에서 같아야 합니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/budget.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, S = window.Stats, E = window.BudgetEngine, $ = F.$;
+  const D = E.DEFAULTS;
+  let items = [];
+  const eok = (v, d) => F.money(v, d === undefined ? 1 : d) + "억";
+  const won = (v, d) => F.money(v, d === undefined ? 1 : d) + "억원";
+  const sw = (v, d) => (v < 0 ? "−" + F.money(-v, d === undefined ? 1 : d) : F.money(v, d === undefined ? 1 : d));
+
+  /* ---------- 입력 ---------- */
+  const COLS = [["cost", "요청액", 0.1], ["lo", "최저", 0.1], ["mode", "최빈", 0.1], ["hi", "최고", 0.1], ["years", "기간(년)", 1], ["p", "성공 %", 5]];
+  function buildTable() {
+    const t = $("req"); t.textContent = "";
+    const hr = F.el("tr");
+    ["#", "부서", "요청 내용"].forEach((h, i) => hr.appendChild(F.el("th", { class: i ? "l" : null, text: h })));
+    COLS.forEach((c) => hr.appendChild(F.el("th", { text: c[1] })));
+    ["필수", "기대 순효과", "효율", "표준편차", "결정", "근거"].forEach((h, i) => hr.appendChild(F.el("th", { class: i === 5 ? "l" : null, text: h })));
+    t.appendChild(F.el("thead", null, [hr]));
+    const tb = F.el("tbody");
+    items.forEach((it, i) => {
+      const tr = F.el("tr", { id: "r-" + i });
+      tr.appendChild(F.el("td", { text: String(i + 1) }));
+      const dp = F.el("input", { type: "text", class: "dept", value: it.dept, "aria-label": (i + 1) + "번 부서" }); dp.addEventListener("input", () => { it.dept = dp.value; });
+      const nm = F.el("input", { type: "text", value: it.name, "aria-label": (i + 1) + "번 요청 내용" }); nm.addEventListener("input", () => { it.name = nm.value; render(); });
+      tr.appendChild(F.el("td", { class: "l" }, [dp])); tr.appendChild(F.el("td", { class: "l" }, [nm]));
+      COLS.forEach((c) => {
+        const inp = F.el("input", { type: "number", inputmode: "decimal", step: c[2], min: 0, max: c[0] === "p" ? 100 : null, value: it[c[0]], "aria-label": (i + 1) + "번 " + c[1] });
+        inp.addEventListener("input", () => { const v = Number(inp.value); if (inp.value.trim() !== "" && isFinite(v) && v >= 0) { it[c[0]] = c[0] === "years" ? Math.max(1, Math.round(v)) : v; render(); } });
+        tr.appendChild(F.el("td", null, [inp]));
+      });
+      const mu = F.el("input", { type: "checkbox", "aria-label": (i + 1) + "번 필수 여부" }); mu.checked = it.must; mu.addEventListener("change", () => { it.must = mu.checked; render(); });
+      tr.appendChild(F.el("td", null, [mu]));
+      ["ev", "roi", "sd", "dec", "why"].forEach((k) => tr.appendChild(F.el("td", { id: "o-" + k + "-" + i, class: k === "why" ? "why" : null })));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+  }
+  function fill() {
+    items = D.items.map((it) => Object.assign({}, it));
+    $("b-budget").value = D.budget; $("b-rate").value = D.rate; $("b-ra").value = D.riskAversion;
+    buildTable();
+  }
+  function read() {
+    return { budget: F.readNum($("b-budget"), D.budget), rate: F.readNum($("b-rate"), D.rate), riskAversion: F.readNum($("b-ra"), D.riskAversion), items: items.map((it) => Object.assign({}, it, { hi: Math.max(it.hi, it.mode, it.lo), lo: Math.min(it.lo, it.mode, it.hi) })) };
+  }
+
+  /* ---------- 효율적 경계 ---------- */
+  function drawFrontier(a, x) {
+    const H = 300, padL = 44, padR = 14, padT = 16, padB = 32, fr = F.plotFrame($("fr-chart"), H, "예산 규모별 최적 기대 순효과"), svg = fr.svg, W = fr.W;
+    const P = a.frontier.filter((f) => f.v !== null), vals = P.map((f) => f.v).concat(P.map((f) => f.g), [0]);
+    const tx = F.niceTicks(0, a.total, 6), ty = F.niceTicks(Math.min.apply(null, vals), Math.max.apply(null, vals), 5);
+    const X = (b) => padL + b / tx.hi * (W - padL - padR), Y = (v) => padT + (ty.hi - v) / (ty.hi - ty.lo) * (H - padT - padB);
+    ty.ticks.forEach((v) => { F.svgEl("line", { class: v === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.money(v, 0), { "text-anchor": "end" }); });
+    tx.ticks.forEach((v) => F.svgText(svg, X(v), H - 10, F.money(v, 0), { "text-anchor": "middle" }));
+    F.svgText(svg, W - padR, H - 22, "승인 한도 →", { "text-anchor": "end" });
+    const step = (key) => "M" + P.map((f, i) => (i ? "H" + X(f.b) + "V" + Y(f[key]) : X(f.b) + "," + Y(f[key]))).join("");
+    F.svgEl("path", { d: step("g"), fill: "none", stroke: F.css("--muted"), "stroke-width": 1.5 }, svg);
+    F.svgEl("path", { d: step("v"), fill: "none", stroke: F.css("--input"), "stroke-width": 2.5 }, svg);
+    if (x.budget <= tx.hi) {
+      F.svgEl("line", { x1: X(x.budget), x2: X(x.budget), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-dasharray": "5 4" }, svg);
+      F.svgEl("circle", { cx: X(x.budget), cy: Y(a.opt.value), r: 5, fill: F.css("--input") }, svg);
+      F.svgText(svg, X(x.budget) - 6, Y(a.opt.value) - 9, "한도 " + F.money(x.budget, 0) + "억 → " + sw(a.opt.value) + "억", { class: "c-lab", "text-anchor": "end" });
+    }
+    const tip = F.makeTip(fr.plot), sw0 = (X(tx.hi) - X(0)) / P.length;
+    P.forEach((f) => { if (Math.round(f.b * 10) % 5) return; const hit = F.svgEl("rect", { class: "hit", x: X(f.b) - sw0 * 2.5, y: padT, width: sw0 * 5, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: "승인 한도 " + won(f.b), rows: [["최적 조합", sw(f.v) + "억원", F.css("--input")], ["효율 순 채우기", sw(f.g) + "억원", F.css("--muted")]] })); });
+  }
+
+  /* ---------- 몬테카를로 ---------- */
+  function drawMc(s) {
+    const H = 240, padL = 40, padR = 12, padT = 18, padB = 30, fr = F.plotFrame($("mc-chart"), H, "승인 조합 순효과 분포"), svg = fr.svg, W = fr.W, h = s.hist;
+    const tx = F.niceTicks(Math.min(h.lo, 0), Math.max(h.lo + h.w * h.counts.length, 0), 6), ty = F.niceTicks(0, Math.max.apply(null, h.counts), 4);
+    const X = (v) => padL + (v - tx.lo) / (tx.hi - tx.lo) * (W - padL - padR), Y = (c) => padT + (ty.hi - c) / (ty.hi - ty.lo) * (H - padT - padB);
+    ty.ticks.forEach((v) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.num(v, 0), { "text-anchor": "end" }); });
+    tx.ticks.forEach((v) => F.svgText(svg, X(v), H - 10, F.money(v, 0), { "text-anchor": "middle" }));
+    h.counts.forEach((c, i) => { const a = h.edges[i], b = a + h.w; if (c) F.svgEl("rect", { x: X(a) + 0.5, width: Math.max(1, X(b) - X(a) - 1), y: Y(c), height: Y(0) - Y(c), fill: (a + b) / 2 < 0 ? F.css("--neg") : F.css("--pos"), rx: 1 }, svg); });
+    F.svgEl("line", { x1: X(s.p5), x2: X(s.p5), y1: padT - 6, y2: H - padB, stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, svg);
+    F.svgText(svg, X(s.p5) - 4, padT + 4, "하위 5% " + sw(s.p5), { class: "c-neg", "text-anchor": "end" });
+    F.svgEl("line", { x1: X(s.mean), x2: X(s.mean), y1: padT - 6, y2: H - padB, stroke: F.css("--ink"), "stroke-dasharray": "5 4" }, svg);
+    F.svgText(svg, X(s.mean) + 4, padT + 4, "평균 " + sw(s.mean), { class: "c-lab" });
+  }
+
+  /* ---------- 표와 요약 ---------- */
+  function render() {
+    const x = read(), a = E.analyze(x), s = E.simulate(a.E, a.opt.sel), sel = a.opt.sel;
+    const reqTotal = a.total, nSel = sel.length;
+    a.E.forEach((e, i) => {
+      const inS = sel.indexOf(i) >= 0, m = a.margins[i];
+      $("r-" + i).className = inS ? "in" : "";
+      const ev = $("o-ev-" + i); ev.textContent = F.signed(e.ev, 2); ev.className = e.ev < 0 ? "neg" : "";
+      $("o-roi-" + i).textContent = F.pct(e.roi, 0);
+      $("o-sd-" + i).textContent = F.money(e.sd, 2);
+      const dc = $("o-dec-" + i); dc.textContent = "";
+      dc.appendChild(F.el("span", { class: "dec " + (e.it.must ? "must" : inS ? "in" : "out"), text: e.it.must ? "필수 승인" : inS ? "승인" : "보류" }));
+      $("o-why-" + i).textContent = m.kind === "must" ? "법정·안전 필수" : m.kind === "in" ? "빼면 조합 가치 −" + F.money(m.v, 2) + "억" : e.ce <= 0 ? (x.riskAversion > 0 ? "확실성등가가 0 이하" : "기대 순효과가 0 이하") : isFinite(m.v) ? "가치가 " + F.money(m.v, 2) + "억 더 커야 승인" : "한도 부족";
+    });
+    const p = $("k-pill"); p.className = "pill " + (a.opt.feasible ? "ok" : "bad"); p.textContent = a.opt.feasible ? nSel + "건 승인 · " + (items.length - nSel) + "건 보류" : "필수 요청만으로 한도 초과";
+    F.setValue($("k-val"), sw(a.opt.value, 2), "억원", a.opt.value < 0);
+    const evSel = sel.reduce((t, i) => t + a.E[i].ev, 0);
+    $("k-val-sub").textContent = (x.riskAversion > 0 ? "확실성등가 · 기대값 " + sw(evSel, 2) : "승인액 대비 " + F.pct(a.used ? evSel / a.used : 0, 1));
+    F.setValue($("k-used"), F.money(a.used, 1), "억원");
+    $("k-used-sub").textContent = "요청 " + F.money(reqTotal, 1) + "억 중 · 남는 예산 " + F.money(x.budget - a.used, 1);
+    F.setValue($("k-shadow"), (a.shadowUp >= 0 ? "+" : "") + F.money(a.shadowUp, 2), "억원");
+    $("k-shadow-sub").textContent = "1억원 삭감 시 −" + F.money(a.shadowDown, 2);
+    F.setValue($("k-loss"), F.pct(s.pLoss, 1), null, s.pLoss > 0.25);
+    $("k-loss-sub").textContent = "하위 5% " + sw(s.p5) + " · 상위 5% " + sw(s.p95);
+
+    drawFrontier(a, x); drawMc(s);
+
+    /* 방식 비교 */
+    const ct = $("cmp"); ct.textContent = "";
+    ct.appendChild(F.el("thead", null, [F.el("tr", null, ["방식", "승인", "기대 순효과", "최적 대비"].map((h) => F.el("th", { text: h })))]));
+    const tb = F.el("tbody"), rows = [
+      ["최적 조합(정수계획)", nSel + "건 · " + F.money(a.used, 1) + "억", a.opt.value, true],
+      ["효율 순으로 채우기", a.greedy.sel.length + "건 · " + F.money(a.greedy.sel.reduce((t, i) => t + x.items[i].cost, 0), 1) + "억", a.greedy.value, false],
+      ["모든 요청 일률 삭감", "전 요청 " + F.pct(a.proRata.ratio, 0) + " 승인", a.proRata.value, false]
+    ], mx = Math.max.apply(null, rows.map((r) => Math.abs(r[2]))) || 1;
+    rows.forEach((r) => { const bar = F.el("span", { class: "cbar" }); bar.style.width = Math.max(1, Math.abs(r[2]) / mx * 70) + "px"; bar.style.background = r[2] < 0 ? F.css("--neg") : r[3] ? F.css("--input") : F.css("--total");
+      tb.appendChild(F.el("tr", { class: r[3] ? "hl" : null }, [F.el("td", { text: r[0] }), F.el("td", { text: r[1] }), F.el("td", { class: r[2] < 0 ? "neg" : null }, [sw(r[2], 2), bar]), F.el("td", { text: r[3] ? "–" : sw(r[2] - a.opt.value, 2) })])); });
+    ct.appendChild(tb);
+    const left = x.budget - a.greedy.sel.reduce((t, i) => t + x.items[i].cost, 0);
+    $("cmp-note").textContent = "효율 순으로 채우면 앞쪽 요청이 한도를 어중간하게 남겨(" + F.money(left, 1) + "억원) 큰 요청이 못 들어가는 일이 생깁니다. 최적 조합은 효율이 조금 낮아도 한도에 꼭 맞는 묶음을 고릅니다. 일률 삭감은 효과가 없는 요청까지 예산을 나눠 가져 가치가 가장 작습니다.";
+
+    /* 위험회피 계수별 */
+    const rt = $("ra-table"); rt.textContent = "";
+    rt.appendChild(F.el("thead", null, [F.el("tr", null, ["위험회피 계수 a", "승인", "승인액", "기대 순효과", "표준편차", "손실 확률", "하위 5%"].map((h) => F.el("th", { text: h })))]));
+    const rb = F.el("tbody");
+    [0, 0.1, 0.2, 0.3].forEach((ra) => {
+      const y = Object.assign({}, x, { riskAversion: ra }), b = E.analyze(y), sm = E.simulate(b.E, b.opt.sel);
+      rb.appendChild(F.el("tr", { class: Math.abs(ra - x.riskAversion) < 1e-9 ? "hl" : null }, [F.el("td", { text: F.num(ra, 2) }), F.el("td", { text: b.opt.sel.length + "건" }), F.el("td", { text: F.money(b.used, 1) }), F.el("td", { text: sw(sm.ev, 2) }), F.el("td", { text: F.money(sm.sdA, 2) }), F.el("td", { text: F.pct(sm.pLoss, 1) }), F.el("td", { class: sm.p5 < 0 ? "neg" : null, text: sw(sm.p5, 2) })]));
+    });
+    rt.appendChild(rb);
+
+    const memo = $("k-memo"); memo.textContent = "";
+    const outs = a.E.filter((e) => sel.indexOf(e.i) < 0 && e.ev > 0).map((e) => e.it.name);
+    memo.append("요청 " + items.length + "건(" + won(reqTotal) + ") 중 한도 " + won(x.budget, 0) + " 안에서 " + nSel + "건(" + won(a.used) + ")을 승인하면 기대 순효과가 ", F.el("b", { text: sw(a.opt.value, 2) + "억원" }), "으로 가장 큽니다. ");
+    memo.append("효율 순 선택보다 " + F.money(a.opt.value - a.greedy.value, 2) + "억원, 일률 삭감보다 " + F.money(a.opt.value - a.proRata.value, 2) + "억원 많습니다. ");
+    if (outs.length) memo.append("기대 순효과가 플러스인데도 보류된 요청은 " + outs.join(", ") + "입니다. ");
+    memo.append("한도를 1억원 늘리면 기대 순효과가 " + F.money(a.shadowUp, 2) + "억원 늘어 ");
+    memo.append(a.shadowUp > 0 ? "증액의 근거가 됩니다. " : "추가 예산의 효과가 없습니다. ");
+    memo.append("다만 승인 조합도 " + F.pct(s.pLoss, 0) + " 확률로 순효과가 마이너스가 될 수 있어, 분기마다 효과를 확인하는 조건을 붙이는 것이 좋습니다.");
+
+    const chk = $("k-check"); chk.textContent = "";
+    const bf = items.length <= 18 ? E.brute(a.E, x.budget) : null;
+    [["정수계획 최적값 = 모든 조합(2ⁿ)을 따진 최적값", !bf || !a.opt.feasible || Math.abs(bf.value - a.opt.value) < 1e-9],
+     ["최적 ≥ 효율 순 채우기", a.opt.value >= a.greedy.value - 1e-9],
+     ["승인액 ≤ 한도, 필수 요청 모두 포함", a.used <= x.budget + 1e-9 && a.E.every((e) => !e.it.must || sel.indexOf(e.i) >= 0)],
+     ["시뮬레이션 평균 ≈ 기대 순효과 합 (3 표준오차 이내)", Math.abs(s.mean - s.ev) <= 3 * s.sdA / Math.sqrt(s.n) + 1e-9]
+    ].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  ["b-budget", "b-rate", "b-ra"].forEach((id) => $(id).addEventListener("input", render));
+  $("b-reset").addEventListener("click", () => { fill(); render(); });
+  fill(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

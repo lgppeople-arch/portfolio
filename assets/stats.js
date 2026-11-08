@@ -3,7 +3,9 @@
    - 회귀: 단순 선형회귀(기울기 t값·p값, 결정계수, 잔차 표준오차, 예측 구간)
    - 분포: 정규·t·카이제곱·F 누적확률
    - 집중도: 지니계수, HHI, 로렌츠 곡선
-   - 시드 난수: 같은 시드면 같은 결과(몬테카를로 재현용) */
+   - 시드 난수: 같은 시드면 같은 결과(몬테카를로 재현용)
+   - 행렬: 연립방정식, 역행렬, 촐레스키 분해(상관된 난수), 다중회귀(계수 t값·p값, 공분산)
+   - 검정: 두 비율 z검정, 웰치 t검정, 더빈-왓슨, 구조변화(Chow) 검정 */
 (function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -181,6 +183,81 @@
   /* 상위 p 비중 */
   function topShare(a, p) { const s = a.slice().sort((x, y) => y - x), k = Math.max(1, Math.round(s.length * p)), t = sum(s); return t ? sum(s.slice(0, k)) / t : 0; }
 
+  /* ---------- 행렬 ---------- */
+  /* 가우스 소거(부분 피벗)로 A x = b. 특이행렬이면 null */
+  function solve(A, b) {
+    const n = A.length, M = A.map((r, i) => r.slice().concat([b[i]]));
+    for (let c = 0; c < n; c++) {
+      let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r;
+      if (Math.abs(M[piv][c]) < 1e-12) return null;
+      const t = M[c]; M[c] = M[piv]; M[piv] = t;
+      for (let r = 0; r < n; r++) if (r !== c) { const f = M[r][c] / M[c][c]; if (f) for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  function inverse(A) {
+    const n = A.length, cols = [];
+    for (let j = 0; j < n; j++) { const e = new Array(n).fill(0); e[j] = 1; const x = solve(A, e); if (!x) return null; cols.push(x); }
+    return A.map((_, i) => cols.map((c) => c[i]));
+  }
+  /* 촐레스키: 대칭 양의 정부호 행렬 S = L Lᵀ. 정부호가 아니면 null */
+  function cholesky(S) {
+    const n = S.length, L = S.map(() => new Array(n).fill(0));
+    for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {
+      let v = S[i][j]; for (let k = 0; k < j; k++) v -= L[i][k] * L[j][k];
+      if (i === j) { if (v <= 1e-12) return null; L[i][i] = Math.sqrt(v); } else L[i][j] = v / L[j][j];
+    }
+    return L;
+  }
+  /* 다중회귀: y = b0 + b1·x1 + … . X는 행마다 설명변수 배열(절편 제외) */
+  function mlr(X, y) {
+    const n = y.length, k = X[0].length + 1, Z = X.map((r) => [1].concat(r));
+    const XtX = [], Xty = [];
+    for (let i = 0; i < k; i++) { XtX.push(new Array(k).fill(0)); Xty.push(0); }
+    for (let r = 0; r < n; r++) for (let i = 0; i < k; i++) { Xty[i] += Z[r][i] * y[r]; for (let j = 0; j < k; j++) XtX[i][j] += Z[r][i] * Z[r][j]; }
+    const inv = inverse(XtX); if (!inv) return null;
+    const b = inv.map((row) => sum(row.map((v, j) => v * Xty[j])));
+    const fit = Z.map((r) => sum(r.map((v, j) => v * b[j]))), resid = y.map((v, i) => v - fit[i]);
+    const sse = sum(resid.map((e) => e * e)), my = mean(y), sst = sum(y.map((v) => (v - my) * (v - my))), df = n - k, s2 = sse / df;
+    const se = inv.map((row, i) => Math.sqrt(s2 * row[i])), t = b.map((v, i) => v / se[i]);
+    return { b: b, se: se, t: t, p: t.map((v) => tTwoSided(v, df)), fit: fit, resid: resid, sse: sse, df: df, sigma: Math.sqrt(s2), cov: inv.map((row) => row.map((v) => v * s2)),
+      r2: 1 - sse / sst, adjR2: 1 - (sse / df) / (sst / (n - 1)), n: n, k: k };
+  }
+  const corr = (a, b) => { const ma = mean(a), mb = mean(b); let sab = 0, saa = 0, sbb = 0; for (let i = 0; i < a.length; i++) { sab += (a[i] - ma) * (b[i] - mb); saa += (a[i] - ma) * (a[i] - ma); sbb += (b[i] - mb) * (b[i] - mb); } return sab / Math.sqrt(saa * sbb); };
+
+  /* ---------- 검정 ---------- */
+  /* 두 비율 z검정(합동 비율)과 차이의 95% 신뢰구간(비합동) */
+  function twoProp(x1, n1, x2, n2) {
+    const p1 = x1 / n1, p2 = x2 / n2, pp = (x1 + x2) / (n1 + n2), se0 = Math.sqrt(pp * (1 - pp) * (1 / n1 + 1 / n2)), z = (p2 - p1) / se0;
+    const se = Math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2);
+    return { p1: p1, p2: p2, diff: p2 - p1, z: z, p: 2 * (1 - normCdf(Math.abs(z))), lo: p2 - p1 - 1.959964 * se, hi: p2 - p1 + 1.959964 * se };
+  }
+  /* 웰치 t검정: 두 집단 평균 차이(등분산 가정 없음) */
+  function welch(a, b) {
+    const va = variance(a) / a.length, vb = variance(b) / b.length, t = (mean(b) - mean(a)) / Math.sqrt(va + vb);
+    const df = (va + vb) * (va + vb) / (va * va / (a.length - 1) + vb * vb / (b.length - 1));
+    return { diff: mean(b) - mean(a), t: t, df: df, p: tTwoSided(t, df) };
+  }
+  /* 더빈-왓슨: 잔차 자기상관(2 근처면 없음, 2보다 작으면 양의 자기상관) */
+  const durbinWatson = (e) => { let num = 0; for (let i = 1; i < e.length; i++) num += (e[i] - e[i - 1]) * (e[i] - e[i - 1]); return num / sum(e.map((v) => v * v)); };
+  /* Chow 검정: k번째 관측부터 계수가 달라졌는가(단순회귀) */
+  function chow(xs, ys, k) {
+    const ssr = (a, b) => sum(linreg(a, b).resid.map((e) => e * e));
+    const n = xs.length, s = ssr(xs, ys), s1 = ssr(xs.slice(0, k), ys.slice(0, k)), s2 = ssr(xs.slice(k), ys.slice(k)), q = 2;
+    const f = ((s - s1 - s2) / q) / ((s1 + s2) / (n - 2 * q));
+    return { f: f, df1: q, df2: n - 2 * q, p: fSf(f, q, n - 2 * q) };
+  }
+
+  /* ---------- 분포에서 뽑기 ---------- */
+  /* 삼각분포 역함수: 최솟값 a, 최빈값 m, 최댓값 b, 균등난수 u */
+  function triInv(u, a, m, b) {
+    if (b <= a) return a;
+    const fc = (m - a) / (b - a);
+    return u < fc ? a + Math.sqrt(u * (b - a) * (m - a)) : b - Math.sqrt((1 - u) * (b - a) * (b - m));
+  }
+  const triMean = (a, m, b) => (a + m + b) / 3;
+  const triVar = (a, m, b) => (a * a + m * m + b * b - a * m - a * b - m * b) / 18;
+
   /* ---------- 난수 ---------- */
   /* mulberry32: 32비트 시드 난수. 같은 시드면 같은 수열 */
   function rng(seed) {
@@ -202,5 +279,6 @@
   }
 
   return { sum, mean, variance, sd, quantile, skew, kurt, describe, erf, normCdf, normPdf, normInv, lgamma, ibeta, igamma, tCdf, tTwoSided, tInv, chi2Sf, fSf,
-    linreg, tTest1, anova, chi2Fit, gini, lorenz, hhi, topShare, rng, histogram };
+    linreg, tTest1, anova, chi2Fit, gini, lorenz, hhi, topShare, rng, histogram,
+    solve, inverse, cholesky, mlr, corr, twoProp, welch, durbinWatson, chow, triInv, triMean, triVar };
 });

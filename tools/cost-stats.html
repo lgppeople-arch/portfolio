@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>원가 행태와 불량 관리도 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="월별 생산량과 제조원가로 고정비·변동비를 회귀 추정하고 구조변화를 검정하며, 불량률을 p 관리도·넬슨 규칙·EWMA로 감시하고 공정 정비 효과를 검정하는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="원가 행태와 불량 관리도 · 이기표">
+<meta property="og:description" content="월별 생산량과 제조원가로 고정비·변동비를 회귀 추정하고 구조변화를 검정하며, 불량률을 p 관리도·넬슨 규칙·EWMA로 감시하고 공정 정비 효과를 검정하는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/cost-stats.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .summary { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 24px; }
+  .summary > * { min-width: 0; }
+  .summary .side { display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 1000px) { .summary { grid-template-columns: minmax(0, 1fr); } }
+  .kpis.k2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpis.k2 .kpi:last-child { grid-column: auto; }
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .block2 > h2 .muted { font-family: var(--f-body); font-weight: 400; font-size: var(--s-1); }
+  .block2 > p.hint { max-width: 900px; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: end; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+  .ctl .field { grid-template-columns: auto 104px; gap: 8px; }
+  .ctl .field input, .ctl .field select { background: var(--surface); }
+  .cmp { width: 100%; border-collapse: collapse; font-size: var(--s-1); }
+  .cmp th, .cmp td { padding: 7px 6px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  .cmp th:first-child, .cmp td:first-child { text-align: left; white-space: normal; }
+  .cmp thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  .cmp td { font-family: var(--f-num); }
+  .cmp td:first-child, .cmp td.txt { font-family: var(--f-body); }
+  .cmp td.txt { text-align: left; white-space: normal; color: var(--ink-2); }
+  .cmp tr.hl td { background: color-mix(in srgb, var(--input) 8%, transparent); font-weight: 600; }
+  .cmp td.bad { color: var(--neg-ink); font-weight: 600; }
+  .cmp td.good { color: var(--pos); font-weight: 600; }
+  .ba { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: var(--radius); }
+  .ba > div { padding: 14px 16px; border-left: 1px solid var(--rule-soft); display: grid; gap: 4px; }
+  .ba > div:first-child { border-left: 0; }
+  .ba .l { font-size: 12px; color: var(--muted); }
+  .ba .v { font-family: var(--f-num); font-size: 22px; font-weight: 600; }
+  .ba .v.good { color: var(--pos); }
+  .ba .s { font-size: 12px; color: var(--ink-2); font-family: var(--f-num); }
+  @media (max-width: 640px) { .ba { grid-template-columns: minmax(0, 1fr); } .ba > div { border-left: 0; border-top: 1px solid var(--rule-soft); } .ba > div:first-child { border-top: 0; } }
+  textarea.csv { width: 100%; min-height: 180px; font-family: var(--f-num); font-size: 12.5px; padding: 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--input); }
+  svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  svg.plot text.c-acc { fill: var(--accent); font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html" aria-current="page">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 원가 행태와 불량 관리도</div>
+      <h1>원가 행태와 불량 관리도</h1>
+      <p>공장 원가를 고정비와 변동비로 나누는 일, 불량률이 평소 흔들림인지 진짜 문제인지 가리는 일을 통계로 합니다. 월별 생산량과 제조원가로 회귀선을 그어 고정비·변동비를 신뢰구간과 함께 추정하고, 라인 증설 같은 구조변화를 검정합니다. 불량률은 관리도와 넬슨 규칙, EWMA로 감시하고, 공정 정비의 효과가 우연이 아닌지 확인합니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>원가 억원 · 생산량 만 개</span><span><a class="guide-link" href="guide.html#how-cost">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample"><span>예시: 2025년 7월 라인을 증설하고 10월 불량 처리 공정을 정비한 가상 공장의 34개월 · 모든 수치는 가상</span></span>
+
+    <div class="ctl" role="group" aria-label="분석 조건">
+      <div class="field"><label for="o-break">증설(구조변화) 시점</label><select id="o-break"></select></div>
+      <div class="field"><label for="o-fix">공정 정비 시점</label><select id="o-fix"></select></div>
+      <div class="field"><label for="o-price">판매단가<small>원/개</small></label><input id="o-price" type="number" inputmode="decimal" step="100" min="1"></div>
+      <div class="field"><label for="o-scrap">불량 1개 폐기비용<small>원</small></label><input id="o-scrap" type="number" inputmode="decimal" step="100" min="0"></div>
+      <div class="field"><label for="o-base">관리도 기준 기간<small>첫 몇 개월</small></label><input id="o-base" type="number" inputmode="numeric" step="1" min="6" max="30"></div>
+    </div>
+
+    <section class="summary" aria-live="polite" style="margin-top: 18px">
+      <div>
+        <div class="board-head" style="margin-bottom: 10px"><h2>생산량과 제조원가</h2><span class="pill" id="k-pill"></span></div>
+        <div class="chart" id="sc-chart">
+          <div class="legend" style="margin-bottom: 6px">
+            <span><i class="key-bar" style="background: var(--total); border-radius: 50%; width: 9px; height: 9px"></i>증설 전</span>
+            <span><i class="key-bar" style="background: var(--input); border-radius: 50%; width: 9px; height: 9px"></i>증설 후</span>
+            <span><i class="key-bar" style="background: color-mix(in srgb, var(--input) 16%, transparent)"></i>증설 후 95% 예측구간</span>
+            <span><i class="key-dash" style="border-color: var(--muted)"></i>전체 기간 회귀</span>
+            <span><i class="key-dash" style="border-color: var(--accent)"></i>고저점법</span>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="kpis k2">
+          <div class="kpi"><div class="label">월 고정비 (증설 후)</div><div class="v num" id="k-a"></div><div class="sub" id="k-a-sub"></div></div>
+          <div class="kpi"><div class="label">개당 변동비 (증설 후)</div><div class="v num" id="k-b"></div><div class="sub" id="k-b-sub"></div></div>
+          <div class="kpi"><div class="label">손익분기 월 생산량</div><div class="v num" id="k-bep"></div><div class="sub" id="k-bep-sub"></div></div>
+          <div class="kpi"><div class="label">공정 정비 후 불량률</div><div class="v num" id="k-p"></div><div class="sub" id="k-p-sub"></div></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="k-memo"></p></div>
+        <div class="selfcheck" id="k-check"></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="추정 방법 비교와 구조변화">
+      <h2>고정비·변동비 추정 방법 비교 <span class="muted">두 달로 긋는 선 vs 모든 달로 긋는 선</span></h2>
+      <p class="hint">고저점법은 생산량이 가장 많은 달과 가장 적은 달만 보고 선을 긋습니다. 그 두 달에 우연한 일이 있었다면 선 전체가 틀어집니다. 회귀는 모든 달을 쓰고 추정오차(신뢰구간)까지 알려 줍니다. 단, 중간에 설비가 바뀌었는데 기간을 통째로 회귀하면 두 체제가 섞여 변동비가 부풀려집니다.</p>
+      <div class="two">
+        <div class="card">
+          <h3>방법별 추정</h3>
+          <div class="scroll"><table class="cmp" id="m-table" style="min-width: 520px"></table></div>
+          <p class="hint" id="m-note"></p>
+        </div>
+        <div class="card">
+          <div class="chart" id="res-chart">
+            <div class="chart-head"><h4>전체 기간 회귀의 잔차 <span class="muted">(실적 − 회귀선)</span></h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--total)"></i>잔차</span><span><i class="key-dash" style="border-color: var(--neg)"></i>±2σ</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <p class="hint" id="res-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="불량률 관리도">
+      <h2>불량률 관리도 <span class="muted">평소 흔들림(우연 원인)과 진짜 변화(특수 원인) 가르기</span></h2>
+      <p class="hint">달마다 검사 수가 달라 한계선도 달마다 다릅니다(검사가 많을수록 좁아짐). 한계선 밖의 점만 보면 서서히 나빠지는 변화를 놓치기 쉬워, 연속 패턴을 보는 넬슨 규칙과 지난달까지의 흐름을 누적하는 EWMA를 함께 봅니다.</p>
+      <div class="card">
+        <div class="chart" id="p-chart">
+          <div class="chart-head"><h4>p 관리도 <span class="muted" id="p-title"></span></h4>
+            <div class="legend"><span><i class="key-line" style="background: var(--ink-2)"></i>기준 불량률</span><span><i class="key-dash" style="border-color: var(--neg)"></i>관리 한계(±3σ)</span><span><i class="key-bar" style="background: var(--neg); border-radius: 50%; width: 9px; height: 9px"></i>규칙 위반</span><span><i class="key-bar" style="background: var(--input); border-radius: 50%; width: 9px; height: 9px"></i>정상</span></div>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+        <div class="chart" id="e-chart">
+          <div class="chart-head"><h4>EWMA <span class="muted">(λ = 0.2, 한계 ±3σ)</span></h4>
+            <div class="legend"><span><i class="key-line" style="background: var(--accent)"></i>표준화 불량률의 지수가중평균</span><span><i class="key-dash" style="border-color: var(--neg)"></i>한계</span></div>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>신호가 나온 구간</h3>
+        <div class="scroll"><table class="cmp" id="sig-table" style="min-width: 620px"></table></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="공정 정비 효과">
+      <h2>공정 정비 효과 검정 <span class="muted">정비 전후 불량률 차이가 우연인가</span></h2>
+      <div class="ba" id="ba"></div>
+      <p class="hint" id="ba-note"></p>
+    </section>
+
+    <section class="block2" aria-label="데이터">
+      <details class="fs">
+        <summary>데이터 보기·붙여넣기 (월, 생산량, 제조원가, 검사수, 불량수)</summary>
+        <div class="fs-body">
+          <p class="hint">ERP에서 뽑은 월별 표를 그대로 붙여 넣으면 같은 분석이 다시 돕니다. 쉼표나 탭으로 구분하고, 월은 2026-01 형식입니다. 데이터는 이 브라우저 안에서만 계산하고 밖으로 보내지 않습니다.</p>
+          <textarea class="csv" id="csv" aria-label="월별 데이터"></textarea>
+          <div class="btn-row"><button type="button" class="btn sm" id="csv-apply">이 데이터로 분석</button><button type="button" class="btn sm" id="csv-reset">예시 데이터로 되돌리기</button><span class="hint" id="csv-msg"></span></div>
+        </div>
+      </details>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li><b>원가 행태</b>: 월 제조원가 = a(고정비) + b(변동비) × 생산량을 최소제곱으로 추정합니다. 신뢰구간은 t분포 95%, 더빈-왓슨 통계량으로 잔차의 자기상관을 봅니다(2 근처면 문제없음, 1.5 밑이면 빠진 요인 의심).</li>
+        <li><b>구조변화</b>: Chow 검정 F = ((SSR전체 − SSR전 − SSR후)/2) ÷ ((SSR전 + SSR후)/(n − 4)). 더미 회귀 원가 = b0 + b1·생산량 + b2·D + b3·D·생산량(D = 증설 후 1)으로 고정비 이동(b2)과 변동비 변화(b3)를 따로 검정합니다. 이 식의 계수는 구간별로 따로 회귀한 결과와 정확히 같습니다.</li>
+        <li><b>손익분기 생산량</b> = 고정비 ÷ (판매단가 − 변동비)이며, 제조원가 기준(판관비 제외)입니다. 증설 후 회귀의 계수 추정오차(공분산 포함)를 다변량 정규로 4,000번 뽑아 95% 구간을 냅니다. 영업레버리지(DOL) = 공헌이익 ÷ (공헌이익 − 고정비), 최근 6개월 평균 생산량 기준입니다.</li>
+        <li><b>p 관리도</b>: 기준 기간의 불량률 p̄ = Σ불량 ÷ Σ검사(3σ 밖의 달은 특수 원인으로 한 번 걸러 내고 다시 계산), 달마다 한계 = p̄ ± 3√(p̄(1 − p̄)/n). 넬슨 규칙 1(3σ 밖), 2(9개월 연속 한쪽), 3(6개월 연속 상승·하락), 5(3개월 중 2개월이 같은 쪽 2σ 밖), 6(5개월 중 4개월이 같은 쪽 1σ 밖)을 표준화 점수로 판정합니다.</li>
+        <li><b>EWMA</b>: Eₜ = λzₜ + (1 − λ)Eₜ₋₁, 한계 ±L√(λ/(2 − λ)·(1 − (1 − λ)²ᵗ)), λ = 0.2, L = 3.</li>
+        <li><b>정비 효과</b>: 정비 전후 불량 수를 합쳐 두 비율 z검정(합동 비율)을 하고, 차이의 95% 신뢰구간(비합동)에 최근 12개월 연환산 생산량과 불량 1개당 폐기비용을 곱해 연간 절감액 구간을 냅니다. 관리도에서 정비 뒤 아래쪽 이탈이 이어지면 좋은 쪽의 특수 원인이므로, 그 기간으로 기준선을 다시 정합니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/costs.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, S = window.Stats, E = window.CostEngine, $ = F.$;
+  const O = E.OPTS;
+  let rows = E.sample();
+  const won = (v, d) => F.money(v, d === undefined ? 1 : d) + "억원";
+  const fpv = (p) => (p < 0.0001 ? "0.0001 미만" : F.num(p, 4));
+  const ym = (s) => s.slice(2, 4) + "." + s.slice(5);
+  const sg = (v, d) => (v < 0 ? "−" : "+") + F.num(Math.abs(v), d);
+
+  function buildSelects() {
+    const yms = rows.map((r) => r.ym);
+    [["o-break", O.breakYm], ["o-fix", O.fixYm]].forEach((q) => {
+      const s = $(q[0]), cur = s.value || q[1]; s.textContent = "";
+      yms.slice(3, -3).forEach((m) => s.appendChild(F.el("option", { value: m, text: m })));
+      s.value = yms.indexOf(cur) >= 3 && yms.indexOf(cur) < yms.length - 3 ? cur : yms[Math.floor(yms.length / 2)];
+    });
+  }
+  function opts() { return { breakYm: $("o-break").value, fixYm: $("o-fix").value, price: F.readNum($("o-price"), O.price), scrap: F.readNum($("o-scrap"), O.scrap), baseN: Math.round(F.readNum($("o-base"), O.baseN)) }; }
+
+  /* ---------- 산점도 ---------- */
+  function drawScatter(m, o) {
+    const H = 320, padL = 44, padR = 14, padT = 14, padB = 34, fr = F.plotFrame($("sc-chart"), H, "생산량과 제조원가 산점도와 회귀선"), svg = fr.svg, W = fr.W;
+    const xs = rows.map((r) => r.vol), ys = rows.map((r) => r.cost);
+    const tx = F.niceTicks(Math.min.apply(null, xs) - 3, Math.max.apply(null, xs) + 3, 6), ty = F.niceTicks(Math.min.apply(null, ys) - 3, Math.max.apply(null, ys) + 3, 5);
+    const X = (v) => padL + (v - tx.lo) / (tx.hi - tx.lo) * (W - padL - padR), Y = (v) => padT + (ty.hi - v) / (ty.hi - ty.lo) * (H - padT - padB);
+    ty.ticks.forEach((v) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.num(v, 0), { "text-anchor": "end" }); });
+    tx.ticks.forEach((v) => F.svgText(svg, X(v), H - 12, F.num(v, 0), { "text-anchor": "middle" }));
+    F.svgText(svg, W - padR, H - 24, "월 생산량(만 개) →", { "text-anchor": "end" });
+    const seg = (a, b, x0, x1, attrs) => F.svgEl("line", Object.assign({ x1: X(x0), x2: X(x1), y1: Y(a + b * x0), y2: Y(a + b * x1) }, attrs), svg);
+    /* 증설 후 95% 예측구간 */
+    if (m.post) {
+      const post = rows.slice(m.k).map((r) => r.vol), lo = Math.min.apply(null, post), hi = Math.max.apply(null, post), tq = S.tInv(0.975, m.post.df), N = 30, pts = [];
+      for (let i = 0; i <= N; i++) { const v = lo + (hi - lo) * i / N; pts.push([v, m.post.at(v), m.post.predHalf(v, tq)]); }
+      F.svgEl("path", { d: "M" + pts.map((p) => X(p[0]) + "," + Y(p[1] + p[2])).join("L") + "L" + pts.slice().reverse().map((p) => X(p[0]) + "," + Y(p[1] - p[2])).join("L") + "Z", fill: F.css("--input"), opacity: 0.14 }, svg);
+    }
+    seg(m.ols.a, m.ols.b, tx.lo, tx.hi, { stroke: F.css("--muted"), "stroke-width": 1.5, "stroke-dasharray": "6 4" });
+    seg(m.hl.a, m.hl.b, tx.lo, tx.hi, { stroke: F.css("--accent"), "stroke-width": 1.5, "stroke-dasharray": "2 4" });
+    if (m.pre) { const v = rows.slice(0, m.k).map((r) => r.vol); seg(m.pre.a, m.pre.b, Math.min.apply(null, v), Math.max.apply(null, v), { stroke: F.css("--total"), "stroke-width": 2.5 }); }
+    if (m.post) { const v = rows.slice(m.k).map((r) => r.vol); seg(m.post.a, m.post.b, Math.min.apply(null, v), Math.max.apply(null, v), { stroke: F.css("--input"), "stroke-width": 2.5 }); }
+    const tip = F.makeTip(fr.plot);
+    rows.forEach((r, i) => {
+      const after = i >= m.k, isHL = i === m.hl.hi || i === m.hl.lo;
+      F.svgEl("circle", { cx: X(r.vol), cy: Y(r.cost), r: isHL ? 6 : 4.5, fill: after ? F.css("--input") : F.css("--total"), stroke: isHL ? F.css("--accent") : F.css("--surface"), "stroke-width": isHL ? 2.5 : 1 }, svg);
+      const hit = F.svgEl("circle", { class: "hit", cx: X(r.vol), cy: Y(r.cost), r: 9 }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: r.ym + (isHL ? " (고저점법에 쓰인 달)" : ""), rows: [["생산량", F.num(r.vol, 1) + "만 개"], ["제조원가", won(r.cost, 2)], ["개당 원가", F.num(r.cost / r.vol * 1e4, 0) + "원"]] }));
+    });
+  }
+
+  /* ---------- 잔차 ---------- */
+  function drawResid(m) {
+    const H = 220, padL = 40, padR = 12, padT = 12, padB = 30, fr = F.plotFrame($("res-chart"), H, "전체 기간 회귀 잔차의 시간 순서"), svg = fr.svg, W = fr.W, e = m.ols.resid, s = m.ols.se;
+    const t = F.niceTicks(Math.min(-2.2 * s, Math.min.apply(null, e)), Math.max(2.2 * s, Math.max.apply(null, e)), 5), band = (W - padL - padR) / e.length;
+    const X = (i) => padL + band * i, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((v) => { F.svgEl("line", { class: v === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.num(v, 0), { "text-anchor": "end" }); });
+    [2, -2].forEach((k) => F.svgEl("line", { x1: padL, x2: W - padR, y1: Y(k * s), y2: Y(k * s), stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, svg));
+    e.forEach((v, i) => F.svgEl("path", { d: F.barPath(X(i) + band * 0.18, band * 0.64, Y(0), Y(v), 1.5), fill: i >= m.k ? F.css("--input") : F.css("--total") }, svg));
+    if (m.k > 0 && m.k < e.length) { F.svgEl("line", { x1: X(m.k), x2: X(m.k), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-dasharray": "3 3" }, svg); F.svgText(svg, X(m.k) + 4, padT + 10, "증설", { class: "c-lab" }); }
+    rows.forEach((r, i) => { if (i % 6 === 0) F.svgText(svg, X(i) + band / 2, H - 10, ym(r.ym), { "text-anchor": "middle" }); });
+    const preMean = S.mean(e.slice(0, m.k)), postMean = S.mean(e.slice(m.k));
+    $("res-note").textContent = "회귀가 맞다면 잔차는 시간 순서와 상관없이 0 주변에 흩어져야 합니다. 여기서는 더빈-왓슨 " + F.num(m.dw, 2) + "로 잔차가 이어서 같은 방향으로 움직이고, 증설 전 평균 " + sg(preMean, 2) + "억, 후 " + sg(postMean, 2) + "억으로 패턴이 갈립니다. 빠진 요인(구조변화)이 있다는 신호입니다.";
+  }
+
+  /* ---------- p 관리도 ---------- */
+  function drawP(pc, o) {
+    const P = pc.pts, H = 260, padL = 46, padR = 14, padT = 14, padB = 30, fr = F.plotFrame($("p-chart"), H, "불량률 p 관리도"), svg = fr.svg, W = fr.W;
+    const vals = P.map((q) => q.p).concat(P.map((q) => q.ucl), P.map((q) => q.lcl)), t = F.niceTicks(Math.max(0, Math.min.apply(null, vals) * 0.9), Math.max.apply(null, vals) * 1.05, 5);
+    const band = (W - padL - padR) / P.length, X = (i) => padL + band * i + band / 2, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
+    t.ticks.forEach((v) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(v), y2: Y(v) }, svg); F.svgText(svg, padL - 6, Y(v) + 4, F.pct(v, 1), { "text-anchor": "end" }); });
+    const stepLine = (key) => "M" + P.map((q, i) => (padL + band * i) + "," + Y(q[key]) + "H" + (padL + band * (i + 1))).join("L");
+    F.svgEl("path", { d: stepLine("ucl"), fill: "none", stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, svg);
+    F.svgEl("path", { d: stepLine("lcl"), fill: "none", stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, svg);
+    F.svgEl("line", { x1: padL, x2: W - padR, y1: Y(pc.pbar), y2: Y(pc.pbar), stroke: F.css("--ink-2"), "stroke-width": 1.5 }, svg);
+    F.svgEl("rect", { x: padL, y: padT, width: band * pc.baseN, height: H - padT - padB, fill: F.css("--ink"), opacity: 0.04 }, svg);
+    F.svgText(svg, padL + 4, padT + 10, "기준 기간", { class: "c-lab" });
+    const fi = rows.findIndex((r) => r.ym >= o.fixYm);
+    if (fi > 0) { F.svgEl("line", { x1: padL + band * fi, x2: padL + band * fi, y1: padT, y2: H - padB, stroke: F.css("--pos"), "stroke-dasharray": "3 3" }, svg); F.svgText(svg, padL + band * fi + 4, padT + 10, "공정 정비", { class: "c-lab" }); }
+    F.svgEl("path", { d: "M" + P.map((q, i) => X(i) + "," + Y(q.p)).join("L"), fill: "none", stroke: F.css("--ink-2"), "stroke-width": 1 }, svg);
+    const tip = F.makeTip(fr.plot);
+    P.forEach((q, i) => {
+      const flag = q.rules.length > 0, ex = pc.excluded.indexOf(q.ym) >= 0;
+      F.svgEl("circle", { cx: X(i), cy: Y(q.p), r: 4.5, fill: ex ? F.css("--surface") : flag ? F.css("--neg") : F.css("--input"), stroke: flag ? F.css("--neg") : F.css("--input"), "stroke-width": ex ? 2 : 1 }, svg);
+      if (i % 6 === 0) F.svgText(svg, X(i), H - 10, ym(q.ym), { "text-anchor": "middle" });
+      const hit = F.svgEl("rect", { class: "hit", x: padL + band * i, y: padT, width: band, height: H - padT - padB }, svg);
+      F.wireHit(hit, fr.plot, tip, () => ({ title: q.ym + " 불량률 " + F.pct(q.p, 2), rows: [["검사 수", F.num(q.n, 0)], ["z", F.num(q.z, 2) + "σ"], ["한계", F.pct(q.lcl, 2) + " ~ " + F.pct(q.ucl, 2)], ["규칙", q.rules.length ? q.rules.map((k) => E.RULES[k]).join(", ") : "없음"]] }));
+    });
+    $("p-title").textContent = "(기준 불량률 " + F.pct(pc.pbar, 2) + (pc.excluded.length ? ", " + pc.excluded.join(", ") + " 특수 원인 제외" : "") + ")";
+    /* EWMA */
+    const Ew = pc.ewma, H2 = 180, fr2 = F.plotFrame($("e-chart"), H2, "EWMA 관리도"), sv = fr2.svg, W2 = fr2.W;
+    const ev = Ew.map((q) => q.v).concat(Ew.map((q) => q.ucl), Ew.map((q) => q.lcl)), t2 = F.niceTicks(Math.min.apply(null, ev), Math.max.apply(null, ev), 4), b2 = (W2 - padL - padR) / Ew.length;
+    const X2 = (i) => padL + b2 * i + b2 / 2, Y2 = (v) => padT + (t2.hi - v) / (t2.hi - t2.lo) * (H2 - padT - padB);
+    t2.ticks.forEach((v) => { F.svgEl("line", { class: v === 0 ? "base" : "grid", x1: padL, x2: W2 - padR, y1: Y2(v), y2: Y2(v) }, sv); F.svgText(sv, padL - 6, Y2(v) + 4, F.num(v, 1), { "text-anchor": "end" }); });
+    F.svgEl("path", { d: "M" + Ew.map((q, i) => X2(i) + "," + Y2(q.ucl)).join("L"), fill: "none", stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, sv);
+    F.svgEl("path", { d: "M" + Ew.map((q, i) => X2(i) + "," + Y2(q.lcl)).join("L"), fill: "none", stroke: F.css("--neg"), "stroke-dasharray": "5 4" }, sv);
+    F.svgEl("path", { d: "M" + Ew.map((q, i) => X2(i) + "," + Y2(q.v)).join("L"), fill: "none", stroke: F.css("--accent"), "stroke-width": 2 }, sv);
+    Ew.forEach((q, i) => { if (q.out) F.svgEl("circle", { cx: X2(i), cy: Y2(q.v), r: 3.5, fill: F.css("--neg") }, sv); if (i % 6 === 0) F.svgText(sv, X2(i), H2 - 10, ym(q.ym), { "text-anchor": "middle" }); });
+  }
+
+  /* 신호 구간 표: 연속된 달을 묶는다 */
+  function drawSignals(pc) {
+    const t = $("sig-table"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["구간", "평균 불량률", "가장 큰 z", "넬슨 규칙", "EWMA", "해석"].map((h) => F.el("th", { text: h })))]));
+    const tb = F.el("tbody"), P = pc.pts, groups = [];
+    P.forEach((q, i) => { const on = q.rules.length > 0 || pc.ewma[i].out; if (!on) return; const sgn = pc.ewma[i].out ? Math.sign(pc.ewma[i].v) : Math.sign(q.z) || 1, g = groups[groups.length - 1]; if (g && g.end >= i - 2 && sgn === g.sign) { g.end = i; } else groups.push({ start: i, end: i, sign: sgn }); });
+    groups.forEach((g) => {
+      const seg = P.slice(g.start, g.end + 1), rs = Array.from(new Set([].concat.apply([], seg.map((q) => q.rules)))).sort(), ew = pc.ewma.slice(g.start, g.end + 1).some((q) => q.out);
+      const zmax = seg.reduce((a, q) => (Math.abs(q.z) > Math.abs(a) ? q.z : a), 0), pm = S.sum(seg.map((q) => q.p * q.n)) / S.sum(seg.map((q) => q.n));
+      const up = g.sign > 0, single = g.start === g.end && rs.length === 1 && rs[0] === 1;
+      const why = up ? (single ? "한 달짜리 급등: 원자재 로트·설비 고장 같은 특수 원인 조사" : Math.abs(zmax) < 3 ? "한계선 안이지만 계속 높음: 서서히 나빠지는 공정 점검" : "지속적인 악화: 원인 조사와 조치") : "좋아진 쪽의 지속 변화: 원인을 표준으로 굳히고 기준선 재설정";
+      tb.appendChild(F.el("tr", null, [F.el("td", { text: P[g.start].ym + (g.end > g.start ? " ~ " + P[g.end].ym : "") }), F.el("td", { class: up ? "bad" : "good", text: F.pct(pm, 2) }), F.el("td", { text: F.num(zmax, 2) + "σ" }), F.el("td", { class: "txt", text: rs.length ? rs.map((k) => k + ". " + E.RULES[k]).join(", ") : "–" }), F.el("td", { text: ew ? "이탈" : "–" }), F.el("td", { class: "txt", text: why })]));
+    });
+    if (!groups.length) tb.appendChild(F.el("tr", null, [F.el("td", { colspan: 6, text: "신호 없음: 모든 달이 평소 흔들림 안에 있습니다." })]));
+    t.appendChild(tb);
+  }
+
+  /* ---------- 요약 ---------- */
+  function render() {
+    const o = opts(), m = E.costModel(rows, o), pc = E.pChart(rows, o), ba = E.beforeAfter(rows, o);
+    const bU = (b) => F.num(b * 1e4, 0) + "원";
+    $("k-pill").className = "pill " + (m.chow && m.chow.p < 0.05 ? "warn" : "ok");
+    $("k-pill").textContent = m.chow ? (m.chow.p < 0.05 ? "구조변화 있음 (Chow p " + fpv(m.chow.p) + ")" : "구조변화 없음 (p " + F.num(m.chow.p, 2) + ")") : "구간 부족";
+    F.setValue($("k-a"), F.money(m.cur.a, 1), "억원");
+    $("k-a-sub").textContent = "95% " + F.money(m.cur.ciA[0], 1) + " ~ " + F.money(m.cur.ciA[1], 1);
+    F.setValue($("k-b"), F.num(m.cur.b * 1e4, 0), "원");
+    $("k-b-sub").textContent = "95% " + F.num(m.cur.ciB[0] * 1e4, 0) + " ~ " + F.num(m.cur.ciB[1] * 1e4, 0);
+    F.setValue($("k-bep"), F.num(m.bep, 1), "만 개");
+    $("k-bep-sub").textContent = "95% " + F.num(m.bepLo, 1) + " ~ " + F.num(m.bepHi, 1) + (m.bepPre ? " · 증설 전 " + F.num(m.bepPre, 1) : "");
+    if (ba) { F.setValue($("k-p"), F.pct(ba.test.p2, 2), null); $("k-p-sub").textContent = "정비 전 " + F.pct(ba.test.p1, 2) + " · p " + fpv(ba.test.p); }
+
+    drawScatter(m, o); drawResid(m); drawP(pc, o); drawSignals(pc);
+
+    /* 방법 비교 */
+    const t = $("m-table"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["방법", "월 고정비", "개당 변동비", "결정계수", "평균 오차(RMSE)", "손익분기"].map((h) => F.el("th", { text: h })))]));
+    const tb = F.el("tbody");
+    m.methods.forEach((q) => tb.appendChild(F.el("tr", { class: q.key === "dummy" ? "hl" : null }, [F.el("td", { text: q.label + (q.note ? " (" + q.note + ")" : "") }), F.el("td", { text: won(q.a) }), F.el("td", { text: bU(q.b) }), F.el("td", { text: q.r2 === null ? "–" : F.num(q.r2, 3) }), F.el("td", { text: won(q.rmse, 2) }), F.el("td", { text: F.num(q.a / (m.unit - q.b), 1) + "만 개" })])));
+    t.appendChild(tb);
+    const dm = m.dummy;
+    $("m-note").textContent = dm ? "더미 회귀에서 증설 후 고정비가 월 " + F.signed(dm.b[2], 1) + "억원(p " + fpv(dm.p[2]) + "), 개당 변동비가 " + sg(dm.b[3] * 1e4, 0) + "원(p " + fpv(dm.p[3]) + ") 바뀌었습니다. 전체 기간을 한 선으로 그으면 변동비가 " + bU(m.ols.b) + "으로 부풀려지고, 고저점법은 " + ((m.hl.lo < m.k) !== (m.hl.hi < m.k) ? "증설 전후 체제가 다른 두 달(" + rows[m.hl.lo].ym + ", " + rows[m.hl.hi].ym + ")을 이어 버립니다." : "두 달(" + rows[m.hl.lo].ym + ", " + rows[m.hl.hi].ym + ")만 보고 선을 긋습니다.") : "";
+
+    /* 정비 효과 */
+    const box = $("ba"); box.textContent = "";
+    if (ba) {
+      [["불량률 변화", F.pct(ba.test.p1, 2) + " → " + F.pct(ba.test.p2, 2), "정비 전 " + ba.before.months + "개월 · 후 " + ba.after.months + "개월", true],
+       ["차이의 95% 신뢰구간", F.num(ba.test.diff * 100, 2) + "%p", F.num(ba.test.lo * 100, 2) + " ~ " + F.num(ba.test.hi * 100, 2) + "%p · z " + F.num(ba.test.z, 2) + " · p " + fpv(ba.test.p), ba.test.hi < 0],
+       ["연간 폐기비용 절감", won(ba.saving, 2), "95% " + F.money(ba.savingLo, 2) + " ~ " + F.money(ba.savingHi, 2) + "억원 · 연 " + F.num(ba.annual / 1e4, 0) + "만 개 기준", ba.savingLo > 0]
+      ].forEach((k) => box.appendChild(F.el("div", null, [F.el("span", { class: "l", text: k[0] }), F.el("span", { class: "v" + (k[3] ? " good" : ""), text: k[1] }), F.el("span", { class: "s", text: k[2] })])));
+      $("ba-note").textContent = ba.test.p < 0.05 ? "정비 전후 차이가 우연이라면 이만큼 벌어질 확률이 " + fpv(ba.test.p) + "입니다. 신뢰구간이 0을 포함하지 않으므로 효과가 있다고 볼 수 있고, 보고할 때는 절감액을 한 숫자가 아니라 구간(" + F.money(ba.savingLo, 1) + "~" + won(ba.savingHi, 1) + ")으로 말하는 것이 정직합니다. 다만 같은 시기에 다른 변화(증설, 제품 구성)가 있었다면 그 영향과 섞여 있을 수 있습니다." : "정비 전후 차이가 통계적으로 뚜렷하지 않습니다(p " + F.num(ba.test.p, 3) + "). 더 오래 관찰하거나 검사 수를 늘려야 효과를 말할 수 있습니다.";
+    }
+
+    const memo = $("k-memo"); memo.textContent = "";
+    memo.append("증설 후 제조원가는 월 고정비 " + won(m.cur.a) + " + 개당 변동비 " + bU(m.cur.b) + "으로 추정됩니다(95% 구간 " + F.money(m.cur.ciA[0], 0) + "~" + F.money(m.cur.ciA[1], 0) + "억원, " + F.num(m.cur.ciB[0] * 1e4, 0) + "~" + F.num(m.cur.ciB[1] * 1e4, 0) + "원). ");
+    if (m.chow) memo.append("증설 전후 원가 구조가 같다는 가설은 Chow 검정으로 기각되고(p " + fpv(m.chow.p) + "), ");
+    memo.append("손익분기 생산량은 " + (m.bepPre ? F.num(m.bepPre, 1) + "만 개에서 " : "") + "월 ", F.el("b", { text: F.num(m.bep, 1) + "만 개" }), "(95% " + F.num(m.bepLo, 1) + "~" + F.num(m.bepHi, 1) + ")로 " + (m.bepPre ? "높아졌습니다. " : "추정됩니다. "));
+    memo.append("최근 생산량 기준 안전한계율은 " + F.pct(m.mos, 0) + ", 영업레버리지는 " + F.num(m.dol, 1) + "배입니다. ");
+    if (ba) memo.append("공정 정비 뒤 불량률은 " + F.pct(ba.test.p1, 2) + "에서 " + F.pct(ba.test.p2, 2) + "로 낮아졌고(p " + fpv(ba.test.p) + "), 연간 폐기비용 절감은 " + F.money(ba.savingLo, 1) + "~" + won(ba.savingHi, 1) + "입니다.");
+
+    const chk = $("k-check"); chk.textContent = "";
+    const sumRes = Math.abs(S.sum(m.ols.resid));
+    const dummyEq = !m.dummy || (Math.abs(m.dummy.b[0] - m.pre.a) < 1e-7 && Math.abs(m.dummy.b[1] - m.pre.b) < 1e-9 && Math.abs(m.dummy.b[0] + m.dummy.b[2] - m.post.a) < 1e-7 && Math.abs(m.dummy.b[1] + m.dummy.b[3] - m.post.b) < 1e-9);
+    let chiOk = true;
+    if (ba) { const a1 = ba.before.def, b1 = ba.before.n - a1, a2 = ba.after.def, b2 = ba.after.n - a2, N = a1 + b1 + a2 + b2, chi = N * Math.pow(a1 * b2 - b1 * a2, 2) / ((a1 + b1) * (a2 + b2) * (a1 + a2) * (b1 + b2)); chiOk = Math.abs(chi - ba.test.z * ba.test.z) < 1e-6 * chi; }
+    const base = rows.slice(0, pc.baseN).filter((r) => pc.excluded.indexOf(r.ym) < 0), pbarOk = Math.abs(pc.pbar - S.sum(base.map((r) => r.def)) / S.sum(base.map((r) => r.n))) < 1e-12;
+    [["회귀 잔차의 합 = 0", sumRes < 1e-8], ["더미 회귀 계수 = 증설 전·후 따로 회귀한 계수", dummyEq], ["기준 불량률 = Σ불량 ÷ Σ검사", pbarOk], ["두 비율 z² = 2×2 표 카이제곱", chiOk]]
+      .forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  /* ---------- 데이터 ---------- */
+  $("csv").value = E.toCsv(rows);
+  $("csv-apply").addEventListener("click", () => {
+    const r = E.parse($("csv").value);
+    if (r.rows.length < 12) { $("csv-msg").textContent = "12개월 이상이 필요합니다" + (r.errors.length ? " (읽지 못한 줄: " + r.errors.slice(0, 5).join(", ") + ")" : ""); return; }
+    rows = r.rows; $("csv-msg").textContent = r.rows.length + "개월 반영" + (r.errors.length ? ", 건너뛴 줄 " + r.errors.length : ""); buildSelects(); render();
+  });
+  $("csv-reset").addEventListener("click", () => { rows = E.sample(); $("csv").value = E.toCsv(rows); $("csv-msg").textContent = ""; $("o-break").value = ""; $("o-fix").value = ""; buildSelects(); render(); });
+  $("o-price").value = O.price; $("o-scrap").value = O.scrap; $("o-base").value = O.baseN;
+  ["o-break", "o-fix"].forEach((id) => $(id).addEventListener("change", render));
+  ["o-price", "o-scrap", "o-base"].forEach((id) => $(id).addEventListener("input", render));
+  buildSelects(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

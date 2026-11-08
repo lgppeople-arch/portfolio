@@ -6,6 +6,10 @@
     Fin: require("./fin.js"),
     Stats: require("./stats.js"),
     Capital: require("./engines/capital.js"),
+    PlanRisk: require("./engines/planrisk.js"),
+    Budget: require("./engines/budget.js"),
+    Costs: require("./engines/costs.js"),
+    CapexMc: require("./engines/capexmc.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -65,7 +69,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -492,6 +496,74 @@
       const z = Capital.altman({ ta: 100, ca: 50, cl: 30, re: 20, sales: 150, te: 40, tl: 60, ebit: 10 });
       const hand = 0.717 * 0.2 + 0.847 * 0.2 + 3.107 * 0.1 + 0.420 * (40 / 60) + 0.998 * 1.5;
       add("적정부채", "Altman Z′ = 0.717·X1 + 0.847·X2 + 3.107·X3 + 0.420·X4 + 0.998·X5 (손 계산 예제)", near(z.z, hand, 1e-12) && z.zone === "grey", "Z′ " + z.z.toFixed(4));
+    }
+    /* ---------- 통계 모듈 2: 행렬·다중회귀·검정 ---------- */
+    if (Stats) {
+      const S = Stats, R = [[1, 0.4, 0.2], [0.4, 1, -0.3], [0.2, -0.3, 1]], L = S.cholesky(R);
+      const llt = R.every((row, i) => row.every((v, j) => Math.abs(L[i].reduce((a, l, k) => a + l * L[j][k], 0) - v) < 1e-12));
+      const x = S.solve([[2, 1, 0], [1, 3, 1], [0, 1, 4]], [3, 7, 13]);
+      add("통계", "촐레스키 L·Lᵀ = 상관행렬, 모순된 상관(양의 정부호 아님)은 거부, 연립방정식 해가 정확", llt && S.cholesky([[1, 0.9, -0.9], [0.9, 1, 0.9], [-0.9, 0.9, 1]]) === null && near(x[0], 1, 1e-12) && near(x[1], 1, 1e-12) && near(x[2], 3, 1e-12), "x = " + x.map((v) => v.toFixed(3)).join(", "));
+      const X = [[1, 2], [2, 1], [3, 4], [4, 3], [5, 6], [6, 5], [7, 8]], m = S.mlr(X, X.map((r) => 1 + 2 * r[0] + 3 * r[1]));
+      add("통계", "다중회귀: 정확한 식 y = 1 + 2x₁ + 3x₂를 그대로 찾는다", near(m.b[0], 1, 1e-9) && near(m.b[1], 2, 1e-9) && near(m.b[2], 3, 1e-9) && near(m.r2, 1, 1e-12), m.b.map((v) => v.toFixed(4)).join(", "));
+      const tp = S.twoProp(50, 1000, 30, 1000), a1 = 50, b1 = 950, a2 = 30, b2 = 970, N = 2000, chi = N * Math.pow(a1 * b2 - b1 * a2, 2) / ((a1 + b1) * (a2 + b2) * (a1 + a2) * (b1 + b2));
+      const w = S.welch([1, 2, 3, 4, 5], [3, 4, 5, 6, 7, 8]);
+      add("통계", "두 비율 z² = 2×2 카이제곱, 웰치 t검정 손 계산(t = 2.402, df = 8.99)", near(tp.z * tp.z, chi, 1e-9) && Math.abs(w.t - 2.4019) < 1e-4 && Math.abs(w.df - 8.9894) < 1e-3, "z² " + (tp.z * tp.z).toFixed(4) + " · χ² " + chi.toFixed(4));
+      const r = S.rng(11), tri = []; for (let i = 0; i < 40000; i++) tri.push(S.triInv(r.u(), 1, 2, 6));
+      add("통계", "삼각분포 역함수로 뽑은 표본의 평균·분산 ≈ 공식 (평균 3, 분산 1.1667)", Math.abs(S.mean(tri) - S.triMean(1, 2, 6)) < 0.02 && Math.abs(S.variance(tri) - S.triVar(1, 2, 6)) < 0.03, "평균 " + S.mean(tri).toFixed(4) + ", 분산 " + S.variance(tri).toFixed(4));
+    }
+
+    /* ---------- 사업계획 달성 확률 ---------- */
+    if (PlanRisk && Stats) {
+      const x = clone(PlanRisk.DEFAULTS), pl = PlanRisk.planPnl(x), s = PlanRisk.simulate(x, { n: 3000 });
+      add("사업계획", "매출 − 원재료비 − 가공비 − 고정비 = 영업이익, 변동성 0이면 모든 경로 = 계획", near(pl.rev - pl.mat - pl.conv - pl.fc, pl.op) && (() => { const z = clone(x); PlanRisk.KEYS.forEach((k) => { z.drivers[k].sd = 0; }); const q = PlanRisk.simulate(z, { n: 30 }); return q.sd < 1e-9 && near(q.mean, pl.op); })(), "계획 영업이익 " + pl.op.toFixed(2) + "억원");
+      add("사업계획", "변동 기여도(오일러 배분) 합계 = 100%", near(Fin.sum(s.contrib.map((c) => c.share)), 1, 1e-9), s.contrib.map((c) => c.key + " " + (c.share * 100).toFixed(1) + "%").join(", "));
+      const corrOk = x.corr.every((row, i) => row.every((v, j) => Math.abs(s.realized[i][j] - v) < 0.06));
+      const s2 = PlanRisk.simulate(x, { n: 3000 });
+      add("사업계획", "뽑힌 난수의 상관 ≈ 입력 상관(±0.06), 같은 시드면 같은 결과", corrOk && s2.pAch === s.pAch && s2.p5 === s.p5, "달성 확률 " + (s.pAch * 100).toFixed(1) + "%");
+      const bad = clone(x); bad.corr[0][1] = bad.corr[1][0] = 0.95; bad.corr[1][3] = bad.corr[3][1] = 0.95; bad.corr[0][3] = bad.corr[3][0] = -0.95;
+      add("사업계획", "서로 모순된 상관행렬은 계산하지 않고 알린다", PlanRisk.simulate(bad, { n: 10 }).ok === false, "");
+    }
+
+    /* ---------- 비용예산 증액 우선순위 ---------- */
+    if (Budget && Stats) {
+      const x = clone(Budget.DEFAULTS), a = Budget.analyze(x), bf = Budget.brute(a.E, x.budget);
+      add("예산배분", "정수계획(동적계획법) 최적값 = 2ⁿ개 조합을 모두 따진 최적값", near(a.opt.value, bf.value, 1e-9), x.items.length + "건, 2^" + x.items.length + " = " + Math.pow(2, x.items.length) + "개 조합, " + a.opt.value.toFixed(4) + "억원");
+      add("예산배분", "최적 ≥ 효율 순 채우기 ≥ 일률 삭감, 승인액 ≤ 한도, 필수 요청 포함", a.opt.value >= a.greedy.value - 1e-9 && a.greedy.value >= a.proRata.value - 1e-9 && a.used <= x.budget + 1e-9 && a.E.every((e) => !e.it.must || a.opt.sel.indexOf(e.i) >= 0), a.opt.value.toFixed(2) + " ≥ " + a.greedy.value.toFixed(2) + " ≥ " + a.proRata.value.toFixed(2));
+      const fv = a.frontier.filter((f) => f.v !== null), mono = fv.every((f, i) => i === 0 || f.v >= fv[i - 1].v - 1e-12);
+      add("예산배분", "효율적 경계는 예산이 늘수록 줄지 않는다", mono, fv.length + "개 예산 수준");
+      const rnd = rng(77); let allOk = true;
+      for (let t = 0; t < 40; t++) {
+        const y = clone(x); y.items = y.items.slice(0, 10).map((it) => Object.assign(it, { cost: Math.round((0.5 + rnd() * 5) * 10) / 10, mode: rnd() * 6, lo: 0, hi: 8, p: 30 + rnd() * 70, must: false })); y.budget = 5 + rnd() * 20; y.riskAversion = rnd() * 0.3;
+        const b = Budget.analyze(y), bb = Budget.brute(b.E, y.budget); if (!near(b.opt.value, bb.value, 1e-9)) allOk = false;
+      }
+      add("예산배분", "무작위 요청 묶음 40가지(위험회피 포함)에서도 동적계획법 = 전수 조사", allOk, "");
+      const s = Budget.simulate(a.E, a.opt.sel, { n: 8000 });
+      add("예산배분", "몬테카를로 평균 ≈ 기대 순효과 합 (3 표준오차 이내)", Math.abs(s.mean - s.ev) <= 3 * s.sdA / Math.sqrt(s.n), s.mean.toFixed(3) + " vs " + s.ev.toFixed(3));
+    }
+
+    /* ---------- 원가 행태와 불량 관리도 ---------- */
+    if (Costs && Stats) {
+      const rows = Costs.sample(), m = Costs.costModel(rows), pc = Costs.pChart(rows), ba = Costs.beforeAfter(rows);
+      add("원가관리", "회귀 잔차의 합 = 0, 더미 회귀 계수 = 증설 전·후 따로 회귀한 계수", Math.abs(Fin.sum(m.ols.resid)) < 1e-8 && near(m.dummy.b[0], m.pre.a, 1e-7) && near(m.dummy.b[1], m.pre.b, 1e-9) && near(m.dummy.b[0] + m.dummy.b[2], m.post.a, 1e-7) && near(m.dummy.b[1] + m.dummy.b[3], m.post.b, 1e-9), "증설 후 고정비 " + m.post.a.toFixed(2) + "억원");
+      add("원가관리", "Chow 검정이 넣어 둔 구조변화(2025-07 증설)를 잡는다 (p < 0.01)", m.chow.p < 0.01, "F " + m.chow.f.toFixed(2) + ", p " + m.chow.p.toExponential(1));
+      const spike = pc.pts.find((q) => q.ym === "2024-09"), drift = pc.pts.filter((q) => q.ym >= "2025-02" && q.ym <= "2025-07");
+      const ewDrift = pc.ewma.filter((q) => q.ym >= "2025-02" && q.ym <= "2025-07").some((q) => q.out);
+      add("원가관리", "관리도: 일시 급등은 3σ 규칙으로, 3σ 안의 서서히 나빠짐은 넬슨 규칙·EWMA로 잡는다", spike.rules.indexOf(1) >= 0 && drift.every((q) => Math.abs(q.z) < 3) && drift.some((q) => q.rules.length > 0) && ewDrift, "급등 z " + spike.z.toFixed(2));
+      const a1 = ba.before.def, b1 = ba.before.n - a1, a2 = ba.after.def, b2 = ba.after.n - a2, N = a1 + b1 + a2 + b2, chi = N * Math.pow(a1 * b2 - b1 * a2, 2) / ((a1 + b1) * (a2 + b2) * (a1 + a2) * (b1 + b2));
+      add("원가관리", "정비 효과: 두 비율 z² = 2×2 카이제곱, 신뢰구간이 차이를 포함", near(ba.test.z * ba.test.z, chi, 1e-9) && ba.test.lo < ba.test.diff && ba.test.diff < ba.test.hi, "불량률 " + (ba.test.p1 * 100).toFixed(2) + "% → " + (ba.test.p2 * 100).toFixed(2) + "%");
+      const back = Costs.parse(Costs.toCsv(rows));
+      add("원가관리", "표로 내보냈다가 다시 읽어도 같은 결과", back.errors.length === 0 && near(Costs.costModel(back.rows).post.a, m.post.a, 1e-9), back.rows.length + "개월");
+    }
+
+    /* ---------- 설비투자 확률 분석 ---------- */
+    if (CapexMc && Stats) {
+      const p = clone(CapexMc.P0), base = CapexMc.project(p, {}).npv;
+      add("설비투자 확률", "단계별 일반화 모형의 기본 NPV = 설비투자 키트 기준 구현(legacyNpv)", near(base, legacyNpv(p), 1e-9), base.toFixed(4) + "억원");
+      const one = CapexMc.staged(p, {}, Object.assign({}, CapexMc.STAGE, { share1: 100 })).res.npv;
+      const z = CapexMc.simulate(p, { sdU: 0, sdA: 0, sdV: 0, sdF: 0, capexLo: 0, capexHi: 0, n: 20 }, { obs: 0 });
+      add("설비투자 확률", "1단계 100%면 단계 투자 = 일괄 투자, 흔들림 0이면 모든 경로 = 기본 NPV", near(one, base, 1e-9) && z.full.sd < 1e-9 && near(z.full.mean, base, 1e-9), "");
+      const sw = CapexMc.sweep(p, {}, {}, [0, 15, 30]);
+      add("설비투자 확률", "수요 불확실성이 클수록 단계 투자의 옵션가치가 커진다(0% → 15% → 30%)", sw[0].option < sw[1].option && sw[1].option < sw[2].option && sw[0].option < 0 && sw[2].option > 0, sw.map((r) => r.sd + "%: " + r.option.toFixed(1)).join(", "));
     }
     return out;
   }

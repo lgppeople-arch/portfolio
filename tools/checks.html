@@ -41,7 +41,7 @@
     <nav class="site-nav grouped" aria-label="사이트">
       <a href="../index.html">홈</a>
       <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div></div></details>
-      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="pl-report.html">월 손익 보고</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="doa.html">위임전결 기준 점검</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
       <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
       <a href="checks.html" aria-current="page">검산</a>
       <a href="../en.html" lang="en">EN</a>
@@ -92,16 +92,20 @@
 <script src="../assets/data/deal-hhi.js"></script>
 <script src="../assets/engines/doa.js"></script>
 <script src="../assets/engines/capital.js"></script>
+<script src="../assets/engines/planrisk.js"></script>
+<script src="../assets/engines/budget.js"></script>
+<script src="../assets/engines/costs.js"></script>
+<script src="../assets/engines/capexmc.js"></script>
 <script src="../assets/checks.js"></script>
 <script>
 (function () {
   "use strict";
   const F = window.Fin, $ = F.$;
-  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html", "재무제표": "fsa.html", "반도체 사이클": "semi-cycle.html", "삼성전자 공시": "samsung.html", "위임전결": "doa.html", "통계": null, "적정부채": "capital.html" };
+  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html", "재무제표": "fsa.html", "반도체 사이클": "semi-cycle.html", "삼성전자 공시": "samsung.html", "위임전결": "doa.html", "통계": null, "적정부채": "capital.html", "사업계획": "plan-risk.html", "예산배분": "budget-opt.html", "원가관리": "cost-stats.html", "설비투자 확률": "capex-kit.html#mc" };
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }

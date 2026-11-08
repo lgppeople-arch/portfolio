@@ -265,6 +265,8 @@
             <li>그룹 ERP 교체 TFT 예산 담당</li>
           </ul>
           <div class="tools">
+            <a class="tool-link" href="tools/plan-risk.html">사업계획 달성 확률 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/budget-opt.html">비용예산 증액 우선순위 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/capex-kit.html#bep">가동률과 원가 <span class="arr">→</span></a>
           </div>
         </li>
@@ -292,6 +294,7 @@
           <div class="tools">
             <a class="tool-link" href="tools/pl-report.html">3개월 추정 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/pl-report.html#trend">추세선·±1σ 이상치 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/cost-stats.html">원가 회귀·불량 관리도 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/capex-kit.html#var">계획 대비 실적 <span class="arr">→</span></a>
           </div>
         </li>
@@ -343,6 +346,7 @@
           </ul>
           <div class="tools">
             <a class="tool-link" href="tools/capex-kit.html">투자 타당성 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/capex-kit.html#mc">NPV 분포·단계 투자 옵션 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -389,6 +393,25 @@
           </div>
         </li>
       </ol>
+    </div>
+  </section>
+
+  <section class="block" id="analytics">
+    <div class="wrap wide">
+      <div class="block-head">
+        <div class="kicker">ANALYTICS</div>
+        <div><h2>한 숫자가 아니라 분포로 판단합니다</h2><p>계획·예산·원가·자금·투자는 모두 불확실한 미래에 대한 판단입니다. 한 점의 숫자 대신 확률과 신뢰구간으로 보고, 결론이 우연인지 검정합니다. 업무에서 실제로 받는 질문마다 맞는 통계 방법을 붙여 도구로 만들었습니다. 카드의 숫자는 가상 예시입니다.</p></div>
+      </div>
+      <div class="qgrid">
+        <a class="qcard" href="tools/plan-risk.html"><span class="qk">사업계획</span><h3>계획 영업이익을 달성할 확률은?</h3><p>판매량·단가·환율·원재료가 함께 움직이는 몬테카를로, 상관을 반영한 변동 기여도(오일러 배분)</p><span class="qx">달성 확률 48% · 하위 5% −4억</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/budget-opt.html"><span class="qk">예산</span><h3>30억 한도로 어떤 증액 요청을 승인할까?</h3><p>효과 범위·성공 확률로 기대가치를 매기고 정수계획(배낭 문제)으로 최적 조합, 위험회피 확실성등가</p><span class="qx">일률 삭감 대비 +3.9억 · 1억 추가 시 +0.26억</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/pl-report.html#trend"><span class="qk">월 손익</span><h3>이번 달 실적은 평소 흔들림인가?</h3><p>계절조정 추세선, ±1σ·±2σ 밴드와 이격도, 계획이 한쪽으로 치우쳤는지 t검정</p><span class="qx">계획 편향 p = 0.007</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/cost-stats.html"><span class="qk">원가</span><h3>고정비·변동비는 얼마이고 증설로 무엇이 바뀌었나?</h3><p>회귀 신뢰구간, Chow 구조변화 검정, 불량률 p 관리도·넬슨 규칙·EWMA, 개선 전후 검정</p><span class="qx">손익분기 79.8 → 90.7만 개</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/mbo-kpi.html#dist"><span class="qk">성과평가</span><h3>평가자가 후하거나 짜지 않은가?</h3><p>산포·중심화, 등급 가이드 카이제곱, 평가자 분산분석과 z점수 보정, 인센티브 지니</p><span class="qx">보정 시 21개 팀 등급 변경</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/cash-13w.html#mc"><span class="qk">자금</span><h3>13주 안에 한도대출이 필요할 확률은?</h3><p>매출과 회수 지연을 2,000번 굴리는 몬테카를로, Cash-at-Risk와 필요 유동성</p><span class="qx">한도 필요 31% · 지급불능 0%</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/capital.html"><span class="qk">부채</span><h3>빚을 얼마까지 져도 되나?</h3><p>현금흐름 기반 상환 부족 확률, 머튼 부도거리, 사내 기준 한도, 절세효과와 부실비용의 균형</p><span class="qx">목표 범위 1,410~1,592억</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/capex-kit.html#mc"><span class="qk">투자</span><h3>한 번에 지을까, 나눠 지을까?</h3><p>NPV 분포와 손실 확률, 수요를 보고 2단계를 정하는 실물옵션의 가치</p><span class="qx">옵션가치 +12억 · 손실 확률 44 → 36%</span><span class="arr">→</span></a>
+      </div>
     </div>
   </section>
 
@@ -586,12 +609,16 @@
 <script src="assets/data/deal-hhi.js"></script>
 <script src="assets/engines/doa.js"></script>
 <script src="assets/engines/capital.js"></script>
+<script src="assets/engines/planrisk.js"></script>
+<script src="assets/engines/budget.js"></script>
+<script src="assets/engines/costs.js"></script>
+<script src="assets/engines/capexmc.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    const res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");
