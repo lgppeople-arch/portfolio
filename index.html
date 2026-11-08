@@ -241,6 +241,12 @@
           </div>
         </a>
       </div>
+      <h3 class="sub-h2">보고·시각화 노트</h3>
+      <div class="qgrid q3">
+        <a class="qcard" href="tools/deck.html"><span class="qk">Practice note · 07</span><h3>보고서·PPT 작성 원칙</h3><p>피라미드 원칙과 SCQA, 문장으로 쓰는 제목, MECE, 그리드·색·숫자 표기 약속(IBCS). 같은 숫자로 만든 장표를 고치기 전과 후로 비교합니다.</p><span class="qx">고치기 전·후 슬라이드 3쌍 · 점검표 12개</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/charts.html"><span class="qk">Practice note · 08</span><h3>차트 선택과 디자인</h3><p>질문 유형별로 고르는 차트 17종을 직접 그리고, 언제 쓰고 피할지, 엑셀·PPT에서 만드는 법, 나쁜 차트 고치기와 색 쓰는 법을 정리했습니다.</p><span class="qx">차트 17종 · 나쁜 예 4쌍 · 팔레트 5종</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/sources.html"><span class="qk">Practice note · 09</span><h3>정보 출처와 참고 자료</h3><p>공시·거시·산업·가치평가·법령 데이터 출처를 얻는 것·쓰는 법·주의점과 함께, 보고서·차트 디자인 서적과 표준·서체·도구까지.</p><span class="qx">데이터 출처 27곳 · 서적 8권</span><span class="arr">→</span></a>
+      </div>
     </div>
   </section>
 
@@ -308,6 +314,7 @@
           <div class="tools">
             <a class="tool-link" href="tools/mbo-kpi.html">성과평가 MBO·KPI <span class="arr">→</span></a>
             <a class="tool-link" href="tools/mbo-kpi.html#dist">평가 분포·평가자 보정 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/kpi-tree.html">KPI 트리(ROIC 가치동인) <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -613,12 +620,13 @@
 <script src="assets/engines/budget.js"></script>
 <script src="assets/engines/costs.js"></script>
 <script src="assets/engines/capexmc.js"></script>
+<script src="assets/engines/kpitree.js"></script>
 <script src="assets/checks.js"></script>
 <script>
 (function () {
   /* 홈에서도 검산을 돌려 결과를 한 줄로 보여 준다 */
   try {
-    const res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    const res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
     const pass = res.filter((r) => r.ok).length;
     const pill = document.getElementById("live-pill");
     pill.className = "pill " + (pass === res.length ? "ok" : "bad");

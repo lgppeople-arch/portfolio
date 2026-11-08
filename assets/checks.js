@@ -10,6 +10,7 @@
     Budget: require("./engines/budget.js"),
     Costs: require("./engines/costs.js"),
     CapexMc: require("./engines/capexmc.js"),
+    KpiTree: require("./engines/kpitree.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -69,7 +70,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -564,6 +565,23 @@
       add("설비투자 확률", "1단계 100%면 단계 투자 = 일괄 투자, 흔들림 0이면 모든 경로 = 기본 NPV", near(one, base, 1e-9) && z.full.sd < 1e-9 && near(z.full.mean, base, 1e-9), "");
       const sw = CapexMc.sweep(p, {}, {}, [0, 15, 30]);
       add("설비투자 확률", "수요 불확실성이 클수록 단계 투자의 옵션가치가 커진다(0% → 15% → 30%)", sw[0].option < sw[1].option && sw[1].option < sw[2].option && sw[0].option < 0 && sw[2].option > 0, sw.map((r) => r.sd + "%: " + r.option.toFixed(1)).join(", "));
+    }
+    /* ---------- KPI 트리 ---------- */
+    if (KpiTree) {
+      const K = KpiTree, x = clone(K.LEAVES), a = K.analyze(x), sumSh = Fin.sum(K.KEYS.map((k) => a.shapley.by[k]));
+      add("KPI 트리", "샤플리 기여의 합 = 실적 ROIC − 계획 ROIC, 계획과 같은 지표의 기여 = 0", near(sumSh, a.act.roic - a.plan.roic, 1e-9) && Math.abs(a.shapley.by.tax) < 1e-15, "ROIC " + a.plan.roic.toFixed(2) + "% → " + a.act.roic.toFixed(2) + "%");
+      const c = a.plan;
+      add("KPI 트리", "트리 항등식: 영업이익 = 매출 − 매출원가 − 판관비, 순운전자본 = 채권 + 재고 − 채무, ROIC = NOPAT ÷ 투하자본", near(c.op, c.rev - c.cogs - c.sga) && near(c.nwc, c.ar + c.inv - c.ap) && near(c.roic, c.nopat / c.ic * 100), "영업이익 " + c.op.toFixed(1) + "억원");
+      /* 순열 평균 = 샤플리: 참가자 순서를 모두 따지는 정의와 같은지(무작위 순열 2,000개 평균이 오차 안) */
+      const P = K.pick(x, "plan"), A = K.pick(x, "act"), keys = a.shapley.players, rnd = rng(31), acc = {}; keys.forEach((k) => { acc[k] = 0; });
+      const N = 2000;
+      for (let t = 0; t < N; t++) { const ord = keys.slice(); for (let i = ord.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const tmp = ord[i]; ord[i] = ord[j]; ord[j] = tmp; }
+        const v = Object.assign({}, P); let prev = K.calc(v).roic; ord.forEach((k) => { v[k] = A[k]; const now = K.calc(v).roic; acc[k] += now - prev; prev = now; }); }
+      const maxErr = Math.max.apply(null, keys.map((k) => Math.abs(acc[k] / N - a.shapley.by[k])));
+      add("KPI 트리", "정확한 샤플리 값 = 무작위 순서 2,000개로 대입한 평균(오차 0.01%p 이내)", maxErr < 0.01, "최대 차이 " + maxErr.toFixed(4) + "%p");
+      const y = clone(x); K.KEYS.forEach((k) => { y[k].act = y[k].plan; }); y.p.act = y.p.plan * 1.02;
+      const b = K.analyze(y);
+      add("KPI 트리", "한 지표만 바뀌면 그 지표가 차이를 모두 가져간다(단가 +2%)", near(b.shapley.by.p, b.act.roic - b.plan.roic, 1e-12), "+" + b.shapley.by.p.toFixed(3) + "%p");
     }
     return out;
   }

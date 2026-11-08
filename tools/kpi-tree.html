@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>KPI 트리 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="ROIC를 판매량·단가·수율·회전일수 같은 현장 지표까지 수식으로 쪼개고, 계획 대비 차이를 지표·조직별로 샤플리 값으로 나누며 ROIC를 가장 많이 올리는 레버를 찾는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="KPI 트리 · 이기표">
+<meta property="og:description" content="ROIC를 판매량·단가·수율·회전일수 같은 현장 지표까지 수식으로 쪼개고, 계획 대비 차이를 지표·조직별로 샤플리 값으로 나누며 ROIC를 가장 많이 올리는 레버를 찾는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/kpi-tree.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .block2 { margin-top: 36px; display: grid; gap: 14px; }
+  .block2 > h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .block2 > h2 .muted { font-family: var(--f-body); font-weight: 400; font-size: var(--s-1); }
+  .block2 > p.hint { max-width: 900px; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .two > * { min-width: 0; }
+  @media (max-width: 1000px) { .two { grid-template-columns: minmax(0, 1fr); } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; display: grid; gap: 14px; min-width: 0; }
+  .card h3 { font-size: var(--s-3); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .treecard { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 10px; display: grid; gap: 10px; }
+  .treecard .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 16px; flex-wrap: wrap; }
+  .treecard .top h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .treewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .treewrap svg text { font-family: var(--f-body); }
+  /* 좁은 화면: 들여쓰기 목록 */
+  .outline { display: grid; gap: 4px; }
+  .outline .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 8px 10px; border: 1px solid var(--rule-soft); border-left: 4px solid var(--rule); border-radius: 6px; background: var(--surface); }
+  .outline .row.good { border-left-color: var(--pos); }
+  .outline .row.bad { border-left-color: var(--neg); }
+  .outline .row b { font-size: var(--s-1); }
+  .outline .row .ch { font-family: var(--f-num); font-size: 12px; font-weight: 600; text-align: right; }
+  .outline .row.good .ch { color: var(--pos); }
+  .outline .row.bad .ch { color: var(--neg-ink); }
+  .outline .row .pv { font-family: var(--f-num); font-size: 12px; color: var(--ink-2); }
+  .outline .row .sh { font-family: var(--f-num); font-size: 11.5px; color: var(--muted); text-align: right; }
+  .treewrap svg text.v { font-family: var(--f-num); }
+  .sumrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; margin-top: 18px; align-items: start; }
+  @media (max-width: 1000px) { .sumrow { grid-template-columns: minmax(0, 1fr); } }
+  .kpis.k4 .kpi .v { font-size: 22px; }
+  .cmp { width: 100%; border-collapse: collapse; font-size: var(--s-1); }
+  .cmp th, .cmp td { padding: 7px 6px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  .cmp th:first-child, .cmp td:first-child { text-align: left; white-space: normal; }
+  .cmp thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  .cmp td { font-family: var(--f-num); }
+  .cmp td:first-child, .cmp td.txt { font-family: var(--f-body); }
+  .cmp td.neg { color: var(--neg-ink); }
+  .cmp th.l, .cmp td.l { text-align: left; }
+  .cmp td.pos { color: var(--pos); }
+  .cmp input { width: 78px; font-family: var(--f-num); font-size: var(--s-1); text-align: right; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
+  .cmp .own { font-family: var(--f-body); font-size: 12px; color: var(--ink-2); }
+  .rules2 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 1000px) { .rules2 { grid-template-columns: minmax(0, 1fr); } }
+  .rules2 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .rules2 .n { font-family: var(--f-num); font-size: 12px; color: var(--accent); font-weight: 600; }
+  .rules2 b { font-size: var(--s-2); }
+  .rules2 p { font-size: var(--s-1); color: var(--ink-2); line-height: 1.7; margin: 0; }
+  .rules2 p.ex { color: var(--ink); background: var(--ledger); border-radius: 4px; padding: 8px 10px; font-size: 12.5px; }
+  svg.plot text.b-lab { fill: var(--ink); font-size: 12px; }
+  svg.plot text.b-val { fill: var(--ink-2); font-size: 11px; font-family: var(--f-num); }
+  svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">보고·시각화</span><a href="deck.html">보고서·PPT 작성 원칙</a><a href="charts.html">차트 선택과 디자인</a><a href="sources.html">정보 출처와 참고 자료</a></div></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html" aria-current="page">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / KPI 트리</div>
+      <h1>KPI 트리</h1>
+      <p>회사의 성적표인 ROIC(투하자본이익률)를 판매량·단가·수율·재고일수 같은 현장 지표까지 수식으로 쪼갭니다. 계획 대비 실적 차이가 어느 지표에서, 어느 조직에서 왔는지 공정하게 나누고, 어떤 지표를 움직여야 ROIC가 가장 많이 오르는지 보여 줍니다. 조직 KPI를 정할 때 회사 목표와의 연결 고리가 됩니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 단위 억원</span><span><a class="guide-link" href="guide.html#how-kpitree">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample"><span>예시: 가상 부품 제조사의 2026년 계획과 실적 전망 · 모든 수치는 가상</span></span>
+
+    <section class="treecard" aria-label="KPI 트리">
+      <div class="top"><h2>ROIC 가치동인 트리</h2>
+        <div class="legend"><span><i class="key-bar" style="background: var(--pos)"></i>계획보다 좋아짐</span><span><i class="key-bar" style="background: var(--neg)"></i>나빠짐</span><span><i class="key-bar" style="background: var(--ink-2); height: 4px"></i>막대: 말단 지표의 ROIC 기여(%p)</span></div>
+      </div>
+      <div class="treewrap" id="tree"></div>
+      <p class="hint">상자 안은 계획 → 실적, 오른쪽 위는 변화율입니다. 말단 지표 아래 막대는 ROIC 차이 중 그 지표의 몫입니다. 상자에 마우스를 올리면 계산식이 보입니다. 좁은 화면에서는 같은 내용을 들여쓰기 목록으로 보여 줍니다.</p>
+    </section>
+
+    <div class="sumrow">
+      <div class="kpis k4" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+        <div class="kpi"><div class="label">ROIC</div><div class="v num" id="k-roic"></div><div class="sub" id="k-roic-sub"></div></div>
+        <div class="kpi"><div class="label">EVA (경제적 부가가치)</div><div class="v num" id="k-eva"></div><div class="sub" id="k-eva-sub"></div></div>
+        <div class="kpi"><div class="label">영업이익률</div><div class="v num" id="k-opm"></div><div class="sub" id="k-opm-sub"></div></div>
+        <div class="kpi"><div class="label">투하자본 회전율</div><div class="v num" id="k-turn"></div><div class="sub" id="k-turn-sub"></div></div>
+      </div>
+      <div style="display: grid; gap: 14px">
+        <div class="memo"><span class="label">보고 문장</span><p id="k-memo"></p></div>
+        <div class="selfcheck" id="k-check"></div>
+      </div>
+    </div>
+
+    <section class="block2" aria-label="차이 분해">
+      <h2>ROIC 차이는 어디서 왔나 <span class="muted">말단 지표별·조직별 기여(샤플리 값)</span></h2>
+      <div class="two">
+        <div class="card">
+          <div class="chart" id="wf-chart">
+            <div class="chart-head"><h4>계획 → 실적 ROIC 다리</h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--pos)"></i>올림</span><span><i class="key-bar" style="background: var(--neg)"></i>내림</span><span><i class="key-dash" style="border-color: var(--ink)"></i>계획·실적 ROIC</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chart" id="own-chart">
+            <div class="chart-head"><h4>조직별 기여</h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>담당 지표 기여의 합</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+          <p class="hint" id="own-note"></p>
+          <table class="cmp" id="seq"></table>
+        </div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="레버">
+      <h2>무엇을 움직여야 ROIC가 오르나 <span class="muted">계획 기준 탄력성</span></h2>
+      <div class="card">
+        <div class="scroll"><table class="cmp" id="lev" style="min-width: 640px"></table></div>
+        <p class="hint">1% 개선은 각 지표를 좋은 방향으로 1% 움직였을 때(수율 95% → 95.95%, 재고일수 45일 → 44.55일)의 ROIC 변화입니다. 같은 1%라도 효과가 수십 배 다르므로, 조직 KPI의 무게와 개선 과제의 우선순위를 이 순서로 정하면 회사 목표와 어긋나지 않습니다.</p>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="입력">
+      <h2>계획과 실적 입력 <span class="muted">말단 지표 13개</span></h2>
+      <div class="card">
+        <div class="scroll"><table class="cmp" id="inp" style="min-width: 720px"></table></div>
+        <div class="btn-row"><label class="hint" for="k-wacc" style="align-self: center">WACC %</label><input id="k-wacc" type="number" inputmode="decimal" step="0.5" min="0" max="30" style="width: 80px; font-family: var(--f-num); text-align: right; padding: 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input)"><button type="button" class="btn sm" id="k-same">실적을 계획과 같게</button><button type="button" class="btn sm" id="k-reset">예시값으로 되돌리기</button></div>
+      </div>
+    </section>
+
+    <section class="block2" aria-label="설계 원칙">
+      <h2>좋은 KPI 트리의 여섯 가지 조건</h2>
+      <div class="rules2">
+        <div><span class="n">01 · 수식</span><b>위아래가 수식으로 이어진다</b><p>"매출 = 판매량 × 단가"처럼 곱하기·더하기로 연결돼야, 아래 지표를 바꾸면 위가 정확히 얼마 바뀌는지 계산되고 차이가 남김없이 나뉩니다.</p><p class="ex">연결이 안 되는 '고객 만족도'는 트리 밖 보조 지표로 둡니다.</p></div>
+        <div><span class="n">02 · MECE</span><b>빠짐없이, 겹침없이</b><p>형제 지표를 더하면 부모가 되고, 서로 겹치지 않아야 합니다. 판관비를 '고정 + 매출 연동'으로 나누는 식입니다.</p><p class="ex">재료비 안에 수율을 넣으면 '불량으로 버린 재료'가 따로 보입니다.</p></div>
+        <div><span class="n">03 · 통제 가능성</span><b>말단은 현장이 움직일 수 있는 것</b><p>환율·금리처럼 회사가 못 정하는 것은 말단 KPI가 아니라 조건으로 분리합니다. 말단은 영업·생산·구매가 매일 행동으로 바꿀 수 있는 지표입니다.</p><p class="ex">'재료비'보다 '개당 투입 재료비'와 '수율'로 나눠야 구매와 생산의 몫이 갈립니다.</p></div>
+        <div><span class="n">04 · 한 지표 한 주인</span><b>말단마다 담당 조직이 하나</b><p>책임이 겹치면 아무도 책임지지 않습니다. 조직 KPI는 이 트리의 말단에서 고르고, 무게는 탄력성에 비례하게 줍니다.</p><p class="ex">매출채권 회전일수는 영업, 재고일수는 생산·SCM, 매입일수는 구매.</p></div>
+        <div><span class="n">05 · 선행과 후행</span><b>먼저 움직이는 지표를 함께 본다</b><p>ROIC는 분기가 끝나야 보이는 후행 지표입니다. 수율·재고일수·수주잔고처럼 먼저 움직이는 선행 지표를 월 단위로 보면 대응이 빨라집니다.</p><p class="ex">수율 1%p 하락은 다음 달 재료비로, 재고일수 증가는 다음 분기 투하자본으로 이어집니다.</p></div>
+        <div><span class="n">06 · 공정한 차이 분해</span><b>순서에 따라 답이 바뀌지 않게</b><p>순차 대입법은 어느 지표부터 바꾸느냐에 따라 같은 지표의 몫이 달라집니다. 샤플리 값은 모든 순서의 평균이라 공정하고, 합계가 총차이와 정확히 같습니다.</p><p class="ex">위 '조직별 기여' 아래 표에서 순서에 따른 차이를 확인할 수 있습니다.</p></div>
+      </div>
+    </section>
+
+    <div class="method">
+      <h4>계산 기준</h4>
+      <ul>
+        <li><b>트리</b>: ROIC = 세후영업이익 ÷ 투하자본. 매출 = 판매량 × 단가, 재료비 = 판매량 × 투입 재료비 ÷ 수율, 가공비 = 고정 + 판매량 × 변동, 판관비 = 고정 + 매출 × 변동비율, 세후영업이익 = 영업이익 × (1 − 세율). 투하자본 = 매출채권(매출 × 일수/365) + 재고(매출원가 × 일수/365) − 매입채무(재료비 × 일수/365) + 유형자산. 판매량·매출처럼 여러 곳에 쓰이는 지표는 트리에서 한 번만 그리고, 다른 곳에 쓰인다는 표시를 붙였습니다.</li>
+        <li><b>EVA</b> = 세후영업이익 − WACC × 투하자본. ROIC가 WACC보다 높아야 가치를 만듭니다.</li>
+        <li><b>샤플리 값</b>: 계획과 실적이 다른 말단 n개를 참가자로 두고, 2ⁿ개 조합의 ROIC를 모두 계산해 각 지표의 평균 한계기여를 구합니다. 합계는 실적 ROIC − 계획 ROIC와 정확히 같습니다.</li>
+        <li><b>탄력성</b>: 계획 상태에서 한 지표만 좋은 방향으로 1% 움직였을 때의 ROIC 변화. 'ROIC +1%p에 필요한 변화'는 그 지표 하나만으로 ROIC를 1%p 올리는 데 필요한 변화율을 이분법으로 찾은 값이며, 줄이는 쪽 지표는 99%까지만 봅니다.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/kpitree.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, K = window.KpiTreeEngine, $ = F.$;
+  const D = K.LEAVES;
+  let x = JSON.parse(JSON.stringify(D)), wacc = K.WACC;
+  const FORM = { roic: "세후영업이익 ÷ 투하자본", nopat: "영업이익 × (1 − 세율)", op: "매출 − 매출원가 − 판관비", rev: "판매량 × 단가", cogs: "재료비 + 가공비", matc: "판매량 × 투입 재료비 ÷ 수율", conv: "고정 가공비 + 판매량 × 변동 가공비", sga: "고정 판관비 + 매출 × 변동비율", ic: "순운전자본 + 유형자산", nwc: "매출채권 + 재고 − 매입채무", ar: "매출 × 채권일수 ÷ 365", inv: "매출원가 × 재고일수 ÷ 365", ap: "재료비 × 매입일수 ÷ 365" };
+  const pp = (v, d) => (v >= 0 ? "+" : "−") + F.num(Math.abs(v), d === undefined ? 2 : d) + "%p";
+  const fmtU = (v, unit, d) => (unit === "%" || unit === "% 매출" ? F.num(v, 1) + "%" : unit === "억원" ? F.num(v, d === undefined ? 0 : d) : unit === "원" || unit === "일" || unit === "만 개" ? F.num(v, 0) : F.num(v, 1));
+
+  /* ---------- 트리 배치 ---------- */
+  function layout() {
+    const rows = [], pos = {};
+    let r = 0;
+    (function walk(id, depth) {
+      const n = K.NODES[id];
+      if (!n) { pos[id] = { depth: depth, row: r++, leaf: true }; rows.push(id); return; }
+      const kids = n.kids.map((k) => { walk(k, depth + 1); return pos[k].row; });
+      pos[id] = { depth: depth, row: (Math.min.apply(null, kids) + Math.max.apply(null, kids)) / 2, leaf: false };
+    })("roic", 0);
+    return { pos: pos, rows: r };
+  }
+  const LAY = layout();
+
+  function drawOutline(a, host) {
+    const box = F.el("div", { class: "outline" });
+    (function walk(id, depth) {
+      const n = K.NODES[id], m = n || D[id], leaf = !n, isRoot = id === "roic";
+      const v0 = n ? a.plan[id] : x[id].plan, v1 = n ? a.act[id] : x[id].act, pu = m.unit === "%" || m.unit === "% 매출";
+      const ch = pu || isRoot ? v1 - v0 : (v0 ? v1 / v0 - 1 : 0), eps = pu || isRoot ? 0.05 : 0.0005, good = ch * m.dir > eps, bad = ch * m.dir < -eps;
+      const unit = isRoot ? "%" : m.unit;
+      const row = F.el("div", { class: "row" + (good ? " good" : bad ? " bad" : "") }, [
+        F.el("b", { text: m.label }), F.el("span", { class: "ch", text: pu || isRoot ? pp(ch, 1) : (ch >= 0 ? "+" : "−") + F.num(Math.abs(ch) * 100, 1) + "%" }),
+        F.el("span", { class: "pv", text: fmtU(v0, unit, isRoot ? 1 : undefined) + " → " + fmtU(v1, unit, isRoot ? 1 : undefined) + (unit.indexOf("%") === 0 ? "" : " " + unit) + (FORM[id] ? " · " + FORM[id] : "") }),
+        F.el("span", { class: "sh", text: leaf ? "ROIC " + pp(a.shapley.by[id], 2) : "" })]);
+      row.style.marginLeft = (depth * 12) + "px";
+      box.appendChild(row);
+      if (n) n.kids.forEach((k) => walk(k, depth + 1));
+    })("roic", 0);
+    host.appendChild(box);
+  }
+
+  function drawTree(a) {
+    const host = $("tree"); host.textContent = "";
+    if (host.clientWidth < 720) { drawOutline(a, host); return; }
+    const colW = 182, bw = 158, bh = 56, rowH = 76, padL = 8, padT = 10;
+    const maxD = Math.max.apply(null, Object.keys(LAY.pos).map((k) => LAY.pos[k].depth));
+    const W = padL + (maxD + 1) * colW, H = padT * 2 + LAY.rows * rowH;
+    const svg = F.svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, style: "width: " + W + "px; height: " + H + "px; max-width: none", role: "img", "aria-label": "ROIC 가치동인 트리" }, host);
+    const X = (d) => padL + d * colW, Y = (row) => padT + row * rowH + (rowH - bh) / 2;
+    const tip = F.makeTip(host);
+    const val = (id, which) => (K.NODES[id] ? a[which][id] : x[id][which === "plan" ? "plan" : "act"]);
+    const meta = (id) => K.NODES[id] || D[id];
+    /* 연결선 */
+    Object.keys(K.NODES).forEach((id) => {
+      const p = LAY.pos[id];
+      K.NODES[id].kids.forEach((k) => {
+        const c = LAY.pos[k], x1 = X(p.depth) + bw, y1 = Y(p.row) + bh / 2, x2 = X(c.depth), y2 = Y(c.row) + bh / 2, xm = x1 + (x2 - x1) / 2;
+        F.svgEl("path", { d: "M" + x1 + "," + y1 + "H" + xm + "V" + y2 + "H" + x2, fill: "none", stroke: F.css("--rule"), "stroke-width": 1.5 }, svg);
+      });
+    });
+    const maxSh = Math.max.apply(null, K.KEYS.map((k) => Math.abs(a.shapley.by[k]))) || 1;
+    Object.keys(LAY.pos).forEach((id) => {
+      const p = LAY.pos[id], m = meta(id), v0 = val(id, "plan"), v1 = val(id, "act");
+      const pctUnit = m.unit === "%" || m.unit === "% 매출";
+      const ch = pctUnit ? v1 - v0 : (v0 ? v1 / v0 - 1 : 0), eps = pctUnit || id === "roic" ? 0.05 : 0.0005, good = ch * m.dir > eps, bad = ch * m.dir < -eps;
+      const col = good ? F.css("--pos") : bad ? F.css("--neg") : F.css("--rule");
+      const bx = X(p.depth), by = Y(p.row), isRoot = id === "roic";
+      const g = F.svgEl("g", { tabindex: "0", role: "button" }, svg);
+      F.svgEl("rect", { x: bx, y: by, width: bw, height: bh, rx: 6, fill: isRoot ? "color-mix(in srgb, " + F.css("--ink") + " 6%, " + F.css("--surface") + ")" : F.css("--surface"), stroke: col, "stroke-width": good || bad ? 1.8 : 1 }, g);
+      F.svgEl("rect", { x: bx, y: by, width: 4, height: bh, rx: 2, fill: col }, g);
+      F.svgText(g, bx + 12, by + 18, m.label, { style: "font-size: 12.5px; font-weight: 700; fill: " + F.css("--ink") });
+      const chTxt = pctUnit || isRoot ? pp(ch, 1) : (ch >= 0 ? "+" : "−") + F.num(Math.abs(ch) * 100, 1) + "%";
+      F.svgText(g, bx + bw - 6, by + 18, chTxt, { class: "v", "text-anchor": "end", style: "font-size: 11px; font-weight: 600; fill: " + (good ? F.css("--pos") : bad ? F.css("--neg-ink") : F.css("--muted")) });
+      const unit = isRoot ? "%" : m.unit;
+      F.svgText(g, bx + 12, by + 38, fmtU(v0, unit, isRoot ? 1 : undefined) + " → " + fmtU(v1, unit, isRoot ? 1 : undefined) + (unit === "%" || unit === "% 매출" ? "" : " " + unit), { class: "v", style: "font-size: 11.5px; fill: " + F.css("--ink-2") });
+      if (m.uses) F.svgText(g, bx + 12, by + 51, "＋" + m.uses + " 사용", { style: "font-size: 10px; fill: " + F.css("--muted") });
+      if (p.leaf) {
+        const s = a.shapley.by[id], w = Math.abs(s) / maxSh * (bw - 70), mid = bx + 12;
+        F.svgEl("rect", { x: mid, y: by + 46, width: Math.max(1, w), height: 5, rx: 2, fill: s >= 0 ? F.css("--pos") : F.css("--neg") }, g);
+        F.svgText(g, bx + bw - 6, by + 52, pp(s, 2), { class: "v", "text-anchor": "end", style: "font-size: 10.5px; fill: " + F.css("--ink-2") });
+      }
+      const rows = [["계획", fmtU(v0, unit, 1) + (unit.indexOf("%") === 0 ? "" : " " + unit)], ["실적", fmtU(v1, unit, 1) + (unit.indexOf("%") === 0 ? "" : " " + unit)]];
+      if (FORM[id]) rows.push(["계산식", FORM[id]]);
+      if (p.leaf) rows.push(["ROIC 기여", pp(a.shapley.by[id], 3)], ["담당", D[id].owner]);
+      const hit = F.svgEl("rect", { class: "hit", x: bx, y: by, width: bw, height: bh }, g);
+      F.wireHit(hit, host, tip, () => ({ title: m.label, rows: rows }));
+    });
+  }
+
+  /* ---------- 다리(waterfall, 가로) ---------- */
+  function drawBridge(a) {
+    const items = K.KEYS.map((k) => ({ k: k, label: D[k].label, v: a.shapley.by[k] })).filter((i) => Math.abs(i.v) > 1e-9).sort((p, q) => Math.abs(q.v) - Math.abs(p.v));
+    const rowH = 26, padT = 10, padB = 26, n = items.length + 2, H = padT + padB + rowH * n;
+    const fr = F.plotFrame($("wf-chart"), H, "계획 ROIC에서 실적 ROIC로 가는 지표별 기여"), svg = fr.svg, W = fr.W, padL = Math.min(130, W * 0.32), padR = 58;
+    let cum = a.plan.roic; const pts = [a.plan.roic];
+    items.forEach((i) => { i.from = cum; cum += i.v; i.to = cum; pts.push(cum); });
+    const t = F.niceTicks(Math.min.apply(null, pts) - 0.2, Math.max.apply(null, pts) + 0.2, 5);
+    const X = (v) => padL + (v - t.lo) / (t.hi - t.lo) * (W - padL - padR);
+    t.ticks.forEach((v) => { F.svgEl("line", { class: "grid", x1: X(v), x2: X(v), y1: padT, y2: H - padB }, svg); F.svgText(svg, X(v), H - 8, F.num(v, 1) + "%", { "text-anchor": "middle" }); });
+    const row = (i, label, cls) => { const y = padT + i * rowH; F.svgText(svg, padL - 8, y + rowH / 2 + 4, label, { class: "b-lab", "text-anchor": "end", style: cls ? "font-weight: 700" : null }); return y; };
+    let y = row(0, "계획 ROIC", true);
+    F.svgEl("line", { x1: X(a.plan.roic), x2: X(a.plan.roic), y1: y + 3, y2: y + rowH - 3, stroke: F.css("--ink"), "stroke-width": 3 }, svg);
+    F.svgText(svg, X(a.plan.roic) + 6, y + rowH / 2 + 4, F.num(a.plan.roic, 2) + "%", { class: "c-lab" });
+    items.forEach((i, j) => {
+      y = row(j + 1, i.label);
+      F.svgEl("rect", { x: Math.min(X(i.from), X(i.to)), width: Math.max(1, Math.abs(X(i.to) - X(i.from))), y: y + 5, height: rowH - 10, rx: 2, fill: i.v >= 0 ? F.css("--pos") : F.css("--neg") }, svg);
+      F.svgText(svg, W - padR + 6, y + rowH / 2 + 4, pp(i.v, 2), { class: "b-val" });
+    });
+    y = row(n - 1, "실적 ROIC", true);
+    F.svgEl("line", { x1: X(a.act.roic), x2: X(a.act.roic), y1: y + 3, y2: y + rowH - 3, stroke: F.css("--ink"), "stroke-width": 3 }, svg);
+    F.svgText(svg, X(a.act.roic) + 6, y + rowH / 2 + 4, F.num(a.act.roic, 2) + "%", { class: "c-lab" });
+  }
+
+  function drawOwners(a) {
+    const O = a.owners, rowH = 32, padT = 8, padB = 26, H = padT + padB + rowH * O.length;
+    const fr = F.plotFrame($("own-chart"), H, "조직별 ROIC 기여"), svg = fr.svg, W = fr.W, padL = 80, padR = 60;
+    const lo = Math.min(0, Math.min.apply(null, O.map((o) => o.v))), hi = Math.max(0, Math.max.apply(null, O.map((o) => o.v))), t = F.niceTicks(lo, hi, 4);
+    const X = (v) => padL + (v - t.lo) / (t.hi - t.lo) * (W - padL - padR);
+    t.ticks.forEach((v) => { F.svgEl("line", { class: v === 0 ? "base" : "grid", x1: X(v), x2: X(v), y1: padT, y2: H - padB }, svg); F.svgText(svg, X(v), H - 8, F.num(v, 1), { "text-anchor": "middle" }); });
+    O.forEach((o, i) => { const y = padT + i * rowH;
+      F.svgText(svg, padL - 8, y + rowH / 2 + 4, o.owner, { class: "b-lab", "text-anchor": "end" });
+      F.svgEl("rect", { x: Math.min(X(0), X(o.v)), width: Math.max(1, Math.abs(X(o.v) - X(0))), y: y + 7, height: rowH - 14, rx: 2, fill: o.v >= 0 ? F.css("--pos") : F.css("--neg") }, svg);
+      F.svgText(svg, W - padR + 6, y + rowH / 2 + 4, pp(o.v, 2), { class: "b-val" }); });
+    $("own-note").textContent = "조직 KPI 평가는 이 숫자와 같은 방향이어야 합니다. 예를 들어 구매 KPI가 '목표 달성'인데 구매 담당 지표의 ROIC 기여가 " + pp(O[0].owner === "구매" ? O[0].v : (O.find((o) => o.owner === "구매") || { v: 0 }).v, 2) + "라면, KPI가 회사 목표와 어긋나게 설계된 것입니다. 환율·원자재 시세처럼 통제할 수 없는 요인은 평가 전에 따로 걷어 냅니다.";
+    /* 순차 대입법: 트리 순서 vs 거꾸로 */
+    const P = K.pick(x, "plan"), A = K.pick(x, "act"), seq = (order) => { const v = Object.assign({}, P), out = {}; let prev = K.calc(v, wacc).roic; order.forEach((k) => { v[k] = A[k]; const now = K.calc(v, wacc).roic; out[k] = now - prev; prev = now; }); return out; };
+    const fwd = seq(K.KEYS), back = seq(K.KEYS.slice().reverse());
+    const top = K.KEYS.slice().sort((p, q) => Math.abs(a.shapley.by[q]) - Math.abs(a.shapley.by[p])).slice(0, 4);
+    const tb = $("seq"); tb.textContent = "";
+    tb.appendChild(F.el("thead", null, [F.el("tr", null, ["지표", "앞에서부터 대입", "뒤에서부터 대입", "샤플리 값"].map((h) => F.el("th", { text: h })))]));
+    const body = F.el("tbody");
+    top.forEach((k) => body.appendChild(F.el("tr", null, [F.el("td", { text: D[k].label }), F.el("td", { text: pp(fwd[k], 3) }), F.el("td", { text: pp(back[k], 3) }), F.el("td", { text: pp(a.shapley.by[k], 3) })])));
+    tb.appendChild(body);
+  }
+
+  function drawLevers(a) {
+    const t = $("lev"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["순위", "지표", "담당", "1% 개선 시 ROIC", "ROIC +1%p에 필요한 변화", "실적 변화"].map((h, i) => F.el("th", { class: i === 1 || i === 2 ? "l" : null, text: h })))]));
+    const tb = F.el("tbody");
+    a.levers.forEach((l, i) => {
+      const L = x[l.key], pu = L.unit === "%" || L.unit === "% 매출", chg = pu ? L.act - L.plan : L.act / L.plan - 1, good = chg * L.dir > 0;
+      tb.appendChild(F.el("tr", null, [F.el("td", { text: String(i + 1) }), F.el("td", { class: "l txt", text: L.label }), F.el("td", { class: "own l", text: L.owner }), F.el("td", { text: pp(l.d1, 3) }),
+        F.el("td", { text: l.need === null ? "단독으로는 불가" : (L.dir > 0 ? "+" : "−") + F.num(l.need * 100, 1) + "% (" + fmtU(L.plan * (1 + L.dir * l.need), L.unit) + (pu ? "" : " " + L.unit) + ")" }),
+        F.el("td", { class: Math.abs(chg) < 1e-12 ? null : good ? "pos" : "neg", text: Math.abs(chg) < 1e-12 ? "–" : pu ? (chg >= 0 ? "+" : "−") + F.num(Math.abs(chg), 1) + "%p" : (chg >= 0 ? "+" : "−") + F.num(Math.abs(chg) * 100, 1) + "%" })]));
+    });
+    t.appendChild(tb);
+  }
+
+  function buildInputs() {
+    const t = $("inp"); t.textContent = "";
+    t.appendChild(F.el("thead", null, [F.el("tr", null, ["지표", "단위", "담당", "계획", "실적", "ROIC 기여"].map((h, i) => F.el("th", { class: i === 1 || i === 2 ? "l" : null, text: h })))]));
+    const tb = F.el("tbody");
+    K.KEYS.forEach((k) => {
+      const L = x[k], mk = (w) => { const inp = F.el("input", { type: "number", inputmode: "decimal", step: L.unit === "%" || L.unit === "% 매출" ? 0.1 : L.unit === "억원" ? 5 : L.unit === "일" ? 1 : 10, min: 0, value: L[w], id: "in-" + k + "-" + w, "aria-label": L.label + " " + (w === "plan" ? "계획" : "실적") });
+        inp.addEventListener("input", () => { const v = Number(inp.value); if (inp.value.trim() !== "" && isFinite(v) && v > 0) { L[w] = v; render(); } }); return inp; };
+      tb.appendChild(F.el("tr", null, [F.el("td", { text: L.label }), F.el("td", { class: "own l", text: L.unit }), F.el("td", { class: "own l", text: L.owner }), F.el("td", null, [mk("plan")]), F.el("td", null, [mk("act")]), F.el("td", { id: "sh-" + k })]));
+    });
+    t.appendChild(tb);
+  }
+
+  function render() {
+    const a = K.analyze(x, wacc), P = a.plan, A = a.act;
+    K.KEYS.forEach((k) => { const c = $("sh-" + k), v = a.shapley.by[k]; c.textContent = Math.abs(v) < 1e-12 ? "–" : pp(v, 3); c.className = v > 1e-12 ? "pos" : v < -1e-12 ? "neg" : ""; });
+    F.setValue($("k-roic"), F.num(A.roic, 1), "%", A.roic < wacc); $("k-roic-sub").textContent = "계획 " + F.num(P.roic, 1) + "% · " + pp(A.roic - P.roic, 1);
+    F.setValue($("k-eva"), F.money(A.eva, 1), "억원", A.eva < 0); $("k-eva-sub").textContent = "계획 " + F.money(P.eva, 1) + " · WACC " + F.num(wacc, 1) + "%";
+    F.setValue($("k-opm"), F.num(A.opm, 1), "%"); $("k-opm-sub").textContent = "계획 " + F.num(P.opm, 1) + "% · " + pp(A.opm - P.opm, 1);
+    F.setValue($("k-turn"), F.num(A.turn, 3), "회"); $("k-turn-sub").textContent = "계획 " + F.num(P.turn, 3) + "회";
+    drawTree(a); drawBridge(a); drawOwners(a); drawLevers(a);
+
+    const items = K.KEYS.map((k) => ({ k: k, v: a.shapley.by[k] })).sort((p, q) => p.v - q.v), neg = items.filter((i) => i.v < -1e-9), pos = items.filter((i) => i.v > 1e-9).reverse();
+    const memo = $("k-memo"); memo.textContent = "";
+    memo.append("ROIC가 계획 " + F.num(P.roic, 1) + "%에서 ", F.el("b", { text: F.num(A.roic, 1) + "%" }), "로 " + pp(A.roic - P.roic, 1) + " 바뀌어, WACC " + F.num(wacc, 1) + "% 기준 EVA가 " + F.money(P.eva, 0) + "억원에서 " + F.money(A.eva, 0) + "억원이 됐습니다. ");
+    if (neg.length) memo.append("가장 크게 끌어내린 것은 " + neg.slice(0, 2).map((i) => D[i.k].label + "(" + pp(i.v, 2) + ")").join("과 ") + "이고, ");
+    if (pos.length) memo.append(pos.slice(0, 1).map((i) => D[i.k].label + "(" + pp(i.v, 2) + ")").join("") + "이 일부를 메웠습니다. ");
+    const lv = a.levers.slice(0, 3).map((l) => l.label).join(", ");
+    memo.append("조직별로는 " + a.owners.slice(0, 2).map((o) => o.owner + " " + pp(o.v, 2)).join(", ") + "입니다. 같은 1% 개선으로 ROIC를 가장 많이 올리는 레버는 " + lv + " 순입니다.");
+
+    const chk = $("k-check"); chk.textContent = "";
+    const sum = K.KEYS.reduce((s, k) => s + a.shapley.by[k], 0);
+    const idt = (c) => Math.abs(c.op - (c.rev - c.cogs - c.sga)) < 1e-9 && Math.abs(c.nwc - (c.ar + c.inv - c.ap)) < 1e-9 && Math.abs(c.cogs - (c.matc + c.conv)) < 1e-9 && Math.abs(c.roic - c.nopat / c.ic * 100) < 1e-9;
+    const P2 = K.pick(x, "plan"), A2 = K.pick(x, "act"), fwdSum = (() => { const v = Object.assign({}, P2); K.KEYS.forEach((k) => { v[k] = A2[k]; }); return K.calc(v, wacc).roic - K.calc(P2, wacc).roic; })();
+    [["샤플리 기여의 합 = 실적 ROIC − 계획 ROIC", Math.abs(sum - (A.roic - P.roic)) < 1e-9],
+     ["트리 항등식: 영업이익·매출원가·순운전자본·ROIC", idt(P) && idt(A)],
+     ["순차 대입의 합도 총차이와 같다(지표별 몫만 순서에 따라 다름)", Math.abs(fwdSum - (A.roic - P.roic)) < 1e-9]
+    ].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+
+  $("k-wacc").value = wacc;
+  $("k-wacc").addEventListener("input", () => { wacc = F.readNum($("k-wacc"), K.WACC); render(); });
+  $("k-same").addEventListener("click", () => { K.KEYS.forEach((k) => { x[k].act = x[k].plan; }); buildInputs(); render(); });
+  $("k-reset").addEventListener("click", () => { x = JSON.parse(JSON.stringify(D)); wacc = K.WACC; $("k-wacc").value = wacc; buildInputs(); render(); });
+  buildInputs(); render();
+  F.onRedraw(render);
+})();
+</script>
+</body>
+</html>

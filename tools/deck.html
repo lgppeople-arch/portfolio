@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>보고서·PPT 작성 원칙 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="피라미드 원칙, 액션 타이틀, MECE, 그리드·위계·색, IBCS 표기와 숫자 표기 약속을 고치기 전·후 슬라이드로 보여 주는 보고서 작성 노트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="보고서·PPT 작성 원칙 · 이기표">
+<meta property="og:description" content="피라미드 원칙, 액션 타이틀, MECE, 그리드·위계·색, IBCS 표기와 숫자 표기 약속을 고치기 전·후 슬라이드로 보여 주는 보고서 작성 노트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/deck.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 460px; }
+  /* 피라미드 */
+  .pyr { display: grid; gap: 14px; margin: 18px 0; }
+  .pyr .top { justify-self: center; max-width: 560px; text-align: center; background: var(--ink); color: var(--surface); border-radius: var(--radius); padding: 14px 18px; font-weight: 700; line-height: 1.5; }
+  .pyr .top small { display: block; font-weight: 400; font-size: 12px; opacity: .75; margin-bottom: 4px; }
+  .pyr .mid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; position: relative; }
+  .pyr .mid > div { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+  .pyr .mid b { font-size: var(--s-2); line-height: 1.45; }
+  .pyr .mid ul { margin: 0; padding-left: 1em; font-size: var(--s-1); color: var(--ink-2); line-height: 1.6; }
+  @media (max-width: 760px) { .pyr .mid { grid-template-columns: minmax(0, 1fr); } }
+  table.tb { border-collapse: collapse; width: 100%; font-size: var(--s-1); margin: 12px 0 8px; }
+  table.tb th, table.tb td { padding: 9px 10px; border-bottom: 1px solid var(--rule-soft); text-align: left; vertical-align: top; line-height: 1.6; }
+  table.tb thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
+  table.tb td.bad { color: var(--ink-2); }
+  table.tb td.bad::before { content: "✕ "; color: var(--neg); font-weight: 700; }
+  table.tb td.good { color: var(--ink); font-weight: 600; }
+  table.tb td.good::before { content: "○ "; color: var(--pos); font-weight: 700; }
+  table.tb td.mono { font-family: var(--f-num); }
+  /* 슬라이드: 실제 장표처럼 테마와 무관하게 흰 바탕 */
+  .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin: 14px 0 6px; }
+  @media (max-width: 900px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+  .pair figure { margin: 0; display: grid; gap: 6px; }
+  .pair figcaption { font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+  .pair figcaption b { font-size: 12px; letter-spacing: .03em; }
+  .pair figcaption b.x { color: var(--neg-ink); }
+  .pair figcaption b.o { color: var(--pos); }
+  .slide { container-type: inline-size; aspect-ratio: 16 / 9; background: #FFFFFF; color: #1B2430; border: 1px solid var(--rule); border-radius: 6px; box-shadow: 0 6px 18px rgba(0, 0, 0, .08); position: relative; overflow: hidden; font-family: var(--f-body); }
+  .slide .in { position: absolute; inset: 5.2cqw 5.6cqw 3.6cqw; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 2.2cqw; }
+  .slide .kick { font-size: 1.5cqw; color: #6B7684; letter-spacing: .04em; }
+  .slide h5 { margin: .5cqw 0 0; font-size: 2.75cqw; line-height: 1.32; font-weight: 700; letter-spacing: -.01em; }
+  .slide .body { display: grid; grid-template-columns: 1.35fr 1fr; gap: 3cqw; min-height: 0; }
+  .slide .body.one { grid-template-columns: 1fr; }
+  .slide .body svg { width: 100%; height: 100%; display: block; }
+  .slide .msgs { display: grid; gap: 1.6cqw; align-content: start; font-size: 1.62cqw; line-height: 1.45; }
+  .slide .msgs div { border-left: .45cqw solid #1F4FD1; padding-left: 1.3cqw; }
+  .slide .msgs b { display: block; font-size: 1.75cqw; }
+  .slide .foot { display: flex; justify-content: space-between; font-size: 1.15cqw; color: #8A94A0; border-top: 1px solid #E3E7EB; padding-top: .9cqw; }
+  .slide.bad h5 { font-size: 3.4cqw; text-align: center; font-family: "Gothic A1", var(--f-body); color: #0B3D91; }
+  .slide.bad .dense { font-size: 1.05cqw; border-collapse: collapse; width: 100%; }
+  .slide.bad .dense td, .slide.bad .dense th { border: 1px solid #9AA3AD; padding: .25cqw .5cqw; text-align: right; font-family: var(--f-num); }
+  .slide.bad .dense th { background: #DCE6F5; text-align: center; }
+  .slide.bad .dense td:first-child { text-align: left; font-family: var(--f-body); }
+  /* 표기 견본 */
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+  .swatches span { display: grid; gap: 4px; font-size: 12px; color: var(--ink-2); font-family: var(--f-num); }
+  .swatches i { width: 64px; height: 30px; border-radius: 4px; border: 1px solid var(--rule); }
+  .checklist2 { counter-reset: ck; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 22px; margin: 12px 0; padding: 0; list-style: none; }
+  @media (max-width: 760px) { .checklist2 { grid-template-columns: minmax(0, 1fr); } }
+  .checklist2 li { counter-increment: ck; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; font-size: var(--s-1); line-height: 1.6; color: var(--ink-2); padding: 8px 0; border-bottom: 1px solid var(--rule-soft); }
+  .checklist2 li::before { content: counter(ck, decimal-leading-zero); font-family: var(--f-num); color: var(--accent); font-weight: 600; }
+  .checklist2 li b { color: var(--ink); }
+  .ibcs svg text { font-family: var(--f-body); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">보고·시각화</span><a href="deck.html" aria-current="page">보고서·PPT 작성 원칙</a><a href="charts.html">차트 선택과 디자인</a><a href="sources.html">정보 출처와 참고 자료</a></div></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 보고서·PPT 작성 원칙</div>
+      <div class="rpt-tag">Practice note · 07</div>
+      <h1>결론부터,<br>한 장에 한 메시지</h1>
+      <p class="dek">경영회의 자료는 읽히는 시간이 짧습니다. 결론을 먼저 말하고, 제목만 읽어도 이야기가 이어지게 쓰고, 숫자와 색은 약속대로 표기해야 합니다. 월 손익 보고와 투자심의 자료를 만들며 지켜 온 원칙을, 같은 내용을 고치기 전과 후의 슬라이드로 보여 드립니다.</p>
+      <div class="rpt-meta"><span>다루는 것<b>구조 · 제목 · 설계 · 표기</b></span><span>예시<b>가상 제조사의 월 경영회의 자료</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="takeaways">
+      <div><b>결론이 맨 위에 옵니다</b><p>보고받는 사람의 첫 질문은 "그래서 무엇을 하자는 것인가"입니다. 결론 → 근거 3개 → 자료 순서로 쌓으면, 중간에 끊겨도 핵심은 전달됩니다.</p></div>
+      <div><b>제목은 문장으로 씁니다</b><p>"3분기 실적"이 아니라 "1~9월 영업이익은 계획보다 26억원 적고, 판매량과 재료비가 원인"처럼 씁니다. 제목만 이어 읽어도 보고가 되는지 확인합니다.</p></div>
+      <div><b>표기는 약속대로 합니다</b><p>실적·계획·전망을 같은 모양으로 그리고, 좋은 차이와 나쁜 차이를 같은 색으로 칠하면, 장마다 범례를 읽지 않아도 됩니다.</p></div>
+    </div>
+
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-pyr" data-toc="결론부터: 피라미드" data-group="구조">
+          <h2>결론부터 쌓는다: 피라미드 원칙</h2>
+          <p>바바라 민토의 피라미드 원칙은 <b>결론 하나를 맨 위에 두고, 그 아래에 결론을 받치는 근거를 서로 겹치지 않게 세 개 안팎으로, 다시 그 아래에 자료를</b> 두는 방식입니다. 보고서는 이 피라미드를 위에서 아래로 읽게 만든 것입니다. <a href="kpi-tree.html">KPI 트리</a>의 가상 회사로 예를 들면 이렇습니다.</p>
+          <div class="pyr" data-rv>
+            <div class="top"><small>결론(답)</small>ROIC가 계획보다 2.4%p 낮아져 WACC에 거의 닿았습니다. 4분기에는 재료비와 운전자본 두 가지를 동시에 잡아야 합니다.</div>
+            <div class="mid">
+              <div><b>이익: 판매량과 재료비가 영업이익 39억원을 깎았습니다</b><ul><li>판매량 −4.2% → −20억원</li><li>투입 재료비 +4.5% → −19억원</li><li>단가 인상 +1.7%가 17억원을 메움</li></ul></div>
+              <div><b>자본: 운전자본이 28억원 늘어 투하자본이 커졌습니다</b><ul><li>매출채권 회전일수 60 → 66일</li><li>재고 회전일수 45 → 52일</li><li>유형자산 +30억원</li></ul></div>
+              <div><b>조치: 구매·생산·영업 세 조직의 공동 과제입니다</b><ul><li>구매: 재료비 단가 재협상</li><li>생산: 수율 93.5 → 95% 회복</li><li>영업: 장기 미회수 채권 회수</li></ul></div>
+            </div>
+          </div>
+          <h3>도입은 SCQA로</h3>
+          <p>첫 장(요약)은 상황(Situation) → 문제(Complication) → 질문(Question) → 답(Answer) 순서로 쓰면, 듣는 사람이 왜 이 보고를 들어야 하는지부터 납득합니다. 답은 위 피라미드의 맨 위와 같아야 합니다.</p>
+          <table class="tb">
+            <thead><tr><th style="width: 18%">단계</th><th>예시 문장</th></tr></thead>
+            <tbody>
+              <tr><td><b>상황</b></td><td>올해 계획은 ROIC 11.1%로, WACC 8%를 3%p 넘는 수준이었습니다.</td></tr>
+              <tr><td><b>문제</b></td><td>9월까지의 실적을 연환산하면 ROIC가 8.7%로 내려가, 가치를 만드는 폭(EVA)이 41억원에서 10억원으로 줄었습니다.</td></tr>
+              <tr><td><b>질문</b></td><td>남은 3개월에 무엇을 바꾸면 ROIC를 10% 위로 되돌릴 수 있습니까?</td></tr>
+              <tr><td><b>답</b></td><td>재료비 단가와 수율, 매출채권·재고 일수를 함께 잡으면 됩니다. 효과가 큰 순서와 조직별 몫은 다음 장에 있습니다.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="s-title" data-toc="제목은 문장으로">
+          <h2>제목은 문장으로: 액션 타이틀</h2>
+          <p>슬라이드 제목은 그 장에서 하고 싶은 말을 <b>숫자가 들어간 한 문장</b>으로 씁니다. 그러면 바쁜 사람은 제목만 읽고 넘어가도 보고의 줄거리를 압니다. 제목을 다 쓴 뒤에는 제목만 순서대로 이어 읽어 봅니다. 이야기가 이어지지 않으면 장의 순서나 근거가 잘못된 것입니다.</p>
+          <table class="tb">
+            <thead><tr><th style="width: 34%">이렇게 쓰지 않고</th><th>이렇게 씁니다</th></tr></thead>
+            <tbody>
+              <tr><td class="bad">3분기 누계 손익 현황</td><td class="good">1~9월 영업이익은 계획보다 26억원 적고, 판매량과 재료비가 29억원을 깎았습니다</td></tr>
+              <tr><td class="bad">월별 매출 추이</td><td class="good">매출은 8월부터 3개월 연속 계획을 밑돌아, 연간 전망을 2% 낮춥니다</td></tr>
+              <tr><td class="bad">고정비 구성</td><td class="good">고정비의 72%가 인건비·감가상각·수선유지 세 항목이라, 절감 과제는 여기서 찾습니다</td></tr>
+              <tr><td class="bad">투자 타당성 검토 결과</td><td class="good">NPV는 42억원이지만 손실 확률이 44%라, 두 단계로 나눠 짓는 안을 권합니다</td></tr>
+              <tr><td class="bad">향후 계획</td><td class="good">11월까지 재료비 단가 3%를 다시 협상하면 연간 ROIC가 0.7%p 오릅니다</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">기준: 두 줄 이내, 숫자 하나 이상, '그래서'가 드러나는 동사. 제목과 본문 그림이 같은 말을 해야 합니다.</p>
+        </section>
+
+        <section id="s-mece" data-toc="MECE와 이슈 트리">
+          <h2>빠짐없이, 겹침없이: MECE</h2>
+          <p>근거를 나눌 때는 <b>서로 겹치지 않고(Mutually Exclusive) 합치면 전체가 되게(Collectively Exhaustive)</b> 나눕니다. 겹치면 같은 원인을 두 번 세고, 빠지면 설명되지 않는 차이가 남습니다. 손익 차이라면 수식으로 나누는 것이 가장 확실한 MECE입니다.</p>
+          <table class="tb">
+            <thead><tr><th style="width: 34%">겹치거나 빠진 분류</th><th>MECE한 분류</th></tr></thead>
+            <tbody>
+              <tr><td class="bad">매출 감소 원인: 경기 둔화, 경쟁 심화, 판매량 감소, 단가 하락</td><td class="good">매출 차이 = 판매량 효과 + 단가 효과 + 제품 구성 효과 + 환율 효과 (경기·경쟁은 각 효과의 원인으로 한 단계 아래에)</td></tr>
+              <tr><td class="bad">비용 절감 과제: 인건비, 생산비, 외주비, 공장 경비</td><td class="good">고정비(인건비·감가상각·수선유지·기타)와 변동비(재료비·외주가공·물류), 생산비는 이 둘을 가로지르므로 따로 두지 않음</td></tr>
+              <tr><td class="bad">투자 위험: 시장 위험, 수요 위험, 가격 위험</td><td class="good">현금흐름을 만드는 식 그대로: 물량(수요·가동률) × 가격 − 원가 − 투자비, 그리고 할인율</td></tr>
+            </tbody>
+          </table>
+          <p>수식으로 나눈 분류는 숫자로 검산할 수 있습니다. 각 효과를 더하면 총차이와 정확히 같아야 하고, 이 사이트의 <a href="post-review.html">투자 사후관리</a>와 <a href="kpi-tree.html">KPI 트리</a>는 그 합이 맞는지 화면에서 확인합니다.</p>
+        </section>
+
+        <section id="s-layout" data-toc="그리드·위계·색" data-group="설계">
+          <h2>슬라이드 설계: 그리드, 위계, 색</h2>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>한 장의 뼈대</h4><span class="muted" style="font-size: 12px">16:9, 바깥 여백과 12열 그리드</span></div>
+            <div class="fig-b"><div class="slide" id="grid-demo"></div></div>
+            <div class="fig-s">제목·본문·각주의 자리를 모든 장에서 같게 두면, 장을 넘겨도 눈이 같은 곳에서 출발합니다. 그림과 글은 그리드 선에 맞춰 시작하고 끝납니다.</div>
+          </div>
+          <div class="notecards">
+            <div class="notecard"><span class="n">위계</span><b>글자 크기는 세 단계면 충분합니다</b><p>제목, 본문, 각주. 장표 기준으로 흔히 제목 24~28pt, 본문 14~18pt, 각주 9~10pt를 씁니다. 굵기로 위계를 하나 더 만들 수 있지만, 서체는 한두 가지로 제한합니다.</p></div>
+            <div class="notecard"><span class="n">색</span><b>기본은 회색, 강조는 한 색</b><p>모든 막대에 색을 칠하면 아무것도 강조되지 않습니다. 대부분을 회색으로 두고, 말하고 싶은 한 곳만 강조색을 씁니다. 빨강·초록은 '나쁨·좋음'이라는 뜻이 있을 때만 씁니다.</p></div>
+            <div class="notecard"><span class="n">정렬</span><b>눈에 보이지 않는 선에 맞춥니다</b><p>숫자는 오른쪽 정렬, 글은 왼쪽 정렬, 소수점 자릿수는 열마다 같게. 상자 사이 간격도 같게 두면 정돈돼 보이고, 다른 간격은 '다른 무리'라는 신호가 됩니다.</p></div>
+            <div class="notecard"><span class="n">여백</span><b>채우지 말고 덜어 냅니다</b><p>한 장에 메시지 하나, 그림 하나가 기본입니다. 할 말이 두 개면 두 장으로 나눕니다. 세부 자료는 부록으로 보내고 본문에는 결론에 필요한 숫자만 남깁니다.</p></div>
+          </div>
+        </section>
+
+        <section id="s-ibcs" data-toc="표기 약속(IBCS)">
+          <h2>표기 약속: 실적·계획·전망과 차이</h2>
+          <p>국제 비즈니스 커뮤니케이션 표준(IBCS)은 보고서의 그림을 악보처럼 약속된 기호로 그리자고 제안합니다. 핵심은 <b>같은 뜻은 같은 모양으로</b>입니다. 이 사이트의 손익·투자 도구도 이 방식을 따릅니다.</p>
+          <div class="fig ibcs" data-rv>
+            <div class="fig-h"><h4>시나리오와 차이의 기호</h4></div>
+            <div class="fig-b"><svg id="ibcs" viewBox="0 0 760 210" role="img" aria-label="실적, 전년, 계획, 전망과 차이 표기 견본" style="width: 100%; height: auto"></svg></div>
+            <div class="fig-s">실적(AC)은 진한 색 채움, 전년(PY)은 회색 채움, 계획(PL)은 테두리만, 전망(FC)은 빗금. 차이는 좋으면 초록, 나쁘면 빨강이며, 비용처럼 줄수록 좋은 항목은 색의 뜻을 뒤집습니다.</div>
+          </div>
+          <p>IBCS는 이 밖에 일곱 가지 원칙(SUCCESS)을 정리합니다. 메시지를 말하라(Say), 표기를 통일하라(Unify), 정보를 압축하라(Condense), 시각적 왜곡을 점검하라(Check), 맞는 그림을 고르라(Express), 군더더기를 빼라(Simplify), 내용을 구조화하라(Structure).</p>
+          <h3>숫자 표기</h3>
+          <table class="tb">
+            <thead><tr><th style="width: 34%">흔한 실수</th><th>약속</th></tr></thead>
+            <tbody>
+              <tr><td class="bad mono">12.34% → 15.1% (2.76% 증가)</td><td class="good">비율의 차이는 %p: 12.3% → 15.1%(+2.8%p). 비율의 변화율이 필요하면 따로 "22% 늘었다"고 씁니다</td></tr>
+              <tr><td class="bad mono">1,234,567,890원 / 12.3억 / 1.2B</td><td class="good">한 장 안에서 단위 하나(억원)와 소수점 자릿수를 통일하고, 단위는 제목 옆이나 각주에 한 번만</td></tr>
+              <tr><td class="bad mono">-34 / △34 / (34) 혼용</td><td class="good">음수 표기는 하나로. 이 사이트는 금액은 괄호 (34), 비율 차이는 −2.4%p</td></tr>
+              <tr><td class="bad mono">합계 100 = 33.3 + 33.3 + 33.3</td><td class="good">반올림으로 합계가 안 맞으면 각주로 밝히거나, 가장 큰 항목에서 맞춥니다</td></tr>
+              <tr><td class="bad mono">3Q / 9월 / 누계 / YTD 혼용</td><td class="good">기간은 "2026년 1~9월 누계"처럼 처음 한 번 정확히, 이후 같은 말로</td></tr>
+              <tr><td class="bad">출처·기준일 없음</td><td class="good">각주에 "자료: 관리손익, 2026.9월 마감 기준, 단위 억원"을 항상</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="s-ba" data-toc="고치기 전·후 슬라이드" data-group="예시">
+          <h2>고치기 전과 후</h2>
+          <p>같은 숫자로 만든 장표입니다. 왼쪽은 흔히 보는 모습, 오른쪽은 위의 원칙을 적용한 모습입니다. 숫자는 <a href="kpi-tree.html">KPI 트리</a>·<a href="pl-report.html">월 손익 보고</a>의 가상 회사 것입니다.</p>
+          <h3>① 실적 보고: 표를 보여 주지 말고 결론을 보여 준다</h3>
+          <div class="pair" data-rv>
+            <figure><div class="slide bad" id="s1-bad"></div><figcaption><b class="x">고치기 전</b> 제목이 주제만 말하고, 숫자 70개가 같은 크기로 놓여 결론을 찾는 일을 읽는 사람에게 넘깁니다.</figcaption></figure>
+            <figure><div class="slide" id="s1-good"></div><figcaption><b class="o">고친 뒤</b> 제목이 결론을 말하고, 다리 차트가 차이의 구성을, 오른쪽 세 줄이 그래서 할 일을 말합니다. 세부 표는 부록으로.</figcaption></figure>
+          </div>
+          <h3>② 추이: 색을 덜어 내고 말하고 싶은 구간만 강조</h3>
+          <div class="pair" data-rv>
+            <figure><div class="slide bad" id="s2-bad"></div><figcaption><b class="x">고치기 전</b> 달마다 다른 색, 진한 격자, 멀리 떨어진 범례. 계획과의 비교가 없어 '좋은지 나쁜지'를 알 수 없습니다.</figcaption></figure>
+            <figure><div class="slide" id="s2-good"></div><figcaption><b class="o">고친 뒤</b> 계획을 테두리 막대로 함께 놓고, 계획을 밑돈 세 달만 강조색과 주석으로 짚었습니다.</figcaption></figure>
+          </div>
+          <h3>③ 구성: 원그래프 대신 정렬된 막대</h3>
+          <div class="pair" data-rv>
+            <figure><div class="slide bad" id="s3-bad"></div><figcaption><b class="x">고치기 전</b> 조각 여덟 개는 크기 비교가 어렵고, 비슷한 조각의 순서를 알 수 없습니다.</figcaption></figure>
+            <figure><div class="slide" id="s3-good"></div><figcaption><b class="o">고친 뒤</b> 큰 순서로 정렬하고 값을 막대 끝에 바로 적었습니다. 상위 세 항목만 진하게 칠해 제목의 72%가 눈에 보입니다.</figcaption></figure>
+          </div>
+        </section>
+
+        <section id="s-check" data-toc="보고 전 점검표">
+          <h2>보고 전 점검표</h2>
+          <ol class="checklist2">
+            <li><span><b>첫 장에 결론이 있는가.</b> 요약 한 장만 읽어도 무엇을 결정해야 하는지 안다.</span></li>
+            <li><span><b>제목만 이어 읽어도 이야기가 되는가.</b> 장의 순서가 논리의 순서다.</span></li>
+            <li><span><b>한 장에 메시지가 하나인가.</b> 둘이면 나눈다.</span></li>
+            <li><span><b>근거가 MECE한가.</b> 효과를 더하면 총차이와 같다.</span></li>
+            <li><span><b>그림이 제목과 같은 말을 하는가.</b> 강조색이 제목의 숫자를 가리킨다.</span></li>
+            <li><span><b>단위·기간·기준일이 있는가.</b> 각주에 자료와 마감 기준.</span></li>
+            <li><span><b>숫자 표기가 한 가지인가.</b> 소수점, 음수, %와 %p.</span></li>
+            <li><span><b>축이 0에서 시작하는가.</b> 막대는 반드시, 꺾은선은 생략 시 표시.</span></li>
+            <li><span><b>색은 회색과 강조 한 색인가.</b> 빨강·초록은 뜻이 있을 때만.</span></li>
+            <li><span><b>계획·실적·전망이 구분되는가.</b> 채움·테두리·빗금.</span></li>
+            <li><span><b>합계와 원천 자료가 맞는가.</b> 표와 그림, 본문 숫자가 같은 값.</span></li>
+            <li><span><b>다음 행동이 있는가.</b> 누가, 언제까지, 무엇을.</span></li>
+          </ol>
+          <p class="rpt-end">참고: 바바라 민토, 『The Pyramid Principle』; 진 젤라즈니, 『Say It with Charts』; 콜 너스바우머 내플릭, 『Storytelling with Data』; IBCS(International Business Communication Standards, ibcs.com). 더 많은 자료는 <a href="sources.html">정보 출처와 참고 자료</a>에, 차트 고르는 법은 <a href="charts.html">차트 선택과 디자인</a>에 정리했습니다. 예시 숫자는 모두 가상입니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/kpitree.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, $ = F.$;
+  /* 슬라이드 색: 장표는 테마와 무관하게 흰 바탕 */
+  const C = { ink: "#1B2430", mute: "#6B7684", grid: "#E3E7EB", gray: "#B7BEC6", gray2: "#8A94A0", hi: "#1F4FD1", pos: "#1E7B4F", neg: "#C2342C", rule: "#D5DBE1" };
+  const NS = "http://www.w3.org/2000/svg";
+  const s = (tag, a, p) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+  const t = (p, x, y, txt, a) => { const e = s("text", Object.assign({ x: x, y: y, fill: C.ink, "font-size": 13 }, a || {}), p); e.textContent = txt; return e; };
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
+
+  function shell(id, kick, title, foot, page) {
+    const host = $(id); host.textContent = "";
+    const inn = el("div", "in");
+    inn.appendChild(el("div", null, '<div class="kick">' + kick + '</div><h5>' + title + '</h5>'));
+    const body = el("div", "body"); inn.appendChild(body);
+    inn.appendChild(el("div", "foot", "<span>" + foot + "</span><span>" + page + "</span>"));
+    host.appendChild(inn); return body;
+  }
+
+  /* ---------- ① 실적 보고 ---------- */
+  function s1() {
+    /* KPI 트리 도구와 같은 가상 회사: 연간 계획·실적 전망 × 0.75 = 1~9월 누계 */
+    const K = window.KpiTreeEngine, a = K.analyze(JSON.parse(JSON.stringify(K.LEAVES))), r = 0.75, P = a.plan, A = a.act, sh = a.shOp.by, L = K.LEAVES;
+    const n0 = (v) => Math.round(v).toLocaleString("ko-KR"), n1 = (v) => (Math.round(v * 10) / 10).toFixed(1).replace("-", "−");
+    const bad = $("s1-bad"); bad.textContent = "";
+    const inn = el("div", "in"); bad.appendChild(inn);
+    inn.appendChild(el("h5", null, "3분기 누계 손익 현황"));
+    const row = (name, p, q, pct) => [name, p, q, q - p, pct ? null : (q / p - 1) * 100];
+    const rows = [row("매출액", P.rev * r, A.rev * r), row("매출원가", P.cogs * r, A.cogs * r), row("  재료비", P.matc * r, A.matc * r), row("  가공비", P.conv * r, A.conv * r), row("매출총이익", P.gp * r, A.gp * r),
+      row("판관비", P.sga * r, A.sga * r), row("  고정 판관비", L.fsga.plan * r, L.fsga.act * r), row("  변동 판관비", (P.sga - L.fsga.plan) * r, (A.sga - L.fsga.act) * r), row("영업이익", P.op * r, A.op * r),
+      row("영업이익률(%)", P.opm, A.opm, true), row("판매량(만 개)", L.q.plan * r, L.q.act * r), row("단가(원)", L.p.plan, L.p.act), row("수율(%)", L.yld.plan, L.yld.act, true)];
+    const tb = el("table", "dense"); tb.innerHTML = "<tr><th>구분</th><th>계획</th><th>실적</th><th>차이</th><th>차이율(%)</th><th>전년</th><th>전년비(%)</th></tr>" +
+      rows.map((q) => "<tr><td>" + q[0] + "</td><td>" + n1(q[1]) + "</td><td>" + n1(q[2]) + "</td><td style='color:" + (q[3] < 0 ? "#D00" : "#00A") + "'>" + n1(q[3]) + "</td><td>" + (q[4] === null ? "-" : n1(q[4])) + "</td><td>" + n1(q[1] * 0.93) + "</td><td>" + n1((q[2] / (q[1] * 0.93) - 1) * 100) + "</td></tr>").join("");
+    inn.appendChild(el("div", "body one")).appendChild(tb);
+    inn.appendChild(el("div", "foot", "<span></span><span>3</span>"));
+
+    const gap = (P.op - A.op) * r, qm = -(sh.q + sh.mat) * r;
+    const body = shell("s1-good", "월 경영회의 · 2026년 1~9월 누계", "영업이익은 계획보다 " + n0(gap) + "억원 적고, 판매량과 재료비가 " + n0(qm) + "억원을 깎았습니다", "자료: 관리손익(가상), 2026년 9월 마감 · 단위 억원 · 차이는 샤플리 값으로 나눔", "3");
+    const svg = s("svg", { viewBox: "0 0 520 300", preserveAspectRatio: "xMidYMid meet" }, body);
+    const rest = (sh.fconv + sh.vconv + sh.fsga + sh.vsga + sh.tax + sh.dso + sh.dio + sh.dpo + sh.ppe) * r;
+    const items = [["계획 영업이익", P.op * r, "t"], ["판매량", sh.q * r], ["투입 재료비", sh.mat * r], ["수율", sh.yld * r], ["단가", sh.p * r], ["가공비·판관비", rest], ["실적 영업이익", A.op * r, "t"]];
+    const X0 = 120, W = 360, max = 160, x = (v) => X0 + v / max * W; let cum = 0;
+    items.forEach((it, i) => {
+      const y = 12 + i * 40, h = 24;
+      t(svg, X0 - 10, y + 17, it[0], { "text-anchor": "end", "font-size": 13, fill: it[2] ? C.ink : C.mute, "font-weight": it[2] ? 700 : 400 });
+      let a0, b0, col;
+      if (it[2]) { a0 = 0; b0 = it[1]; cum = it[1]; col = C.ink; } else { a0 = cum; b0 = cum + it[1]; cum = b0; col = it[1] < 0 ? C.neg : C.pos; }
+      s("rect", { x: x(Math.min(a0, b0)), y: y, width: Math.max(1, Math.abs(x(b0) - x(a0))), height: h, fill: col, rx: 2 }, svg);
+      t(svg, x(Math.max(a0, b0)) + 6, y + 17, it[2] ? n0(it[1]) : (it[1] > 0 ? "+" : "−") + n1(Math.abs(it[1])), { "font-size": 13, "font-weight": 700, fill: it[2] ? C.ink : col });
+    });
+    const pc = (k) => (L[k].act / L[k].plan - 1) * 100;
+    const m = el("div", "msgs");
+    m.innerHTML = "<div><b>판매량 " + n1(pc("q")) + "% (" + n1(sh.q * r) + "억원)</b>4분기 수주 잔량으로 회복 여부 점검</div><div><b>재료비 +" + n1(pc("mat")) + "%, 수율 " + n1(L.yld.act - L.yld.plan) + "%p (" + n1((sh.mat + sh.yld) * r) + "억원)</b>구매 단가 재협상과 수율 회복을 함께</div><div><b>단가 +" + n1(pc("p")) + "% (+" + n1(sh.p * r) + "억원)</b>인상분이 유지되는지 고객별로 확인</div>";
+    body.appendChild(m);
+  }
+
+  /* ---------- ② 추이 ---------- */
+  const plan = [84, 86, 92, 90, 93, 95, 92, 94, 96, 98, 97, 99], act = [85, 88, 93, 92, 95, 96, 93, 88, 89, 91];
+  function s2() {
+    const bad = $("s2-bad"); bad.textContent = "";
+    const inn = el("div", "in"); bad.appendChild(inn);
+    inn.appendChild(el("h5", null, "월별 매출"));
+    const body = el("div", "body one"); inn.appendChild(body); inn.appendChild(el("div", "foot", "<span></span><span>4</span>"));
+    const svg = s("svg", { viewBox: "0 0 520 260", preserveAspectRatio: "xMidYMid meet" }, body);
+    const rain = ["#E53935", "#FB8C00", "#FDD835", "#43A047", "#00ACC1", "#1E88E5", "#3949AB", "#8E24AA", "#D81B60", "#6D4C41"];
+    for (let g = 0; g <= 5; g++) { s("line", { x1: 40, x2: 420, y1: 20 + g * 40, y2: 20 + g * 40, stroke: "#777", "stroke-width": 1.2 }, svg); t(svg, 34, 24 + g * 40, String(100 - g * 20), { "text-anchor": "end", "font-size": 11, fill: "#444" }); }
+    act.forEach((v, i) => { const h = v * 2, x = 48 + i * 37; s("rect", { x: x + 5, y: 220 - h - 5, width: 24, height: h, fill: "#999" }, svg); s("rect", { x: x, y: 220 - h, width: 24, height: h, fill: rain[i], stroke: "#333" }, svg); });
+    s("rect", { x: 430, y: 20, width: 84, height: 200, fill: "#F2F2F2", stroke: "#999" }, svg);
+    ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월"].forEach((m2, i) => { s("rect", { x: 438, y: 30 + i * 18, width: 10, height: 10, fill: rain[i] }, svg); t(svg, 454, 39 + i * 18, m2, { "font-size": 10.5 }); });
+
+    const b2 = shell("s2-good", "월 경영회의 · 매출", "매출은 8월부터 3개월 연속 계획을 밑돌아, 연간 전망을 2% 낮춥니다", "자료: 관리손익(가상) · 단위 억원 · 11~12월은 계획, 연간 전망은 남은 두 달도 같은 폭(−7%)을 가정", "4");
+    b2.className = "body one";
+    const sv = s("svg", { viewBox: "0 0 620 250", preserveAspectRatio: "xMidYMid meet" }, b2);
+    const y = (v) => 210 - (v - 0) / 110 * 190, bw = 30;
+    [0, 50, 100].forEach((g) => { s("line", { x1: 30, x2: 600, y1: y(g), y2: y(g), stroke: g === 0 ? C.gray2 : C.grid }, sv); t(sv, 24, y(g) + 4, String(g), { "text-anchor": "end", "font-size": 11, fill: C.mute }); });
+    plan.forEach((v, i) => {
+      const x = 44 + i * 47, low = i >= 7 && i <= 9;
+      if (i < act.length) s("rect", { x: x, y: y(act[i]), width: bw, height: y(0) - y(act[i]), fill: low ? C.hi : C.gray }, sv);
+      s("rect", { x: x - 3, y: y(v), width: bw + 6, height: y(0) - y(v), fill: "none", stroke: C.ink, "stroke-width": 1.2 }, sv);
+      t(sv, x + bw / 2, 228, (i + 1) + "월", { "text-anchor": "middle", "font-size": 11, fill: C.mute });
+    });
+    t(sv, 44 + 7 * 47 - 4, y(104) , "8~10월 계획 대비 −7%", { "font-size": 13, "font-weight": 700, fill: C.hi });
+    s("line", { x1: 44 + 7 * 47, x2: 44 + 9 * 47 + bw, y1: y(101.5), y2: y(101.5), stroke: C.hi, "stroke-width": 1.5 }, sv);
+    t(sv, 600, 16, "□ 계획   ■ 실적", { "text-anchor": "end", "font-size": 11, fill: C.mute });
+  }
+
+  /* ---------- ③ 구성 ---------- */
+  const fixed = [["인건비", 38], ["감가상각비", 31], ["수선유지비", 14], ["전력비", 12], ["외주용역비", 9], ["기타", 6], ["보험료", 4], ["교육훈련비", 2]];
+  function s3() {
+    const bad = $("s3-bad"); bad.textContent = "";
+    const inn = el("div", "in"); bad.appendChild(inn);
+    inn.appendChild(el("h5", null, "고정비 구성"));
+    const body = el("div", "body one"); inn.appendChild(body); inn.appendChild(el("div", "foot", "<span></span><span>5</span>"));
+    const svg = s("svg", { viewBox: "0 0 520 260", preserveAspectRatio: "xMidYMid meet" }, body);
+    const tot = fixed.reduce((a, r) => a + r[1], 0), rain = ["#E53935", "#FB8C00", "#FDD835", "#43A047", "#00ACC1", "#1E88E5", "#8E24AA", "#D81B60"];
+    let a0 = -Math.PI / 2; const cx = 170, cy = 128, R = 105;
+    fixed.forEach((r, i) => { const a1 = a0 + r[1] / tot * Math.PI * 2, large = a1 - a0 > Math.PI ? 1 : 0;
+      s("path", { d: "M" + cx + "," + cy + "L" + (cx + R * Math.cos(a0)) + "," + (cy + R * Math.sin(a0)) + "A" + R + "," + R + " 0 " + large + " 1 " + (cx + R * Math.cos(a1)) + "," + (cy + R * Math.sin(a1)) + "Z", fill: rain[i], stroke: "#fff" }, svg); a0 = a1; });
+    fixed.forEach((r, i) => { s("rect", { x: 330, y: 40 + i * 24, width: 12, height: 12, fill: rain[i] }, svg); t(svg, 350, 51 + i * 24, r[0], { "font-size": 12 }); });
+
+    const b3 = shell("s3-good", "원가 절감 과제", "고정비의 72%가 인건비·감가상각·수선유지 세 항목이라, 절감 과제는 여기서 찾습니다", "자료: 제조원가명세서(가상), 2026년 1~9월 누계 · 단위 억원", "5");
+    b3.className = "body one";
+    const sv = s("svg", { viewBox: "0 0 620 250", preserveAspectRatio: "xMidYMid meet" }, b3);
+    const max = 40, x = (v) => 120 + v / max * 420;
+    fixed.forEach((r, i) => {
+      const yy = 8 + i * 29, top = i < 3;
+      t(sv, 110, yy + 15, r[0], { "text-anchor": "end", "font-size": 13, fill: top ? C.ink : C.mute, "font-weight": top ? 700 : 400 });
+      s("rect", { x: 120, y: yy, width: x(r[1]) - 120, height: 20, fill: top ? C.hi : C.gray, rx: 2 }, sv);
+      t(sv, x(r[1]) + 6, yy + 15, String(r[1]), { "font-size": 13, fill: top ? C.hi : C.mute, "font-weight": top ? 700 : 400 });
+    });
+    t(sv, 600, 245, "상위 3개 83억원 / 전체 116억원 = 72%", { "text-anchor": "end", "font-size": 12.5, fill: C.ink, "font-weight": 700 });
+  }
+
+  /* ---------- 그리드 견본 ---------- */
+  function gridDemo() {
+    const host = $("grid-demo"); host.textContent = "";
+    const svg = s("svg", { viewBox: "0 0 1600 900", style: "position:absolute;inset:0;width:100%;height:100%" }, host);
+    const m = 90, gw = 1600 - 2 * m, col = (gw - 11 * 24) / 12;
+    for (let i = 0; i < 12; i++) s("rect", { x: m + i * (col + 24), y: m, width: col, height: 900 - 2 * m, fill: "#1F4FD1", opacity: 0.06 }, svg);
+    s("rect", { x: m, y: m, width: gw, height: 900 - 2 * m, fill: "none", stroke: "#1F4FD1", "stroke-dasharray": "10 8", opacity: 0.5 }, svg);
+    t(svg, m, m + 34, "제목: 결론을 숫자와 함께 한 문장으로 (24~28pt)", { "font-size": 40, "font-weight": 700, fill: C.ink });
+    t(svg, m, m + 82, "부제·기간·단위 (12~14pt)", { "font-size": 26, fill: C.mute });
+    s("rect", { x: m, y: m + 120, width: 7 * (col + 24) - 24, height: 520, fill: "#E9EDF2" }, svg);
+    t(svg, m + 30, m + 170, "그림: 7열", { "font-size": 30, fill: C.mute });
+    const rx = m + 7 * (col + 24);
+    [0, 1, 2].forEach((i) => { s("rect", { x: rx, y: m + 120 + i * 180, width: 6, height: 140, fill: C.hi }, svg); t(svg, rx + 26, m + 160 + i * 180, "메시지 " + (i + 1) + ": 5열", { "font-size": 30, "font-weight": 700, fill: C.ink }); t(svg, rx + 26, m + 205 + i * 180, "근거 숫자와 다음 행동 (14~18pt)", { "font-size": 24, fill: C.mute }); });
+    s("line", { x1: m, x2: 1600 - m, y1: 900 - m + 10, y2: 900 - m + 10, stroke: C.rule, "stroke-width": 2 }, svg);
+    t(svg, m, 900 - m + 48, "각주: 자료·기준일·단위 (9~10pt)", { "font-size": 24, fill: C.gray2 });
+    t(svg, 1600 - m, 900 - m + 48, "쪽 번호", { "font-size": 24, fill: C.gray2, "text-anchor": "end" });
+    t(svg, m - 12, 60, "바깥 여백", { "font-size": 22, fill: "#1F4FD1" });
+  }
+
+  /* ---------- IBCS 견본 ---------- */
+  function ibcs() {
+    const svg = $("ibcs"); svg.textContent = "";
+    const ink = F.css("--ink"), mute = F.css("--muted"), gray = F.css("--mark-muted") || "#9AA3AD", pos = F.css("--pos"), neg = F.css("--neg");
+    const defs = s("defs", {}, svg), pat = s("pattern", { id: "hatch", width: 6, height: 6, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }, defs);
+    s("rect", { width: 6, height: 6, fill: F.css("--surface") }, pat); s("line", { x1: 0, y1: 0, x2: 0, y2: 6, stroke: ink, "stroke-width": 2.2 }, pat);
+    const items = [["실적 AC", ink, null], ["전년 PY", gray, null], ["계획 PL", "none", ink], ["전망 FC", "url(#hatch)", ink]];
+    items.forEach((it, i) => { const x = 30 + i * 120, h = [110, 90, 100, 104][i];
+      s("rect", { x: x, y: 150 - h, width: 56, height: h, fill: it[1], stroke: it[2] || "none", "stroke-width": 2 }, svg);
+      t(svg, x + 28, 176, it[0], { "text-anchor": "middle", "font-size": 13, fill: ink, "font-weight": 600 }); });
+    s("line", { x1: 20, x2: 500, y1: 150, y2: 150, stroke: mute }, svg);
+    const vx = 540; t(svg, vx, 30, "차이(실적 − 계획)", { "font-size": 13, fill: ink, "font-weight": 600 });
+    [["매출", 8, 1], ["재료비", 6, -1], ["판관비", -3, -1], ["영업이익", -5, 1]].forEach((r, i) => {
+      const y = 48 + i * 34, good = r[1] * r[2] > 0, w = Math.abs(r[1]) * 8, cx = vx + 140;
+      t(svg, vx, y + 15, r[0], { "text-anchor": "start", "font-size": 12.5, fill: ink });
+      s("rect", { x: r[1] >= 0 ? cx : cx - w, y: y + 2, width: w, height: 18, fill: good ? pos : neg }, svg);
+      t(svg, r[1] >= 0 ? cx + w + 5 : cx - w - 5, y + 15, (r[1] > 0 ? "+" : "−") + Math.abs(r[1]), { "text-anchor": r[1] >= 0 ? "start" : "end", "font-size": 12, fill: ink }); });
+    s("line", { x1: vx + 140, x2: vx + 140, y1: 44, y2: 186, stroke: ink }, svg);
+    t(svg, vx, 204, "비용은 늘면 빨강(나쁨)", { "font-size": 11.5, fill: mute });
+  }
+
+  function all() { s1(); s2(); s3(); gridDemo(); ibcs(); }
+  all();
+  F.onRedraw(ibcs);
+  Report.flows($("hero-art"), {
+    area: { span: 0.42, max: 580, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.10, y: 0.50, label: "질문" }, { x: 0.46, y: 0.50, label: "결론" }, { x: 0.90, y: 0.18, label: "근거 1" }, { x: 0.90, y: 0.50, label: "근거 2" }, { x: 0.90, y: 0.82, label: "근거 3" }],
+    links: [{ from: 0, to: 1, bend: 0, c: 0, n: 30, label: "SCQA" }, { from: 1, to: 2, bend: -0.08, c: 1, n: 20 }, { from: 1, to: 3, bend: 0, c: 2, n: 20, label: "MECE", dy: -10 }, { from: 1, to: 4, bend: 0.08, c: 1, n: 20 }]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>

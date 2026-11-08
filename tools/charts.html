@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>차트 선택과 디자인 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="차트 선택과 디자인 · 이기표">
+<meta property="og:description" content="질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/charts.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .chips2 { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+  .chips2 button { font: inherit; font-size: var(--s-1); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+  .chips2 button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .gcard { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 14px 12px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+  .gcard[hidden] { display: none; }
+  .gcard .hd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .gcard h4 { margin: 0; font-size: var(--s-2); font-weight: 700; }
+  .gcard .cats { font-size: 11px; color: var(--accent); font-weight: 600; text-align: right; }
+  .gcard svg { width: 100%; height: auto; display: block; background: color-mix(in srgb, var(--ink) 2%, var(--surface)); border-radius: 4px; }
+  .gcard svg text { font-family: var(--f-body); }
+  .gcard svg text.n { font-family: var(--f-num); }
+  .gcard dl { margin: 0; display: grid; gap: 5px; font-size: 12.5px; line-height: 1.55; }
+  .gcard dt { font-weight: 700; color: var(--ink); display: inline; }
+  .gcard dd { margin: 0; color: var(--ink-2); display: inline; }
+  .gcard dl > div::after { content: ""; display: block; }
+  .gcard .use { font-size: 12px; color: var(--muted); }
+  .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin: 12px 0 4px; }
+  @media (max-width: 760px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+  .pair figure { margin: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px; display: grid; gap: 6px; }
+  .pair figure svg { width: 100%; height: auto; display: block; }
+  .pair figure svg text { font-family: var(--f-body); }
+  .pair figcaption { font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+  .pair figcaption b.x { color: var(--neg-ink); }
+  .pair figcaption b.o { color: var(--pos); }
+  .pal { display: grid; gap: 12px; margin: 12px 0; }
+  .pal > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px; align-items: center; }
+  @media (max-width: 640px) { .pal > div { grid-template-columns: minmax(0, 1fr); } }
+  .pal b { font-size: var(--s-1); }
+  .pal b small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .pal .sw { display: flex; flex-wrap: wrap; gap: 4px; }
+  .pal .sw span { display: grid; gap: 2px; font-family: var(--f-num); font-size: 10.5px; color: var(--ink-2); text-align: center; }
+  .pal .sw i { width: 46px; height: 26px; border-radius: 3px; border: 1px solid var(--rule-soft); }
+  details.how { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 8px 0; }
+  details.how summary { cursor: pointer; padding: 12px 16px; font-weight: 700; font-size: var(--s-2); }
+  details.how ol { margin: 0 16px 14px 34px; padding: 0; display: grid; gap: 4px; font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">보고·시각화</span><a href="deck.html">보고서·PPT 작성 원칙</a><a href="charts.html" aria-current="page">차트 선택과 디자인</a><a href="sources.html">정보 출처와 참고 자료</a></div></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 차트 선택과 디자인</div>
+      <div class="rpt-tag">Practice note · 08</div>
+      <h1>질문이<br>차트를 고른다</h1>
+      <p class="dek">차트는 예쁘게 보이려는 장식이 아니라 질문에 답하는 도구입니다. "무엇이 큰가", "어떻게 변했나", "왜 달라졌나", "얼마나 불확실한가"에 따라 맞는 모양이 다릅니다. 재무·경영관리에서 자주 쓰는 차트 17가지를 실제로 그려 두고, 언제 쓰고 언제 피하는지, 엑셀에서 어떻게 만드는지 정리했습니다.</p>
+      <div class="rpt-meta"><span>차트<b>17종</b></span><span>함께<b>나쁜 예 고치기 · 색 · 엑셀·PPT 만드는 법</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-gal" data-toc="질문별 차트 갤러리" data-group="고르기">
+          <h2>질문별 차트 갤러리</h2>
+          <p>먼저 <b>답하려는 질문</b>을 고르면 맞는 차트만 남습니다. 모든 차트는 이 페이지에서 직접 그린 것이고, 숫자는 이 사이트 도구의 가상 예시입니다. 카드 아래 '이 사이트에서'는 실제로 쓰인 곳, '적용하면 좋은 곳'은 아직 쓰지 않았지만 어울리는 곳입니다.</p>
+          <div class="chips2" id="chips" role="group" aria-label="질문 유형"></div>
+          <div class="gal" id="gal"></div>
+        </section>
+
+        <section id="s-fix" data-toc="나쁜 차트 고치기" data-group="다듬기">
+          <h2>나쁜 차트 고치기</h2>
+          <p>보고서에서 자주 보는 실수 네 가지입니다. 모두 '보는 사람이 잘못 읽게 만드는' 실수라 숫자가 맞아도 결론이 틀어집니다.</p>
+          <h3>① 막대의 축을 자르면 차이가 부풀려집니다</h3>
+          <div class="pair" id="fix1"></div>
+          <h3>② 이중 축은 아무 관계나 만들어 냅니다</h3>
+          <div class="pair" id="fix2"></div>
+          <h3>③ 선이 많으면 한 줄만 강조합니다</h3>
+          <div class="pair" id="fix3"></div>
+          <h3>④ 범례를 찾게 하지 말고 바로 적습니다</h3>
+          <div class="pair" id="fix4"></div>
+        </section>
+
+        <section id="s-color" data-toc="색 쓰는 법">
+          <h2>색 쓰는 법</h2>
+          <p>색은 정보입니다. 같은 색은 같은 뜻, 다른 색은 다른 뜻으로 읽힙니다. 그래서 <b>기본은 회색, 말하고 싶은 곳만 강조색</b>이 원칙이고, 빨강·초록은 '나쁨·좋음'을 뜻할 때만 씁니다. 남성의 약 5~8%가 적록 색각 이상이라는 점도 기억해야 합니다. 빨강과 초록만으로 구분하지 말고 위치·기호·라벨을 함께 씁니다.</p>
+          <div class="pal" id="pal"></div>
+          <p class="hint">범주 팔레트는 색각 이상이 있어도 구분되도록 만든 Okabe–Ito 8색입니다. 순차·발산 팔레트는 ColorBrewer의 원리(밝기가 한 방향으로 변함)를 따랐습니다. 이 사이트의 차트 색은 밝은·어두운 화면에서 같은 뜻을 유지하도록 토큰으로 정의돼 있습니다.</p>
+        </section>
+
+        <section id="s-how" data-toc="엑셀·PPT에서 만드는 법" data-group="만들기">
+          <h2>엑셀·PPT에서 만드는 법</h2>
+          <p>엑셀 2016 이후에는 폭포·히스토그램·파레토·상자 수염 차트가 기본으로 들어 있습니다. 그 밖의 차트는 기본 차트를 겹치거나 보이지 않는 계열을 써서 만듭니다. 메뉴 이름은 버전에 따라 조금 다를 수 있습니다.</p>
+          <div id="how"></div>
+        </section>
+
+        <section id="s-check" data-toc="차트 점검표">
+          <h2>차트 점검표</h2>
+          <ol class="plain" style="list-style: decimal">
+            <li><b>제목이 결론을 말하는가.</b> "월별 매출"이 아니라 "8월부터 계획 하회".</li>
+            <li><b>막대는 0에서 시작하는가.</b> 꺾은선은 축을 좁혀도 되지만 생략 표시를.</li>
+            <li><b>강조색은 한 곳인가.</b> 나머지는 회색.</li>
+            <li><b>범례 대신 직접 라벨인가.</b> 선 끝, 막대 끝에 이름과 값.</li>
+            <li><b>정렬했는가.</b> 순서가 의미 없는 항목은 크기순으로.</li>
+            <li><b>단위·기간·출처가 있는가.</b></li>
+            <li><b>3D, 그림자, 무지개 색, 진한 격자가 없는가.</b></li>
+            <li><b>불확실성을 보여 줘야 하는가.</b> 전망과 추정에는 범위(밴드, 오차 막대)를.</li>
+            <li><b>같은 보고서 안에서 같은 뜻은 같은 모양인가.</b> 실적·계획·전망, 좋음·나쁨.</li>
+          </ol>
+          <p class="rpt-end">참고: 에드워드 터프티, 『The Visual Display of Quantitative Information』; 진 젤라즈니, 『Say It with Charts』; 스티븐 퓨, 『Show Me the Numbers』; 도나 웡, 『The Wall Street Journal Guide to Information Graphics』; 파이낸셜타임스 Visual Vocabulary; Okabe &amp; Ito, Color Universal Design; ColorBrewer. 자세한 목록은 <a href="sources.html">정보 출처와 참고 자료</a>, 보고서 구조는 <a href="deck.html">보고서·PPT 작성 원칙</a>에 있습니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/report.js"></script>
+<script>
+(function () {
+  "use strict";
+  const F = window.Fin, S = window.Stats, $ = F.$, NS = "http://www.w3.org/2000/svg";
+  const c = (n) => F.css(n);
+  const sv = (tag, a, p) => { const e = document.createElementNS(NS, tag); for (const k in a) if (a[k] !== null && a[k] !== undefined) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+  const tx = (p, x, y, s, a) => { const e = sv("text", Object.assign({ x: x, y: y, fill: c("--ink-2"), "font-size": 10.5 }, a || {}), p); e.textContent = s; return e; };
+  const W = 360, H = 210;
+  const frame = (host, w, h) => { host.textContent = ""; return sv("svg", { viewBox: "0 0 " + (w || W) + " " + (h || H), role: "img" }, host); };
+  const lin = (d0, d1, r0, r1) => (v) => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
+  const path = (pts) => "M" + pts.map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join("L");
+  let R = S.rng(808);
+
+  const CATS = [["all", "전체"], ["cmp", "항목 비교"], ["time", "시간 흐름"], ["part", "구성"], ["dist", "분포"], ["rel", "관계"], ["bridge", "차이의 원인"], ["target", "목표 대비"], ["risk", "위험·불확실성"]];
+  const CN = {}; CATS.forEach((k) => { CN[k[0]] = k[1]; });
+
+  /* ---------- 차트 그리기 ---------- */
+  const D = {
+    sbar(svg) {
+      const d = [["A 제품군", 18.2], ["B 제품군", 14.1], ["C 제품군", 11.5], ["D 제품군", 8.3], ["E 제품군", 3.9]], x = lin(0, 20, 86, 330);
+      d.forEach((r, i) => { const y = 22 + i * 34; tx(svg, 78, y + 14, r[0], { "text-anchor": "end", fill: c("--ink") });
+        sv("rect", { x: 86, y: y, width: x(r[1]) - 86, height: 20, fill: i === 3 ? c("--accent") : c("--total"), rx: 2 }, svg);
+        tx(svg, x(r[1]) + 5, y + 14, r[1].toFixed(1) + "%", { class: "n", fill: c("--ink") }); });
+      tx(svg, 86, 200, "영업이익률, 큰 순서 · D만 강조(이번 달 하락)", { fill: c("--muted"), "font-size": 9.5 });
+    },
+    smallm(svg) {
+      const names = ["1사업부", "2사업부", "3사업부", "4사업부"], y = lin(60, 120, 80, 20);
+      names.forEach((n, k) => { const ox = 14 + (k % 2) * 172, oy = (k > 1 ? 100 : 0);
+        const pts = []; let v = 90 + k * 4; for (let i = 0; i < 12; i++) { v += (k === 1 ? -1.6 : 0.9) + R.normal() * 2; pts.push([ox + 8 + i * 13, oy + y(v)]); }
+        sv("line", { x1: ox + 4, x2: ox + 160, y1: oy + 92, y2: oy + 92, stroke: c("--rule") }, svg);
+        sv("path", { d: path(pts), fill: "none", stroke: k === 1 ? c("--neg") : c("--ink-2"), "stroke-width": 1.8 }, svg);
+        tx(svg, ox + 6, oy + 14, n, { fill: c("--ink"), "font-weight": 700 }); });
+      tx(svg, 14, 204, "같은 세로축 · 2사업부만 하락 추세", { fill: c("--muted"), "font-size": 9.5 });
+    },
+    line(svg) {
+      const plan = [84, 86, 92, 90, 93, 95, 92, 94, 96, 98, 97, 99], act = [85, 88, 93, 92, 95, 96, 93, 88, 89, 91], x = lin(0, 11, 24, 340), y = lin(70, 105, 180, 20);
+      [80, 90, 100].forEach((g) => { sv("line", { x1: 20, x2: 344, y1: y(g), y2: y(g), stroke: c("--rule-soft") }, svg); tx(svg, 16, y(g) + 4, String(g), { "text-anchor": "end", class: "n", "font-size": 9 }); });
+      sv("path", { d: path(plan.map((v, i) => [x(i), y(v)])), fill: "none", stroke: c("--muted"), "stroke-dasharray": "4 3", "stroke-width": 1.5 }, svg);
+      sv("path", { d: path(act.map((v, i) => [x(i), y(v)])), fill: "none", stroke: c("--input"), "stroke-width": 2.4 }, svg);
+      tx(svg, x(11) - 2, y(99) - 6, "계획", { "text-anchor": "end", fill: c("--muted") }); tx(svg, x(9) + 4, y(91) + 4, "실적", { fill: c("--input"), "font-weight": 700 });
+      sv("rect", { x: x(6.5), y: 20, width: x(9.5) - x(6.5), height: 160, fill: c("--neg"), opacity: 0.07 }, svg);
+      tx(svg, x(8), 196, "8~10월 계획 하회", { "text-anchor": "middle", fill: c("--neg-ink"), "font-size": 10 });
+    },
+    slope(svg) {
+      const d = [["A", 16.8, 18.2], ["B", 14.4, 14.1], ["C", 9.6, 11.5], ["D", 12.2, 8.3], ["E", 4.4, 3.9]], y = lin(2, 20, 186, 16);
+      sv("line", { x1: 110, x2: 110, y1: 12, y2: 190, stroke: c("--rule") }, svg); sv("line", { x1: 250, x2: 250, y1: 12, y2: 190, stroke: c("--rule") }, svg);
+      tx(svg, 110, 204, "2025", { "text-anchor": "middle", fill: c("--muted") }); tx(svg, 250, 204, "2026", { "text-anchor": "middle", fill: c("--muted") });
+      d.forEach((r) => { const hi = r[0] === "D", col = hi ? c("--neg") : c("--total");
+        sv("line", { x1: 110, x2: 250, y1: y(r[1]), y2: y(r[2]), stroke: col, "stroke-width": hi ? 2.6 : 1.4 }, svg);
+        tx(svg, 104, y(r[1]) + 4, r[0] + " " + r[1].toFixed(1), { "text-anchor": "end", class: "n", fill: hi ? c("--neg-ink") : c("--ink-2") });
+        tx(svg, 256, y(r[2]) + 4, r[2].toFixed(1) + "%", { class: "n", fill: hi ? c("--neg-ink") : c("--ink-2"), "font-weight": hi ? 700 : 400 }); });
+    },
+    spark(svg) {
+      const rows = [["매출", [92, 94, 93, 95, 96, 94, 93, 90, 89, 91], "91억", "−7%"], ["영업이익률", [17, 17.5, 17.2, 17.8, 17.6, 17, 16.4, 15.1, 14.6, 14.8], "14.8%", "−2.6%p"], ["수율", [95.1, 95, 94.8, 94.6, 94.4, 94.1, 93.9, 93.6, 93.5, 93.5], "93.5%", "−1.5%p"], ["재고일수", [45, 46, 46, 47, 48, 49, 50, 51, 52, 52], "52일", "+7일"]];
+      tx(svg, 14, 18, "지표", { fill: c("--muted"), "font-size": 9.5 }); tx(svg, 120, 18, "최근 10개월", { fill: c("--muted"), "font-size": 9.5 }); tx(svg, 300, 18, "9월", { "text-anchor": "end", fill: c("--muted"), "font-size": 9.5 }); tx(svg, 348, 18, "계획 대비", { "text-anchor": "end", fill: c("--muted"), "font-size": 9.5 });
+      rows.forEach((r, i) => { const yy = 34 + i * 42, v = r[1], mn = Math.min.apply(null, v), mx = Math.max.apply(null, v), x = lin(0, v.length - 1, 120, 230), y = lin(mn, mx, yy + 24, yy + 2);
+        sv("line", { x1: 10, x2: 350, y1: yy + 32, y2: yy + 32, stroke: c("--rule-soft") }, svg);
+        tx(svg, 14, yy + 18, r[0], { fill: c("--ink") });
+        sv("path", { d: path(v.map((q, j) => [x(j), y(q)])), fill: "none", stroke: c("--ink-2"), "stroke-width": 1.4 }, svg);
+        sv("circle", { cx: x(v.length - 1), cy: y(v[v.length - 1]), r: 2.6, fill: c("--neg") }, svg);
+        tx(svg, 300, yy + 18, r[2], { "text-anchor": "end", class: "n", fill: c("--ink") }); tx(svg, 348, yy + 18, r[3], { "text-anchor": "end", class: "n", fill: c("--neg-ink") }); });
+    },
+    stack100(svg) {
+      const yrs = ["2023", "2024", "2025", "2026"], d = [[52, 30, 18], [48, 32, 20], [44, 33, 23], [39, 34, 27]], cols = [c("--total"), c("--mark-muted") || "#9AA3AD", c("--input")], nm = ["국내", "중국", "미국·유럽"];
+      const x0 = 40, w = 50, y = lin(0, 100, 180, 16);
+      yrs.forEach((yr, i) => { let acc = 0; const xx = x0 + i * 66;
+        d[i].forEach((v, j) => { sv("rect", { x: xx, y: y(acc + v), width: w, height: y(acc) - y(acc + v), fill: cols[j] }, svg); if (j === 2 || i === 3) tx(svg, xx + w / 2, y(acc + v / 2) + 4, v + "%", { "text-anchor": "middle", class: "n", fill: j === 1 ? c("--ink") : "#FFFFFF", "font-size": 9.5 }); acc += v; });
+        tx(svg, xx + w / 2, 196, yr, { "text-anchor": "middle", fill: c("--muted") }); });
+      let acc = 0; d[3].forEach((v, j) => { tx(svg, x0 + 3 * 66 + w + 6, y(acc + v / 2) + 4, nm[j], { fill: j === 2 ? c("--input") : c("--ink-2"), "font-weight": j === 2 ? 700 : 400 }); acc += v; });
+    },
+    waterfall(svg) {
+      const d = [["계획", 188, 1], ["판매량", -20.0], ["재료비", -18.7], ["수율", -6.7], ["단가", 16.9], ["기타", -5.5], ["실적", 154, 1]], y = lin(0, 205, 180, 14), bw = 34;
+      let cum = 0; d.forEach((r, i) => { const x = 22 + i * 47; let a, b, col;
+        if (r[2]) { a = 0; b = r[1]; cum = r[1]; col = c("--ink"); } else { a = cum; b = cum + r[1]; cum = b; col = r[1] < 0 ? c("--neg") : c("--pos"); }
+        sv("rect", { x: x, y: y(Math.max(a, b)), width: bw, height: Math.abs(y(a) - y(b)), fill: col, rx: 1.5 }, svg);
+        tx(svg, x + bw / 2, y(Math.max(a, b)) - 4, r[2] ? String(r[1]) : (r[1] > 0 ? "+" : "−") + Math.abs(r[1]).toFixed(0), { "text-anchor": "middle", class: "n", fill: c("--ink"), "font-size": 9.5 });
+        tx(svg, x + bw / 2, 196, r[0], { "text-anchor": "middle", fill: c("--ink-2"), "font-size": 9.5 }); });
+      sv("line", { x1: 18, x2: 350, y1: 180, y2: 180, stroke: c("--ink-2") }, svg);
+    },
+    bullet(svg) {
+      const d = [["매출", 96, 100, [80, 95, 110]], ["영업이익", 82, 100, [70, 90, 110]], ["수율", 98.4, 100, [96, 99, 102]], ["재고일수", 87, 100, [80, 95, 110]]], x = lin(60, 115, 92, 340);
+      d.forEach((r, i) => { const yy = 18 + i * 46;
+        tx(svg, 84, yy + 18, r[0], { "text-anchor": "end", fill: c("--ink") }); tx(svg, 84, yy + 30, "목표 대비 %", { "text-anchor": "end", fill: c("--muted"), "font-size": 8.5 });
+        [[60, r[3][0], 0.28], [r[3][0], r[3][1], 0.18], [r[3][1], 115, 0.08]].forEach((q) => sv("rect", { x: x(q[0]), y: yy + 4, width: x(q[1]) - x(q[0]), height: 26, fill: c("--ink"), opacity: q[2] }, svg));
+        sv("rect", { x: x(60), y: yy + 13, width: x(r[1]) - x(60), height: 8, fill: r[1] < r[3][1] ? c("--neg") : c("--ink") }, svg);
+        sv("line", { x1: x(r[2]), x2: x(r[2]), y1: yy + 6, y2: yy + 28, stroke: c("--ink"), "stroke-width": 2.4 }, svg);
+        tx(svg, x(r[1]) + 3, yy + 40, r[1] + "%", { class: "n", "font-size": 9 }); });
+    },
+    dumbbell(svg) {
+      const d = [["영업", 52, 47], ["생산", 61, 58], ["구매", 44, 48], ["R&D", 38, 37], ["경영지원", 23, 21]], x = lin(15, 70, 92, 330);
+      d.forEach((r, i) => { const yy = 26 + i * 34, up = r[2] > r[1];
+        tx(svg, 84, yy + 4, r[0], { "text-anchor": "end", fill: c("--ink") });
+        sv("line", { x1: x(r[1]), x2: x(r[2]), y1: yy, y2: yy, stroke: up ? c("--neg") : c("--pos"), "stroke-width": 3 }, svg);
+        sv("circle", { cx: x(r[1]), cy: yy, r: 5, fill: c("--surface"), stroke: c("--ink"), "stroke-width": 1.6 }, svg);
+        sv("circle", { cx: x(r[2]), cy: yy, r: 5, fill: c("--ink") }, svg);
+        tx(svg, Math.max(x(r[1]), x(r[2])) + 9, yy + 4, (r[2] - r[1] > 0 ? "+" : "−") + Math.abs(r[2] - r[1]), { class: "n", fill: up ? c("--neg-ink") : c("--pos"), "font-size": 9.5 }); });
+      tx(svg, 92, 200, "○ 예산  ● 실적 (억원) · 비용이라 늘면 빨강", { fill: c("--muted"), "font-size": 9.5 });
+    },
+    hist(svg) {
+      const a = []; for (let i = 0; i < 400; i++) a.push(127 + 86 * R.normal() + 18 * Math.max(0, R.normal()));
+      const h = S.histogram(a, 22, -150, 400), y = lin(0, Math.max.apply(null, h.counts), 180, 16), x = lin(-150, 400, 16, 344);
+      h.counts.forEach((n, i) => { const a0 = h.edges[i]; sv("rect", { x: x(a0) + 0.5, y: y(n), width: Math.max(1, x(a0 + h.w) - x(a0) - 1), height: 180 - y(n), fill: a0 + h.w <= 0 ? c("--neg") : a0 >= 127 ? c("--pos") : c("--total") }, svg); });
+      sv("line", { x1: x(127), x2: x(127), y1: 12, y2: 180, stroke: c("--ink"), "stroke-dasharray": "4 3" }, svg);
+      tx(svg, x(127) + 4, 22, "계획 127억", { fill: c("--ink"), "font-size": 10 }); tx(svg, x(0), 196, "0", { "text-anchor": "middle", class: "n" }); tx(svg, x(300), 196, "300", { "text-anchor": "middle", class: "n" });
+    },
+    box(svg) {
+      const groups = [["A", 101, 7.5], ["B", 99, 7], ["C", 106, 3.2], ["D", 95, 10.5]], y = lin(70, 130, 186, 14);
+      [80, 100, 120].forEach((g) => { sv("line", { x1: 30, x2: 350, y1: y(g), y2: y(g), stroke: c("--rule-soft") }, svg); tx(svg, 26, y(g) + 4, String(g), { "text-anchor": "end", class: "n", "font-size": 9 }); });
+      groups.forEach((g, i) => { const a = []; for (let k = 0; k < 12; k++) a.push(g[1] + g[2] * R.normal()); const d = S.describe(a), xx = 70 + i * 74;
+        sv("line", { x1: xx, x2: xx, y1: y(d.max), y2: y(d.min), stroke: c("--ink-2") }, svg);
+        sv("rect", { x: xx - 16, y: y(d.q3), width: 32, height: y(d.q1) - y(d.q3), fill: i === 2 ? c("--accent") : c("--total"), opacity: 0.85 }, svg);
+        sv("line", { x1: xx - 16, x2: xx + 16, y1: y(d.median), y2: y(d.median), stroke: c("--surface"), "stroke-width": 2 }, svg);
+        tx(svg, xx, 202, "평가자 " + g[0], { "text-anchor": "middle", "font-size": 9.5 }); });
+      tx(svg, 350, 24, "C: 후하고 좁게", { "text-anchor": "end", fill: c("--accent"), "font-size": 10 });
+    },
+    scatter(svg) {
+      const x = lin(60, 130, 30, 345), y = lin(55, 100, 186, 12), pts = [];
+      for (let i = 0; i < 34; i++) { const after = i >= 18, v = (after ? 100 : 80) + 0.3 * i + 8 * Math.sin(i / 2) + 4 * R.normal(); pts.push([v, (after ? 46 : 38) + (after ? 0.39 : 0.42) * v + 1.2 * R.normal(), after]); }
+      [60, 80, 100].forEach((g) => { sv("line", { x1: 30, x2: 350, y1: y(g), y2: y(g), stroke: c("--rule-soft") }, svg); tx(svg, 26, y(g) + 4, String(g), { "text-anchor": "end", class: "n", "font-size": 9 }); });
+      [[false, c("--total")], [true, c("--input")]].forEach((g) => { const P = pts.filter((p) => p[2] === g[0]), r = S.linreg(P.map((p) => p[0]), P.map((p) => p[1])), xs = P.map((p) => p[0]), lo = Math.min.apply(null, xs), hi = Math.max.apply(null, xs);
+        sv("line", { x1: x(lo), x2: x(hi), y1: y(r.at(lo)), y2: y(r.at(hi)), stroke: g[1], "stroke-width": 2 }, svg);
+        P.forEach((p) => sv("circle", { cx: x(p[0]), cy: y(p[1]), r: 3, fill: g[1], opacity: 0.85 }, svg)); });
+      tx(svg, 345, 200, "생산량(만 개) →", { "text-anchor": "end", fill: c("--muted"), "font-size": 9.5 }); tx(svg, 34, 20, "증설 전 ●  증설 후 ●", { fill: c("--muted"), "font-size": 9.5 });
+    },
+    heat(svg) {
+      const us = [75, 80, 85, 90, 95], as = [120, 125, 130, 135, 140], cell = (u, a) => (u - 80) * 9 + (a - 128) * 7.5;
+      tx(svg, 70, 14, "판매단가(천원) →", { fill: c("--muted"), "font-size": 9.5 });
+      as.forEach((a, j) => tx(svg, 96 + j * 52, 30, String(a), { "text-anchor": "middle", class: "n", "font-size": 9.5 }));
+      us.forEach((u, i) => { tx(svg, 64, 50 + i * 30, u + "%", { "text-anchor": "end", class: "n", "font-size": 9.5 });
+        as.forEach((a, j) => { const v = cell(u, a), k = Math.min(1, Math.abs(v) / 90);
+          sv("rect", { x: 72 + j * 52, y: 36 + i * 30, width: 48, height: 26, fill: v >= 0 ? c("--pos") : c("--neg"), opacity: 0.12 + 0.7 * k, rx: 2 }, svg);
+          tx(svg, 96 + j * 52, 53 + i * 30, (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(Math.round(v)), { "text-anchor": "middle", class: "n", fill: k > 0.6 ? "#FFFFFF" : c("--ink"), "font-size": 10 }); }); });
+      tx(svg, 14, 110, "가동률", { fill: c("--muted"), "font-size": 9.5 }); tx(svg, 72, 200, "NPV(억원), 0을 가운데 둔 발산 색", { fill: c("--muted"), "font-size": 9.5 });
+    },
+    pareto(svg) {
+      const d = [["치수 불량", 41], ["외관 흠", 23], ["이물", 14], ["조립 누락", 9], ["포장", 6], ["기타", 7]], tot = 100, y = lin(0, 45, 176, 20), y2 = lin(0, 100, 176, 20); let cum = 0; const pts = [];
+      d.forEach((r, i) => { const xx = 30 + i * 52; cum += r[1]; pts.push([xx + 20, y2(cum)]);
+        sv("rect", { x: xx, y: y(r[1]), width: 40, height: 176 - y(r[1]), fill: i < 2 ? c("--input") : c("--total") }, svg);
+        tx(svg, xx + 20, 192, r[0], { "text-anchor": "middle", "font-size": 9 }); });
+      sv("path", { d: path(pts), fill: "none", stroke: c("--ink"), "stroke-width": 1.6 }, svg); pts.forEach((p) => sv("circle", { cx: p[0], cy: p[1], r: 2.4, fill: c("--ink") }, svg));
+      sv("line", { x1: 26, x2: 346, y1: y2(80), y2: y2(80), stroke: c("--accent"), "stroke-dasharray": "4 3" }, svg); tx(svg, 346, y2(80) - 4, "누적 80%", { "text-anchor": "end", fill: c("--accent"), "font-size": 9.5 });
+      tx(svg, 30, 14, "상위 2개 원인이 64%", { fill: c("--ink"), "font-weight": 700, "font-size": 10 });
+    },
+    tornado(svg) {
+      const d = [["판매량", 43.7], ["환율", 40.7], ["원재료", 33.2], ["단가", 32.3], ["고정비", 12.6], ["가공비", 5.3]], x = lin(-50, 50, 90, 340);
+      sv("line", { x1: x(0), x2: x(0), y1: 10, y2: 186, stroke: c("--ink") }, svg);
+      d.forEach((r, i) => { const yy = 16 + i * 28; tx(svg, 82, yy + 13, r[0], { "text-anchor": "end", fill: c("--ink") });
+        sv("rect", { x: x(-r[1]), y: yy, width: x(0) - x(-r[1]), height: 18, fill: c("--neg") }, svg); sv("rect", { x: x(0), y: yy, width: x(r[1]) - x(0), height: 18, fill: c("--pos") }, svg); });
+      tx(svg, x(0), 200, "영업이익 변화(억원), 한 동인만 ±1σ", { "text-anchor": "middle", fill: c("--muted"), "font-size": 9.5 });
+    },
+    fan(svg) {
+      const x = lin(0, 12, 30, 345), y = lin(-60, 260, 186, 12), P = [];
+      for (let m = 0; m <= 12; m++) { const s0 = 12 * Math.sqrt(m), mu = 120 + 2 * m; P.push({ m: m, p5: mu - 1.645 * s0 * 1.6, p25: mu - 0.674 * s0 * 1.6, p50: mu, p75: mu + 0.674 * s0 * 1.6, p95: mu + 1.645 * s0 * 1.6 }); }
+      [0, 100, 200].forEach((g) => { sv("line", { x1: 26, x2: 350, y1: y(g), y2: y(g), stroke: g === 0 ? c("--ink-2") : c("--rule-soft") }, svg); tx(svg, 22, y(g) + 4, String(g), { "text-anchor": "end", class: "n", "font-size": 9 }); });
+      const band = (a, b, op) => sv("path", { d: path(P.map((q) => [x(q.m), y(q[a])])) + "L" + P.slice().reverse().map((q) => x(q.m).toFixed(1) + "," + y(q[b]).toFixed(1)).join("L") + "Z", fill: c("--input"), opacity: op }, svg);
+      band("p95", "p5", 0.14); band("p75", "p25", 0.3); sv("path", { d: path(P.map((q) => [x(q.m), y(q.p50)])), fill: "none", stroke: c("--input"), "stroke-width": 2.2 }, svg);
+      tx(svg, x(12) - 2, y(P[12].p95) + 12, "95%", { "text-anchor": "end", fill: c("--input"), "font-size": 9 }); tx(svg, x(12) - 2, y(P[12].p5) - 4, "5%", { "text-anchor": "end", fill: c("--input"), "font-size": 9 });
+      tx(svg, 345, 202, "개월 →", { "text-anchor": "end", fill: c("--muted"), "font-size": 9.5 });
+    },
+    control(svg) {
+      const n = 24, x = lin(0, n - 1, 30, 345), y = lin(0.8, 3.6, 186, 14), pbar = 1.95, v = [];
+      for (let i = 0; i < n; i++) v.push(pbar + 0.28 * R.normal() + (i === 8 ? 1.3 : 0) + (i >= 13 && i <= 17 ? 0.55 : 0) + (i >= 20 ? -0.6 : 0));
+      sv("line", { x1: 26, x2: 350, y1: y(pbar), y2: y(pbar), stroke: c("--ink-2") }, svg);
+      [pbar + 0.9, pbar - 0.9].forEach((l) => sv("line", { x1: 26, x2: 350, y1: y(l), y2: y(l), stroke: c("--neg"), "stroke-dasharray": "4 3" }, svg));
+      sv("path", { d: path(v.map((q, i) => [x(i), y(q)])), fill: "none", stroke: c("--ink-2"), "stroke-width": 1 }, svg);
+      v.forEach((q, i) => sv("circle", { cx: x(i), cy: y(q), r: 3, fill: Math.abs(q - pbar) > 0.9 || (i >= 13 && i <= 17) ? c("--neg") : c("--input") }, svg));
+      tx(svg, 348, y(pbar + 0.9) - 4, "UCL", { "text-anchor": "end", fill: c("--neg-ink"), "font-size": 9 }); tx(svg, 348, y(pbar - 0.9) + 12, "LCL", { "text-anchor": "end", fill: c("--neg-ink"), "font-size": 9 });
+      tx(svg, 30, 202, "불량률(%) · 한계 밖 + 연속 패턴을 빨강으로", { fill: c("--muted"), "font-size": 9.5 });
+    }
+  };
+
+  const LIST = [
+    ["sbar", "정렬된 가로 막대", ["cmp"], "항목 간 크기를 비교할 때. 이름이 길어도 읽기 쉽고, 큰 순서로 정렬하면 순위가 바로 보입니다.", "순서 자체가 의미 있는 시간 축(월·분기)은 세로 막대나 꺾은선으로.", "막대 차트 → 축 서식에서 '항목을 거꾸로'로 큰 값이 위에. 강조할 막대만 데이터 요소 서식으로 색 변경.", "kpi-tree.html", "KPI 트리(조직별 기여)", true],
+    ["smallm", "작은 다중", ["cmp", "time"], "여러 집단의 추세를 비교할 때. 같은 축의 작은 차트를 나란히 두면 선이 엉키지 않습니다.", "집단이 두세 개뿐이면 한 차트에 직접 라벨로 충분합니다.", "차트 하나를 만들어 세로축 최소·최대를 고정한 뒤 복사해 데이터 범위만 바꿉니다. 축이 다르면 비교가 왜곡됩니다.", "pl-report.html", "월 손익 보고(사업부 비교)", false],
+    ["line", "꺾은선 + 계획", ["time"], "시간에 따른 변화와 계획 대비 이탈을 볼 때. 실적은 실선, 계획은 점선으로 구분합니다.", "항목 수가 적은 범주 비교, 점이 몇 개뿐인 경우.", "꺾은선 차트에 실적·계획 두 계열. 계획 계열은 선 서식에서 대시. 강조 구간은 도형이나 보조 계열(영역)로.", "pl-report.html#trend", "월 손익 보고", true],
+    ["slope", "기울기 차트", ["time", "cmp"], "두 시점 사이 순위·수준 변화를 볼 때. 올라간 것과 내려간 것이 기울기로 바로 보입니다.", "시점이 세 개 이상이면 꺾은선이 낫습니다.", "꺾은선 차트에 범주 두 개(2025, 2026), 항목마다 계열 하나. 표식과 데이터 레이블을 양끝에.", "sectors.html", "업종별 재무제표(두 해 비교)", false],
+    ["spark", "스파크라인 표", ["time"], "표 안에서 여러 지표의 추세를 한 줄씩 보여 줄 때. 숫자와 흐름을 함께 봅니다.", "정확한 값 비교가 목적이면 큰 차트로.", "삽입 → 스파크라인 → 꺾은선. 마지막 값 표식 켜기. 행마다 세로축 범위가 따로라 크기 비교는 안 됩니다.", "pl-report.html", "월 손익 보고(지표 요약표)", false],
+    ["stack100", "100% 누적 막대", ["part", "time"], "구성비가 시간에 따라 어떻게 바뀌는지 볼 때. 강조할 한 구성만 진하게.", "구성 항목이 다섯 개를 넘으면 읽기 어렵습니다. 절대 규모가 중요하면 일반 누적 막대.", "100% 기준 누적 세로 막대. 가장 중요한 계열을 맨 아래(기준선)에 두면 변화가 잘 보입니다.", "sectors.html", "업종별 재무제표(구성 막대)", true],
+    ["waterfall", "폭포(브리지)", ["bridge", "part"], "계획 → 실적, 전년 → 올해처럼 시작과 끝 사이의 차이를 원인별로 나눌 때.", "원인끼리 합이 맞지 않는 경우(분해가 MECE하지 않음).", "엑셀 2016 이상: 삽입 → 폭포 차트, 시작·끝 막대는 '합계로 설정'. 이전 버전은 누적 막대에 투명한 받침 계열.", "kpi-tree.html", "KPI 트리", true],
+    ["bullet", "불릿 차트", ["target"], "여러 KPI의 달성도를 한 화면에. 막대(실적), 세로선(목표), 배경 띠(나쁨·보통·좋음)로 계기판보다 공간을 덜 씁니다.", "목표가 없는 지표.", "가로 막대 3계열(배경 띠)을 겹치기 100%로 쌓고, 실적은 좁은 막대로 보조 축에, 목표는 오차 막대나 분산형 표식으로.", "mbo-kpi.html", "성과평가(KPI 달성도)", false],
+    ["dumbbell", "덤벨", ["target", "cmp"], "두 값(예산과 실적, 전년과 올해)의 차이를 항목별로. 점 사이 선의 길이가 차이입니다.", "차이보다 수준 자체가 중요할 때.", "꺾은선 차트에 두 계열을 표식만 남기고 선 없음, '고저선'을 켜면 두 점이 이어집니다. 가로로 그리려면 분산형 차트와 오차 막대.", "budget-opt.html", "비용예산(예산 대비 실적)", false],
+    ["hist", "히스토그램", ["dist", "risk"], "값이 어떻게 퍼져 있는지(시뮬레이션 결과, 평가 점수). 기준선(계획·0)과 함께 그리면 확률이 보입니다.", "관측값이 수십 개 이하이면 점그림(점 하나씩)이 낫습니다.", "엑셀 2016 이상: 삽입 → 통계 차트 → 히스토그램, 계급 너비 지정. 구간별 색은 계열을 나눠 만듭니다.", "plan-risk.html", "사업계획 달성 확률", true],
+    ["box", "상자 그림", ["dist", "cmp"], "여러 집단의 분포(중앙값·사분위·범위)를 나란히 비교할 때. 평가자별 점수 비교에 좋습니다.", "보고받는 사람이 상자 그림에 익숙하지 않으면 한 줄 설명을 붙입니다.", "엑셀 2016 이상: 삽입 → 통계 차트 → 상자 수염. 평균 표식은 끌 수 있습니다.", "mbo-kpi.html#dist", "성과평가 분포", true],
+    ["scatter", "산점도 + 회귀선", ["rel"], "두 변수의 관계(생산량과 원가, 성장률과 배수). 기울기가 변동비, 절편이 고정비입니다.", "인과를 단정할 때. 상관은 원인을 증명하지 않습니다.", "분산형 차트 → 계열 오른쪽 클릭 → 추세선 추가 → '수식과 R² 표시'. 집단별로 계열을 나누면 추세선도 따로.", "cost-stats.html", "원가 행태", true],
+    ["heat", "히트맵(민감도 표)", ["rel", "cmp", "risk"], "두 가정을 동시에 바꿀 때의 결과(가동률 × 단가 → NPV). 0을 가운데 둔 발산 색을 씁니다.", "정확한 값을 읽어야 하면 숫자를 함께 적습니다.", "데이터 표(What-If 분석 → 데이터 표)로 값을 만들고, 조건부 서식 → 색조(3색, 가운데 0).", "capex-kit.html", "설비투자 키트(민감도 표)", true],
+    ["pareto", "파레토", ["part", "cmp"], "원인이 몇 개에 몰려 있는지(불량 원인, 비용 항목). 누적선이 80%에 닿는 곳까지가 우선 과제입니다.", "원인끼리 겹치는 경우.", "엑셀 2016 이상: 삽입 → 통계 차트 → 파레토. 이전 버전은 정렬한 막대 + 누적 비율 꺾은선(보조 축).", "cost-stats.html", "불량 관리도(원인별 집계)", false],
+    ["tornado", "토네이도", ["risk", "bridge"], "가정 하나씩을 바꿀 때 결과가 얼마나 흔들리는지. 위에서 아래로 영향이 큰 순서.", "가정끼리 함께 움직이는 위험(상관)은 못 봅니다. 그때는 시뮬레이션과 기여도 분해.", "가로 막대 두 계열(하락·상승)을 겹치기 100%로, 하락 값은 음수로 넣고 영향이 큰 순서로 정렬.", "plan-risk.html", "사업계획 달성 확률", true],
+    ["fan", "팬 차트", ["risk", "time"], "전망의 불확실성이 시간에 따라 넓어지는 모습. 중앙값 선과 25~75%, 5~95% 띠.", "확률 모형 없이 감으로 띠를 그리는 것.", "누적 영역 차트에 '5% 값(투명)', '25%−5%', '50%−25%' … 차이를 계열로 쌓고, 바깥 띠는 옅게 안쪽은 진하게.", "cash-13w.html#mc", "13주 자금수지", true],
+    ["control", "관리도", ["time", "dist"], "평소 흔들림과 진짜 변화를 가를 때(불량률, 비용). 한계선 밖이나 연속 패턴만 원인을 조사합니다.", "기준 기간에 이미 특수 원인이 섞여 있으면 한계가 넓어집니다. 걸러 낸 뒤 다시 계산.", "꺾은선 차트에 실적, 평균, UCL, LCL 네 계열. 한계는 '평균 ± 3 × 표준편차'(p 관리도는 달마다 검사 수로 계산).", "cost-stats.html", "불량 관리도", true]
+  ];
+
+  let cat = "all";
+  function gallery() {
+    const chips = $("chips"); chips.textContent = "";
+    CATS.forEach((k) => { const b = F.el("button", { type: "button", "aria-pressed": String(k[0] === cat), text: k[1] }); b.addEventListener("click", () => { cat = k[0]; gallery(); }); chips.appendChild(b); });
+    const g = $("gal"); g.textContent = "";
+    LIST.forEach((it) => {
+      const card = F.el("article", { class: "gcard" }); if (cat !== "all" && it[2].indexOf(cat) < 0) card.hidden = true;
+      card.appendChild(F.el("div", { class: "hd" }, [F.el("h4", { text: it[1] }), F.el("span", { class: "cats", text: it[2].map((k) => CN[k]).join(" · ") })]));
+      const holder = F.el("div"); card.appendChild(holder);
+      const svg = frame(holder); svg.setAttribute("aria-label", it[1] + " 예시"); D[it[0]](svg);
+      const dl = F.el("dl");
+      [["이럴 때", it[3]], ["피할 때", it[4]], ["엑셀에서", it[5]]].forEach((q) => dl.appendChild(F.el("div", null, [F.el("dt", { text: q[0] + " " }), F.el("dd", { text: q[1] })])));
+      card.appendChild(dl);
+      card.appendChild(F.el("div", { class: "use" }, [it[8] ? "이 사이트에서: " : "적용하면 좋은 곳: ", F.el("a", { href: it[6], text: it[7] })]));
+      g.appendChild(card);
+    });
+  }
+
+  /* ---------- 고치기 ---------- */
+  function pair(id, bad, good, capBad, capGood) {
+    const host = $(id); host.textContent = "";
+    [[bad, capBad, "x", "고치기 전"], [good, capGood, "o", "고친 뒤"]].forEach((q) => {
+      const fig = F.el("figure"), h = F.el("div"); fig.appendChild(h); const svg = frame(h, 360, 200); q[0](svg);
+      fig.appendChild(F.el("figcaption", null, [F.el("b", { class: q[2], text: q[3] + " " }), q[1]])); host.appendChild(fig);
+    });
+  }
+  function fixes() {
+    const two = [["A안", 96], ["B안", 100]];
+    pair("fix1", (svg) => { const y = lin(94, 101, 170, 20); two.forEach((r, i) => { sv("rect", { x: 90 + i * 110, y: y(r[1]), width: 70, height: 170 - y(r[1]), fill: c("--total") }, svg); tx(svg, 125 + i * 110, 186, r[0], { "text-anchor": "middle" }); tx(svg, 125 + i * 110, y(r[1]) - 5, String(r[1]), { "text-anchor": "middle", class: "n", fill: c("--ink") }); });
+      [94, 96, 98, 100].forEach((g) => tx(svg, 70, y(g) + 4, String(g), { "text-anchor": "end", class: "n", "font-size": 9 })); tx(svg, 330, 40, "B가 3배?", { "text-anchor": "end", fill: c("--neg-ink"), "font-weight": 700 }); },
+    (svg) => { const y = lin(0, 105, 170, 20); two.forEach((r, i) => { sv("rect", { x: 90 + i * 110, y: y(r[1]), width: 70, height: 170 - y(r[1]), fill: i ? c("--input") : c("--total") }, svg); tx(svg, 125 + i * 110, 186, r[0], { "text-anchor": "middle" }); tx(svg, 125 + i * 110, y(r[1]) - 5, String(r[1]), { "text-anchor": "middle", class: "n", fill: c("--ink") }); });
+      sv("line", { x1: 70, x2: 300, y1: 170, y2: 170, stroke: c("--ink-2") }, svg); tx(svg, 330, 40, "B가 4% 큼", { "text-anchor": "end", fill: c("--ink"), "font-weight": 700 }); },
+    "세로축이 94에서 시작해 4% 차이가 세 배처럼 보입니다.", "막대는 길이로 크기를 읽으므로 반드시 0에서 시작합니다. 차이를 강조하고 싶으면 차이 자체를 그립니다.");
+    const m = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], sales = [85, 88, 93, 92, 95, 96, 93, 88, 89, 91], ad = [3.0, 3.1, 3.4, 3.6, 3.9, 4.1, 4.3, 4.6, 4.8, 5.1];
+    pair("fix2", (svg) => { const x = lin(1, 10, 40, 320), y1 = lin(80, 100, 170, 20), y2 = lin(2.5, 5.5, 170, 20);
+      sv("path", { d: path(m.map((q, i) => [x(q), y1(sales[i])])), fill: "none", stroke: c("--input"), "stroke-width": 2.2 }, svg); sv("path", { d: path(m.map((q, i) => [x(q), y2(ad[i])])), fill: "none", stroke: c("--accent"), "stroke-width": 2.2 }, svg);
+      tx(svg, 36, 24, "매출", { "text-anchor": "end", fill: c("--input") }); tx(svg, 326, 24, "광고비", { fill: c("--accent") }); tx(svg, 180, 192, "두 선이 '함께 움직인다'?", { "text-anchor": "middle", fill: c("--neg-ink"), "font-weight": 700 }); },
+    (svg) => { const x = lin(1, 10, 40, 320), y1 = lin(80, 100, 90, 14), y2 = lin(0, 6, 186, 110);
+      sv("path", { d: path(m.map((q, i) => [x(q), y1(sales[i])])), fill: "none", stroke: c("--ink-2"), "stroke-width": 2 }, svg); sv("path", { d: path(m.map((q, i) => [x(q), y2(ad[i])])), fill: "none", stroke: c("--ink-2"), "stroke-width": 2 }, svg);
+      tx(svg, 44, 24, "매출(억원)", { fill: c("--ink") }); tx(svg, 44, 122, "광고비(억원), 0부터", { fill: c("--ink") }); sv("line", { x1: 30, x2: 330, y1: 100, y2: 100, stroke: c("--rule") }, svg); },
+    "축 두 개의 범위를 마음대로 정하면 어떤 두 선이든 겹치게 만들 수 있습니다. 광고비가 매출을 끌어올린 것처럼 보이지만 8월 이후에는 반대입니다.", "같은 시간축을 공유하는 두 패널로 나누고 각자 0부터 그립니다. 관계를 말하려면 산점도로 따로 확인합니다.");
+    const series = [["A", 0.8], ["B", -1.6], ["C", 0.5], ["D", 1.1], ["E", 0.2], ["F", -0.3]];
+    const mk = (hl) => (svg) => { const x = lin(0, 11, 30, 262), y = lin(70, 125, 180, 14), R2 = S.rng(5);
+      series.forEach((s0, k) => { let v = 95 + k * 2; const pts = []; for (let i = 0; i < 12; i++) { v += s0[1] + 1.6 * R2.normal(); pts.push([x(i), y(v)]); }
+        const on = !hl || s0[0] === "B", col = hl ? (on ? c("--neg") : c("--rule")) : ["#E53935", "#FB8C00", "#43A047", "#1E88E5", "#8E24AA", "#00ACC1"][k];
+        sv("path", { d: path(pts), fill: "none", stroke: col, "stroke-width": on && hl ? 2.6 : 1.6 }, svg);
+        if (hl && on) tx(svg, 268, pts[11][1] + 4, "B사업부 −14%", { fill: c("--neg-ink"), "font-weight": 700, "font-size": 10 }); }); };
+    pair("fix3", mk(false), mk(true), "선 여섯 개가 서로 엉켜 무엇을 보라는지 알 수 없습니다.", "말하려는 한 줄만 색을 입히고 나머지는 회색 배경으로 둡니다. 모두 중요하면 작은 다중으로 나눕니다.");
+    const d4 = [["국내", [40, 42, 44, 45]], ["중국", [30, 29, 27, 25]], ["미국", [12, 14, 17, 21]]];
+    pair("fix4", (svg) => { const x = lin(0, 3, 40, 260), y = lin(0, 50, 176, 16);
+      d4.forEach((s0, k) => sv("path", { d: path(s0[1].map((v, i) => [x(i), y(v)])), fill: "none", stroke: [c("--input"), c("--accent"), c("--pos")][k], "stroke-width": 2 }, svg));
+      sv("rect", { x: 284, y: 20, width: 66, height: 66, fill: "none", stroke: c("--rule") }, svg); d4.forEach((s0, k) => { sv("rect", { x: 292, y: 30 + k * 18, width: 10, height: 10, fill: [c("--input"), c("--accent"), c("--pos")][k] }, svg); tx(svg, 308, 39 + k * 18, s0[0]); }); },
+    (svg) => { const x = lin(0, 3, 40, 260), y = lin(0, 50, 176, 16);
+      d4.forEach((s0, k) => { const hl = k === 2; sv("path", { d: path(s0[1].map((v, i) => [x(i), y(v)])), fill: "none", stroke: hl ? c("--input") : c("--total"), "stroke-width": hl ? 2.6 : 1.8 }, svg);
+        tx(svg, 266, y(s0[1][3]) + 4, s0[0] + " " + s0[1][3] + "%", { fill: hl ? c("--input") : c("--ink-2"), "font-weight": hl ? 700 : 400 }); }); },
+    "눈이 범례와 선 사이를 오가야 하고, 색이 비슷하면 짝을 잘못 짓습니다.", "선 끝에 이름과 마지막 값을 바로 적고 범례를 지웁니다. 강조할 계열만 색을 입힙니다.");
+  }
+
+  /* ---------- 팔레트 ---------- */
+  function palettes() {
+    const host = $("pal"); host.textContent = "";
+    const rows = [
+      ["회색 + 강조 한 색", "기본 막대와 강조", [c("--total"), c("--total"), c("--total"), c("--input"), c("--total")]],
+      ["의미색", "좋음 · 나쁨 · 중립", [c("--pos"), c("--neg"), c("--muted")]],
+      ["순차(단색 농도)", "작음 → 큼", ["#E8EEF9", "#C3D3F0", "#8FAEE3", "#557FD0", "#2A55B3", "#173A86"]],
+      ["발산(가운데 0)", "손실 ← 0 → 이익", ["#B2182B", "#EF8A62", "#FDDBC7", "#F7F7F7", "#D1E5F0", "#67A9CF", "#2166AC"]],
+      ["범주(Okabe–Ito)", "색각 이상에도 구분", ["#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"]]
+    ];
+    rows.forEach((r) => host.appendChild(F.el("div", null, [F.el("b", null, [r[0], F.el("small", { text: r[1] })]), F.el("div", { class: "sw" }, r[2].map((col) => { const i = F.el("i"); i.style.background = col; return F.el("span", null, [i, col.indexOf("#") === 0 ? col.toUpperCase() : ""]); }))])));
+  }
+
+  /* ---------- 만드는 법 ---------- */
+  function howto() {
+    const host = $("how"); host.textContent = "";
+    const H = [
+      ["폭포(브리지) 차트", ["표에 시작값, 원인별 증감, 끝값을 순서대로 적습니다(증감의 합 = 끝 − 시작인지 먼저 확인).", "엑셀 2016 이상: 범위 선택 → 삽입 → 폭포 차트.", "시작·끝 막대를 하나씩 선택 → 마우스 오른쪽 → '합계로 설정'.", "증가·감소·합계 색을 회색·빨강·초록 등 보고서 약속에 맞추고, 범례는 지웁니다.", "이전 버전: 누적 막대에 '받침'(투명), '증가', '감소' 세 계열을 만들어 받침을 채우기 없음으로."]],
+      ["불릿 차트", ["표에 지표별 나쁨·보통·좋음 구간 경계, 목표, 실적을 적습니다.", "구간 세 개를 누적 가로 막대로 그리고 회색 농도를 달리합니다.", "실적 계열을 보조 축으로 보내 막대 너비를 좁히고, 진한 색으로.", "목표는 분산형 계열로 추가해 세로 막대 표식(또는 오차 막대)으로 표시합니다."]],
+      ["직접 라벨(범례 없애기)", ["마지막 데이터 요소만 선택 → 데이터 레이블 추가 → 레이블 옵션에서 '계열 이름'과 '값'만.", "레이블 글자색을 계열 색과 같게.", "범례 삭제. 선이 겹치면 레이블 위치를 위·아래로 조금 옮깁니다."]],
+      ["작은 다중", ["첫 차트를 다듬은 뒤 세로축 최소·최대를 '자동'에서 숫자로 고정합니다.", "차트를 복사해 데이터 범위만 바꿉니다(축이 같아야 비교가 됩니다).", "PPT에서는 표(격자)를 깔고 칸마다 차트를 맞춰 넣으면 정렬이 쉽습니다."]],
+      ["팬 차트(확률 범위)", ["시뮬레이션 결과에서 기간별 5·25·50·75·95 백분위를 계산합니다(PERCENTILE.INC).", "누적 영역 차트 계열: 5%(채우기 없음), 25%−5%, 50%−25%, 75%−50%, 95%−75%.", "바깥 띠는 옅게, 안쪽 띠는 진하게 같은 색. 중앙값은 꺾은선 계열을 따로 얹습니다."]],
+      ["산점도와 추세선", ["분산형 차트 → 계열 오른쪽 클릭 → 추세선 추가 → 선형.", "'수식을 차트에 표시', 'R-제곱 값을 차트에 표시'를 켭니다. 절편이 고정비, 기울기가 변동비입니다.", "구조가 바뀐 기간이 있으면 계열을 나눠 추세선도 따로 긋습니다. 신뢰구간이 필요하면 LINEST 함수(통계 옵션 TRUE)로 표준오차를 얻습니다."]],
+      ["히스토그램·파레토·상자 그림", ["엑셀 2016 이상: 삽입 → 통계 차트에서 고릅니다.", "히스토그램은 축 서식에서 계급 너비나 계급 수를 정합니다.", "파레토는 큰 순서 정렬과 누적 비율선을 자동으로 그립니다."]],
+      ["서식 재사용과 PPT로 옮기기", ["다듬은 차트를 오른쪽 클릭 → '서식 파일로 저장'(.crtx)하면 다음 차트에 같은 모양을 바로 씁니다.", "PPT에 붙일 때 '원본 서식 유지 및 데이터 연결'을 고르면 엑셀 숫자가 바뀔 때 갱신할 수 있습니다. 배포본은 연결을 끊고 그림으로 고정합니다.", "PPT의 안내선과 그리드를 켜고 차트 영역을 그리드 열에 맞춥니다. 같은 종류의 차트는 모든 장에서 같은 크기·위치로."]]
+    ];
+    H.forEach((h) => { const d = F.el("details", { class: "how" }); d.appendChild(F.el("summary", { text: h[0] })); const ol = F.el("ol"); h[1].forEach((s0) => ol.appendChild(F.el("li", { text: s0 }))); d.appendChild(ol); host.appendChild(d); });
+  }
+
+  function all() { R = S.rng(808); gallery(); fixes(); palettes(); }
+  all(); howto();
+  F.onRedraw(all);
+  Report.flows($("hero-art"), {
+    area: { span: 0.42, max: 580, min: 1000, within: ".rpt-hero .wrap" },
+    nodes: [{ x: 0.10, y: 0.50, label: "질문" }, { x: 0.90, y: 0.12, label: "비교" }, { x: 0.90, y: 0.37, label: "추세" }, { x: 0.90, y: 0.63, label: "원인" }, { x: 0.90, y: 0.88, label: "위험" }],
+    links: [{ from: 0, to: 1, bend: -0.10, c: 0, n: 16, label: "막대" }, { from: 0, to: 2, bend: -0.04, c: 1, n: 16, label: "꺾은선" }, { from: 0, to: 3, bend: 0.04, c: 2, n: 16, label: "폭포" }, { from: 0, to: 4, bend: 0.10, c: 0, n: 16, label: "팬 차트" }]
+  });
+  Report.toc("#toc", ".rpt-body > section");
+  Report.reveal("[data-rv]");
+})();
+</script>
+</body>
+</html>
