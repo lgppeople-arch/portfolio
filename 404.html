@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<title>페이지를 찾을 수 없습니다 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="64x64" href="/portfolio/assets/favicon-64.png">
+<script src="/portfolio/assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/portfolio/assets/site.css">
+<style>
+  .nf { min-height: 72vh; display: grid; align-content: center; gap: 18px; padding: 64px 0; }
+  .nf .code { font-family: var(--f-num); font-size: 13px; letter-spacing: .08em; color: var(--accent); }
+  .nf h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 4.4vw, 52px); letter-spacing: -0.02em; line-height: 1.15; margin: 0; }
+  .nf p { color: var(--ink-2); max-width: 60ch; line-height: 1.7; margin: 0; }
+  .nf .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .nf .guess { font-size: var(--s-2); }
+  .nf .guess a { font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="/portfolio/"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <button type="button" class="theme-btn" id="theme-btn" style="margin-left: auto" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+<main class="wrap wide">
+  <div class="nf">
+    <div class="code">404 · NOT FOUND</div>
+    <h1>찾는 페이지가 없습니다</h1>
+    <p>주소가 바뀌었거나 잘못 입력됐을 수 있습니다. 아래에서 원하는 곳으로 가 주세요.</p>
+    <p class="guess" id="guess" hidden></p>
+    <div class="row">
+      <a class="btn primary" href="/portfolio/">홈으로</a>
+      <a class="btn" href="/portfolio/#brief">3분 요약</a>
+      <a class="btn" href="/portfolio/tools/">도구·리포트 모음</a>
+      <a class="btn" href="/portfolio/#contact">연락</a>
+    </div>
+  </div>
+</main>
+<script>
+(function () {
+  /* 주소와 가장 비슷한 페이지를 하나 제안한다 */
+  const P = { "capex-kit": "설비투자 분석 키트", "samsung": "삼성전자 재무 분석", "stats-notes": "통계 기법과 활용", "kpi-tree": "KPI 트리", "plan-risk": "사업계획 달성 확률", "budget-opt": "비용예산 증액 우선순위",
+    "pl-report": "월 손익 보고", "cost-stats": "원가 행태·불량 관리도", "mbo-kpi": "성과평가 MBO·KPI", "cash-13w": "13주 자금수지", "capital": "적정 부채·파산 위험", "doa": "위임전결 기준 점검",
+    "post-review": "투자 사후관리", "ma-process": "M&A 절차 지도", "ma-valuation": "M&A 가치평가", "holdco-nav": "지주사 포트폴리오 가치", "fx-hedge": "환리스크 헤지", "sectors": "업종별 재무제표 읽기",
+    "ma-case": "M&A 사례: 합병 공시 읽기", "semi-cycle": "반도체 사이클과 재무", "reading": "AI 인프라 읽기 노트", "fsa": "재무제표 분석 프레임워크", "charts": "차트 선택과 디자인", "deck": "보고서·PPT 작성 원칙",
+    "sources": "정보 출처와 참고 자료", "guide": "쉬운 가이드", "checks": "계산 검산" };
+  const want = (location.pathname.split("/").pop() || "").replace(/\.html?$/i, "").toLowerCase();
+  if (!want) return;
+  const dist = (a, b) => { const m = a.length, n = b.length, d = []; for (let i = 0; i <= m; i++) { d[i] = [i]; } for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; };
+  let best = null, bd = Infinity;
+  Object.keys(P).forEach((k) => { const v = (want.indexOf(k) >= 0 || k.indexOf(want) >= 0) ? 0 : dist(want, k); if (v < bd) { bd = v; best = k; } });
+  if (best && bd <= Math.max(3, Math.floor(best.length / 2))) {
+    const g = document.getElementById("guess"); g.hidden = false;
+    g.append("혹시 찾으신 곳이 ");
+    const a = document.createElement("a"); a.href = "/portfolio/tools/" + best + ".html"; a.textContent = P[best]; g.appendChild(a);
+    g.append("인가요?");
+  }
+})();
+</script>
+</body>
+</html>

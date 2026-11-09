@@ -195,6 +195,7 @@ body::before { background: var(--paper); }
 .nav-h { display: block; font-size: 11px; font-weight: 600; color: var(--muted); padding: 8px 10px 4px; }
 .site-nav .nav-m a { display: block; padding: 7px 10px; font-size: var(--s-1); white-space: nowrap; border-radius: 4px; }
 .site-nav .nav-m a[aria-current="page"] { color: var(--accent); font-weight: 600; box-shadow: none; }
+.site-nav .nav-m a.nav-all { grid-column: 1 / -1; margin-top: 2px; border-top: 1px solid var(--rule-soft); border-radius: 0 0 4px 4px; padding-top: 9px; font-weight: 600; color: var(--accent); }
 @media (max-width: 1500px) { .nav-g > summary { padding: 6px 8px; font-size: 13px; } }
 @media (max-width: 640px) {
   .site-head .wrap { gap: 10px; }
@@ -651,3 +652,38 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 .story-skip { font-size: var(--s-1); color: var(--muted); justify-self: start; margin-top: 6px; }
 .story-art { width: 100%; height: min(62vh, 560px); display: block; }
 @media print { .story { display: none !important; } .figures { display: grid !important; } }
+
+/* 홈 3분 요약 */
+.brief3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 960px) { .brief3 { grid-template-columns: minmax(0, 1fr); } }
+.brief3 > div { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--ink); border-radius: var(--radius); padding: 16px 18px 18px; min-width: 0; }
+.brief3 h3 { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--accent); margin-bottom: 10px; }
+.brief3 ul { margin: 0; padding-left: 16px; display: grid; gap: 8px; font-size: var(--s-1); line-height: 1.65; color: var(--ink); }
+.pick3 { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; counter-reset: pk; }
+.pick3 li { counter-increment: pk; }
+.pick3 a { display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 8px; padding: 8px 10px; border: 1px solid var(--rule-soft); border-radius: 6px; color: inherit; text-decoration: none; }
+.pick3 a::before { content: counter(pk); grid-row: span 2; align-self: center; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: var(--f-num); font-size: 12px; display: grid; place-items: center; }
+.pick3 a:hover, .pick3 a:focus-visible { border-color: var(--accent); }
+.pick3 b { font-size: var(--s-1); }
+.pick3 span { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.brief-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+/* 하는 일 단계: 넓은 화면은 늘 펼침, 휴대폰은 접어 둠 */
+details.sd > summary { display: none; }
+@media (max-width: 640px) {
+  details.sd > summary { display: inline-flex; cursor: pointer; font-size: 12.5px; color: var(--muted); list-style: none; gap: 6px; align-items: center; }
+  details.sd > summary::-webkit-details-marker { display: none; }
+  details.sd > summary::before { content: "＋"; font-size: 11px; }
+  details.sd[open] > summary::before { content: "－"; }
+  details.sd[open] > summary { margin-bottom: 8px; }
+  /* 휴대폰에서 길이를 줄이는 정리: 리포트 표지 그림과 분석 카드 설명은 넓은 화면에서만 */
+  #reports .rcover { display: none; }
+  #analytics .qcard p { display: none; }
+}
+@media print { details.sd > summary { display: none !important; } }
+@media (max-width: 640px) {
+  .stage { padding: 12px 12px 16px; gap: 8px; }
+  .stage h3 { font-size: var(--s-3); }
+  .stage .tools { gap: 4px; padding-top: 6px; }
+  .stage .tool-link { padding: 6px 10px; font-size: 12.5px; }
+}
+.site-foot .upd { font-family: var(--f-num); font-size: 12px; letter-spacing: .02em; }

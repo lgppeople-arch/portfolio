@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>이기표 경력 요약</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+  /* 경력 요약 PDF 원본. scripts/make-profile.js가 기간·날짜를 채워 assets/docs/lee-gipyo-profile.pdf로 인쇄한다. 내용은 사이트에 공개된 문구만 쓴다. */
+  @page { size: A4; margin: 14mm 15mm 13mm; }
+  :root { --ink: #111A22; --ink-2: #36414B; --muted: #66707A; --rule: #D5D9DD; --accent: #A6491B; --input: #1D4FC4; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: var(--ink); font-family: "IBM Plex Sans KR", system-ui, sans-serif; font-size: 9.4pt; line-height: 1.55; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h1, h2, h3 { margin: 0; }
+  .top { display: grid; grid-template-columns: 1fr auto; gap: 8mm; align-items: end; padding-bottom: 4mm; border-bottom: 1.4pt solid var(--ink); }
+  .top h1 { font-family: "Gothic A1", sans-serif; font-weight: 800; font-size: 22pt; letter-spacing: -0.02em; line-height: 1.1; }
+  .top h1 small { font-family: "IBM Plex Sans KR", sans-serif; font-weight: 500; font-size: 10.5pt; color: var(--ink-2); margin-left: 3mm; letter-spacing: 0; }
+  .top .role { margin-top: 1.5mm; font-size: 9pt; color: var(--muted); letter-spacing: 0.04em; }
+  .top .ct { text-align: right; font-size: 8.6pt; color: var(--ink-2); line-height: 1.6; }
+  .top .ct b { color: var(--ink); font-weight: 600; }
+  .lede { margin: 4mm 0 0; font-size: 9.6pt; line-height: 1.65; color: var(--ink); }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 4mm 0 0; border: 0.8pt solid var(--rule); border-radius: 2mm; }
+  .facts div { padding: 2.6mm 3mm; border-left: 0.8pt solid var(--rule); }
+  .facts div:first-child { border-left: 0; }
+  .facts b { display: block; font-family: "Gothic A1", sans-serif; font-weight: 800; font-size: 14pt; letter-spacing: -0.01em; }
+  .facts span { font-size: 7.8pt; color: var(--ink-2); line-height: 1.45; display: block; margin-top: 0.8mm; }
+  h2 { font-size: 8.4pt; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin: 5.5mm 0 2mm; padding-bottom: 1mm; border-bottom: 0.6pt solid var(--rule); }
+  .job { display: grid; grid-template-columns: 34mm 1fr; gap: 4mm; margin-bottom: 3.2mm; break-inside: avoid; }
+  .job .when { font-family: "IBM Plex Mono", monospace; font-size: 8pt; color: var(--ink-2); line-height: 1.5; }
+  .job .when small { display: block; font-family: "IBM Plex Sans KR", sans-serif; color: var(--muted); font-size: 7.8pt; }
+  .job h3 { font-size: 10.6pt; font-weight: 700; }
+  .job h3 span { font-size: 8.4pt; font-weight: 400; color: var(--muted); margin-left: 2mm; }
+  .job .ctx { margin: 0.6mm 0 1.4mm; font-size: 8.4pt; color: var(--ink-2); }
+  ul { margin: 0; padding-left: 4mm; }
+  li { margin: 0.6mm 0; }
+  li b { font-weight: 600; }
+  .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .case { border: 0.8pt solid var(--rule); border-radius: 2mm; padding: 2.6mm 3mm; break-inside: avoid; }
+  .case h3 { font-size: 9.4pt; font-weight: 700; margin-bottom: 1mm; }
+  .case p { margin: 0; font-size: 8.4pt; color: var(--ink-2); line-height: 1.55; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  dl { margin: 0; display: grid; gap: 1.2mm; }
+  dl div { display: grid; grid-template-columns: 26mm 1fr; gap: 3mm; }
+  dt { font-weight: 600; font-size: 8.6pt; }
+  dd { margin: 0; font-size: 8.6pt; color: var(--ink-2); }
+  .links { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2mm 6mm; font-size: 8.4pt; }
+  .links div b { font-weight: 600; }
+  .links div a { display: block; font-family: "IBM Plex Mono", monospace; font-size: 6.9pt; color: var(--input); text-decoration: none; word-break: break-all; }
+  .top .ct a { color: inherit; text-decoration: none; }
+  .foot { margin-top: 5mm; padding-top: 2mm; border-top: 0.6pt solid var(--rule); font-size: 7.6pt; color: var(--muted); display: flex; justify-content: space-between; gap: 6mm; }
+  .pb { break-before: page; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h1>이기표<small>재무기획 · 전략기획</small></h1>
+      <div class="role">FP&amp;A · Corporate Finance · M&amp;A · Practical AI Tooling</div>
+    </div>
+    <div class="ct"><a href="mailto:lgp3327@gmail.com"><b>lgp3327@gmail.com</b></a><br>포트폴리오 <a href="https://lgppeople-arch.github.io/portfolio/">lgppeople-arch.github.io/portfolio</a><br>경력 <span id="tenure">6년 5개월</span> (<span id="asof">2026년 11월</span> 기준)</div>
+  </div>
+
+  <p class="lede">반도체 부품과 건설소재 두 제조업에서 6년간 사업계획·예산, 월 손익 분석, 원가 관리, 성과평가(MBO)를 맡았고, 약 1,500억원 규모 생산부지 인수와 설비투자 심의, 인수 TFT, 이사회·규정 업무로 범위를 넓혔습니다. 엑셀로 반복하던 계산과 검산은 AI 코딩 도구로 만든 계산 도구에 맡기고, 시간은 가정이 맞는지 검증하는 데 씁니다. 반도체 같은 첨단기술 산업, 지주사처럼 사업 구조가 복잡한 회사에서 재무·전략기획을 하려 합니다.</p>
+
+  <div class="facts">
+    <div><b>6년</b><span>매출 약 1조원 건설소재, 약 3,000억원 반도체 부품 제조사 재무기획·경영관리</span></div>
+    <div><b>1,500억원</b><span>구미 생산부지·건물 인수(2026년 공시) 투자 설명 자료와 차입용 투자·회수 계획 공동 작성</span></div>
+    <div><b>30억원/년</b><span>비용예산 증액 품의 담당. 한 해 승인 증액 총액(자산투자 제외)</span></div>
+    <div><b>유지 결정</b><span>매출 약 1조원 주력사업의 구조 전환안 검토. 전환안 기각, 기존 사업 유지</span></div>
+  </div>
+
+  <h2>경력</h2>
+  <div class="job">
+    <div class="when">2024.12 ~ 현재<small>재무기획팀 · Assistant Manager</small></div>
+    <div>
+      <h3>(주)미코세라믹스<span>반도체 전공정 장비용 세라믹 부품</span></h3>
+      <p class="ctx">Heater, Electrostatic Chuck 등을 만드는 임직원 약 750명, 연매출 약 3,000억원 규모 제조사</p>
+      <ul>
+        <li><b>투자 타당성과 사후관리:</b> 공장 확장, 부지 인수 투자안의 NPV·IRR·회수기간과 민감도 분석, 심의 자료 작성. 구미 생산부지·건물 인수(약 1,500억원, 2026년 공시) 건의 투자 설명 자료와 차입용 투자·회수 계획 공동 작성. 집행 후 계획 대비 실적을 추적하는 사후관리(PIR) 보고</li>
+        <li><b>M&amp;A와 투자회사 관리:</b> 비밀유지 하 인수 TFT 재무 실무 지원(세부는 면접에서 설명). 지분 투자회사의 신규 투자안을 투자계약 동의 조항에 따라 검토하고 서면동의 요청자료 작성</li>
+        <li><b>경쟁사 리서치:</b> 중국 상장 경쟁사 투자설명서 원문을 사업구조·원가구조·설비투자·고객·재무지표로 분석. 분기 보고 체계를 만들고 약 50쪽 책자로 경영진에 배포</li>
+        <li><b>사업계획·손익·MBO:</b> 연간 사업계획·예산, 3개월·하반기 추정손익(Rolling Forecast), 월 경영회의 자료. 비용예산 증액 품의 담당(연간 승인 총액 약 30억원, 자산투자 제외). 조직별 KPI 설정과 평가, 인센티브 배분 기준 산정 참여</li>
+        <li><b>이사회·규정:</b> 상장사 표준정관, 동종업계 정관과 비교해 정관·이사회규정·위임전결규정 개정안 작성. 부의 안건 범위와 결의 요건을 상법(제393조, 제469조) 기준에 맞춰 정비하고 이사회 안건·의사록, 주주총회 준비 지원</li>
+        <li><b>그룹 프로젝트와 감사 대응:</b> 그룹 ERP 교체 TFT 예산 담당. 그룹 내부감사 대응 자료와 모기업 공시용 자료 작성. 불량·폐기비용 관리 프로세스 정비</li>
+      </ul>
+    </div>
+  </div>
+  <div class="job">
+    <div class="when">2020.06 ~ 2024.12<small>경영관리팀 · 계장</small></div>
+    <div>
+      <h3>(주)유진기업<span>레미콘 · 건자재 유통</span></h3>
+      <p class="ctx">임직원 약 400명, 연매출 약 1조원 규모</p>
+      <ul>
+        <li><b>구조 전환안 검토:</b> 그룹 요청으로 매출 약 1조원 규모 주력사업의 유지안과 구조 전환안을 비교 검토. 사업부문별 매출·영업이익을 다시 추정하고 인력·공급망·자산가치 리스크까지 정리</li>
+        <li><b>관리회계와 원가 분석:</b> 공장·제품별 원가 산출, 변동비·고정비 분해(CVP 분석)로 가동률 민감도 관리. 원자재 가격과 판매단가가 마진에 주는 영향을 정리해 단가 협상에 반영</li>
+        <li><b>예산·손익관리:</b> 사업계획·예산, SAP 관리손익 월 마감과 추정손익 보고, 예산 대비 차이 분석. 통제예산 설정과 모니터링, 예산 절감 과제 운영</li>
+        <li><b>MBO와 전환 프로젝트:</b> 전사·조직별 MBO 설정과 평가. 업무환경 MS365 클라우드 전환 TFT 참여</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="pb">대표 사례</h2>
+  <div class="cases">
+    <div class="case"><h3>주력사업 구조 전환안 검토</h3><p>두 안의 사업부문별 매출과 영업이익을 다시 추정하고, 수익성 밖의 고려사항 여섯 가지(운영 주체, 사업 연속성, 원재료 수급, 판매망, 자산 가치평가, 부대자산)를 정리했습니다. 전환안은 이익 규모가 줄고 해결이 어려운 리스크가 남아 기각됐고, 기존 사업 유지로 결정됐습니다.</p></div>
+    <div class="case"><h3>경쟁사 공시 리서치 체계</h3><p>중국 상장 경쟁사의 투자설명서와 분기 공시를 원문으로 읽고 사업구조·원가구조·설비투자·고객·재무지표로 정리해 분기마다 갱신했습니다. 약 50쪽 책자로 엮어 본부장을 통해 경영진에 배포했습니다.</p></div>
+    <div class="case"><h3>사내 투자타당성 분석 도구</h3><p>설비투자 검토를 같은 틀로 맞추고, 투자 전 가정을 집행 뒤 실적과 비교할 수 있게 남기는 내부 도구를 AI 코딩 도구로 개발 중입니다. 지금은 제 검토 업무에 먼저 쓰고, 팀장 이상과 도입 방향을 맞춰 가는 단계입니다.</p></div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h2>역량</h2>
+      <dl>
+        <div><dt>SAP (CO)</dt><dd>사업부 관리손익 월 마감 실무</dd></div>
+        <div><dt>ERP · MS365</dt><dd>그룹 ERP 교체 TFT 예산 담당, MS365 클라우드 전환 TFT 참여</dd></div>
+        <div><dt>Excel</dt><dd>손익·예산 분석, 투자 타당성 모델, 대용량 데이터 가공</dd></div>
+        <div><dt>Python</dt><dd>pandas로 정부 통계자료 정제·집계 자동화</dd></div>
+        <div><dt>R · 통계</dt><dd>R 사용 경험, 데이터분석준전문가(ADsP)</dd></div>
+        <div><dt>AI 활용</dt><dd>Claude·Cursor로 업무용 웹 도구 제작</dd></div>
+        <div><dt>문서</dt><dd>경영진 보고서, 약 50쪽 리서치 책자, 규정·계약서·이사회 의사록</dd></div>
+        <div><dt>영어</dt><dd>TOEIC 865 (2026.09). 영문 이메일·문서로 실무 소통</dd></div>
+      </dl>
+    </div>
+    <div>
+      <h2>자격 · 교육 · 학력</h2>
+      <dl>
+        <div><dt>재경관리사</dt><dd>삼일회계법인 · 2020.01</dd></div>
+        <div><dt>ADsP</dt><dd>데이터분석준전문가 · 2019.12</dd></div>
+        <div><dt>컴활 1급</dt><dd>대한상공회의소 · 2019.10</dd></div>
+        <div><dt>재무제표 분석</dt><dd>패스트캠퍼스 「재무제표 분석 Master 패키지」(2025 개정판). 회사 지원으로 수강, 재무기획팀 전파 교육 담당</dd></div>
+        <div><dt>가치평가</dt><dd>「기업가치평가와 재무실사」 기반 교육: DCF, 시장·자산가치 접근법, 비상장주식 평가</dd></div>
+        <div><dt>학력</dt><dd>경희대학교 경영학과 졸업 (2019.08)</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <h2>포트폴리오에서 먼저 볼 것</h2>
+  <div class="links">
+    <div><b>설비투자 분석 키트</b> NPV·IRR·민감도, NPV 분포와 단계 투자 옵션<a href="https://lgppeople-arch.github.io/portfolio/tools/capex-kit.html">lgppeople-arch.github.io/portfolio/tools/capex-kit.html</a></div>
+    <div><b>삼성전자, 메모리 호황의 재무</b> 공시 원문 쪽수와 함께 검산한 분석<a href="https://lgppeople-arch.github.io/portfolio/tools/samsung.html">lgppeople-arch.github.io/portfolio/tools/samsung.html</a></div>
+    <div><b>통계 기법과 활용</b> 기획·분석에 쓰는 통계 14가지와 도표<a href="https://lgppeople-arch.github.io/portfolio/tools/stats-notes.html">lgppeople-arch.github.io/portfolio/tools/stats-notes.html</a></div>
+    <div><b>사업계획 달성 확률</b> 몬테카를로와 변동 기여도<a href="https://lgppeople-arch.github.io/portfolio/tools/plan-risk.html">lgppeople-arch.github.io/portfolio/tools/plan-risk.html</a></div>
+    <div><b>M&amp;A 절차 지도 · 가치평가</b> 재무가 챙기는 일과 실사 반영 계산<a href="https://lgppeople-arch.github.io/portfolio/tools/ma-process.html">lgppeople-arch.github.io/portfolio/tools/ma-process.html</a></div>
+    <div><b>도구·리포트 전체 모음</b> 도구 15개, 리포트 6편, 노트 4편<a href="https://lgppeople-arch.github.io/portfolio/tools/">lgppeople-arch.github.io/portfolio/tools/</a></div>
+  </div>
+
+  <div class="foot"><span>회사 내부 수치와 사업장 정보는 담지 않았습니다. 포트폴리오 도구의 예시 수치는 가상입니다.</span><span id="made">2026년 11월 작성</span></div>
+</body>
+</html>

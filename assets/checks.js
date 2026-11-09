@@ -11,6 +11,7 @@
     Costs: require("./engines/costs.js"),
     CapexMc: require("./engines/capexmc.js"),
     KpiTree: require("./engines/kpitree.js"),
+    StatLab: require("./engines/statlab.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -70,7 +71,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -582,6 +583,43 @@
       const y = clone(x); K.KEYS.forEach((k) => { y[k].act = y[k].plan; }); y.p.act = y.p.plan * 1.02;
       const b = K.analyze(y);
       add("KPI 트리", "한 지표만 바뀌면 그 지표가 차이를 모두 가져간다(단가 +2%)", near(b.shapley.by.p, b.act.roic - b.plan.roic, 1e-12), "+" + b.shapley.by.p.toFixed(3) + "%p");
+    }
+
+    /* ---------- 통계 기법 노트 ---------- */
+    if (StatLab && Stats) {
+      const L = StatLab, S = Stats, G = "통계 기법";
+      add(G, "분위수는 엑셀 PERCENTILE.INC와 같은 선형보간: [1, 2, 3, 4]의 25% = 1.75", near(S.quantile([1, 2, 3, 4], 0.25), 1.75, 1e-12), "1.75");
+      const ans = L.ANSCOMBE.map(L.summary2), okA = ans.every((a) => near(a.mx, 9, 1e-12) && near(a.my, 7.5, 0.01) && near(a.r, 0.816, 0.0015) && near(a.a, 3, 0.01) && near(a.b, 0.5, 0.001));
+      add(G, "앤스컴 4종: x 평균 9, y 평균 7.50, 상관 0.816, 회귀식 y = 3.00 + 0.500x가 네 데이터 모두 같다", okA, "상관 " + ans.map((a) => a.r.toFixed(3)).join(" / "));
+      const cov = L.ciDraws(10, 4000, 77).filter((v) => v.hit).length / 4000;
+      add(G, "95% 신뢰구간을 4,000번 만들면 약 95%가 참값을 포함(±1.5%p)", Math.abs(cov - 0.95) < 0.015, (cov * 100).toFixed(1) + "%");
+      add(G, "표본 크기 n = (1.96 × 12 ÷ 3)² 올림 = 62, 다중검정 20번의 우연 유의 확률 1 − 0.95²⁰ = 64.2%", L.sampleSize(12, 3) === 62 && near(L.familywise(20), 0.6415, 1e-4), "62개 · " + (L.familywise(20) * 100).toFixed(1) + "%");
+      const sp = L.simpson();
+      add(G, "심슨의 역설 예시: A가 두 제품 모두 불량률이 낮은데 합계는 높고, 구성을 맞추면 다시 낮다", sp.A.X < sp.B.X && sp.A.Y < sp.B.Y && sp.A.total > sp.B.total && sp.A.std < sp.B.std, "합계 " + (sp.A.total * 100).toFixed(1) + "% vs " + (sp.B.total * 100).toFixed(1) + "%");
+      const y = L.sales(), D = L.decompose(y); let idErr = 0; y.forEach((v, t) => { if (D.trend[t] !== null) idErr = Math.max(idErr, Math.abs(v - D.trend[t] - D.seasonal[t] - D.remainder[t])); });
+      const sErr = Math.max.apply(null, D.index.map((v, m) => Math.abs(v - L.SEASON[m])));
+      add(G, "시계열 분해: 원계열 = 추세 + 계절 + 불규칙, 계절 몫 합계 0, 심어 둔 계절 모양을 ±2억원 안에서 되찾음", idErr < 1e-9 && Math.abs(S.sum(D.index)) < 1e-9 && sErr < 2, "최대 차이 " + sErr.toFixed(2));
+      const vr = [[0.5, 0.2, 6], [0.8, 0.1, 6], [0.3, 0.4, 4]].map((q) => { const B = q[0] * q[1], an = 1 + (q[2] - 1) * (q[0] * q[0] + q[0] * B * q[2] + B * B * q[2] * (2 * q[2] - 1) / 6); return L.holtSimVar(q[0], q[1], 1, q[2], 30000, 5) / an; });
+      add(G, "홀트 예측분산 공식(ETS(A,A,N)) = 같은 모형으로 3만 번 굴린 분산(±3%)", vr.every((r) => Math.abs(r - 1) < 0.03), "비율 " + vr.map((r) => r.toFixed(3)).join(" / "));
+      const my = L.material(), hb = L.holtFit(my, 6), others = [[0.3, 0.1], [0.6, 0.3], [0.9, 0.02]].map((q) => L.holt(my, q[0], q[1], 6).sse);
+      add(G, "지수평활 모수 선택: 고른 값의 오차제곱합이 다른 조합보다 작거나 같다", others.every((v) => hb.sse <= v + 1e-9), "α " + hb.alpha + " · β " + hb.beta);
+      const M = L.MC, tm = (a) => S.triMean(a[0], a[1], a[2]), an = tm(M.Q) * (tm(M.P) - tm(M.V)) / 10 - tm(M.FC), m0 = L.mcRun(0, 20000, 11);
+      add(G, "몬테카를로(상관 0) 평균 = 해석적 기댓값(표준오차 3배 안), 최빈값 계획 13억", Math.abs(m0.mean - an) < 3 * m0.sd / Math.sqrt(20000) && near(m0.base, 13, 1e-9), m0.mean.toFixed(2) + " vs " + an.toFixed(2));
+      const tor = L.tornado();
+      add(G, "토네이도: 움직임 폭이 큰 순서로 정렬, 기준점은 최빈값 계획", tor.every((d, i) => i === 0 || tor[i - 1].swing >= d.swing) && tor.every((d) => near(d.base, 13, 1e-9)), tor.map((d) => d.name).join(" > "));
+      const B = L.bayes(0.3, 10, 8, 4, 0.9); let integ = 0; for (let i = 0; i < 4000; i++) integ += L.betaPdf((i + 0.5) / 4000, B.a, B.b) / 4000;
+      add(G, "베이지안 갱신: 사후 평균 = (a + 수주) ÷ (a + b + 견적), 90% 구간 끝의 누적확률 5%·95%, 밀도 적분 = 1", near(B.postMean, 7 / 18, 1e-12) && near(S.ibeta(B.lo, B.a, B.b), 0.05, 1e-6) && near(S.ibeta(B.hi, B.a, B.b), 0.95, 1e-6) && near(integ, 1, 1e-3), "Beta(7, 11) · " + (B.postMean * 100).toFixed(1) + "%");
+      const rp = L.repairs(), bm = L.bootstrap(rp, S.mean, 20000, 9), mu = S.mean(rp), seTh = Math.sqrt(S.mean(rp.map((v) => (v - mu) * (v - mu))) / rp.length);
+      add(G, "부트스트랩 평균의 표준오차 = 이론값 √(Σ(x − x̄)² ÷ n) ÷ √n(±3%), 구간이 추정값을 포함", Math.abs(bm.se / seTh - 1) < 0.03 && bm.lo < mu && mu < bm.hi, bm.se.toFixed(3) + " vs " + seTh.toFixed(3));
+      const cc = L.concentration(L.customers()), hh = S.sum(cc.rows.map((r) => r.share * r.share)) * 10000;
+      add(G, "집중도: 누적 비중 끝 = 100%, HHI = 비중 제곱합 × 10,000, A등급이 80% 이상", near(cc.rows[cc.rows.length - 1].cum, 1, 1e-12) && near(cc.hhi, hh, 1e-9) && S.sum(cc.rows.filter((r) => r.cls === "A").map((r) => r.share)) >= 0.8 && cc.gini > 0 && cc.gini < 1, "지니 " + cc.gini.toFixed(3) + " · HHI " + Math.round(cc.hhi));
+      const ac = L.accounts(), ks = [1, 2, 3, 4, 5, 6].map((k) => L.kmeans(ac, k, 7, 10)), k3 = ks[2];
+      const fixed = k3.z.every((p, i) => { let bj = 0, bd = Infinity; k3.zc.forEach((cc2, j) => { const d = (p[0] - cc2[0]) ** 2 + (p[1] - cc2[1]) ** 2; if (d < bd) { bd = d; bj = j; } }); return bj === k3.labels[i]; });
+      add(G, "k-평균: 모든 점이 가장 가까운 중심에 배정, 군집 수가 늘면 거리 합이 줄어듦", fixed && ks.every((m, i) => i === 0 || ks[i - 1].inertia >= m.inertia - 1e-9), "k=3 크기 " + k3.sizes.join("/"));
+      const big = L.rttm(20000, 11);
+      add(G, "평균으로의 회귀: 실력 분산 = 운 분산이면 이듬해 점수의 회귀 기울기 ≈ 0.5(±0.02)", Math.abs(big.slope - big.reliability) < 0.02, "기울기 " + big.slope.toFixed(3));
+      const pw = L.power(), rb = L.regBands(pw.x, pw.y), mx0 = S.mean(pw.x), at = rb.at(mx0);
+      add(G, "회귀: 예측구간은 늘 신뢰구간보다 넓고, 평균 x에서 예측구간 반폭 = t × s × √(1 + 1/n)", [40, 60, 80, 100].every((v) => rb.at(v).pi > rb.at(v).ci) && near(at.pi, rb.t * rb.se * Math.sqrt(1 + 1 / rb.n), 1e-9), "반폭 ±" + at.pi.toFixed(3));
     }
     return out;
   }

@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>통계 기법과 활용 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="기획·분석 실무에서 쓰는 통계 기법 14가지를 직접 계산한 도표, 사용 예시, 함정, 엑셀·R 함수와 함께 정리한 노트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="통계 기법과 활용 · 이기표">
+<meta property="og:description" content="기획·분석 실무에서 쓰는 통계 기법 14가지를 직접 계산한 도표, 사용 예시, 함정, 엑셀·R 함수와 함께 정리한 노트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/stats-notes.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/stats-notes.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="평균 하나로는 결정할 수 없다">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/stats-notes.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html" aria-current="page">통계 기법과 활용</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 통계 기법과 활용</div>
+      <div class="rpt-tag">Practice note · 10</div>
+      <h1>평균 하나로는<br>결정할 수 없다</h1>
+      <p class="dek">재무기획에서 받는 질문은 대개 "얼마일까", "정말 달라졌나", "왜 그런가", "앞으로 어떨까", "얼마나 위험한가" 중 하나입니다. 질문마다 맞는 통계 기법과 도표가 있습니다. 기획·분석 실무에서 바로 쓰는 기법 14가지를 골라, 이 페이지에서 직접 계산해 그리고 어디에 쓰는지와 함정, 엑셀·R 함수를 함께 정리했습니다.</p>
+      <div class="rpt-meta"><span>기법<b>14가지</b></span><span>함께<b>도표 · 사용 예시 · 함정 · 엑셀·R</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-why" data-toc="질문으로 기법 고르기" data-group="시작">
+          <h2>질문으로 기법 고르기</h2>
+          <p>모든 도표는 이 페이지에서 계산해 그린 것이고, 예시 데이터는 시드를 고정한 가상 값이라 새로 고쳐도 같은 숫자가 나옵니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다. 알려진 값이 있는 앤스컴 데이터의 통계량, 예측구간 공식과 시뮬레이션의 일치 같은 항목입니다. 도표 아래 '숫자로 보기'를 열면 그림의 핵심 숫자를 표로 볼 수 있습니다.</p>
+          <div class="takeaways">
+            <div><b>점 하나보다 분포</b><p>평균은 치우침과 이상치를 숨깁니다. 중앙값·사분위·범위를 함께 봅니다.</p></div>
+            <div><b>유의한가보다 얼마나 큰가</b><p>p값은 우연인지 아닌지만 말합니다. 판단은 차이의 크기와 신뢰구간으로 합니다.</p></div>
+            <div><b>한 숫자보다 범위로 보고</b><p>전망과 계획은 예측구간·확률로 보고합니다. 범위를 봐야 의사결정자가 대비할 수 있습니다.</p></div>
+          </div>
+          <div class="tw" role="region" aria-label="질문별 기법 선택표" tabindex="0">
+            <table class="pick">
+              <thead><tr><th>받는 질문</th><th>기법</th><th>도표</th><th>엑셀</th><th>R</th></tr></thead>
+              <tbody>
+                <tr><th>대표값은 얼마이고 얼마나 퍼졌나</th><td><a href="#s-desc">분포 요약</a>: 중앙값, 사분위</td><td>히스토그램, 상자 그림</td><td><code>MEDIAN</code> <code>QUARTILE.INC</code></td><td><code>summary()</code> <code>quantile()</code></td></tr>
+                <tr><th>이 추정은 얼마나 정확한가</th><td><a href="#s-ci">신뢰구간</a>, <a href="#s-boot">부트스트랩</a></td><td>구간 그림, 오차 막대</td><td><code>CONFIDENCE.T</code></td><td><code>t.test()</code> <code>boot::boot()</code></td></tr>
+                <tr><th>개선 전후가 정말 달라졌나</th><td><a href="#s-test">웰치 t검정</a>, 효과 크기</td><td>점 그림 + 차이 구간</td><td><code>T.TEST(전, 후, 2, 3)</code></td><td><code>t.test()</code></td></tr>
+                <tr><th>두 지표가 같이 움직이나</th><td><a href="#s-corr">상관</a></td><td>산점도</td><td><code>CORREL</code></td><td><code>cor()</code></td></tr>
+                <tr><th>생산이 늘면 원가는 얼마나</th><td><a href="#s-reg">회귀</a>, 예측구간</td><td>산점도 + 회귀선 띠</td><td><code>LINEST</code> <code>FORECAST.LINEAR</code></td><td><code>lm()</code> <code>predict()</code></td></tr>
+                <tr><th>합계로 비교해도 되나</th><td><a href="#s-simp">층별 비교</a>, 표준화</td><td>묶은 막대</td><td>피벗 테이블, <code>SUMPRODUCT</code></td><td><code>xtabs()</code></td></tr>
+                <tr><th>계절 때문인가 추세인가</th><td><a href="#s-ts">시계열 분해</a></td><td>성분별 그림</td><td>이동평균 직접 계산</td><td><code>decompose()</code> <code>stl()</code></td></tr>
+                <tr><th>다음 분기는 얼마일까</th><td><a href="#s-fc">지수평활</a>, 예측구간</td><td>팬 차트</td><td><code>FORECAST.ETS</code></td><td><code>HoltWinters()</code></td></tr>
+                <tr><th>계획을 달성할 확률은</th><td><a href="#s-mc">몬테카를로</a>, 민감도</td><td>히스토그램, S곡선, 토네이도</td><td><code>RAND</code> <code>NORM.INV</code>, 데이터 표</td><td><code>replicate()</code> <code>quantile()</code></td></tr>
+                <tr><th>데이터가 몇 건뿐일 때 확률은</th><td><a href="#s-bayes">베이지안 갱신</a></td><td>사전·사후 분포 곡선</td><td><code>BETA.INV</code></td><td><code>qbeta()</code></td></tr>
+                <tr><th>매출이 몇 곳에 몰려 있나</th><td><a href="#s-conc">파레토, 로렌츠·지니, HHI</a></td><td>파레토 차트, 로렌츠 곡선</td><td>정렬 + 누적, <code>SUMPRODUCT</code></td><td><code>cumsum()</code></td></tr>
+                <tr><th>비슷한 거래처끼리 묶으면</th><td><a href="#s-km">k-평균 군집</a></td><td>군집 산점도, 엘보 그림</td><td>기본 기능 없음</td><td><code>kmeans(scale(x), 3)</code></td></tr>
+                <tr><th>하위 부서가 좋아진 건 관리 덕분인가</th><td><a href="#s-rttm">평균으로의 회귀</a> 점검</td><td>전후 산점도</td><td><code>SLOPE</code></td><td><code>lm()</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s-desc" data-toc="분포 요약: 평균과 중앙값" data-group="요약과 불확실성">
+          <h2>분포 요약: 평균과 중앙값</h2>
+          <p class="qline">거래처 매출채권 회수일, 평균만 보고해도 될까?</p>
+          <p>거래처 120곳의 평균 회수일은 <b id="d-mean"></b>일이지만 중앙값은 <b id="d-med"></b>일입니다. 일부 거래처가 길게 끌어 평균을 위로 당긴 것입니다. 평균만 보고하면 "대부분 거래처가 그쯤 걸린다"는 오해가 생깁니다. 이럴 때는 중앙값과 사분위 범위(가운데 50% 거래처가 <b id="d-q1"></b>~<b id="d-q3"></b>일)를 함께 쓰고, 울타리(사분위 범위의 1.5배) 밖에 있는 <b id="d-nout"></b>곳은 이름을 불러 따로 관리합니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>회수일 분포: 히스토그램과 상자 그림</h4><span class="muted" style="font-size: 12px">가상 · 거래처 120곳</span></div>
+            <div class="fig-b plotbox" id="desc-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="desc-tb"></div></details>
+            <div class="fig-s">상자는 가운데 50%(1사분위~3사분위), 상자 안 선은 중앙값, 수염은 울타리 안 가장 먼 값, 빨간 점은 울타리 밖 이상치입니다(튜키 방식).</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>매출채권·재고 회전일, 견적 소요일, 건당 비용처럼 한쪽 꼬리가 긴 지표 보고</li><li>상위 10% 값(P90, 이 예시는 <b id="d-p90"></b>일)을 관리 기준선으로</li><li>사업부·공장 비교는 상자 그림을 나란히 놓아 위치와 퍼짐을 한 번에</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>평균과 중앙값의 차이가 크면 분포가 치우쳤다는 신호</li><li>"평균 ± 표준편차"는 대칭 분포에서만 뜻이 분명</li><li>이상치는 지우기 전에 원인부터. 입력 오류인지 실제 거래인지 확인</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>AVERAGE</code> <code>MEDIAN</code> <code>QUARTILE.INC</code> <code>PERCENTILE.INC</code></li><li>삽입 → 통계 차트 → 상자 수염 그림, 히스토그램</li><li>R: <code>summary(x)</code> <code>quantile(x)</code> <code>boxplot(x)</code> <code>hist(x)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="mbo-kpi.html#dist">성과평가 점수 분포와 평가자 보정</a> · <a href="charts.html">차트 선택과 디자인</a>의 분포 차트</p>
+        </section>
+
+        <section id="s-ci" data-toc="신뢰구간과 표본 크기">
+          <h2>신뢰구간과 표본 크기</h2>
+          <p class="qline">12개월 실적으로 낸 평균 단위원가, 얼마나 믿을 수 있나?</p>
+          <p>95% 신뢰구간은 "참값이 이 안에 있을 확률이 95%"라는 뜻이 아니라, "이 방법으로 구간을 만들면 100번 중 95번쯤 참값을 포함한다"는 뜻입니다. 아래 그림은 참값이 100이고 표준편차가 12인 모집단에서 표본을 20번 뽑아 각각 95% 구간을 그린 것입니다. 표본 수를 바꾸고 다시 뽑아 보세요. 구간 폭은 표본 수의 제곱근에 반비례해서, 정확도를 두 배로 높이려면 표본이 네 배 필요합니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>같은 방법으로 만든 95% 구간 20개</h4><span class="muted" style="font-size: 12px">파랑: 참값 포함 · 빨강: 놓침</span></div>
+            <div class="ctl">
+              <div><span class="lbl">표본 수</span><div class="seg" role="radiogroup" aria-label="표본 수"><label><input type="radio" name="ci-n" value="5">5</label><label><input type="radio" name="ci-n" value="10" checked>10</label><label><input type="radio" name="ci-n" value="30">30</label><label><input type="radio" name="ci-n" value="100">100</label></div></div>
+              <button type="button" class="btn sm" id="ci-again">다시 뽑기</button>
+            </div>
+            <div class="readout" id="ci-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="ci-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="ci-tb"></div></details>
+          </div>
+          <div class="callout"><b>표본 수 정하기:</b> n = (z × σ ÷ E)². 표준편차 12인 원가를 95% 수준에서 ±3 이내로 추정하려면 (1.96 × 12 ÷ 3)² ≈ 61.5, 즉 <b id="ci-ss"></b>개가 필요합니다. 표본 점검으로 평균 금액을 추정할 때도 이 식에서 출발합니다.</div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>추정 원가·단가·소요 시간에 ± 범위를 붙여 보고</li><li>표본 점검·설문의 표본 수를 미리 산정</li><li>"오차 범위 안의 차이"인지 판단하는 기준</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>표본이 서로 독립이라는 가정. 월별 실적처럼 앞뒤가 이어진 자료는 구간이 실제보다 좁게 나옴</li><li>두 구간이 겹쳐도 차이가 유의할 수 있음. 차이 자체의 구간을 따로 계산</li><li>표본이 작고 치우쳤으면 <a href="#s-boot">부트스트랩</a></li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>CONFIDENCE.T(0.05, 표준편차, n)</code> → 반폭</li><li><code>T.INV.2T(0.05, n−1)</code> → t값</li><li>R: <code>t.test(x)$conf.int</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="cost-stats.html">원가 회귀의 계수 신뢰구간과 손익분기점 구간</a> · <a href="plan-risk.html">사업계획 달성 확률</a></p>
+        </section>
+
+        <section id="s-boot" data-toc="부트스트랩: 공식 없이 구간">
+          <h2>부트스트랩: 공식 없이 구간</h2>
+          <p class="qline">수리비 기록이 15건뿐인데, 건당 평균 비용의 범위는?</p>
+          <p>표본이 작고 한쪽으로 치우쳤으면 정규분포를 가정한 구간이 맞지 않을 수 있습니다. 부트스트랩은 가진 표본에서 같은 크기만큼 복원추출하기를 수천 번 반복해, 통계량의 분포를 직접 만듭니다. 15건 평균 <b id="b-mean"></b>백만원의 95% 구간은 부트스트랩으로 <b id="b-lo"></b>~<b id="b-hi"></b>, t분포로 <b id="b-tlo"></b>~<b id="b-thi"></b>입니다. 부트스트랩 구간은 평균을 중심으로 대칭이 아니고(아래로 <b id="b-dn"></b>, 위로 <b id="b-up"></b>), 큰 수리 몇 건이 평균을 흔드는 현실을 반영합니다. 공식이 복잡한 중앙값도 같은 방법으로 구간을 얻습니다(중앙값 <b id="b-med"></b>, 95% 구간 <b id="b-mlo"></b>~<b id="b-mhi"></b>).</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>원자료 15건과 다시 뽑은 평균 4,000개</h4><span class="muted" style="font-size: 12px">가상 · 백만원</span></div>
+            <div class="fig-b plotbox" id="boot-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="boot-tb"></div></details>
+            <div class="fig-s">위쪽 점은 실제 수리비 15건, 아래 막대는 복원추출 표본 평균의 분포입니다. 파란 막대가 가운데 95%입니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>건수가 적은 비용 항목, 프로젝트별 원가 초과율, 투자안 사후 실적 차이의 범위</li><li>중앙값·비율·상관계수처럼 공식 구간이 어려운 통계량</li><li>몬테카를로 입력값의 범위를 과거 실적에서 정할 때</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>표본이 모집단을 대표해야 함. 15건이 모두 한 설비라면 그 설비 이야기</li><li>10건 미만처럼 아주 작으면 부트스트랩도 불안정</li><li>시계열은 순서가 있어 블록 단위로 다시 뽑아야 함</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>INDEX(범위, RANDBETWEEN(1, n))</code>로 한 번 다시 뽑고, 데이터 표로 반복</li><li>R: <code>b &lt;- boot::boot(x, function(d, i) mean(d[i]), 4000)</code></li><li>R: <code>boot::boot.ci(b, type = "perc")</code></li></ul></div>
+          </div>
+        </section>
+
+        <section id="s-test" data-toc="두 집단 비교와 효과 크기" data-group="비교와 관계">
+          <h2>두 집단 비교와 효과 크기</h2>
+          <p class="qline">공정을 개선한 뒤 로트당 단위원가가 정말 내려갔나?</p>
+          <p>개선 후 평균은 <b id="t-mb"></b>로 개선 전 <b id="t-ma"></b>보다 <b id="t-diff"></b> 낮고, 웰치 t검정의 p값은 <b id="t-p"></b>입니다. 그런데 차이의 95% 신뢰구간은 <b id="t-lo"></b> ~ <b id="t-hi"></b>여서, 효과가 6 가까이 될 수도 있지만 거의 없을 수도 있습니다. 표준화한 효과 크기(코헨의 d)는 <b id="t-d"></b>로, 코헨의 기준(0.5 중간, 0.8 큼)으로 중간 이상입니다. 보고할 때는 "p &lt; 0.05라 유의하다"보다 "평균 <span id="t-abs"></span> 낮아졌고, 범위는 <span id="t-rng"></span>"처럼 크기와 범위를 함께 씁니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>로트별 단위원가 지수와 평균 차이</h4><span class="muted" style="font-size: 12px">가상 · 개선 전 = 100 기준</span></div>
+            <div class="fig-b plotbox" id="test-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="test-tb"></div></details>
+            <div class="fig-s">왼쪽은 로트 하나하나와 평균(가로선), 오른쪽은 평균 차이와 95% 신뢰구간입니다. 구간이 0에 닿지 않으면 5% 수준에서 유의합니다.</div>
+          </div>
+          <p>p값은 데이터 양에 크게 좌우됩니다. 아래 표는 평균 차이 1, 표준편차 6으로 같고 집단별 표본 수만 다를 때의 p값입니다. 데이터가 많으면 실무적으로 의미 없는 차이도 "유의"해집니다. 반대로 지표 여러 개를 각각 검정하면, 아무 효과가 없어도 하나쯤은 우연히 유의하게 나옵니다.</p>
+          <div class="duo">
+            <div class="fig" data-rv style="margin-top: 0">
+              <div class="fig-h"><h4>검정을 여러 번 하면</h4><span class="muted" style="font-size: 12px">효과가 전혀 없을 때</span></div>
+              <div class="fig-b plotbox" id="fw-fig"></div>
+              <div class="fig-s">서로 독립인 검정을 m번 할 때 하나 이상이 우연히 p &lt; 0.05가 될 확률 = 1 − 0.95<sup>m</sup>. 여러 지표를 볼 때는 유의수준을 검정 수로 나누거나(본페로니), 미리 정한 핵심 지표만 검정합니다.</div>
+            </div>
+            <div class="fig" data-rv style="margin-top: 0">
+              <div class="fig-h"><h4>같은 차이, 다른 표본 수</h4></div>
+              <div class="fig-b" id="pn-tb"></div>
+              <div class="fig-s">평균 차이 1, 표준편차 6, 두 집단 같은 수. 차이가 같아도 표본이 많으면 p값이 작아집니다.</div>
+            </div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>공정·구매 조건 변경 전후의 원가 비교</li><li>두 공장·두 라인의 수율 비교</li><li>개선 과제 성과 보고에 차이의 크기와 범위를 함께 제시</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>전후 비교에는 그사이 바뀐 원재료 가격, 제품 구성이 섞임</li><li>같은 대상을 전후로 쟀다면 짝지은 t검정, 비율(불량률)은 비율 검정·카이제곱</li><li>세 집단 이상은 분산분석 뒤 사후 비교</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>T.TEST(전, 후, 2, 3)</code> → 양측, 이분산(웰치) p값</li><li>데이터 → 데이터 분석 → t-검정: 이분산 가정 두 집단</li><li>R: <code>t.test(after, before)</code>, 짝지은 경우 <code>paired = TRUE</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="cost-stats.html">개선 전후 불량률 검정(두 비율 z검정)</a> · <a href="mbo-kpi.html#dist">평가자별 분산분석</a> · <a href="pl-report.html#trend">계획 편향 t검정</a></p>
+        </section>
+
+        <section id="s-corr" data-toc="상관: 숫자보다 그림 먼저">
+          <h2>상관: 숫자보다 그림 먼저</h2>
+          <p class="qline">상관계수가 0.82면 관계가 강하다고 보고해도 될까?</p>
+          <p>통계학자 앤스컴(1973)이 만든 네 데이터는 x·y의 평균과 분산, 상관계수(0.816), 회귀식(y = 3.00 + 0.500x)이 소수 둘째 자리까지 같습니다. 그런데 그림은 전혀 다릅니다. Ⅰ은 보통의 직선 관계, Ⅱ는 곡선, Ⅲ은 이상치 하나가 기울기를 비튼 직선, Ⅳ는 점 하나가 상관을 만든 경우입니다. 숫자 하나로 요약하기 전에 산점도를 먼저 그려야 하는 이유입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>앤스컴의 네 데이터</h4><span class="muted" style="font-size: 12px">Anscombe (1973) 원자료</span></div>
+            <div class="fig-b plotbox" id="ans-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="ans-tb"></div></details>
+          </div>
+          <div class="callout"><b>상관은 인과가 아닙니다.</b> 원자재 가격과 영업이익률이 함께 움직여도 둘 다 경기의 영향일 수 있습니다(교란 변수). 인과를 말하려면 원가 구조 같은 작동 원리, 원인이 먼저 일어났다는 시점, 다른 요인의 통제가 함께 있어야 합니다.</div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>원가 동인 후보 고르기: 전력비와 생산량, 물류비와 출하량</li><li>선행 지표 찾기: 수주와 몇 달 뒤 매출의 시차 상관</li><li>KPI 트리에서 현장 지표와 결과 지표가 실제로 연결되는지 확인</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>상관계수는 직선 관계만 잰다</li><li>이상치 하나가 크게 바꾼다. 순위 상관(스피어만)으로 함께 확인</li><li>추세가 있는 두 시계열은 무관해도 상관이 높게 나온다. 증감(차분)으로 다시 확인</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>CORREL</code> <code>RSQ</code>, 분산형 차트</li><li>R: <code>cor(x, y)</code>, <code>cor(x, y, method = "spearman")</code></li><li>R: <code>pairs(df)</code>로 여러 변수 산점도 한 번에</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="kpi-tree.html">KPI 트리(ROIC 가치동인)</a></p>
+        </section>
+
+        <section id="s-reg" data-toc="회귀: 원가 행태와 예측구간">
+          <h2>회귀: 원가 행태와 예측구간</h2>
+          <p class="qline">내년 월 생산을 95만 개로 잡으면, 전력비 예산은 얼마로 해야 하나?</p>
+          <p>30개월 데이터로 회귀하면 월 전력비 = <b id="r-a"></b>억원 + 생산 만 개당 <b id="r-b"></b>입니다. 절편은 생산과 관계없이 나가는 고정 부분, 기울기는 만 개당 변동 부분으로 읽습니다(설명력 R² <b id="r-r2"></b>). 진한 띠는 "평균 전력비"의 95% 신뢰구간, 옅은 띠는 "어느 한 달 전력비"의 95% 예측구간입니다. 예산은 한 달 한 달의 실제 지출을 맞히는 일이라 옅은 띠가 기준입니다. 관측 범위(<b id="r-xr"></b>만 개) 밖은 외삽입니다. 구간 공식은 직선 관계가 그대로 이어진다고 가정하므로, 증설로 고정비가 계단처럼 바뀌면 맞지 않습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>월 생산량과 전력비</h4><span class="muted" style="font-size: 12px">가상 · 30개월</span></div>
+            <div class="ctl"><label class="rg"><span>계획 생산량 <b id="reg-xv">95</b>만 개</span><input type="range" id="reg-x" min="40" max="110" step="1" value="95"></label></div>
+            <div class="readout" id="reg-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="reg-fig"></div>
+            <div class="fig-b plotbox" id="reg-res" style="padding-top: 0"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="reg-tb"></div></details>
+            <div class="fig-s">아래 작은 그림은 잔차(실제 − 회귀선)입니다. 곡선이나 깔때기 같은 무늬가 없어야 직선 모형이 맞습니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>고정비·변동비 분해와 손익분기점</li><li>생산 계획별 비용 예산과 시나리오</li><li>동인이 여럿이면 다중회귀(생산량 + 외기 온도 등)</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>신뢰구간(평균)과 예측구간(한 번)을 혼동하지 않기</li><li>관측 범위 밖 외삽, 구조 변화(증설 전후)는 따로 검정</li><li>잔차가 시간 순서로 이어지면 표준오차 과소, 동인끼리 상관이 크면 계수 불안정</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>LINEST(y, x, TRUE, TRUE)</code> → 계수, 표준오차, R²</li><li><code>FORECAST.LINEAR</code>, 데이터 분석 → 회귀 분석(잔차도 포함)</li><li>R: <code>fit &lt;- lm(y ~ x)</code>; <code>predict(fit, data.frame(x = 95), interval = "prediction")</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="cost-stats.html">원가 행태 회귀와 증설 전후 구조변화(Chow) 검정</a> · <a href="capex-kit.html#bep">가동률과 원가</a></p>
+        </section>
+
+        <section id="s-simp" data-toc="심슨의 역설: 구성의 함정">
+          <h2>심슨의 역설: 구성의 함정</h2>
+          <p class="qline">A 공장 불량률이 B보다 높으니, A가 못하는 걸까?</p>
+          <p>전체 불량률은 A <b id="sp-ta"></b>, B <b id="sp-tb"></b>로 A가 나빠 보입니다. 그런데 제품별로 나누면 불량이 잘 나는 제품 X에서 A <b id="sp-xa"></b> &lt; B <b id="sp-xb"></b>, 쉬운 제품 Y에서도 A <b id="sp-ya"></b> &lt; B <b id="sp-yb"></b>로 A가 두 제품 모두 낫습니다. A가 어려운 제품 X를 90% 만들기 때문에 합계에서 순서가 뒤집힌 것입니다. 제품 구성을 50:50으로 같게 맞춘 표준화 불량률은 A <b id="sp-sa"></b>, B <b id="sp-sb"></b>입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>제품별 불량률과 합계 불량률</h4><span class="muted" style="font-size: 12px">가상 · 공장별 1,000개</span></div>
+            <div class="fig-b plotbox" id="simp-fig"></div>
+            <div class="fig-b plotbox" id="simp-mix" style="padding-top: 0"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="simp-tb"></div></details>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>사업부·공장·영업팀의 이익률·불량률 비교</li><li>전년 대비 이익률 변화를 설명할 때 제품 구성 변화의 몫을 따로 떼기</li><li>평가 지표를 정할 때 구성 차이를 보정한 비율 쓰기</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>합계 비율을 비교하기 전에 구성비가 같은지 확인</li><li>어느 층으로 나눌지는 제품·고객·지역처럼 업무 논리로 정함</li><li>너무 잘게 나누면 칸마다 건수가 적어 우연이 커짐</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li>피벗 테이블 행에 제품을 추가해 층별 비율 확인</li><li><code>SUMPRODUCT(같은 구성비, 층별 비율)</code>로 표준화</li><li>R: <code>xtabs(불량 ~ 공장 + 제품, df)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="kpi-tree.html">KPI 트리의 차이 분해(동인별 기여)</a></p>
+        </section>
+
+        <section id="s-ts" data-toc="시계열 분해: 추세·계절·불규칙" data-group="시간과 예측">
+          <h2>시계열 분해: 추세·계절·불규칙</h2>
+          <p class="qline">3월 매출이 전월보다 늘었는데, 좋아진 걸까?</p>
+          <p>48개월 월매출을 추세(2×12 중심이동평균), 계절(달마다 평균적으로 위아래로 벗어나는 몫), 불규칙(나머지)으로 나눴습니다. 3월 계절 몫은 <b id="ts-mar"></b>억원, 2월은 <b id="ts-feb"></b>억원이라 3월은 아무 일이 없어도 2월보다 <b id="ts-gap"></b>억원쯤 높게 나옵니다. <span id="ts-mom"></span> 전월 대비 증감은 계절에 속기 쉬워서, 월 보고에서는 전년 동월 대비나 계절조정 값으로 봅니다. 불규칙 성분이 ±2 표준편차 밖으로 나간 달(<span id="ts-flag"></span>)만 따로 원인을 찾습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>월매출을 세 성분으로</h4><span class="muted" style="font-size: 12px">가상 · 억원 · 48개월</span></div>
+            <div class="fig-b plotbox" id="ts-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="ts-tb"></div></details>
+            <div class="fig-s">고전적 가법 분해(원계열 = 추세 + 계절 + 불규칙)입니다. 추세는 앞뒤 6개월씩 비어 있어 최근 추세 판단이 늦습니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>월 손익 보고에서 계절조정 실적과 추세 꺾임 확인</li><li>연간 계획을 월로 나눌 때 계절 몫을 반영</li><li>"평소 흔들림"과 "원인을 찾아야 할 달"을 구분</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>추세 끝 6개월이 비므로 최신 구간은 다른 방법을 함께</li><li>계절 모양이 해마다 바뀌면 고전 분해보다 STL</li><li>영업일수, 명절이 옮겨 가는 효과는 따로 조정</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li>13개월 이동평균(양 끝 0.5 가중)을 직접 계산하고 피벗으로 월별 평균</li><li>R: <code>decompose(ts(y, frequency = 12))</code></li><li>R: <code>stl(ts(y, frequency = 12), s.window = "periodic")</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="pl-report.html#trend">월 손익 계절조정 추세선과 ±1σ·±2σ 밴드</a></p>
+        </section>
+
+        <section id="s-fc" data-toc="지수평활 예측과 예측구간">
+          <h2>지수평활 예측과 예측구간</h2>
+          <p class="qline">원재료 단가를 6개월 뒤 한 숫자로 가정해도 될까?</p>
+          <p>홀트 선형 지수평활은 최근 값에 더 큰 가중을 두고 수준과 추세를 함께 갱신합니다. 과거 1개월 앞 예측오차가 가장 작아지는 α = <b id="fc-a0"></b>, β = <b id="fc-b0"></b>로 맞추면 6개월 뒤 예측은 <b id="fc-f6"></b>, 95% 예측구간은 <b id="fc-lo"></b>~<b id="fc-hi"></b>입니다. 앞으로 갈수록 띠가 넓어지는 것이 정상입니다. 사업계획의 단가 가정을 한 숫자로 정하더라도 이 범위를 함께 적어 두면, 민감도 분석의 폭을 근거 있게 정할 수 있습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>원재료 단가 지수와 6개월 예측(팬 차트)</h4><span class="muted" style="font-size: 12px">가상 · 36개월</span></div>
+            <div class="ctl">
+              <label class="rg"><span>수준 가중 α <b id="fc-av"></b></span><input type="range" id="fc-a" min="0.05" max="0.95" step="0.05"></label>
+              <label class="rg"><span>추세 가중 β <b id="fc-bv"></b></span><input type="range" id="fc-b" min="0.02" max="0.5" step="0.02"></label>
+              <button type="button" class="btn sm" id="fc-opt">오차 최소값으로</button>
+            </div>
+            <div class="readout" id="fc-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="fc-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="fc-tb"></div></details>
+            <div class="fig-s">진한 띠 80%, 옅은 띠 95% 예측구간입니다. 예측분산은 ETS(A,A,N) 모형의 공식으로 계산했고, 같은 모형으로 경로를 3만 번 굴린 분산과 비교하는 검산이 있습니다. 공급 차질 같은 구조 변화는 이 구간에 담기지 않습니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>롤링 포캐스트의 기계적 기준선. 사람의 판단을 더하기 전 출발점</li><li>원재료·환율 같은 외부 가정의 범위</li><li>방법별 예측 정확도(MAPE)를 매달 기록해 비교</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>계절성이 있으면 홀트-윈터스(계절 포함)나 계절조정 뒤 적용</li><li>α가 1에 가까우면 "지난달 값이 최선의 예측"에 가깝다는 뜻(이 예시가 그렇습니다)</li><li>과거 오차로 고른 값도 과적합될 수 있어 최근 구간을 떼어 검증</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>FORECAST.ETS(목표 날짜, 값, 날짜)</code>, <code>FORECAST.ETS.CONFINT</code></li><li>데이터 → 예측 시트</li><li>R: <code>HoltWinters(y, gamma = FALSE)</code>, <code>forecast::ets(y, model = "AAN")</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="pl-report.html">월 손익 보고의 3개월 추정</a> · <a href="cash-13w.html">13주 자금수지</a></p>
+        </section>
+
+        <section id="s-mc" data-toc="몬테카를로와 토네이도" data-group="위험과 판단">
+          <h2>몬테카를로와 토네이도</h2>
+          <p class="qline">모든 가정을 "가장 그럴듯한 값"으로 넣은 계획 영업이익 13억원, 달성 확률은?</p>
+          <p>판매량·단가·변동비·고정비를 각각 최저·최빈·최고 값의 삼각분포로 두고 5,000번 굴렸습니다. 최빈값끼리 계산한 계획 영업이익은 13억원인데, 시뮬레이션 평균은 <b id="mc-mean"></b>억원이고 계획 이상일 확률은 <b id="mc-pach"></b>입니다. 판매량은 위로 덜 열려 있고(최빈 100, 최고 112만 개) 변동비는 위로 더 열려 있는 등 가정의 꼬리가 한쪽으로 치우쳤기 때문입니다. 가장 그럴듯한 값끼리 곱하고 더한 계획은 평균보다 높게 나올 수 있습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>영업이익 분포와 누적확률(S곡선)</h4><span class="muted" style="font-size: 12px">가상 · 억원 · 5,000회</span></div>
+            <div class="ctl"><label class="rg"><span>판매량과 단가의 상관 ρ <b id="mc-rv"></b></span><input type="range" id="mc-rho" min="-0.8" max="0.8" step="0.1" value="-0.5"></label></div>
+            <div class="readout" id="mc-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="mc-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="mc-tb"></div></details>
+            <div class="fig-s">상관을 바꿔 보세요. 단가를 올리면 판매량이 줄어드는 음(−)의 상관이면 서로 상쇄돼 범위가 좁아지고, 양(+)의 상관이면 넓어집니다. 상관을 빼먹으면 위험을 잘못 잽니다.</div>
+          </div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>토네이도: 가정 하나만 움직일 때</h4><span class="muted" style="font-size: 12px">각 가정의 10·90 백분위, 나머지는 최빈값</span></div>
+            <div class="fig-b plotbox" id="tor-fig"></div>
+            <div class="fig-s">막대가 긴 가정부터 근거를 다듬고 관리합니다. 토네이도는 한 번에 하나씩만 움직이므로 가정끼리 함께 움직이는 효과는 위의 시뮬레이션으로 봅니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>사업계획 달성 확률, 투자 NPV 분포와 손실 확률, 자금 부족 확률</li><li>"보수·기준·도전" 세 숫자 대신 확률로 계획을 협의</li><li>토네이도로 가정 검증의 우선순위 정하기</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>입력 분포의 근거(과거 변동, 담당 부서 범위)를 적어 둠</li><li>입력끼리의 상관 반영</li><li>반복 수가 적으면 꼬리 확률이 흔들림(확률 p의 표준오차 √(p(1−p)/n)). 모형 구조가 틀리면 몇 번을 굴려도 틀림</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li>가정 셀에 <code>NORM.INV(RAND(), 평균, 표준편차)</code> 등을 넣고 데이터 표로 수천 번 재계산</li><li>결과 열에 <code>PERCENTILE.INC</code>, <code>COUNTIF</code>로 확률</li><li>R: <code>replicate()</code> <code>quantile()</code> <code>ecdf()</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="plan-risk.html">사업계획 달성 확률과 변동 기여도</a> · <a href="capex-kit.html#mc">NPV 분포와 단계 투자 옵션</a> · <a href="cash-13w.html#mc">자금 부족 확률</a></p>
+        </section>
+
+        <section id="s-bayes" data-toc="베이지안 갱신: 적은 데이터로 확률">
+          <h2>베이지안 갱신: 적은 데이터로 확률</h2>
+          <p class="qline">신규 고객 견적 8건 중 4건을 땄다. 수주율 50%로 계획해도 될까?</p>
+          <p>비슷한 신규 고객의 과거 수주율이 30% 정도였다면, 이 경험을 "견적 10건 중 3건"만큼의 사전 정보(베타분포 Beta(3, 7))로 둡니다. 여기에 이번 8건 중 4건을 더하면 사후 분포는 Beta(7, 11)이고, 수주율 추정은 <b id="by-post"></b>, 90% 구간은 <b id="by-lo"></b>~<b id="by-hi"></b>입니다. 8건만 보고 50%로 잡는 것보다 보수적이고, 건수가 쌓일수록 데이터 쪽으로 옮겨 갑니다. 사전 정보가 강할수록 새 데이터에 덜 움직이므로, 어떤 사전 정보를 왜 썼는지 적어 두는 것이 핵심입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>수주율의 사전 분포와 사후 분포</h4><span class="muted" style="font-size: 12px">가상</span></div>
+            <div class="ctl">
+              <label class="rg"><span>견적 건수 <b id="by-nv"></b></span><input type="range" id="by-n" min="1" max="40" step="1" value="8"></label>
+              <label class="rg"><span>수주 건수 <b id="by-kv"></b></span><input type="range" id="by-k" min="0" max="8" step="1" value="4"></label>
+              <label class="rg"><span>과거 경험 수주율 <b id="by-mv"></b></span><input type="range" id="by-m" min="10" max="60" step="5" value="30"></label>
+              <div><span class="lbl">경험의 무게(가상 건수)</span><div class="seg" role="radiogroup" aria-label="사전 정보 강도"><label><input type="radio" name="by-s" value="2">2건</label><label><input type="radio" name="by-s" value="10" checked>10건</label><label><input type="radio" name="by-s" value="30">30건</label></div></div>
+            </div>
+            <div class="readout" id="by-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="by-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="by-tb"></div></details>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>신규 거래처·신제품의 수주율, 초기 수율 가정</li><li>수주 확률을 반영한 기대 매출(견적 금액 × 확률)</li><li>건수가 적은 사업부 지표를 전사 평균 쪽으로 당겨 보정</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>사전 정보의 근거를 문서로 남김</li><li>사전 정보가 지나치게 강하면 새 데이터를 무시하게 됨</li><li>견적끼리 독립이 아니면(같은 고객의 묶음 견적) 구간이 실제보다 좁음</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li>사후 평균 = (a + 수주) ÷ (a + b + 견적)</li><li><code>BETA.INV(0.05, a, b)</code>, <code>BETA.INV(0.95, a, b)</code> → 90% 구간</li><li>R: <code>qbeta(c(0.05, 0.95), a, b)</code>, <code>dbeta()</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="budget-opt.html">성공 확률을 반영한 예산 증액 기대가치</a></p>
+        </section>
+
+        <section id="s-conc" data-toc="집중도: 파레토·로렌츠·ABC" data-group="구조 찾기">
+          <h2>집중도: 파레토·로렌츠·ABC</h2>
+          <p class="qline">매출이 몇 개 거래처에 얼마나 몰려 있나?</p>
+          <p>거래처 40곳 중 상위 20%(8곳)가 매출의 <b id="cc-top"></b>를 차지합니다. 누적 80%까지를 A로 묶으면 A <b id="cc-a"></b>곳, B <b id="cc-b"></b>곳, C <b id="cc-c"></b>곳입니다. 로렌츠 곡선이 대각선에서 멀수록 집중이 심하고, 그 면적을 숫자로 만든 지니계수는 <b id="cc-g"></b>입니다(0이면 모두 같고, 1에 가까울수록 한 곳에 몰림). 비중 제곱합인 HHI는 <b id="cc-h"></b>이고, 10,000을 HHI로 나눈 <b id="cc-e"></b>곳이 "같은 크기로 나눠 가졌다고 볼 때의 실질 거래처 수"입니다.</p>
+          <div class="duo">
+            <div class="fig" data-rv style="margin-top: 0">
+              <div class="fig-h"><h4>파레토 차트와 ABC 등급</h4><span class="muted" style="font-size: 12px">가상 · 억원</span></div>
+              <div class="fig-b plotbox" id="conc-p"></div>
+            </div>
+            <div class="fig" data-rv style="margin-top: 0">
+              <div class="fig-h"><h4>로렌츠 곡선</h4></div>
+              <div class="fig-b plotbox" id="conc-l"></div>
+            </div>
+          </div>
+          <details class="dt" style="margin: 0 0 12px"><summary>숫자로 보기</summary><div class="tbx" id="conc-tb"></div></details>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>거래처 집중 리스크: 상위 1곳·5곳 비중을 지표로 관리</li><li>재고 ABC 관리: A는 자주 실사하고 정밀하게 예측</li><li>비용 절감 우선순위: 상위 항목부터</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>80:20은 법칙이 아니라 경험칙. 실제 비율을 계산해서 씀</li><li>지니계수 하나로 줄이면 모양 정보가 사라짐. 곡선을 함께</li><li>항목 수가 다르면 지니·HHI를 그대로 비교하기 어려움</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li>큰 순서로 정렬 → 누적 합계 ÷ 총합 → <code>IF</code>로 A·B·C</li><li>HHI = <code>SUMPRODUCT(비중, 비중)</code> × 10,000, 삽입 → 통계 차트 → 파레토</li><li>R: <code>cumsum(sort(x, decreasing = TRUE)) / sum(x)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="mbo-kpi.html#dist">인센티브 배분의 지니계수</a> · <a href="sectors.html">업종별 재무제표 읽기</a></p>
+        </section>
+
+        <section id="s-km" data-toc="군집 분석: 거래처 세분화">
+          <h2>군집 분석: 거래처 세분화</h2>
+          <p class="qline">거래처 60곳을 관리 방식이 다른 몇 개 무리로 나눌 수 있을까?</p>
+          <p>매출 성장률과 영업이익률을 표준화(평균 0, 표준편차 1)한 뒤 k-평균으로 묶었습니다. 오른쪽 엘보 그림에서 k = 3 이후에는 군집 안 거리 합이 거의 줄지 않아 세 무리가 자연스럽습니다. 이익률은 높지만 성장이 멈춘 무리, 빠르게 크지만 이익률은 중간인 무리, 줄어들면서 이익률도 낮은 무리로 읽히고, 각각 가격 방어, 공급 능력 확보, 거래 조건 재검토처럼 관리 방식을 달리할 수 있습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>성장률 × 이익률로 묶은 거래처</h4><span class="muted" style="font-size: 12px">가상 · 60곳</span></div>
+            <div class="ctl"><div><span class="lbl">군집 수 k</span><div class="seg" role="radiogroup" aria-label="군집 수"><label><input type="radio" name="km-k" value="2">2</label><label><input type="radio" name="km-k" value="3" checked>3</label><label><input type="radio" name="km-k" value="4">4</label><label><input type="radio" name="km-k" value="5">5</label></div></div></div>
+            <div class="fig-b duo">
+              <div class="plotbox" id="km-fig"></div>
+              <div class="plotbox" id="km-elbow"></div>
+            </div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="km-tb"></div></details>
+            <div class="fig-s">큰 원은 군집 중심입니다. 시작점을 바꿔 10번 돌린 결과 중 군집 안 거리 합이 가장 작은 것을 썼습니다(k-means++ 초기화).</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>거래처·제품 포트폴리오 분류와 관리 정책</li><li>원가 행태가 비슷한 공장·라인 묶기</li><li>예산 항목을 성격별로 묶어 통제 방식 정하기</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>단위가 다른 지표는 반드시 표준화. 안 하면 숫자가 큰 지표가 결과를 좌우</li><li>k는 엘보 그림과 업무 해석을 함께 보고 정함</li><li>군집은 묶음일 뿐 원인이 아님</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li>엑셀에는 기본 기능이 없음</li><li>R: <code>km &lt;- kmeans(scale(df), centers = 3, nstart = 10)</code></li><li>R: <code>km$tot.withinss</code>를 k별로 구해 엘보 그림</li></ul></div>
+          </div>
+        </section>
+
+        <section id="s-rttm" data-toc="평균으로의 회귀: 평가의 착시">
+          <h2>평균으로의 회귀: 평가의 착시</h2>
+          <p class="qline">작년 하위 부서에 특별 관리를 했더니 올해 점수가 올랐다. 관리 덕분일까?</p>
+          <p>40개 팀의 실력은 두 해 동안 그대로이고, 점수에는 해마다 운(측정 오차)이 섞인다고 가정한 시뮬레이션입니다. 아무 조치도 하지 않았는데 첫해 하위 25% 팀은 이듬해 평균 <b id="rt-bot"></b>점 오르고, 상위 25% 팀은 <b id="rt-top"></b>점 내려갑니다. 첫해 점수가 낮았던 데는 운이 나빴던 몫이 섞여 있어 다음 해에는 평균 쪽으로 돌아오기 때문입니다. 회귀선 기울기 <b id="rt-slope"></b>가 1보다 작은 것이 그 흔적입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>첫해 점수와 이듬해 점수</h4><span class="muted" style="font-size: 12px">가상 · 40개 팀 · 실력 불변</span></div>
+            <div class="fig-b plotbox" id="rt-fig"></div>
+            <details class="dt"><summary>숫자로 보기</summary><div class="tbx" id="rt-tb"></div></details>
+            <div class="fig-s">점선은 "두 해 점수가 같은 선", 실선은 회귀선입니다. 파랑은 첫해 하위 25%, 주황은 상위 25%입니다.</div>
+          </div>
+          <div class="callout"><b>효과를 말하려면 대조군과 비교합니다.</b> 조치를 받지 않은 비슷한 팀도 같은 만큼 좋아졌다면 조치의 효과가 아닙니다. 상·하위를 골라 다음 해 변화를 보는 분석은 조치가 없어도 개선과 악화가 나타납니다.</div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>성과평가 하위 조직 개선 프로그램의 효과 판단</li><li>전년 최고 실적 사업부의 "부진" 해석</li><li>불량률이 튄 달에 세운 대책의 효과 평가</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>점수에서 운의 비중이 클수록 회귀가 큼</li><li>대조군 비교나 여러 해 평균으로 판단</li><li>가장 나빴던 달만 골라 대책 효과를 재지 않기</li></ul></div>
+            <div><h4>엑셀 · R</h4><ul><li><code>SLOPE(올해, 작년)</code>가 1보다 작으면 회귀가 있다는 신호</li><li>상·하위 그룹의 변화를 대조군의 변화와 비교</li><li>R: <code>lm(y2 ~ y1)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="mbo-kpi.html">성과평가 MBO·KPI</a></p>
+        </section>
+
+        <section id="s-traps" data-toc="흔한 함정 점검표" data-group="정리">
+          <h2>흔한 함정 점검표</h2>
+          <ol class="traps">
+            <li><b>평균만 보고한다.</b> 분포가 치우쳤으면 중앙값과 사분위를 함께 씁니다.</li>
+            <li><b>유의하면 중요하다고 본다.</b> p값은 크기를 말하지 않습니다. 차이와 그 구간을 씁니다.</li>
+            <li><b>지표 여러 개를 검정한다.</b> 20개를 보면 하나 이상이 우연히 유의할 확률이 64%입니다.</li>
+            <li><b>상관을 인과로 읽는다.</b> 교란 변수, 시점, 작동 원리를 확인합니다.</li>
+            <li><b>합계 비율로 비교한다.</b> 구성이 다르면 층별로 나누거나 표준화합니다.</li>
+            <li><b>관측 범위 밖을 예측한다.</b> 외삽은 지금의 관계가 그대로 이어진다는 가정입니다.</li>
+            <li><b>전월과 비교한다.</b> 계절에 속습니다. 전년 동월이나 계절조정 값으로 봅니다.</li>
+            <li><b>최빈값끼리 곱해 계획을 만든다.</b> 가정이 치우쳤으면 계획이 평균과 달라집니다. 분포로 계산합니다.</li>
+            <li><b>상·하위의 변화를 성과로 본다.</b> 평균으로의 회귀입니다. 대조군과 비교합니다.</li>
+            <li><b>남아 있는 데이터만 본다.</b> 중단된 프로젝트, 거래가 끊긴 고객이 빠지면 결과가 실제보다 좋아 보입니다(생존자 편향).</li>
+          </ol>
+        </section>
+
+        <section id="s-ref" data-toc="더 읽을 자료">
+          <h2>더 읽을 자료</h2>
+          <ul class="refs">
+            <li>Rob J Hyndman, George Athanasopoulos, 『Forecasting: Principles and Practice』 3판, OTexts(온라인 공개): 시계열 분해, 지수평활, 예측구간</li>
+            <li>Gareth James 외, 『An Introduction to Statistical Learning』, Springer(온라인 공개): 회귀, 군집</li>
+            <li>Bradley Efron, Robert Tibshirani, 『An Introduction to the Bootstrap』, Chapman &amp; Hall, 1993</li>
+            <li>Donald J. Wheeler, 『Understanding Variation: The Key to Managing Chaos』, SPC Press: 경영 보고에서 변동 읽기</li>
+            <li>Sam L. Savage, 『The Flaw of Averages』, Wiley, 2009: 평균값으로 짠 계획의 함정</li>
+            <li>대니얼 카너먼, 『생각에 관한 생각』(Thinking, Fast and Slow): 평균으로의 회귀, 기저율</li>
+            <li>Jacob Cohen, 『Statistical Power Analysis for the Behavioral Sciences』 2판, 1988: 효과 크기 기준</li>
+            <li>John W. Tukey, 『Exploratory Data Analysis』, 1977: 상자 그림과 탐색적 분석</li>
+            <li>F. J. Anscombe, "Graphs in Statistical Analysis", The American Statistician 27(1), 1973</li>
+            <li>E. H. Simpson, "The Interpretation of Interaction in Contingency Tables", Journal of the Royal Statistical Society B 13(2), 1951</li>
+          </ul>
+          <p class="rpt-end">통계 기초는 데이터분석준전문가(ADsP) 준비와 R 사용 경험에서 익혔습니다. 이 노트의 계산은 모두 이 사이트의 공통 통계 모듈로 브라우저에서 돌립니다. 도표 고르는 법은 <a href="charts.html">차트 선택과 디자인</a>, 보고서 구조는 <a href="deck.html">보고서·PPT 작성 원칙</a>, 데이터 출처는 <a href="sources.html">정보 출처와 참고 자료</a>에 있습니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.09</span><span>예시 데이터는 모두 가상입니다. 앤스컴 데이터만 1973년 논문의 원자료입니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/statlab.js"></script>
+<script src="../assets/report.js"></script>
+<script src="../assets/stat-notes.js"></script>
+</body>
+</html>

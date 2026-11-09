@@ -156,6 +156,16 @@
       st.hover = nearest(mx, my); draw(); showTip(st.hover);
     });
     canvas.addEventListener("pointerleave", () => { st.hover = null; showTip(null); draw(); });
+    /* 키보드: 화살표로 회전·기울이기, Home은 기본 시점 */
+    if (!canvas.hasAttribute("tabindex")) canvas.setAttribute("tabindex", "0");
+    canvas.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight ArrowUp ArrowDown Home");
+    canvas.addEventListener("keydown", (e) => {
+      const k = e.key; let used = true;
+      if (k === "ArrowLeft") st.yaw -= 0.12; else if (k === "ArrowRight") st.yaw += 0.12;
+      else if (k === "ArrowUp") st.pitch = Math.max(0.02, st.pitch - 0.08); else if (k === "ArrowDown") st.pitch = Math.min(1.45, st.pitch + 0.08);
+      else if (k === "Home") { st.yaw = -0.7; st.pitch = 0.72; } else used = false;
+      if (used) { e.preventDefault(); st.auto = false; draw(); }
+    });
     if ("IntersectionObserver" in window) new IntersectionObserver((es) => { st.visible = es[0].isIntersecting; if (st.visible) kick(); }).observe(canvas);
 
     const api = {

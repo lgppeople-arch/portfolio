@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>도구·리포트 모음 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="실무 도구, 분석 리포트, 분석·보고 노트를 분야별로 걸러 찾는 모음">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="도구·리포트 모음 · 이기표">
+<meta property="og:description" content="실무 도구, 분석 리포트, 분석·보고 노트를 분야별로 걸러 찾는 모음">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/index.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/hub.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="도구·리포트 모음">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/hub.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .hub-head { padding: 40px 0 8px; }
+  .hub-head h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.02em; line-height: 1.15; margin: 6px 0 10px; }
+  .hub-head p { color: var(--ink-2); max-width: 70ch; line-height: 1.7; margin: 0; }
+  .hub-bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 22px 0 16px; }
+  .hub-bar .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hub-bar button { font: inherit; font-size: var(--s-1); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+  .hub-bar button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .hub-bar input { font: inherit; font-size: var(--s-1); padding: 7px 12px; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); min-width: 220px; flex: 1 1 220px; max-width: 360px; }
+  .hub-bar .cnt { font-size: 12.5px; color: var(--muted); }
+  .hgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 48px; }
+  .hcard { display: grid; gap: 6px; align-content: start; padding: 16px 16px 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); color: inherit; text-decoration: none; transition: border-color .15s, transform .15s; }
+  .hcard:hover, .hcard:focus-visible { border-color: var(--ink-2); transform: translateY(-2px); }
+  .hcard[hidden] { display: none; }
+  .hcard .hk { font-size: 11.5px; font-weight: 600; color: var(--accent); letter-spacing: 0.02em; }
+  .hcard .star { margin-left: 6px; font-weight: 600; color: var(--input); }
+  .hcard h3 { margin: 0; font-size: var(--s-3); font-weight: 700; line-height: 1.35; }
+  .hcard p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+  .hcard .hts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .hcard .ht { font-size: 11px; color: var(--muted); border: 1px solid var(--rule-soft); border-radius: 999px; padding: 1px 8px; }
+  .hub-empty { color: var(--muted); padding: 20px 0 60px; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html" aria-current="page">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div><a class="nav-all" href="index.html" aria-current="page">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap wide">
+    <div class="hub-head">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구·리포트 모음</div>
+      <h1>도구·리포트 모음</h1>
+      <p>이 포트폴리오의 실무 도구 15개, 분석 리포트 6편, 분석·보고 노트 4편을 한곳에 모았습니다. 분야를 고르거나 찾는 말을 넣으면 맞는 것만 남습니다. 도구의 예시 수치는 모두 가상이고, 기업 분석 리포트는 공시 원문 숫자만 썼습니다.</p>
+    </div>
+    <div class="hub-bar">
+      <div class="chips" role="group" aria-label="분야">
+        <button type="button" data-f="" aria-pressed="true">전체</button>
+        <button type="button" data-f="경영관리" aria-pressed="false">경영관리</button>
+        <button type="button" data-f="투자·M&amp;A" aria-pressed="false">투자·M&amp;A</button>
+        <button type="button" data-f="통계·확률" aria-pressed="false">통계·확률</button>
+        <button type="button" data-f="기업·산업 분석" aria-pressed="false">기업·산업 분석</button>
+        <button type="button" data-f="보고·시각화" aria-pressed="false">보고·시각화</button>
+      </div>
+      <input type="search" id="hub-q" placeholder="찾기: NPV, 몬테카를로, 회귀, 지주사…" aria-label="도구·리포트 찾기">
+      <span class="cnt" id="hub-n" aria-live="polite"></span>
+    </div>
+    <div class="hgrid" id="hub">
+        <a class="hcard" href="capex-kit.html" data-f="투자·M&amp;A|통계·확률" data-k="도구">
+          <span class="hk">도구 <b class="star">먼저 볼 것</b></span>
+          <h3>설비투자 분석 키트</h3>
+          <p>설비투자 타당성(NPV·IRR·회수기간), 가동률과 원가, 계획 대비 실적을 브라우저에서 바로 계산하는 도구</p>
+          <span class="hts"><span class="ht">투자·M&amp;A</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="samsung.html" data-f="기업·산업 분석" data-k="리포트">
+          <span class="hk">리포트 <b class="star">먼저 볼 것</b></span>
+          <h3>삼성전자, 메모리 호황의 재무</h3>
+          <p>삼성전자 2025 사업보고서와 2026 반기보고서의 재무제표와 주석을 원문 쪽수와 함께 옮기고 검산해, 메모리 호황이 손익·현금·재무상태표에 남긴 흔적을 분석한 리포트</p>
+          <span class="hts"><span class="ht">기업·산업 분석</span></span>
+        </a>
+        <a class="hcard" href="stats-notes.html" data-f="통계·확률|보고·시각화" data-k="노트">
+          <span class="hk">노트 <b class="star">먼저 볼 것</b></span>
+          <h3>통계 기법과 활용</h3>
+          <p>기획·분석 실무에서 쓰는 통계 기법 14가지를 직접 계산한 도표, 사용 예시, 함정, 엑셀·R 함수와 함께 정리한 노트</p>
+          <span class="hts"><span class="ht">통계·확률</span><span class="ht">보고·시각화</span></span>
+        </a>
+        <a class="hcard" href="kpi-tree.html" data-f="경영관리" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>KPI 트리(ROIC 가치동인)</h3>
+          <p>ROIC를 판매량·단가·수율·회전일수 같은 현장 지표까지 수식으로 쪼개고, 계획 대비 차이를 지표·조직별로 샤플리 값으로 나누며 ROIC를 가장 많이 올리는 레버를 찾는 도구</p>
+          <span class="hts"><span class="ht">경영관리</span></span>
+        </a>
+        <a class="hcard" href="plan-risk.html" data-f="경영관리|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>사업계획 달성 확률</h3>
+          <p>판매량·단가·환율·원재료가 함께 흔들릴 때 영업이익의 분포, 계획 달성 확률, Earnings-at-Risk와 변동 기여도를 계산하는 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="budget-opt.html" data-f="경영관리|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>비용예산 증액 우선순위</h3>
+          <p>증액 요청의 효과 범위와 성공 확률로 기대가치를 매기고, 승인 한도 안에서 정수계획으로 최적 조합과 예산의 한계가치를 찾는 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="pl-report.html" data-f="경영관리|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>월 손익 보고</h3>
+          <p>SAP 조회 형식 데이터로 당월·누계 손익, 영업이익 차이 분해, 연간 전망을 만드는 월 손익 보고 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="cost-stats.html" data-f="경영관리|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>원가 행태·불량 관리도</h3>
+          <p>월별 생산량과 제조원가로 고정비·변동비를 회귀 추정하고 구조변화를 검정하며, 불량률을 p 관리도·넬슨 규칙·EWMA로 감시하고 공정 정비 효과를 검정하는 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="mbo-kpi.html" data-f="경영관리|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>성과평가 MBO·KPI</h3>
+          <p>KPI 구간 점수, 조직 등급, 인센티브 배분, KPI 설계 점검까지 성과평가 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="cash-13w.html" data-f="경영관리|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>13주 자금수지·약정</h3>
+          <p>영업일 규칙과 한도대출, 분기말 재무약정까지 반영한 13주 자금수지 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="capital.html" data-f="경영관리|투자·M&amp;A|통계·확률" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>적정 부채와 파산 위험</h3>
+          <p>현금흐름 기반 부도확률, 머튼 부도거리, 사내 기준별 부채 한도, 절세효과와 부실비용의 맞교환으로 적정 부채를 찾는 도구</p>
+          <span class="hts"><span class="ht">경영관리</span><span class="ht">투자·M&amp;A</span><span class="ht">통계·확률</span></span>
+        </a>
+        <a class="hcard" href="doa.html" data-f="경영관리" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>위임전결 기준 점검</h3>
+          <p>업무 항목별 결재권자 한도가 이사회규정 부의 기준과 상법상 이사회 결의 사항에 어긋나지 않는지 점검하는 도구</p>
+          <span class="hts"><span class="ht">경영관리</span></span>
+        </a>
+        <a class="hcard" href="post-review.html" data-f="투자·M&amp;A" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>투자 사후관리</h3>
+          <p>승인 때 가정 대비 실적을 재추정하고 NPV 차이를 원인별로 나누는 투자 사후관리 도구</p>
+          <span class="hts"><span class="ht">투자·M&amp;A</span></span>
+        </a>
+        <a class="hcard" href="ma-process.html" data-f="투자·M&amp;A" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>M&amp;A 절차 지도</h3>
+          <p>비밀유지계약부터 인수 후 통합까지 M&amp;A 전 과정과 단계별 실무 위치를 정리한 절차 지도</p>
+          <span class="hts"><span class="ht">투자·M&amp;A</span></span>
+        </a>
+        <a class="hcard" href="ma-valuation.html" data-f="투자·M&amp;A" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>M&amp;A 가치평가</h3>
+          <p>DCF, 유사기업·거래사례 배수, 실사 결과의 가격 반영까지 M&amp;A 가치평가 도구</p>
+          <span class="hts"><span class="ht">투자·M&amp;A</span></span>
+        </a>
+        <a class="hcard" href="holdco-nav.html" data-f="투자·M&amp;A" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>지주사 포트폴리오 가치</h3>
+          <p>지주사 NAV와 지주사 할인, 지주회사 요건, 지분 매각 시나리오를 계산하는 도구</p>
+          <span class="hts"><span class="ht">투자·M&amp;A</span></span>
+        </a>
+        <a class="hcard" href="fx-hedge.html" data-f="투자·M&amp;A" data-k="도구">
+          <span class="hk">도구</span>
+          <h3>환리스크 헤지</h3>
+          <p>해외 설비 도입·해외 인수처럼 한 번에 치르는 외화 대금의 환헤지(선물환·옵션·딜 컨틴전트)와 수출 순노출 구간별 헤지를 비교하는 교육용 도구</p>
+          <span class="hts"><span class="ht">투자·M&amp;A</span></span>
+        </a>
+        <a class="hcard" href="sectors.html" data-f="기업·산업 분석" data-k="리포트">
+          <span class="hk">리포트</span>
+          <h3>업종별 재무제표 읽기</h3>
+          <p>업종마다 재무제표의 생김새와 먼저 볼 숫자가 다릅니다. 반도체 소모품·장비, 2차전지, 자동차, 조선, 지주회사, 플랫폼 대표 7개사의 2025 사업보고서·2026 반기보고서를 원문 쪽수와 함께 옮기고 검산해, 듀폰 ROE·운전자본·현금 흐름으로 나란히 읽은 리포트</p>
+          <span class="hts"><span class="ht">기업·산업 분석</span></span>
+        </a>
+        <a class="hcard" href="ma-case.html" data-f="기업·산업 분석|투자·M&amp;A" data-k="리포트">
+          <span class="hk">리포트</span>
+          <h3>M&amp;A 사례: HD현대중공업·미포 합병</h3>
+          <p>HD현대중공업의 HD현대미포 흡수합병(2025.12.1)을 사업보고서 원문으로 읽은 공개 M&amp;A 사례. 합병가액이 정해지는 방식, 동일지배 사업결합의 장부금액 회계, 재무제표와 지배구조에 찍힌 효과를 쪽수와 함께 검산했습니다.</p>
+          <span class="hts"><span class="ht">기업·산업 분석</span><span class="ht">투자·M&amp;A</span></span>
+        </a>
+        <a class="hcard" href="semi-cycle.html" data-f="기업·산업 분석" data-k="리포트">
+          <span class="hk">리포트</span>
+          <h3>반도체 사이클과 재무</h3>
+          <p>밸류체인 단계별 재무 체크, 국면별 재무제표 신호, 재고·가격·설비투자가 맞물리는 사이클 개념 모형을 담은 반도체 산업 노트</p>
+          <span class="hts"><span class="ht">기업·산업 분석</span></span>
+        </a>
+        <a class="hcard" href="reading.html" data-f="기업·산업 분석" data-k="리포트">
+          <span class="hk">리포트</span>
+          <h3>AI 인프라 읽기 노트</h3>
+          <p>Situational Awareness, SemiAnalysis, Sequoia, Epoch AI, IEA 등 AI 인프라에 관한 대표적인 글 여덟 편을 출처와 함께 요약하고 재무기획 관점의 인사이트를 정리한 노트</p>
+          <span class="hts"><span class="ht">기업·산업 분석</span></span>
+        </a>
+        <a class="hcard" href="fsa.html" data-f="기업·산업 분석" data-k="리포트">
+          <span class="hk">리포트</span>
+          <h3>재무제표 분석 프레임워크</h3>
+          <p>세 재무제표 연결 모형, 읽는 순서 일곱 단계, 꼭 읽는 주석 열 가지, 비율 사전과 ROE 분해, 위험 신호를 담은 분석 리포트</p>
+          <span class="hts"><span class="ht">기업·산업 분석</span></span>
+        </a>
+        <a class="hcard" href="charts.html" data-f="보고·시각화" data-k="노트">
+          <span class="hk">노트</span>
+          <h3>차트 선택과 디자인</h3>
+          <p>질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법</p>
+          <span class="hts"><span class="ht">보고·시각화</span></span>
+        </a>
+        <a class="hcard" href="deck.html" data-f="보고·시각화" data-k="노트">
+          <span class="hk">노트</span>
+          <h3>보고서·PPT 작성 원칙</h3>
+          <p>피라미드 원칙, 액션 타이틀, MECE, 그리드·위계·색, IBCS 표기와 숫자 표기 약속을 고치기 전·후 슬라이드로 보여 주는 보고서 작성 노트</p>
+          <span class="hts"><span class="ht">보고·시각화</span></span>
+        </a>
+        <a class="hcard" href="sources.html" data-f="보고·시각화" data-k="노트">
+          <span class="hk">노트</span>
+          <h3>정보 출처와 참고 자료</h3>
+          <p>재무기획·전략기획에서 쓰는 공시·거시·산업·가치평가·법령 데이터 출처와 보고서·차트 디자인 참고 서적·표준·도구 정리</p>
+          <span class="hts"><span class="ht">보고·시각화</span></span>
+        </a>
+        <a class="hcard" href="guide.html" data-f="" data-k="참고">
+          <span class="hk">참고</span>
+          <h3>쉬운 가이드</h3>
+          <p>도구 사용법과 재무 용어를 붕어빵 가게 이야기로 쉽게 풀어 쓴 가이드</p>
+          <span class="hts"></span>
+        </a>
+        <a class="hcard" href="checks.html" data-f="" data-k="참고">
+          <span class="hk">참고</span>
+          <h3>계산 검산</h3>
+          <p>이 사이트의 모든 계산 엔진을 항등식과 실무 규칙으로 검산한 결과</p>
+          <span class="hts"></span>
+        </a>
+    </div>
+    <p class="hub-empty" id="hub-empty" hidden>맞는 항목이 없습니다. 다른 말로 찾아 보세요.</p>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.09</span><span>모두 27개 · 예시 수치는 가상, 기업 분석은 공개 공시만 썼습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  const cards = Array.from(document.querySelectorAll(".hcard")), btns = Array.from(document.querySelectorAll(".hub-bar button")), q = document.getElementById("hub-q");
+  let field = "";
+  const norm = (s) => s.toLowerCase().replace(/\s+/g, "");
+  function apply() {
+    const term = norm(q.value || ""); let n = 0;
+    cards.forEach((c) => {
+      const okF = !field || c.dataset.f.split("|").indexOf(field) >= 0;
+      const okQ = !term || norm(c.textContent).indexOf(term) >= 0;
+      c.hidden = !(okF && okQ); if (!c.hidden) n++;
+    });
+    document.getElementById("hub-n").textContent = n + "개";
+    document.getElementById("hub-empty").hidden = n > 0;
+  }
+  btns.forEach((b) => b.addEventListener("click", () => { field = b.dataset.f; btns.forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false")); apply(); }));
+  q.addEventListener("input", apply);
+  try { const h = decodeURIComponent(location.hash.slice(1)); const b = btns.find((x) => x.dataset.f === h); if (b) b.click(); } catch (e) { /* 해시 무시 */ }
+  apply();
+})();
+</script>
+</body>
+</html>
