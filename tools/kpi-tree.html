@@ -65,6 +65,17 @@
   .cmp td.pos { color: var(--pos); }
   .cmp input { width: 78px; font-family: var(--f-num); font-size: var(--s-1); text-align: right; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); }
   .cmp .own { font-family: var(--f-body); font-size: 12px; color: var(--ink-2); }
+  /* 3D 보기 */
+  .t3card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px; display: grid; gap: 10px; margin-top: 18px; }
+  .t3card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 16px; flex-wrap: wrap; }
+  .t3card .top h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); }
+  .t3wrap { position: relative; border-radius: var(--radius); background: color-mix(in srgb, var(--ink) 3%, var(--surface)); border: 1px solid var(--rule-soft); }
+  .t3wrap canvas { display: block; width: 100%; height: 540px; touch-action: pan-y; cursor: grab; }
+  .t3wrap canvas:active { cursor: grabbing; }
+  @media (max-width: 760px) { .t3wrap canvas { height: 380px; } }
+  .t3tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); border-radius: 6px; padding: 7px 10px; font-size: 12px; display: grid; gap: 2px; max-width: 260px; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); }
+  .t3tip b { font-size: 13px; }
+  .t3tip span { opacity: .85; font-family: var(--f-num); }
   .rules2 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   @media (max-width: 1000px) { .rules2 { grid-template-columns: minmax(0, 1fr); } }
   .rules2 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
@@ -112,6 +123,15 @@
       </div>
       <div class="treewrap" id="tree"></div>
       <p class="hint">상자 안은 계획 → 실적, 오른쪽 위는 변화율입니다. 말단 지표 아래 막대는 ROIC 차이 중 그 지표의 몫입니다. 상자에 마우스를 올리면 계산식이 보입니다. 좁은 화면에서는 같은 내용을 들여쓰기 목록으로 보여 줍니다.</p>
+    </section>
+
+    <section class="t3card" aria-label="KPI 트리 3D 보기">
+      <div class="top"><h2>공간에서 보기 <span class="muted" style="font-family: var(--f-body); font-weight: 400; font-size: var(--s-1)">가로 = 트리 단계, 세로 = 순서, 깊이 = 담당 조직</span></h2>
+        <div class="legend"><span><i class="key-bar" style="background: var(--pos); border-radius: 50%; width: 10px; height: 10px"></i>좋아짐</span><span><i class="key-bar" style="background: var(--neg); border-radius: 50%; width: 10px; height: 10px"></i>나빠짐</span><span>원 크기 = ROIC 기여의 크기</span></div>
+      </div>
+      <div class="t3wrap" id="t3wrap"><canvas id="t3" role="img" aria-label="ROIC 가치동인 트리를 담당 조직별 층으로 펼친 3차원 그림"></canvas></div>
+      <div class="btn-row"><button type="button" class="btn sm" id="t3-v0">기본 시점</button><button type="button" class="btn sm" id="t3-front">정면(평면 트리)</button><button type="button" class="btn sm" id="t3-org">조직 층 옆에서</button><button type="button" class="btn sm" id="t3-spin" aria-pressed="false">자동 회전</button></div>
+      <p class="hint" id="t3-note">끌어서 돌려 보세요. 지표에 마우스를 올리면 그 지표에서 ROIC까지 이어지는 가지만 밝아집니다. 말단 지표는 담당 조직마다 다른 층에 놓여, 옆에서 보면 어느 조직 층에 나빠진 지표가 몰려 있는지 보입니다.</p>
     </section>
 
     <div class="sumrow">
@@ -220,6 +240,123 @@
     return { pos: pos, rows: r };
   }
   const LAY = layout();
+
+  /* ---------- 3D 보기: x = 단계, y = 순서, z = 담당 조직 ---------- */
+  const T3 = (function () {
+    const cv = $("t3"), ctx = cv.getContext("2d"), host = $("t3wrap");
+    const ORG = ["영업", "생산", "구매", "재무", "경영지원"];
+    const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const st = { yaw: -0.55, pitch: 0.32, auto: !calm, drag: null, hover: null, a: null, raf: 0, vis: true };
+    const tip = F.el("div", { class: "t3tip" }); tip.hidden = true; host.appendChild(tip);
+    let W = 0, H = 0, dpr = 1;
+    const ids = Object.keys(LAY.pos), maxD = Math.max.apply(null, ids.map((k) => LAY.pos[k].depth));
+    const parent = {}; Object.keys(K.NODES).forEach((id) => K.NODES[id].kids.forEach((k) => { parent[k] = id; }));
+    /* 좌표: 말단은 조직 층, 중간 마디는 자손 말단 층의 평균 */
+    const P = {};
+    const leafZ = (id) => { const i = ORG.indexOf(D[id].owner); return (i - (ORG.length - 1) / 2) * 0.42; };
+    (function place(id) {
+      const p = LAY.pos[id], n = K.NODES[id];
+      let z = 0;
+      if (!n) z = leafZ(id); else { const zs = n.kids.map((k) => place(k)); z = zs.reduce((s, v) => s + v, 0) / zs.length; }
+      P[id] = { x: (p.depth / maxD - 0.5) * 2.2, y: -(p.row / (LAY.rows - 1) - 0.5) * 1.9, z: z };
+      return z;
+    })("roic");
+    function size() { dpr = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    function proj(x, y, z) {
+      const cy = Math.cos(st.yaw), sy = Math.sin(st.yaw), cp = Math.cos(st.pitch), sp = Math.sin(st.pitch);
+      const x1 = x * cy + z * sy, z1 = -x * sy + z * cy;            /* 세로축 회전 */
+      const y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp;            /* 가로축 회전 */
+      const f = 6, k = f / (f + z2), nar = W < 520, s = Math.min(W / (nar ? 4.1 : 3.3), H / 2.8);
+      return { x: W * (nar ? 0.44 : 0.5) + x1 * s * k, y: H / 2 - y2 * s * k, k: k, z: z2 };
+    }
+    const chain = (id) => { const set = new Set([id]); let q = id; while (parent[q]) { q = parent[q]; set.add(q); } (function down(n) { const nd = K.NODES[n]; if (nd) nd.kids.forEach((k) => { set.add(k); down(k); }); })(id); return set; };
+    function draw() {
+      const a = st.a; if (!a || !W) return;
+      const ink = F.css("--ink"), mute = F.css("--muted"), rule = F.css("--rule"), pos = F.css("--pos"), neg = F.css("--neg"), surf = F.css("--surface"), acc = F.css("--accent");
+      ctx.clearRect(0, 0, W, H);
+      const hl = st.hover ? chain(st.hover) : null;
+      /* 조직 층: 말단 영역에 옅은 판 */
+      const xs = ids.filter((k) => !K.NODES[k]).map((k) => P[k].x), xa = Math.min.apply(null, xs) - 0.15, xb = Math.max.apply(null, xs) + 0.15;
+      ORG.forEach((o, i) => {
+        const z = (i - (ORG.length - 1) / 2) * 0.42, c = [[xa, 1.02, z], [xb, 1.02, z], [xb, -1.02, z], [xa, -1.02, z]].map((q) => proj(q[0], q[1], q[2]));
+        ctx.globalAlpha = 0.5; ctx.fillStyle = F.css("--rule-soft"); ctx.strokeStyle = rule;
+        ctx.beginPath(); c.forEach((q, j) => (j ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y))); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.globalAlpha = 1;
+        if (W >= 520 || Math.abs(Math.sin(st.yaw)) > 0.85) { ctx.font = "600 12px " + F.css("--f-body"); ctx.fillStyle = mute; ctx.textAlign = "center"; ctx.fillText(o, (c[2].x + c[3].x) / 2, Math.max(c[2].y, c[3].y) + 16); }
+      });
+      /* 가지 */
+      Object.keys(parent).forEach((k) => {
+        const A = P[parent[k]], B = P[k], on = !hl || (hl.has(k) && hl.has(parent[k]));
+        ctx.strokeStyle = on && hl ? ink : rule; ctx.globalAlpha = on ? (hl ? 0.9 : 0.75) : 0.15; ctx.lineWidth = on && hl ? 2.2 : 1.3;
+        ctx.beginPath();
+        for (let i = 0; i <= 16; i++) { const t = i / 16, e = t * t * (3 - 2 * t), q = proj(A.x + (B.x - A.x) * t, A.y + (B.y - A.y) * e, A.z + (B.z - A.z) * e); if (i) ctx.lineTo(q.x, q.y); else ctx.moveTo(q.x, q.y); }
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1; ctx.lineWidth = 1;
+      /* 마디: 먼 것부터 */
+      const maxSh = Math.max.apply(null, K.KEYS.map((k) => Math.abs(a.shapley.by[k]))) || 1;
+      const list = ids.map((id) => { const q = proj(P[id].x, P[id].y, P[id].z); return { id: id, q: q }; }).sort((u, v) => v.q.z - u.q.z);
+      st.screen = list;
+      const topLeaves = new Set(K.KEYS.slice().sort((u, v) => Math.abs(a.shapley.by[v]) - Math.abs(a.shapley.by[u])).slice(0, 5));
+      list.forEach((n) => {
+        const id = n.id, m = K.NODES[id] || D[id], leaf = !K.NODES[id], isRoot = id === "roic";
+        const v0 = K.NODES[id] ? a.plan[id] : x[id].plan, v1 = K.NODES[id] ? a.act[id] : x[id].act, pu = m.unit === "%" || m.unit === "% 매출" || isRoot;
+        const ch = pu ? v1 - v0 : (v0 ? v1 / v0 - 1 : 0), eps = pu ? 0.05 : 0.0005, good = ch * m.dir > eps, bad = ch * m.dir < -eps;
+        const r0 = isRoot ? 13 : leaf ? 5 + 11 * Math.sqrt(Math.abs(a.shapley.by[id]) / maxSh) : 8;
+        const r = r0 * n.q.k, on = !hl || hl.has(id);
+        ctx.globalAlpha = on ? 1 : 0.18;
+        ctx.fillStyle = good ? pos : bad ? neg : mute; ctx.beginPath(); ctx.arc(n.q.x, n.q.y, r, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = surf; ctx.lineWidth = 2; ctx.stroke(); ctx.lineWidth = 1;
+        if (id === st.hover) { ctx.strokeStyle = acc; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(n.q.x, n.q.y, r + 4, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1; }
+        ctx.font = (isRoot || !leaf ? "700 " : "500 ") + Math.round((isRoot ? 13 : 11.5) * Math.min(1.1, n.q.k)) + "px " + F.css("--f-body");
+        /* 조직 층을 옆에서 볼 때는 중간 마디 이름을 숨겨 겹침을 줄인다 */
+        const sideOn = Math.abs(Math.sin(st.yaw)) > 0.85, narrow = W < 520;
+        const showLabel = id === st.hover || isRoot || (narrow ? leaf && topLeaves.has(id) : (!sideOn || leaf));
+        if (showLabel) { ctx.fillStyle = ink; ctx.textAlign = "left"; ctx.fillText(m.label, n.q.x + r + 5, n.q.y + 4); }
+        ctx.globalAlpha = 1;
+      });
+    }
+    function showTip(id, q) {
+      if (!id) { tip.hidden = true; return; }
+      const a = st.a, m = K.NODES[id] || D[id], isRoot = id === "roic", unit = isRoot ? "%" : m.unit;
+      const v0 = K.NODES[id] ? a.plan[id] : x[id].plan, v1 = K.NODES[id] ? a.act[id] : x[id].act;
+      tip.innerHTML = "";
+      tip.appendChild(F.el("b", { text: m.label + (D[id] ? " · " + D[id].owner : "") }));
+      tip.appendChild(F.el("span", { text: fmtU(v0, unit, 1) + " → " + fmtU(v1, unit, 1) + (unit.indexOf("%") === 0 ? "" : " " + unit) }));
+      if (!K.NODES[id]) tip.appendChild(F.el("span", { text: "ROIC 기여 " + pp(a.shapley.by[id], 3) }));
+      else if (FORM[id]) tip.appendChild(F.el("span", { text: FORM[id] }));
+      tip.hidden = false;
+      tip.style.left = Math.min(W - tip.offsetWidth - 6, Math.max(6, q.x + 14)) + "px"; tip.style.top = Math.max(6, q.y - tip.offsetHeight - 12) + "px";
+    }
+    function loop() { st.raf = 0; if (st.auto && !st.drag && st.vis) { st.yaw += 0.003; draw(); st.raf = requestAnimationFrame(loop); } }
+    const kick = () => { if (!st.raf && st.auto) st.raf = requestAnimationFrame(loop); };
+    cv.addEventListener("pointerdown", (e) => { st.drag = { x: e.clientX, y: e.clientY, yaw: st.yaw, pitch: st.pitch, id: e.pointerId }; st.auto = false; $("t3-spin").setAttribute("aria-pressed", "false"); });
+    window.addEventListener("pointerup", () => { st.drag = null; });
+    cv.addEventListener("pointermove", (e) => {
+      const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+      if (st.drag && st.drag.id === e.pointerId) {
+        st.yaw = st.drag.yaw + (e.clientX - st.drag.x) * 0.008;
+        if (e.pointerType === "mouse") st.pitch = Math.max(-1.2, Math.min(1.2, st.drag.pitch + (e.clientY - st.drag.y) * 0.006));
+        st.hover = null; showTip(null); draw(); return;
+      }
+      let best = null, bd = 26 * 26;
+      (st.screen || []).forEach((n) => { const d = (n.q.x - mx) * (n.q.x - mx) + (n.q.y - my) * (n.q.y - my); if (d < bd) { bd = d; best = n; } });
+      const id = best ? best.id : null;
+      if (id !== st.hover) { st.hover = id; draw(); }
+      showTip(id, best ? best.q : null);
+    });
+    cv.addEventListener("pointerleave", () => { st.hover = null; showTip(null); draw(); });
+    if ("IntersectionObserver" in window) new IntersectionObserver((es) => { st.vis = es[0].isIntersecting; if (st.vis) kick(); }).observe(cv);
+    const view = (y, p) => { st.auto = false; $("t3-spin").setAttribute("aria-pressed", "false"); st.yaw = y; st.pitch = p; draw(); };
+    $("t3-v0").addEventListener("click", () => view(-0.55, 0.32));
+    $("t3-front").addEventListener("click", () => view(0, 0));
+    /* 말단 쪽에서 ROIC 쪽을 바라보면 조직 층이 세로 기둥으로 나란히 선다 */
+    $("t3-org").addEventListener("click", () => view(Math.PI / 2 - 0.18, 0.12));
+    $("t3-spin").addEventListener("click", (e) => { const on = !(e.currentTarget.getAttribute("aria-pressed") === "true") && !calm; st.auto = on; e.currentTarget.setAttribute("aria-pressed", String(on)); kick(); });
+    window.addEventListener("resize", () => { clearTimeout(st.rz); st.rz = setTimeout(() => { size(); draw(); }, 120); });
+    $("t3-spin").setAttribute("aria-pressed", String(st.auto));
+    return { set(a) { st.a = a; size(); draw(); kick(); } };
+  })();
 
   function drawOutline(a, host) {
     const box = F.el("div", { class: "outline" });
@@ -365,7 +502,7 @@
     F.setValue($("k-eva"), F.money(A.eva, 1), "억원", A.eva < 0); $("k-eva-sub").textContent = "계획 " + F.money(P.eva, 1) + " · WACC " + F.num(wacc, 1) + "%";
     F.setValue($("k-opm"), F.num(A.opm, 1), "%"); $("k-opm-sub").textContent = "계획 " + F.num(P.opm, 1) + "% · " + pp(A.opm - P.opm, 1);
     F.setValue($("k-turn"), F.num(A.turn, 3), "회"); $("k-turn-sub").textContent = "계획 " + F.num(P.turn, 3) + "회";
-    drawTree(a); drawBridge(a); drawOwners(a); drawLevers(a);
+    drawTree(a); drawBridge(a); drawOwners(a); drawLevers(a); T3.set(a);
 
     const items = K.KEYS.map((k) => ({ k: k, v: a.shapley.by[k] })).sort((p, q) => p.v - q.v), neg = items.filter((i) => i.v < -1e-9), pos = items.filter((i) => i.v > 1e-9).reverse();
     const memo = $("k-memo"); memo.textContent = "";
