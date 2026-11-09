@@ -54,6 +54,16 @@
   table.mc-tab td:first-child { font-family: var(--f-body); }
   table.mc-tab td.neg { color: var(--neg-ink); }
   svg.plot text.c-lab { fill: var(--ink); font-size: 11px; font-weight: 600; }
+  /* NPV 3D 곡면 */
+  .s3-wrap { position: relative; border: 1px solid var(--rule-soft); border-radius: var(--radius); background: color-mix(in srgb, var(--ink) 2%, var(--surface)); }
+  .s3-wrap canvas { display: block; width: 100%; height: 470px; touch-action: pan-y; cursor: grab; }
+  .s3-wrap canvas:active { cursor: grabbing; }
+  @media (max-width: 760px) { .s3-wrap canvas { height: 340px; } }
+  .s3-tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); border-radius: 6px; padding: 6px 9px; font-size: 12px; display: grid; gap: 2px; white-space: nowrap; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); }
+  .s3-tip b { font-family: var(--f-num); font-size: 13px; }
+  .s3-tip span { opacity: .8; }
+  .s3-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--ink-2); align-items: center; }
+  .s3-legend i { display: inline-block; width: 26px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
 </style>
 </head>
 <body class="tools-page">
@@ -220,6 +230,16 @@
           <div class="scroll" style="border: 0"><table class="mc-tab" id="mc-tab"></table></div>
           <p class="verdict" id="mc-memo"></p>
           <div class="selfcheck" id="mc-check"></div>
+        </div>
+        <div class="mc-block" id="surf" aria-label="NPV 3D 곡면">
+          <div class="mc-head"><h3>NPV 곡면 <span class="muted">정상 가동률 × 판매단가, 끌어서 돌려 보기</span></h3><span class="pill" id="sf-pill"></span></div>
+          <p class="hint" style="max-width: 900px">아래 민감도 표를 입체로 펼친 것입니다. 끌어서 돌리고, 마우스를 올리면 그 조합의 NPV가 보입니다. 굵은 검은 선이 NPV = 0(손익분기선)이고, 바닥의 점선은 그 그림자입니다. '위에서 보기'를 누르면 등고선 지도처럼 보입니다. 위 입력값을 그대로 씁니다.</p>
+          <div class="s3-legend"><span><i style="background: linear-gradient(90deg, var(--neg), color-mix(in srgb, var(--neg) 25%, var(--surface)))"></i>NPV 음수</span><span><i style="background: linear-gradient(90deg, color-mix(in srgb, var(--pos) 25%, var(--surface)), var(--pos))"></i>NPV 양수</span><span><i style="background: var(--ink); height: 3px"></i>손익분기선</span><span><i style="background: var(--accent); width: 10px; border-radius: 50%"></i>현재 가정</span></div>
+          <div class="s3-wrap"><canvas id="sf-canvas" role="img" aria-label="정상 가동률과 판매단가에 따른 NPV 3차원 곡면"></canvas></div>
+          <div class="btn-row"><button type="button" class="btn sm" id="sf-v0">기본 시점</button><button type="button" class="btn sm" id="sf-top">위에서 보기</button><button type="button" class="btn sm" id="sf-front">옆에서 보기</button><button type="button" class="btn sm" id="sf-spin" aria-pressed="false">자동 회전</button></div>
+          <div class="mc-k" id="sf-k"></div>
+          <p class="verdict" id="sf-memo"></p>
+          <div class="selfcheck" id="sf-check"></div>
         </div>
         <div class="method">
           <h4>계산 기준</h4>
@@ -1097,6 +1117,68 @@
   $("tab-npv").addEventListener("click", () => setTimeout(draw, 30));
   F.onRedraw(draw);
   compute();
+})();
+</script>
+<script src="../assets/surface3d.js"></script>
+<script>
+/* NPV 3D 곡면: 정상 가동률 × 판매단가 격자의 NPV를 확률 분석과 같은 엔진(capexmc.js)으로 계산 */
+(function () {
+  "use strict";
+  const F = window.Fin, M = window.CapexMcEngine, $ = F.$, KEYS = Object.keys(M.P0);
+  const N = 25, S3 = window.Surface3D.create($("sf-canvas"), {});
+  const readP = () => { const p = {}; for (const k of KEYS) { const el = $("i-" + k), v = el ? parseFloat(el.value) : NaN; if (!isFinite(v)) return null; p[k] = v; } return p; };
+  const won = (v) => (v < -0.05 ? "−" + F.num(-v, 1) : F.num(v, 1)) + "억원";
+  const npv = (p, u, a) => M.project(p, { util: u / p.util, asp: a / p.asp }).npv;
+  /* 이분법: f가 증가함수일 때 f = 0인 점 */
+  const root = (f, lo, hi) => { if (f(lo) > 0 || f(hi) < 0) return null; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; } return (lo + hi) / 2; };
+  const parseKpi = (id) => { const el = $(id); if (!el) return NaN; const t = el.textContent.replace(/[,\s]/g, ""); const m = t.match(/\(?-?\d+(\.\d+)?\)?/); if (!m) return NaN; return /^\(/.test(m[0]) ? -parseFloat(m[0].replace(/[()]/g, "")) : parseFloat(m[0]); };
+  function compute() {
+    const p = readP(); if (!p) return;
+    const uLo = 50, uHi = 100, aLo = p.asp * 0.75, aHi = p.asp * 1.25;
+    const xs = [], ys = [], z = [];
+    for (let i = 0; i < N; i++) xs.push(uLo + (uHi - uLo) * i / (N - 1));
+    for (let j = 0; j < N; j++) ys.push(aLo + (aHi - aLo) * j / (N - 1));
+    let zmin = Infinity, zmax = -Infinity, neg = 0;
+    xs.forEach((u, i) => { z.push([]); ys.forEach((a) => { const v = npv(p, u, a); z[i].push(v); zmin = Math.min(zmin, v); zmax = Math.max(zmax, v); if (v < 0) neg++; }); });
+    const base = M.project(p, {}).npv;
+    const beA = root((a) => npv(p, p.util, a), p.asp * 0.05, p.asp * 3), beU = root((u) => npv(p, u, p.asp), 0.5, 100);
+    const tk = (lo, hi, n) => { const t = F.niceTicks(lo, hi, n); return t.ticks.filter((v) => v >= lo - 1e-9 && v <= hi + 1e-9); };
+    S3.set({ xs: xs, ys: ys, z: z, zmin: Math.min(zmin, -1e-9), zmax: Math.max(zmax, 1e-9), xTicks: tk(uLo, uHi, 5), yTicks: tk(aLo, aHi, 4),
+      fx: (v) => F.num(v, 0) + "%", fy: (v) => F.num(v, 0), fz: (v) => "NPV " + won(v), xLabel: "정상 가동률", yLabel: "판매단가(천원)",
+      mark: p.util >= uLo && p.util <= uHi ? { x: p.util, y: p.asp, z: base, label: "현재 " + won(base) } : null });
+    const share = neg / (N * N), pill = $("sf-pill");
+    pill.className = "pill " + (share < 0.3 ? "ok" : share < 0.6 ? "warn" : "bad"); pill.textContent = "격자의 " + F.pct(share, 0) + "가 NPV 음수";
+    const k = $("sf-k"); k.textContent = "";
+    [["현재 가정 NPV", won(base), "가동률 " + F.num(p.util, 0) + "% · 단가 " + F.num(p.asp, 1) + "천원", base < 0 ? "bad" : ""],
+     ["손익분기 판매단가", beA === null ? "범위 밖" : F.num(beA, 1) + "천원", beA === null ? "" : "현재보다 " + F.pct(beA / p.asp - 1, 1) + " · 가동률 " + F.num(p.util, 0) + "%에서", ""],
+     ["손익분기 정상 가동률", beU === null ? "100%로도 미달" : F.num(beU, 1) + "%", beU === null ? "" : "현재보다 " + F.num(beU - p.util, 1) + "%p · 단가 그대로", beU === null ? "bad" : ""],
+     ["NPV 음수 영역", F.pct(share, 0), "가동률 50~100% × 단가 ±25% 격자", share > 0.5 ? "bad" : ""]
+    ].forEach((q) => k.appendChild(F.el("div", null, [F.el("span", { class: "l", text: q[0] }), F.el("span", { class: "v " + q[3], text: q[1] }), F.el("span", { class: "s", text: q[2] })])));
+    const memo = $("sf-memo"); memo.textContent = "";
+    memo.append("곡면은 가동률보다 판매단가 방향으로 더 가파릅니다. ");
+    if (beA !== null) memo.append("지금 가동률에서는 단가가 ", F.el("b", { text: F.pct(1 - beA / p.asp, 1) }), " 떨어지면 손익분기에 닿고, ");
+    if (beU !== null) memo.append("단가가 그대로라면 가동률이 " + F.num(beU, 1) + "% 아래로 내려갈 때 NPV가 음수가 됩니다. ");
+    memo.append("두 가정을 함께 보면, 손익분기선 위쪽(초록)에 현재 가정이 얼마나 떨어져 있는지가 이 투자의 안전 여유입니다. 확률로 보면 위 '확률로 보는 투자 타당성'의 손실 확률과 같은 질문입니다.");
+    /* 기울기 비교: 1%p 가동률 vs 1% 단가 */
+    const dU = npv(p, Math.min(100, p.util + 1), p.asp) - base, dA = npv(p, p.util, p.asp * 1.01) - base;
+    memo.firstChild.textContent = (Math.abs(dA) >= Math.abs(dU) ? "곡면은 가동률보다 판매단가 방향으로 더 가파릅니다(단가 1% = " + won(dA) + ", 가동률 1%p = " + won(dU) + "). " : "곡면은 판매단가보다 가동률 방향으로 더 가파릅니다(가동률 1%p = " + won(dU) + ", 단가 1% = " + won(dA) + "). ");
+    const chk = $("sf-check"); chk.textContent = "";
+    const kNpv = parseKpi("k-npv"), kBeA = parseKpi("be-a"), kBeU = parseKpi("be-u");
+    [["곡면의 현재 가정 점 = 위 NPV", !isFinite(kNpv) || Math.abs(kNpv - base) < 0.051],
+     ["곡면에서 찾은 손익분기 판매단가·가동률 = 위 손익분기 값", (beA === null || !isFinite(kBeA) || Math.abs(kBeA - beA) < 0.051) && (beU === null || !isFinite(kBeU) || Math.abs(kBeU - beU) < 0.051)],
+     ["손익분기선 위 점의 NPV = 0", beA === null || Math.abs(npv(p, p.util, beA)) < 1e-6]
+    ].forEach((c) => chk.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
+  }
+  let timer = 0; const schedule = () => { clearTimeout(timer); timer = setTimeout(compute, 250); };
+  $("npv-form").addEventListener("input", schedule); $("npv-form").addEventListener("change", schedule);
+  $("npv-reset").addEventListener("click", () => setTimeout(compute, 80));
+  $("tab-npv").addEventListener("click", () => setTimeout(() => S3.redraw(), 40));
+  $("sf-v0").addEventListener("click", () => S3.view("default"));
+  $("sf-top").addEventListener("click", () => S3.view("top"));
+  $("sf-front").addEventListener("click", () => S3.view("front"));
+  $("sf-spin").addEventListener("click", (e) => { const on = S3.spin(e.currentTarget.getAttribute("aria-pressed") !== "true"); e.currentTarget.setAttribute("aria-pressed", String(on)); });
+  F.onRedraw(() => S3.redraw());
+  setTimeout(compute, 60);
 })();
 </script>
 <script>

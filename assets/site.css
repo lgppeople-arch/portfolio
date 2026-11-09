@@ -630,3 +630,24 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 .qgrid.q3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 1100px) { .qgrid.q3 { grid-template-columns: minmax(0, 1fr); } }
 .sub-h2 { font-size: var(--s-3); font-weight: 700; margin: 34px 0 12px; }
+
+/* 홈 스크롤 연출(넓은 화면 + 움직임 허용일 때만 story.js가 켠다) */
+@media screen { .story-on .figures { display: none; } }
+.story { margin-top: 8px; border-block: 1px solid var(--rule); }
+.story-track { height: 320vh; position: relative; }
+.story-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; }
+.story-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 32px; align-items: center; width: 100%; padding-top: 56px; }
+.story-text { display: grid; gap: 12px; align-content: center; }
+.story-kick { font-family: var(--f-num); font-size: 12px; letter-spacing: .08em; color: var(--accent); }
+.story-num b { font-family: var(--f-display); font-weight: 800; font-size: clamp(64px, 8vw, 120px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--ink); }
+.story-num small { font-family: var(--f-display); font-size: clamp(20px, 2vw, 30px); font-weight: 700; margin-left: 6px; color: var(--ink-2); }
+.story-text h3 { font-size: var(--s-4); font-weight: 700; }
+.story-text p { font-size: var(--s-2); color: var(--ink-2); line-height: 1.75; max-width: 34em; min-height: 5.4em; }
+.story-text.swap h3, .story-text.swap p { animation: storyIn .5s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes storyIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.story-dots { display: flex; gap: 8px; margin-top: 6px; }
+.story-dots button { width: 34px; height: 6px; border-radius: 3px; border: 0; padding: 0; font-size: 0; background: var(--rule); cursor: pointer; transition: background .2s, width .2s; }
+.story-dots button[aria-current="step"] { background: var(--accent); width: 54px; }
+.story-skip { font-size: var(--s-1); color: var(--muted); justify-self: start; margin-top: 6px; }
+.story-art { width: 100%; height: min(62vh, 560px); display: block; }
+@media print { .story { display: none !important; } .figures { display: grid !important; } }
