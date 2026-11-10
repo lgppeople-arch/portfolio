@@ -222,6 +222,7 @@
   }
   function wireHit(rect, host, tipApi, getContent) {
     rect.setAttribute("tabindex", "0");
+    rect.setAttribute("role", "img");
     const show = (evt) => {
       const c = getContent();
       const hb = host.getBoundingClientRect();
@@ -244,7 +245,7 @@
     const plot = host.querySelector(".plot-host");
     plot.textContent = "";
     const W = Math.max(280, plot.clientWidth || 600);
-    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": label }, plot);
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "group", "aria-label": label }, plot);
     return { plot: plot, svg: svg, W: W, H: H };
   }
 

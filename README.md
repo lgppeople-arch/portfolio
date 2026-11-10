@@ -9,7 +9,7 @@
 | 경로 | 내용 |
 |---|---|
 | `index.html` | 홈: 3분 요약, 경력, 업무 사례, 분석 리포트, 투자 의사결정 단계별 도구. 계산 엔진과 검산은 첫 화면 뒤에 불러와 돌림 |
-| `tools/index.html` | 도구·리포트 모음: 도구 15개·리포트 6편·노트 4편을 분야(경영관리, 투자·M&A, 통계·확률, 기업·산업 분석, 보고·시각화)와 검색어로 걸러 봄 |
+| `tools/index.html` | 도구·리포트 모음: 읽는 경로 다섯 가지(경영관리 한 해, 투자 한 건, M&A 거래, 공시로 기업 읽기, 분석해서 보고하기)와, 도구 15개·리포트 6편·노트 4편을 분야와 검색어로 걸러 보는 전체 목록 |
 | `404.html` | 없는 주소로 들어왔을 때의 안내 화면. 주소와 비슷한 페이지를 하나 제안 |
 | `en.html` | 영문 요약 페이지: 경력, 대표 업무, 리포트·도구 안내 (리포트와 도구 본문은 한국어) |
 | `tools/guide.html` | 쉬운 가이드: 화면 읽는 법, 도구별 사용법, 붕어빵 가게 비유 용어 사전, 미니 계산기 |
@@ -54,7 +54,24 @@
 | `assets/docs/lee-gipyo-profile.pdf` | 경력 요약 PDF(A4 2쪽). `node scripts/make-profile.js`가 `scripts/profile.html`에서 만들고 경력 기간·작성 월을 실행일로 채움 |
 | `assets/report.css`, `assets/report.js` | 분석 리포트 템플릿: 캔버스 표지 그림(흐름·웨이퍼), 목차 강조, 스크롤 진입 애니메이션 |
 | `scripts/export-pdf.js`, `scripts/merge-pdf.py` | 모든 화면을 기본값 그대로 A4 가로 PDF로 내보내기(화면별 PDF + 표지·목차·책갈피가 붙은 합본) |
+| `scripts/site-map.json`, `scripts/build-site.py` | 사이트 지도 한 곳에서 상단 메뉴, 도구·리포트 모음(카드·개수·읽는 경로 다섯 가지), 각 페이지 하단 '이어서 볼 것'(경로의 이전·다음, 제 경력과의 연결, 만든 사람), 404 제안 목록을 다시 만듦. 새 페이지는 지도에 한 줄을 더하고 스크립트를 돌림 |
+| `scripts/check-site.js` | 사이트 점검 24개: 모든 페이지의 검색 노출 차단(noindex), 제목·설명·미리보기 이미지, 사이트 안 링크와 #위치, 목록 일치(지도 = 파일 = 미리보기 = PDF 목록), 홈에 적은 숫자 = 계산 엔진 결과 |
+| `scripts/qa.js` | 화면 점검: 모든 페이지를 넓은 화면·휴대폰 × 밝은·어두운 화면으로 열어 오류, 가로 넘침, 비어 있는 숫자 자리를 확인. `--axe`를 붙이면 접근성 자동 검사(axe-core)까지 |
 | `scripts/stamp-dates.py` | 바닥글의 최종 업데이트 날짜 찍기: 바뀐 파일은 오늘, 그대로인 파일은 마지막 커밋 날짜 |
+
+## 고친 뒤 점검 순서
+
+```bash
+python3 scripts/build-site.py    # 메뉴·모음·읽는 경로·하단 연결 다시 만들기
+node assets/checks.js            # 계산 검산 165개
+node scripts/check-site.js       # 사이트 점검 24개
+node scripts/qa.js --axe         # 화면·접근성 점검 (Playwright, npm i --no-save axe-core)
+python3 scripts/stamp-dates.py   # 바닥글 최종 업데이트 날짜
+```
+
+- 계산 검산은 숫자가 맞는지, 사이트 점검은 페이지들이 서로 맞는지, 화면 점검은 실제 브라우저에서 깨지지 않는지를 봅니다.
+- 접근성 자동 검사 기준은 WCAG 2.1 A·AA와 모범 사례 규칙이고, 30개 페이지를 밝은·어두운 화면으로 검사해 위반 0건을 유지합니다. 자동 검사가 모든 접근성 문제를 잡는 것은 아닙니다.
+- 링크 미리보기 이미지와 경력 요약 PDF는 내용이 바뀔 때만 `node scripts/make-og.js`, `node scripts/make-profile.js`로 다시 만듭니다.
 
 ## PDF 내보내기
 

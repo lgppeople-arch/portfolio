@@ -183,7 +183,7 @@
               <button role="tab" id="st-tor" aria-selected="false" aria-controls="sp-tor" tabindex="-1">영향이 큰 가정</button>
             </div>
             <div id="sp-cf" role="tabpanel" aria-labelledby="st-cf">
-              <div class="scroll"><table class="ledger" id="cf-table"></table></div>
+              <div class="scroll" tabindex="0" role="region" aria-label="연도별 현금흐름 표"><table class="ledger" id="cf-table"></table></div>
             </div>
             <div id="sp-sens" role="tabpanel" aria-labelledby="st-sens" hidden>
               <div class="subtabs" style="margin-bottom: 10px" role="radiogroup" aria-label="민감도 축">
@@ -344,8 +344,24 @@
     </div>
   </section>
 </main>
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-invest">투자 한 건</a> <b>1</b> / 6</span>
+        <ol class="fsteps"><li class="cur" aria-current="step"><span>타당성</span></li><li><a href="doa.html">승인 권한</a></li><li><a href="capital.html">차입 여력</a></li><li><a href="cash-13w.html">자금 일정</a></li><li><a href="fx-hedge.html">외화 대금</a></li><li><a href="post-review.html">사후관리</a></li></ol>
+        <div class="fnav"><span class="fprev none"><small>경로의 첫 단계</small>여기서 시작합니다</span><a class="fnext" href="doa.html"><small>다음 단계 →</small>위임전결 기준 점검</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">제 경력과의 연결</span><p>공장 확장·부지 인수 투자안의 NPV·IRR·회수기간과 민감도 분석, 투자심의 자료 작성</p></div><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="stats-notes.html#s-mc">통계 기법: 몬테카를로와 토네이도</a></li><li><a href="post-review.html">투자 사후관리</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.09</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.10</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 <script>
 (function () {
@@ -495,6 +511,7 @@
     rect.addEventListener("pointerleave", hide);
     rect.addEventListener("focus", show);
     rect.addEventListener("blur", hide);
+    rect.setAttribute("role", "img");
     rect.setAttribute("aria-label", (() => { const c = getContent(); return c.title + ", " + c.rows.map((r) => r[0] + " " + r[1]).join(", "); })());
   }
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -657,7 +674,7 @@
     plot.textContent = "";
     const W = Math.max(280, plot.clientWidth || 600), H = 240;
     const padL = 48, padR = 12, padT = 14, padB = 30;
-    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "연도별 FCF와 누적 FCF 막대·선 그래프" }, plot);
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "group", "aria-label": "연도별 FCF와 누적 FCF 막대·선 그래프" }, plot);
     const cum = []; m.fcf.reduce((s, c, i) => (cum[i] = s + c, s + c), 0);
     const vals = m.fcf.concat(cum, [0]);
     const t = niceTicks(Math.min(...vals), Math.max(...vals), 5);
@@ -772,7 +789,7 @@
     const plot = $("tor-chart").querySelector(".plot-host"); plot.textContent = "";
     const W = Math.max(300, plot.clientWidth || 600), rowH = 34, padT = 8, padB = 26, labW = Math.min(150, W * 0.3), padR = 56;
     const H = padT + padB + rowH * drivers.length;
-    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "가정별 NPV 민감도 토네이도 차트" }, plot);
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "group", "aria-label": "가정별 NPV 민감도 토네이도 차트" }, plot);
     const vals = drivers.flatMap((d) => [d.lo, d.hi]).concat([m.npv]);
     const t = niceTicks(Math.min(...vals), Math.max(...vals), 4);
     const x = (v) => labW + (v - t.lo) / (t.hi - t.lo) * (W - labW - padR);
@@ -857,7 +874,7 @@
   function drawBepChart(p, be) {
     const plot = $("bep-chart").querySelector(".plot-host"); plot.textContent = "";
     const W = Math.max(280, plot.clientWidth || 600), H = 250, padL = 44, padR = 16, padT = 14, padB = 30;
-    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "가동률별 단위당 총원가, 판매단가, 단위 변동비 선 그래프" }, plot);
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "group", "aria-label": "가동률별 단위당 총원가, 판매단가, 단위 변동비 선 그래프" }, plot);
     const xmin = 20, xmax = 100;
     const yTop = Math.min(bepAt(p, xmin).uc, Math.max(p.asp, p.uvc) * 2.2);
     const t = niceTicks(0, Math.max(yTop, p.asp * 1.15), 5);
@@ -940,7 +957,7 @@
   function drawWaterfall(opP, eff, opA) {
     const plot = $("var-chart").querySelector(".plot-host"); plot.textContent = "";
     const W = Math.max(300, plot.clientWidth || 600), H = 260, padL = 44, padR = 10, padT = 22, padB = 34;
-    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "계획 영업이익에서 실적 영업이익까지의 워터폴 차트" }, plot);
+    const svg = svgEl("svg", { class: "plot", viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "group", "aria-label": "계획 영업이익에서 실적 영업이익까지의 워터폴 차트" }, plot);
     const steps = [{ name: "계획", kind: "total", from: 0, to: opP }];
     let run = opP;
     eff.forEach((e) => { steps.push({ name: e[0].replace(" 효과", ""), kind: e[1] >= 0 ? "up" : "down", from: run, to: run + e[1], val: e[1], desc: e[2] }); run += e[1]; });

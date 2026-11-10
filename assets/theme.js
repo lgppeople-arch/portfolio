@@ -38,6 +38,35 @@
     closeMenus(d);
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenus(null); });
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);
-  else wire();
+  /* 표의 빈 머리글 칸(왼쪽 위 모서리)에 화면 낭독기용 이름을 넣는다. 표를 다시 그릴 때마다 적용 */
+  function nameCorners() {
+    var ths = document.querySelectorAll("th:empty");
+    for (var i = 0; i < ths.length; i++) { var sp = document.createElement("span"); sp.className = "sr"; sp.textContent = "구분"; ths[i].appendChild(sp); }
+  }
+  /* 제목 단계가 건너뛰는 곳(h2 다음 h4 등)은 화면 낭독기가 읽는 단계만 한 칸씩 맞춘다. 모양은 그대로 */
+  function levelHeadings() {
+    var hs = document.querySelectorAll("h1, h2, h3, h4, h5, h6"), eff = [0, 0, 0, 0, 0, 0, 0];
+    for (var i = 0; i < hs.length; i++) {
+      if (!hs[i].getClientRects().length) continue; /* 숨은 제목(접힌 탭 등)은 세지 않는다 */
+      var L = +hs[i].tagName.charAt(1), parent = 0, k;
+      for (k = L - 1; k >= 1; k--) if (eff[k]) { parent = eff[k]; break; }
+      var e = Math.min(L, parent + 1);
+      eff[L] = e; for (k = L + 1; k <= 6; k++) eff[k] = 0;
+      if (e !== L) { if (hs[i].getAttribute("aria-level") !== String(e)) hs[i].setAttribute("aria-level", String(e)); }
+      else if (hs[i].hasAttribute("data-lv")) hs[i].removeAttribute("aria-level");
+      if (e !== L) hs[i].setAttribute("data-lv", "1");
+    }
+  }
+  function tidy() { nameCorners(); levelHeadings(); }
+  function watchTables() {
+    tidy();
+    if (!window.MutationObserver) return;
+    var t = null;
+    var later = function () { clearTimeout(t); t = setTimeout(tidy, 400); };
+    new MutationObserver(later).observe(document.body, { childList: true, subtree: true });
+    document.addEventListener("click", later); /* 탭을 바꾸면 보이는 제목이 달라진다 */
+  }
+  function ready() { wire(); watchTables(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready);
+  else ready();
 })();

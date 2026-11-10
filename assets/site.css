@@ -5,7 +5,7 @@
   --surface: #FBFBF9;
   --ink: #111A22;        /* navy ink */
   --ink-2: #36414B;
-  --muted: #66707A;
+  --muted: #58626C;      /* 보조 글자: 옅은 배경 위에서도 대비 4.5:1 이상 */
   --rule: #CFD4D2;
   --rule-soft: #E2E5E2;
   --ledger: #EBEDE8;
@@ -25,14 +25,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0D1114; --surface: #141A1F; --ink: #E6EAED; --ink-2: #B5BEC6; --muted: #85909A;
+    --paper: #0D1114; --surface: #141A1F; --ink: #E6EAED; --ink-2: #B5BEC6; --muted: #909BA5;
     --rule: #28323B; --rule-soft: #1D252C; --ledger: #172027; --tab: #11171C;
     --accent: #E08A57; --input: #8EAEFF; --pos: #3DB384; --neg: #E5604F; --neg-ink: #F08C7E; --total: #A3AEB8; --mark-muted: #5C6873;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0D1114; --surface: #141A1F; --ink: #E6EAED; --ink-2: #B5BEC6; --muted: #85909A;
+  --paper: #0D1114; --surface: #141A1F; --ink: #E6EAED; --ink-2: #B5BEC6; --muted: #909BA5;
   --rule: #28323B; --rule-soft: #1D252C; --ledger: #172027; --tab: #11171C;
   --accent: #E08A57; --input: #8EAEFF; --pos: #3DB384; --neg: #E5604F; --neg-ink: #F08C7E; --total: #A3AEB8; --mark-muted: #5C6873;
   color-scheme: dark;
@@ -54,6 +54,8 @@ p { margin: 0; }
 .num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
 .neg { color: var(--neg-ink); }
 .muted { color: var(--muted); }
+/* 화면에는 안 보이고 낭독기만 읽는 글. 가로 스크롤 표 안에서도 페이지 폭을 넓히지 않도록 absolute를 쓰지 않는다 */
+.sr { display: inline-block; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; vertical-align: top; }
 .label { font-size: var(--s-1); color: var(--muted); letter-spacing: 0.02em; }
 
 .btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: var(--s-1); font-weight: 600; padding: 9px 16px; border-radius: var(--radius); border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer; }
@@ -351,7 +353,7 @@ html[lang="en"] .hero2 h1 { font-size: clamp(32px, 4vw, 54px); }
 .tools-page #tools .sec-head { display: none; }
 .field input, .field select, .vtable input { color: var(--input); }
 .range-row .top b { color: var(--input); }
-.state.ok { color: var(--pos); }
+.state.ok { color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
 .check b { color: var(--pos); }
 
 /* ---------- 모션 ---------- */
@@ -424,8 +426,8 @@ table.etable input[type="checkbox"] { accent-color: var(--input); width: 16px; h
 /* 상태 표시 */
 .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
 .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.pill.ok { color: var(--pos); background: color-mix(in srgb, var(--pos) 13%, var(--surface)); }
-.pill.warn { color: #9A6700; background: color-mix(in srgb, #D4A72C 20%, var(--surface)); }
+.pill.ok { color: color-mix(in srgb, var(--pos) 72%, var(--ink)); background: color-mix(in srgb, var(--pos) 13%, var(--surface)); }
+.pill.warn { color: #7A5200; background: color-mix(in srgb, #D4A72C 20%, var(--surface)); }
 .pill.bad { color: var(--neg-ink); background: color-mix(in srgb, var(--neg) 13%, var(--surface)); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pill.warn { color: #E3B341; } }
 :root[data-theme="dark"] .pill.warn { color: #E3B341; }
@@ -687,3 +689,38 @@ details.sd > summary { display: none; }
   .stage .tool-link { padding: 6px 10px; font-size: 12.5px; }
 }
 .site-foot .upd { font-family: var(--f-num); font-size: 12px; letter-spacing: .02em; }
+
+/* 페이지 하단 '이어서 볼 것': 읽는 경로의 이전·다음, 제 경력과의 연결, 만든 사람 (scripts/build-site.py가 만든다) */
+.trail { margin-top: 64px; border-top: 1px solid var(--ink); background: color-mix(in srgb, var(--ink) 2.5%, var(--paper)); }
+.trail .wrap { padding-block: 26px 22px; display: grid; gap: 20px; }
+.trail-top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px 40px; align-items: start; }
+@media (max-width: 900px) { .trail-top { grid-template-columns: minmax(0, 1fr); } }
+.trail .fk { display: block; font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--muted); margin-bottom: 8px; }
+.trail .fk a { color: var(--accent); font-weight: 700; }
+.trail .fk b { font-family: var(--f-num); color: var(--ink); margin-left: 6px; }
+.fsteps { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; counter-reset: fs; }
+.fsteps li { counter-increment: fs; display: flex; align-items: center; font-size: 12.5px; }
+.fsteps li > * { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 5px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.fsteps li > *::before { content: counter(fs); width: 18px; height: 18px; border-radius: 50%; background: var(--rule-soft); color: var(--ink-2); font-family: var(--f-num); font-size: 10.5px; display: grid; place-items: center; }
+.fsteps li.cur > * { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 600; }
+.fsteps li.cur > *::before { background: var(--paper); color: var(--ink); }
+.fsteps li a:hover, .fsteps li a:focus-visible { border-color: var(--accent); color: var(--ink); }
+.fnav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.fnav > * { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink); text-decoration: none; font-weight: 700; font-size: var(--s-2); line-height: 1.4; min-width: 0; }
+.fnav small { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+.fnav .fnext { text-align: right; border-color: var(--ink); }
+.fnav .none { color: var(--muted); font-weight: 500; border-style: dashed; }
+.fnav a:hover, .fnav a:focus-visible { border-color: var(--accent); }
+@media (max-width: 520px) { .fnav { grid-template-columns: minmax(0, 1fr); } .fnav .fnext { text-align: left; } }
+.trail-side { display: grid; gap: 16px; align-content: start; }
+.trail-side p { font-size: var(--s-1); line-height: 1.65; color: var(--ink); max-width: 60ch; }
+.trail-side ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.trail-side ul a { display: inline-block; font-size: 12.5px; font-weight: 600; padding: 5px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.trail-side ul a:hover, .trail-side ul a:focus-visible { border-color: var(--accent); }
+.trail-me { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: var(--s-1); color: var(--ink-2); }
+.trail-top + .trail-me { margin-top: 0; }
+.trail-me b { color: var(--ink); margin-right: 6px; }
+.trail-me .fl { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.trail-me .fl a { font-weight: 600; }
+.trail + .site-foot { margin-top: 0; border-top-color: var(--rule); }
+@media print { .trail { display: none !important; } }

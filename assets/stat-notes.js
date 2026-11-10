@@ -359,6 +359,7 @@
     ts.forEach((v) => tx(svg, x(v), 280, String(v), { "text-anchor": "middle", class: "n", fill: c("--muted"), "font-size": 10 }));
     tx(svg, l, 14, "영업이익(억원) 빈도 · 검은 선: 누적확률", { fill: c("--muted"), "font-size": 10.5 });
     $("mc-rv").textContent = sg(rho, 1);
+    put({ "mc-mean": fmt(m.mean, 1), "mc-pach": pc(1 - m.pBelow, 0) + "(상관 " + sg(rho, 1) + " 기준)" });
     put({ "mc-out": "평균 " + fmt(m.mean, 1) + "억원 · 표준편차 " + fmt(m.sd, 1) + " · P10 " + fmt(m.p10, 1) + " · P90 " + fmt(m.p90, 1) + " · 계획(13억) 이상일 확률 " + pc(1 - m.pBelow, 0) + " · 적자 확률 " + pc(m.pLoss, 1) });
     dtable("mc-tb", ["지표", "값(억원)"], [["최빈값끼리 계산한 계획", fmt(m.base, 1)], ["평균", fmt(m.mean, 2)], ["표준편차", fmt(m.sd, 2)], ["P10", fmt(m.p10, 2)], ["P50(중앙값)", fmt(m.p50, 2)], ["P90", fmt(m.p90, 2)], ["계획 이상일 확률", pc(1 - m.pBelow, 1)], ["적자 확률", pc(m.pLoss, 1)],
       ["가정: 판매량(만 개)", M.Q.join(" / ")], ["가정: 단가(천원)", M.P.join(" / ")], ["가정: 변동비(천원)", M.V.join(" / ")], ["가정: 고정비(억원)", M.FC.join(" / ")]]);

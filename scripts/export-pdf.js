@@ -55,7 +55,7 @@ const PRINT_CSS = `
   :root, :root[data-theme] { --paper: #FFFFFF !important; }
   html { scroll-behavior: auto !important; }
   .site-head { position: static !important; }
-  .site-nav, .theme-btn, .tip, .pdf-hide, .rpt-toc { display: none !important; }
+  .site-nav, .theme-btn, .tip, .pdf-hide, .rpt-toc, .trail { display: none !important; }
   .rpt-grid { display: block !important; }
   .scroll, .etable-wrap { overflow: visible !important; }
   #cf-table { font-size: 11.5px !important; } #cf-table th, #cf-table td { padding-inline: 5px !important; }
