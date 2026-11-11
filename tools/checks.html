@@ -107,6 +107,7 @@
 <script src="../assets/engines/costs.js"></script>
 <script src="../assets/engines/capexmc.js"></script>
 <script src="../assets/engines/kpitree.js"></script>
+<script src="../assets/engines/bsc.js"></script>
 <script src="../assets/engines/statlab.js"></script>
 <script src="../assets/engines/prolab.js"></script>
 <script src="../assets/engines/mgmt.js"></script>
@@ -116,11 +117,11 @@
 (function () {
   "use strict";
   const F = window.Fin, $ = F.$;
-  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html", "재무제표": "fsa.html", "반도체 사이클": "semi-cycle.html", "삼성전자 공시": "samsung.html", "위임전결": "doa.html", "통계": null, "적정부채": "capital.html", "사업계획": "plan-risk.html", "예산배분": "budget-opt.html", "원가관리": "cost-stats.html", "설비투자 확률": "capex-kit.html#mc", "KPI 트리": "kpi-tree.html", "통계 기법": "stats-notes.html", "추정 기법": "pro-methods.html", "관리회계": "mgmt-kit.html", "자산·운전자본": "asset-kit.html" };
+  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html", "재무제표": "fsa.html", "반도체 사이클": "semi-cycle.html", "삼성전자 공시": "samsung.html", "위임전결": "doa.html", "통계": null, "적정부채": "capital.html", "사업계획": "plan-risk.html", "예산배분": "budget-opt.html", "원가관리": "cost-stats.html", "설비투자 확률": "capex-kit.html#mc", "KPI 트리": "kpi-tree.html", "통계 기법": "stats-notes.html", "추정 기법": "pro-methods.html", "관리회계": "mgmt-kit.html", "균형성과표": "kpi-tree.html#bsc", "자산·운전자본": "asset-kit.html" };
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, StatLab: window.StatLab, ProLab: window.ProLab, Mgmt: window.MgmtEngine, Asset: window.AssetEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, Bsc: window.BscEngine, StatLab: window.StatLab, ProLab: window.ProLab, Mgmt: window.MgmtEngine, Asset: window.AssetEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }

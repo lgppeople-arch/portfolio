@@ -11,6 +11,7 @@
     Costs: require("./engines/costs.js"),
     CapexMc: require("./engines/capexmc.js"),
     KpiTree: require("./engines/kpitree.js"),
+    Bsc: require("./engines/bsc.js"),
     StatLab: require("./engines/statlab.js"),
     ProLab: require("./engines/prolab.js"),
     Mgmt: require("./engines/mgmt.js"),
@@ -74,7 +75,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, ProLab, Mgmt, Asset, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -674,6 +675,18 @@
       add(G, "손익분기에서 가중 공헌이익 = 고정비, 특별주문 최저 단가에서 증분이익 0, 외주 무차별 단가에서 두 비용 동일",
         near(bp.bep * bp.wcmr, bp.fixed, 1e-9) && near(M.special(Object.assign({}, M.DEC.special, { offer: sp.minPrice })).gain, 0, 1e-9) && near(M.makeBuy(Object.assign({}, M.DEC.make, { buy: mb.indiff })).diff, 0, 1e-9), "손익분기 " + bp.bep.toFixed(0));
     }
+    /* ---------- 균형성과표 ---------- */
+    if (Bsc && KpiTree) {
+      const B = Bsc, G = "균형성과표", cov = B.coverage(KpiTree.KEYS), ids = B.OBJ.map((o) => o.id);
+      add(G, "KPI 트리 말단 13개가 네 관점에 빠짐없이 한 번씩 놓이고, 화살표는 아래(또는 같은) 관점에서 위로", !cov.missing.length && !cov.dup.length && !cov.extra.length && B.LINKS.every((l) => ids.indexOf(l[0]) >= 0 && ids.indexOf(l[1]) >= 0 && "LPCF".indexOf(l[0][0]) <= "LPCF".indexOf(l[1][0])), B.OBJ.length + "개 목표 · " + B.LINKS.length + "개 화살표");
+      const L = clone(KpiTree.LEAVES); KpiTree.KEYS.forEach((k) => { L[k].act = L[k].plan; });
+      const own = {}; Object.keys(B.OWN).forEach((k) => { own[k] = Object.assign({}, B.OWN[k], { act: B.OWN[k].plan }); });
+      const P = KpiTree.calc(KpiTree.pick(L, "plan")), same = B.score(L, P, P, own);
+      add(G, "실적 = 계획이면 모든 지표 판정 '같음', 모든 목표 '변화 없음'", same.every((o) => o.status === 0 && o.ms.every((m) => m.good === 0)), "");
+      const S = B.series(), xc = B.xcorr(S.lead, S.lag, 6), pk = xc.reduce((b, x) => (x.r > b.r ? x : b)), sh = [1, 2, 3, 4, 5, 6, 7, 8];
+      add(G, "시차별 상관: 심어 둔 시차에서 최고, 자기 자신과의 상관 = 1, 시차 0 = 피어슨 상관", pk.lag === S.planted && near(B.corr(sh, sh), 1, 1e-12) && near(B.corr(sh, sh.map((v) => -2 * v + 3)), -1, 1e-12) && near(xc[0].r, B.corr(S.lead, S.lag), 1e-12), pk.lag + "개월 · r " + pk.r.toFixed(2));
+    }
+
     /* ---------- 자산 손상·운전자본 ---------- */
     if (Asset) {
       const A = Asset, G = "자산·운전자본", P = clone(A.IMP), I = A.impairment(P);

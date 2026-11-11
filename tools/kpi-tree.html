@@ -201,6 +201,49 @@
       </div>
     </section>
 
+    <section class="block2" id="bsc" aria-label="균형성과표">
+      <h2>균형성과표로 넓히기 <span class="muted">트리 밖의 선행 지표까지 네 관점으로</span></h2>
+      <p class="hint">KPI 트리는 수식으로 이어지는 재무 지표만 담습니다. 균형성과표(Kaplan·Norton)는 재무 결과를 만드는 고객, 내부 프로세스, 학습과 성장 관점을 함께 보고, 전략 지도는 관점 사이의 인과를 화살표로 그립니다. 아래는 트리의 말단 지표 13개를 네 관점에 한 번씩 놓고, 트리에 없는 선행 지표 7개(가상)를 더한 것입니다. 위 입력표를 바꾸면 함께 바뀝니다.</p>
+      <div class="card">
+        <div class="chart" id="bsc-map">
+          <div class="chart-head"><h4>전략 지도</h4>
+            <div class="legend"><span><i class="key-bar" style="background: var(--pos)"></i>지표 모두 좋아짐</span><span><i class="key-bar" style="background: var(--accent)"></i>엇갈림</span><span><i class="key-bar" style="background: var(--neg)"></i>모두 나빠짐</span><span><i class="key-dash" style="border-color: var(--neg)"></i>원인은 좋아졌는데 결과는 나빠진 화살표</span></div>
+          </div>
+          <div class="plot-host"></div>
+        </div>
+        <p class="hint">상자 아래 ▲는 계획보다 좋아진 지표, ▼는 나빠진 지표입니다. 화살표는 "이것이 좋아지면 저것이 좋아진다"는 가설입니다.</p>
+      </div>
+      <div class="memo"><span class="label">보고 문장</span><p id="bsc-memo"></p></div>
+      <div class="card">
+        <div class="scroll" tabindex="0" role="region" aria-label="균형성과표 표"><table class="cmp" id="bsc-tb" style="min-width: 760px"></table></div>
+      </div>
+      <div class="two">
+        <div class="card">
+          <div class="chart" id="bsc-xc">
+            <div class="chart-head"><h4>선행 지표가 정말 앞서나: 시차별 상관</h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>OEE(t)와 매출총이익률(t + k)</span><span><i class="key-dash" style="border-color: var(--muted)"></i>±2/√n</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chart" id="bsc-ts">
+            <div class="chart-head"><h4>시차만큼 밀어 겹쳐 보기 <span class="muted" style="font-weight: 400">표준화 점수</span></h4>
+              <div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>OEE(밀어 그림)</span><span><i class="key-bar" style="background: var(--accent)"></i>매출총이익률</span></div>
+            </div>
+            <div class="plot-host"></div>
+          </div>
+        </div>
+      </div>
+      <p class="hint" id="bsc-xc-note"></p>
+      <div class="selfcheck" id="bsc-check"></div>
+      <div class="rules2">
+        <div><span class="n">BSC · 01</span><b>관점마다 지표는 서너 개</b><p>지표가 많으면 무엇이 중요한지 흐려집니다. 전략 목표 하나에 지표 한두 개, 관점마다 서너 개면 한 장에 들어옵니다.</p></div>
+        <div><span class="n">BSC · 02</span><b>화살표는 데이터로 확인</b><p>전략 지도의 인과는 가설입니다. 선행 지표가 실제로 몇 달 뒤 결과를 움직이는지 확인하고, 아니면 지표나 가설을 바꿉니다.</p></div>
+        <div><span class="n">BSC · 03</span><b>보상 연결은 천천히</b><p>측정이 안정되기 전에 보상에 바로 묶으면 숫자를 맞추는 행동이 생깁니다. 처음 한두 해는 점검용으로 쓰고, 정의와 데이터가 굳은 뒤 MBO에 반영합니다.</p></div>
+      </div>
+    </section>
+
     <div class="method">
       <h4>계산 기준</h4>
       <ul>
@@ -208,6 +251,8 @@
         <li><b>EVA</b> = 세후영업이익 − WACC × 투하자본. ROIC가 WACC보다 높아야 가치를 만듭니다.</li>
         <li><b>샤플리 값</b>: 계획과 실적이 다른 말단 n개를 참가자로 두고, 2ⁿ개 조합의 ROIC를 모두 계산해 각 지표의 평균 한계기여를 구합니다. 합계는 실적 ROIC − 계획 ROIC와 정확히 같습니다.</li>
         <li><b>탄력성</b>: 계획 상태에서 한 지표만 좋은 방향으로 1% 움직였을 때의 ROIC 변화. 'ROIC +1%p에 필요한 변화'는 그 지표 하나만으로 ROIC를 1%p 올리는 데 필요한 변화율을 이분법으로 찾은 값이며, 줄이는 쪽 지표는 99%까지만 봅니다.</li>
+        <li><b>균형성과표</b>: 트리 말단 지표는 위 입력표의 계획·실적을 그대로 쓰고, 트리 밖 지표 7개는 가상 예시입니다. 전략 목표의 색은 딸린 지표가 모두 좋아졌으면 초록, 모두 나빠졌으면 빨강, 엇갈리면 주황입니다. 틀은 Kaplan & Norton, "The Balanced Scorecard: Measures That Drive Performance"(Harvard Business Review, 1992)와 『Strategy Maps』(2004)를 따랐습니다.</li>
+        <li><b>시차별 상관</b>: 가상 월별 자료 36개월에 OEE가 2개월 뒤 매출총이익률을 움직이도록 심어 두고, k = 0~6개월 시차마다 피어슨 상관을 구했습니다. ±2/√n은 서로 무관한 잡음일 때의 대략적인 경계입니다. 두 지표가 각자 앞뒤 달과 닮는 성질(자기상관)이 있으면 이웃 시차의 상관도 높게 나오고 이 경계도 느슨해지므로, 가장 높은 시차와 그 근거를 함께 봅니다.</li>
       </ul>
     </div>
   </div>
@@ -235,6 +280,7 @@
 
 <script src="../assets/fin.js"></script>
 <script src="../assets/engines/kpitree.js"></script>
+<script src="../assets/engines/bsc.js"></script>
 <script>
 (function () {
   "use strict";
@@ -528,6 +574,7 @@
     F.setValue($("k-opm"), F.num(A.opm, 1), "%"); $("k-opm-sub").textContent = "계획 " + F.num(P.opm, 1) + "% · " + pp(A.opm - P.opm, 1);
     F.setValue($("k-turn"), F.num(A.turn, 3), "회"); $("k-turn-sub").textContent = "계획 " + F.num(P.turn, 3) + "회";
     drawTree(a); drawBridge(a); drawOwners(a); drawLevers(a); T3.set(a);
+    window.__kpi = { x: x, a: a }; document.dispatchEvent(new CustomEvent("kpi:render"));
 
     const items = K.KEYS.map((k) => ({ k: k, v: a.shapley.by[k] })).sort((p, q) => p.v - q.v), neg = items.filter((i) => i.v < -1e-9), pos = items.filter((i) => i.v > 1e-9).reverse();
     const memo = $("k-memo"); memo.textContent = "";
@@ -555,5 +602,6 @@
   F.onRedraw(render);
 })();
 </script>
+<script src="../assets/bsc.js"></script>
 </body>
 </html>
