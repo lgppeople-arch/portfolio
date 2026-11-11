@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>세액공제·내부회계·지속가능성 공시 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="통합투자세액공제(공제율·추가공제·이월공제의 현재가치), 내부회계관리제도(외부감사법 제8조와 연결 확대), 지속가능성(ESG) 공시 로드맵(금융위 2026.7 최종안)을 원문 확인 수준과 함께 정리한 노트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="세액공제·내부회계·지속가능성 공시 · 이기표">
+<meta property="og:description" content="통합투자세액공제(공제율·추가공제·이월공제의 현재가치), 내부회계관리제도(외부감사법 제8조와 연결 확대), 지속가능성(ESG) 공시 로드맵(금융위 2026.7 최종안)을 원문 확인 수준과 함께 정리한 노트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/rules-note.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/rules-note.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="숫자 밖의 규칙이 숫자를 바꾼다">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/rules-note.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .evid { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); background: color-mix(in srgb, var(--pos) 6%, var(--surface)); display: grid; gap: 6px; max-width: 80ch; }
+  .evid .evk { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  .evid p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink); }
+  .evid a { font-size: 12.5px; font-weight: 600; justify-self: start; }
+  .ver { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.6; white-space: nowrap; vertical-align: 1px; }
+  .ver.ok { color: color-mix(in srgb, var(--pos) 75%, var(--ink)); background: color-mix(in srgb, var(--pos) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); }
+  .ver.mid { color: var(--neg-ink); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  td .ver { margin-left: 0; }
+  .ctl select { font: inherit; font-size: 13px; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); max-width: 100%; }
+  ol.flow5 { list-style: none; margin: 16px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: f5; }
+  @media (max-width: 960px) { ol.flow5 { grid-template-columns: minmax(0, 1fr); } }
+  ol.flow5 li { counter-increment: f5; position: relative; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--input); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 3px; align-content: start; min-width: 0; }
+  ol.flow5 li::before { content: counter(f5); position: absolute; right: 10px; top: 8px; font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  ol.flow5 .fk { font-size: 11px; font-weight: 600; color: var(--muted); padding-right: 14px; }
+  ol.flow5 b { font-size: var(--s-2); color: var(--ink); }
+  ol.flow5 p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html">추정과 가치의 기법</a><a href="rules-note.html" aria-current="page">세액공제·내부회계·지속가능성 공시</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="mgmt-kit.html">관리회계 키트</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="asset-kit.html">자산 손상·운전자본</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 세액공제·내부회계·지속가능성 공시</div>
+      <div class="rpt-tag">Practice note · 12</div>
+      <h1>숫자 밖의 규칙이<br>숫자를 바꾼다</h1>
+      <p class="dek">재무기획이 매년 부딪히는 제도 세 가지를 정리했습니다. 설비투자의 세후 현금흐름을 바꾸는 통합투자세액공제, 결산 숫자를 만드는 과정을 통제하는 내부회계관리제도, 2028년부터 사업보고서에 들어가는 지속가능성(ESG) 공시입니다. 법령 조문과 정부 발표 원문을 직접 확인했고, 확인 수준과 날짜를 항목마다 적었습니다.</p>
+      <div class="rpt-meta"><span>제도<b>3가지</b></span><span>확인 기준일<b>2026.11.11</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-why" data-toc="왜 기획 담당자가 알아야 하나" data-group="시작">
+          <h2>왜 기획 담당자가 알아야 하나</h2>
+          <p>세 제도는 세무팀, 회계팀, ESG 담당의 일처럼 보이지만 결과는 모두 기획의 숫자로 돌아옵니다. 세액공제는 투자안의 NPV를, 내부회계는 결산 일정과 손상검사 같은 추정의 문서화 수준을, 지속가능성 공시는 사업계획에 들어갈 기후 위험과 데이터 수집 일정을 바꿉니다. 이 노트는 법률·세무 자문이 아니며, 실제 적용은 시행령·시행규칙과 전문가 확인이 필요합니다.</p>
+          <div class="takeaways">
+            <div><b>세액공제는 현재가치로 본다</b><p>공제율보다 "언제 쓸 수 있나"가 중요합니다. 이익이 적어 이월되면 같은 공제액도 가치가 줄어듭니다.</p></div>
+            <div><b>추정은 통제의 대상이다</b><p>손상검사·충당금처럼 판단이 들어간 숫자는 가정과 검토 흔적이 남아야 내부회계 감사를 통과합니다.</p></div>
+            <div><b>공시는 데이터 일정이다</b><p>사업보고서와 같은 시기에 지속가능성 정보를 내야 하므로, 종속회사·협력사 데이터 수집이 결산 일정에 들어옵니다.</p></div>
+          </div>
+          <div class="tw" role="region" aria-label="제도별 요약" tabindex="0">
+            <table class="pick">
+              <thead><tr><th>제도</th><th>기획 숫자에 닿는 곳</th><th>근거</th><th>확인 수준</th></tr></thead>
+              <tbody>
+                <tr><th><a href="#s-tax">통합투자세액공제</a></th><td>투자안 세후 현금흐름, 법인세 계획, 투자 시기</td><td>조세특례제한법 제24조·제132조·제144조</td><td><span class="ver ok">조문 원문 대조</span></td></tr>
+                <tr><th><a href="#s-icfr">내부회계관리제도</a></th><td>결산 일정, 추정의 근거 문서, 승인 권한</td><td>주식회사 등의 외부감사에 관한 법률 제8조, 금융위 회계제도 보완방안(2023.6)</td><td><span class="ver ok">조문·정부 발표 대조</span></td></tr>
+                <tr><th><a href="#s-esg">지속가능성 공시</a></th><td>기후 위험 시나리오, 종속회사·협력사 데이터, 공시 일정</td><td>금융위 「지속가능성(ESG) 공시 제도화 방안(최종안)」(2026.7.8)</td><td><span class="ver ok">보도자료 원문 대조</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s-tax" data-toc="통합투자세액공제" data-group="세금">
+          <h2>통합투자세액공제: 투자액의 일부를 세금에서 뺀다</h2>
+          <p class="qline">300억원짜리 반도체 설비를 사면 세금이 얼마나 줄고, 그 효과는 언제 들어오나?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 나라가 키우려는 분야에 설비를 사면, 산 금액의 일정 비율을 그해 법인세에서 깎아 줍니다. 다만 그해 낼 세금이 적으면 다 못 깎고 다음 해로 넘깁니다(최대 10년). 깎는 시점이 늦어질수록 같은 금액이라도 가치가 줄어듭니다.</div>
+          <p>공제액은 <b>기본공제</b>와 <b>추가공제</b>의 합입니다. 기본공제는 투자액에 시설 구분과 기업 규모별 공제율을 곱합니다. 추가공제는 올해 투자가 직전 3년 연평균보다 많을 때 그 초과분의 10%이고, 기본공제의 2배를 넘지 못합니다. 국가전략기술 시설 공제율은 2029년 12월 31일까지 투자분에 적용됩니다.</p>
+          <div class="tw" role="region" aria-label="통합투자세액공제 기본공제율" tabindex="0">
+            <table class="pick" style="min-width: 640px">
+              <thead><tr><th>시설 구분</th><th>중소기업</th><th>중소기업 졸업 후 3년 이내</th><th>중견기업</th><th>그 밖의 기업</th></tr></thead>
+              <tbody id="rate-tb"></tbody>
+            </table>
+          </div>
+          <p class="hint" style="font-size: 12.5px; color: var(--muted)">출처: 「조세특례제한법」 제24조제1항제2호 [시행 2026. 9. 18.] 원문(국가법령정보센터, 2026.11.11 확인). 국가전략기술 시설은 중소기업·졸업 3년 이내가 아니면 중견기업과 대기업이 같은 율입니다. 2023~2025 과세연도에 한시 적용된 임시투자세액공제(같은 조 제3호)는 표에서 뺐습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>공제액과 그 현재가치</h4><span class="muted" style="font-size: 12px">가상 · 억원</span></div>
+            <div class="ctl">
+              <label class="rg"><span>시설 구분</span><select id="tx-kind" aria-label="시설 구분"></select></label>
+              <label class="rg"><span>기업 규모</span><select id="tx-size" aria-label="기업 규모"></select></label>
+              <label class="rg"><span>올해 투자액 <b id="tx-iv"></b></span><input type="range" id="tx-i" min="50" max="1000" step="10" value="300"></label>
+              <label class="rg"><span>직전 3년 연평균 투자액 <b id="tx-av"></b></span><input type="range" id="tx-a" min="0" max="1000" step="10" value="200"></label>
+              <label class="rg"><span>해마다 공제에 쓸 수 있는 세액 <b id="tx-cv"></b></span><input type="range" id="tx-c" min="2" max="120" step="1" value="25"></label>
+              <label class="rg"><span>할인율 <b id="tx-rv"></b></span><input type="range" id="tx-r" min="3" max="15" step="0.5" value="8"></label>
+            </div>
+            <div class="readout" id="tx-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="tx-fig"></div>
+            <div class="fig-s">막대는 해마다 실제로 깎는 세액, 선은 누적 현재가치입니다. "쓸 수 있는 세액"은 산출세액 중 최저한세(제132조)를 넘는 부분과 다른 공제를 뺀 여유를 단순화한 값입니다. 다 못 쓴 공제는 다음 과세연도부터 10년 동안 이월됩니다(제144조).</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>투자 심의: 공제액을 투자 연도에 한 번에 넣지 말고, 회사의 세액 여유로 나눠 쓰는 시점에 현금흐름으로 반영</li><li>투자 시기: 국가전략기술 공제율 적용 기한(2029년 말)과 추가공제(직전 3년 평균 초과분)를 함께 보고 집행 연도를 배분</li><li>법인세 계획: 이월공제 잔액과 소멸 연도를 따로 관리</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>시설이 신성장·국가전략기술 시설에 해당하는지는 시행령·시행규칙 별표와 심의로 정해짐</li><li>투자 완료일부터 5년 안의 정해진 기간에 다른 목적으로 쓰면 공제액과 이자 상당액을 다시 냄(제24조③)</li><li>중고품, 일부 임대용 자산, 일부 리스 투자는 제외</li></ul></div>
+            <div><h4>출처</h4><ul><li>조세특례제한법 제24조(통합투자세액공제), 제132조(최저한세), 제144조(이월공제) — 국가법령정보센터</li><li>엑셀: <code>=투자액*공제율+MIN((투자액-3년평균)*10%,기본*2)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="capex-kit.html">설비투자 분석 키트(세후 현금흐름)</a> · <a href="pro-methods.html#s-vd">가치동인 공식</a></p>
+        </section>
+
+        <section id="s-icfr" data-toc="내부회계관리제도" data-group="통제">
+          <h2>내부회계관리제도: 숫자가 만들어지는 과정을 통제한다</h2>
+          <p class="qline">재무제표가 맞다는 것을 결과가 아니라 과정으로 어떻게 보여 주나?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 시험 답만 맞는지 보는 것이 회계감사라면, 내부회계관리제도는 "풀이 과정이 정해진 규칙대로였나"를 봅니다. 누가 숫자를 넣고, 누가 확인하고, 틀리면 어떻게 고치는지가 규정으로 정해져 있고, 그 규정대로 했다는 흔적이 남아야 합니다.</div>
+          <p>외부감사법 제8조는 회사가 갖출 것과 보고 순서를 정합니다. 회계정보의 식별·측정·기록·보고 방법, 오류 통제와 수정, 정기 점검, 장부 관리와 위·변조 방지, 업무 분장과 책임을 담은 <b>규정</b>과 이를 운영하는 <b>조직</b>이 있어야 하고, 아래 순서로 매년 보고·평가·감사합니다.</p>
+          <ol class="flow5">
+            <li><span class="fk">대표자</span><b>관리·운영 책임</b><p>상근이사 1명을 내부회계관리자로 지정</p></li>
+            <li><span class="fk">대표자 → 주총·이사회·감사</span><b>운영실태 보고</b><p>사업연도마다. 이사회·감사 보고는 내부회계관리자가 대신할 수 있음</p></li>
+            <li><span class="fk">감사(위원회) → 이사회</span><b>운영실태 평가</b><p>시정 의견 포함, 평가보고서 본점 5년 비치</p></li>
+            <li><span class="fk">외부감사인</span><b>검토 또는 감사</b><p>상장회사(직전 연도 말 자산 1천억원 미만 제외)는 감사, 그 밖은 검토</p></li>
+            <li><span class="fk">감사보고서</span><b>종합의견 표명</b><p>검토 결과 또는 감사 결과</p></li>
+          </ol>
+          <p>범위는 개별회사에서 <b>연결</b>(종속회사 포함)로 넓어지는 중입니다. 금융위원회는 2023년 6월 회계제도 보완방안에서 자산 2조원 이상 상장사는 계획대로 2023년부터 연결 내부회계 외부감사를 도입하되 신청 기업에 최대 2년 유예를 허용하고, 2조원 미만 상장사는 도입을 5년 유예한다고 발표했습니다. 보도에 따르면 이후 시행령 개정으로 5천억원 이상 2조원 미만은 2029년, 5천억원 미만은 2030년으로 정해졌습니다<span class="ver mid">보도로 확인 · 시행령 부칙 재확인 필요</span>.</p>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>판단이 들어간 숫자(손상검사, 재고 평가손실, 충당금)는 가정·출처·검토자를 남기는 양식으로 작성</li><li>월 결산 일정에 통제 수행일(검토·승인)을 넣고, 종속회사 자료 마감일을 연결 기준으로 당김</li><li>시스템 권한과 위임전결 기준을 맞춰 "올린 사람 ≠ 승인한 사람"이 되게 함</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>엑셀로 만든 추정 모형도 통제 대상이 될 수 있음(버전·수식 검토 흔적)</li><li>통제가 많을수록 좋은 것이 아님. 위험이 큰 계정과 판단 항목에 집중</li><li>연결 범위가 넓어지면 해외 종속회사의 결산 일정과 통제 수준이 병목이 됨</li></ul></div>
+            <div><h4>출처</h4><ul><li>주식회사 등의 외부감사에 관한 법률 제8조 [시행 2025. 4. 1.] — 국가법령정보센터</li><li>대한민국 정책브리핑, 「자산 2조 미만 상장사 '내부회계 감사' 도입 5년 유예」(금융위원회, 2023.6.12)</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="asset-kit.html">자산 손상·운전자본(손상검사 가정의 문서화)</a> · <a href="doa.html">위임전결 기준 점검</a> · <a href="mgmt-kit.html#inv">재고 평가손실</a></p>
+        </section>
+
+        <section id="s-esg" data-toc="지속가능성(ESG) 공시" data-group="공시">
+          <h2>지속가능성(ESG) 공시: 2028년부터 사업보고서에</h2>
+          <p class="qline">언제부터, 누가, 어디에 무엇을 공시하고, 기획은 무엇을 준비하나?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 지금까지 회사가 원하면 따로 내던 지속가능경영보고서의 핵심 내용이, 2028년부터 큰 상장사의 사업보고서에 의무로 들어갑니다. 기후 변화가 회사 돈에 어떤 위험과 기회가 되는지, 온실가스를 얼마나 내는지를 재무제표처럼 정해진 기준(KSSB 기준)으로 적어야 합니다.</div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>지속가능성 공시 일정</h4><span class="muted" style="font-size: 12px">금융위원회 최종안(2026.7.8) 원문 기준</span></div>
+            <div class="fig-b plotbox" id="esg-fig"></div>
+            <div class="fig-s">FY27은 2027 사업연도입니다. 12월 결산법인은 2028년 3월 사업보고서에 처음 싣습니다. Scope3는 공급망 등 가치사슬 전반의 배출량입니다.</div>
+          </div>
+          <p>최종안의 핵심은 네 가지입니다. 첫째, 2028년(FY27) <b>연결자산총액 10조원 이상 코스피 상장사</b>부터 시작해 2029년 5조원 이상으로 넓히고, 2028~2029년 상황을 평가해 2030년 2조원 이상 확대를 검토합니다. 둘째, 처음부터 자본시장법상 <b>사업보고서 공시</b>(법정공시)로 하며, 도입 초기 3년은 공시 정보 전체에 손해배상·행정제재·형사처벌을 포괄적으로 면제하되 고의적 그린워싱은 책임을 묻습니다. 셋째, 제3자 <b>인증</b>은 2030년부터 의무화합니다. 넷째, <b>Scope3</b>는 공시대상별로 3년 유예해 2031년(10조원 이상)부터 적용합니다.</p>
+          <p>연결 공시 첫해에는 자산과 매출이 모두 연결 기준 10% 미만인 종속회사를 공시 범위에서 뺄 수 있습니다. 금융위는 종속회사를 포함해 공시 범위에 드는 기업이 2028년 291개사, 2029년 3,171개사가 될 것으로 추산했습니다. 공시대상 기업이 직접 상장사가 아니더라도 <b>상장사의 종속회사나 협력사</b>라면 데이터 요청을 받게 된다는 뜻입니다. 정부는 Scope3 업종별 산정 가이드라인(반도체·디스플레이 등 15개 업종, 2028년까지)과 한국형 기후리스크 통합플랫폼(2028년 공개)을 준비하고 있습니다. 최종안은 자본시장법 개정으로 확정됩니다. 발표 당시 금융위는 연내 개정을 추진한다고 밝혔고, 이 노트는 그 뒤 개정 진행 상황까지는 확인하지 않았습니다.</p>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>사업계획에 기후 시나리오(탄소 가격, 에너지 비용)를 넣고 설비투자·손상검사의 할인 전 현금흐름에 반영</li><li>공시 데이터(에너지 사용량, 배출량)를 원가 데이터와 같은 마감 일정·같은 기준으로 수집</li><li>고객사가 공시대상이면 Scope3 데이터 요청이 오므로, 제품별 배출량 산정 기준을 미리 정리</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>면책은 초기 3년이고 고의적 그린워싱은 제외. 목표·전망은 근거와 가정을 함께 적어야 함</li><li>재무제표와 같은 연결 범위·같은 기간을 쓰므로 재무 숫자와 어긋나면 신뢰가 떨어짐</li><li>세부 기준과 인증 범위는 자본시장법령 개정 과정에서 구체화될 예정</li></ul></div>
+            <div><h4>출처</h4><ul><li>금융위원회 보도자료, 「지속가능성(ESG) 공시 제도화 방안(최종안)」(2026.7.8)</li><li>공시기준: 한국지속가능성기준위원회(KSSB) 기준, 기후 공시부터 의무화(같은 자료의 의견수렴안 요약)</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="capex-kit.html">설비투자 분석 키트(시나리오)</a> · <a href="kpi-tree.html#bsc">균형성과표(재무 밖 지표)</a> · <a href="sources.html">정보 출처</a></p>
+        </section>
+
+        <section id="s-ref" data-toc="정리와 확인 방법" data-group="정리">
+          <h2>정리와 확인 방법</h2>
+          <ol class="traps">
+            <li><b>세액공제는 "얼마"보다 "언제"를 봅니다.</b> 세액 여유가 없으면 이월되고, 10년이 지나면 소멸합니다.</li>
+            <li><b>국가전략기술 공제율은 2029년 말까지 투자분에 적용됩니다.</b> 투자 일정이 그 뒤로 밀리면 공제율 가정을 다시 봅니다.</li>
+            <li><b>판단이 들어간 숫자에는 근거와 검토 흔적을 남깁니다.</b> 내부회계는 결과가 아니라 과정을 봅니다.</li>
+            <li><b>연결 범위가 넓어질수록 종속회사 마감이 병목입니다.</b> 내부회계와 지속가능성 공시 모두 연결 기준입니다.</li>
+            <li><b>지속가능성 정보는 재무 숫자와 같은 범위·같은 기간·같은 마감으로 모읍니다.</b></li>
+          </ol>
+          <p>확인 방법: 공제율과 이월·최저한세 조문은 국가법령정보센터의 현행 조문 원문(조세특례제한법 [시행 2026. 9. 18.], 외부감사법 [시행 2025. 4. 1.])과 대조했고, 지속가능성 공시 일정은 금융위원회 보도자료 원문과 대조했습니다(모두 2026.11.11). 연결 내부회계의 규모별 시행 연도는 언론 보도로만 확인했습니다. 제도는 자주 바뀌므로 실제 업무에서는 확인일 이후 개정 여부를 다시 봅니다.</p>
+          <p class="rpt-end">이 노트는 법령 조문과 정부 발표 원문을 직접 읽어 정리했습니다. 공제액 계산과 현재가치는 이 페이지에서 직접 하며, 공식이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-invest">투자 한 건</a> <b>2</b> / 8</span>
+        <ol class="fsteps"><li><a href="capex-kit.html">타당성</a></li><li class="cur" aria-current="step"><span>세금·제도</span></li><li><a href="doa.html">승인 권한</a></li><li><a href="capital.html">차입 여력</a></li><li><a href="cash-13w.html">자금 일정</a></li><li><a href="fx-hedge.html">외화 대금</a></li><li><a href="post-review.html">사후관리</a></li><li><a href="asset-kit.html">손상·운전자본</a></li></ol>
+        <div class="fnav"><a class="fprev" href="capex-kit.html"><small>← 이전 단계</small>설비투자 분석 키트</a><a class="fnext" href="doa.html"><small>다음 단계 →</small>위임전결 기준 점검</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="capex-kit.html">설비투자 분석 키트(세후 현금흐름)</a></li><li><a href="asset-kit.html">자산 손상·운전자본</a></li><li><a href="doa.html">위임전결 기준 점검</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다. 법률·세무 자문이 아닙니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/rules.js"></script>
+<script src="../assets/report.js"></script>
+<script src="../assets/rules-notes.js"></script>
+</body>
+</html>

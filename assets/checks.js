@@ -16,6 +16,7 @@
     ProLab: require("./engines/prolab.js"),
     Mgmt: require("./engines/mgmt.js"),
     Asset: require("./engines/asset.js"),
+    Rules: require("./engines/rules.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -75,7 +76,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -700,6 +701,17 @@
       const W = A.wc(A.WC), same = A.wc(A.WC, { dso: W.dso, dio: W.dio, dpo: W.dpo });
       add(G, "현금전환주기 = 매출채권 + 재고 − 매입채무 회전일, 항목별 합계 = 풀리는 현금, 목표 = 현재면 0", near(W.ccc, W.dso + W.dio - W.dpo, 1e-12) && near(W.rel.ar + W.rel.inv + W.rel.ap, W.release, 1e-12) && near(same.release, 0, 1e-9), W.ccc.toFixed(1) + "일");
       add(G, "풀리는 현금 = 회전일 단축 × 하루 금액, 순운전자본 감소 = 풀리는 현금", near(W.rel.ar, (W.dso - A.WC.target.dso) * A.WC.rev / 365, 1e-9) && near(W.nwc - (A.WC.target.dso * A.WC.rev / 365 + A.WC.target.dio * A.WC.cogs / 365 - A.WC.target.dpo * A.WC.cogs / 365), W.release, 1e-9) && W.roic1 > W.roic0, W.release.toFixed(1) + "억원");
+    }
+
+    /* ---------- 제도 노트: 통합투자세액공제 ---------- */
+    if (Rules) {
+      const R = Rules, G = "제도 노트";
+      const law = { gen: [10, 7.5, 5, 1], new: [12, 9, 6, 3], nst: [25, 20, 15, 15], semi: [30, 25, 20, 20] }; /* 조특법 제24조①2가 [시행 2026.9.18] */
+      add(G, "공제율 표 = 조특법 제24조 원문(16칸), 추가공제 10%·기본공제 2배 한도, 이월 10년", Object.keys(law).every((k) => R.SIZES.every((sz, i) => R.RATE[k][sz[0]] === law[k][i])) && R.ADD === 10 && R.ADD_CAP === 2 && R.CARRY_YEARS === 10, "16칸");
+      const c0 = R.credit(R.EX), big = R.credit({ inv: 1000, avg3: 0, kind: "gen", size: "large" }), low = R.credit({ inv: 100, avg3: 300, kind: "new", size: "mid" });
+      add(G, "공제액 = 기본(투자액 × 공제율) + 추가(min(초과분 × 10%, 기본 × 2)), 투자가 평균 이하면 추가 0", near(c0.base, 60, 1e-12) && near(c0.add, 10, 1e-12) && near(big.add, 20, 1e-12) && big.capped && low.add === 0 && near(low.base, 6, 1e-12), c0.total.toFixed(1) + "억원");
+      const u = R.usage(c0.total, R.EX.cap, R.EX.r), all = R.usage(c0.total, 1e9, R.EX.r), tight = R.usage(c0.total, 5, R.EX.r);
+      add(G, "이월: 사용액 + 소멸액 = 공제액, 한 해에 다 쓰면 현재가치 = 공제액 ÷ (1 + 할인율), 11년(당해 + 10년) 뒤 남은 몫은 소멸", near(u.used + u.lost, c0.total, 1e-9) && near(all.pv, c0.total / 1.08, 1e-9) && near(tight.lost, c0.total - 5 * 11, 1e-9) && u.pv < c0.total, u.pv.toFixed(1) + " / 소멸 " + tight.lost.toFixed(0));
     }
     return out;
   }

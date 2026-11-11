@@ -282,9 +282,10 @@
       <div class="qgrid">
         <a class="qcard" href="tools/stats-notes.html"><span class="qk">Practice note · 10</span><h3>통계 기법과 활용</h3><p>분포 요약, 신뢰구간, 검정과 효과 크기, 회귀 예측구간, 시계열 분해, 지수평활, 몬테카를로, 베이지안 갱신, 군집까지. 기획·분석에서 쓰는 곳과 함정, 엑셀·R 함수를 함께 정리했습니다.</p><span class="qx">기법 14가지 · 도표 18개</span><span class="arr">→</span></a>
         <a class="qcard" href="tools/pro-methods.html"><span class="qk">Practice note · 11</span><h3>추정과 가치의 기법</h3><p>성장이 언제 가치가 되는지(가치동인 공식), 가격에 담긴 기대(역DCF), 낙관을 줄이는 기준율 보정, 경험곡선과 S자 수요, 정보의 가치까지. 컨설팅·증권사·학계의 기법을 쉬운 말과 그림으로 풀었습니다.</p><span class="qx">기법 8가지 · 출처 명시</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/rules-note.html"><span class="qk">Practice note · 12</span><h3>세액공제·내부회계·지속가능성 공시</h3><p>설비투자 세액공제의 공제율과 이월공제가 바꾸는 현재가치, 내부회계관리제도의 보고·평가·감사 순서, 2028년 시작하는 지속가능성 공시 일정을 법령과 정부 발표 원문으로 확인해 정리했습니다.</p><span class="qx">제도 3가지 · 원문 대조 · 공제액 계산기</span><span class="arr">→</span></a>
         <a class="qcard" href="tools/deck.html"><span class="qk">Practice note · 07</span><h3>보고서·PPT 작성 원칙</h3><p>피라미드 원칙과 SCQA, 문장으로 쓰는 제목, MECE, 그리드·색·숫자 표기 약속(IBCS). 같은 숫자로 만든 장표를 고치기 전과 후로 비교합니다.</p><span class="qx">고치기 전·후 슬라이드 3쌍 · 점검표 12개</span><span class="arr">→</span></a>
         <a class="qcard" href="tools/charts.html"><span class="qk">Practice note · 08</span><h3>차트 선택과 디자인</h3><p>질문 유형별로 고르는 차트 17종을 직접 그리고, 언제 쓰고 피할지, 엑셀·PPT에서 만드는 법, 나쁜 차트 고치기와 색 쓰는 법을 정리했습니다.</p><span class="qx">차트 17종 · 나쁜 예 4쌍 · 팔레트 5종</span><span class="arr">→</span></a>
-        <a class="qcard" href="tools/sources.html"><span class="qk">Practice note · 09</span><h3>정보 출처와 참고 자료</h3><p>공시·통계·산업·가치평가 출처와 연구·디자인 참고 자료를 쓰는 법·주의점과 함께 정리하고, 그 출처를 찾아 읽어 얻은 인사이트를 분석에 다시 반영했습니다.</p><span class="qx">출처 33곳 · 서적 12권 · 인사이트 8가지</span><span class="arr">→</span></a>
+        <a class="qcard" href="tools/sources.html"><span class="qk">Practice note · 09</span><h3>정보 출처와 참고 자료</h3><p>공시·통계·산업·가치평가 출처와 연구·디자인 참고 자료를 쓰는 법·주의점과 함께 정리하고, 그 출처를 찾아 읽어 얻은 인사이트를 분석에 다시 반영했습니다.</p><span class="qx">출처 34곳 · 서적 12권 · 인사이트 8가지</span><span class="arr">→</span></a>
       </div>
     </div>
   </section>
@@ -667,7 +668,7 @@
   /* 홈 검산: 계산 엔진 23개와 검산 165개는 첫 화면에 필요 없으므로, 검산 배지가 가까워지거나 브라우저가 한가할 때 불러와 돌린다 */
   const SRC = ["fin.js", "stats.js", "engines/post.js", "engines/ma.js", "engines/holdco.js", "engines/cash.js", "engines/fx.js", "engines/mbo.js", "engines/pl.js", "engines/three.js", "engines/cycle.js",
     "data/samsung.js", "data/sectors.js", "data/deal-hhi.js", "engines/doa.js", "engines/capital.js", "engines/planrisk.js", "engines/budget.js", "engines/costs.js", "engines/capexmc.js",
-    "engines/kpitree.js", "engines/bsc.js", "engines/statlab.js", "engines/prolab.js", "engines/mgmt.js", "engines/asset.js", "checks.js"];
+    "engines/kpitree.js", "engines/bsc.js", "engines/statlab.js", "engines/prolab.js", "engines/mgmt.js", "engines/asset.js", "engines/rules.js", "checks.js"];
   let started = false;
   function load(i, done) {
     if (i >= SRC.length) return done();
@@ -677,7 +678,7 @@
   }
   function run() {
     try {
-      const W = window, res = W.Checks.run({ Fin: W.Fin, Stats: W.Stats, Capital: W.CapitalEngine, PlanRisk: W.PlanRiskEngine, Budget: W.BudgetEngine, Costs: W.CostEngine, CapexMc: W.CapexMcEngine, KpiTree: W.KpiTreeEngine, Bsc: W.BscEngine, StatLab: W.StatLab, ProLab: W.ProLab, Mgmt: W.MgmtEngine, Asset: W.AssetEngine, Post: W.PostEngine, MA: W.MAEngine, Holdco: W.HoldcoEngine, Cash: W.CashEngine, Fx: W.FxEngine, Mbo: W.MboEngine, Pl: W.PlEngine, Three: W.ThreeEngine, Cycle: W.CycleEngine, Samsung: W.SamsungData, Doa: W.DoaEngine, Sectors: W.SectorsData, Deal: W.DealHhi });
+      const W = window, res = W.Checks.run({ Fin: W.Fin, Stats: W.Stats, Capital: W.CapitalEngine, PlanRisk: W.PlanRiskEngine, Budget: W.BudgetEngine, Costs: W.CostEngine, CapexMc: W.CapexMcEngine, KpiTree: W.KpiTreeEngine, Bsc: W.BscEngine, StatLab: W.StatLab, ProLab: W.ProLab, Mgmt: W.MgmtEngine, Asset: W.AssetEngine, Rules: W.RulesEngine, Post: W.PostEngine, MA: W.MAEngine, Holdco: W.HoldcoEngine, Cash: W.CashEngine, Fx: W.FxEngine, Mbo: W.MboEngine, Pl: W.PlEngine, Three: W.ThreeEngine, Cycle: W.CycleEngine, Samsung: W.SamsungData, Doa: W.DoaEngine, Sectors: W.SectorsData, Deal: W.DealHhi });
       const pass = res.filter((r) => r.ok).length, pill = document.getElementById("live-pill");
       pill.className = "pill " + (pass === res.length ? "ok" : "bad");
       pill.textContent = pass + " / " + res.length;

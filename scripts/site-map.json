@@ -426,6 +426,30 @@
       ]
     },
     {
+      "file": "rules-note.html",
+      "title": "세액공제·내부회계·지속가능성 공시",
+      "kind": "노트",
+      "fields": [
+        "경영관리",
+        "투자·M&A"
+      ],
+      "career": "",
+      "more": [
+        [
+          "capex-kit.html",
+          "설비투자 분석 키트(세후 현금흐름)"
+        ],
+        [
+          "asset-kit.html",
+          "자산 손상·운전자본"
+        ],
+        [
+          "doa.html",
+          "위임전결 기준 점검"
+        ]
+      ]
+    },
+    {
       "file": "charts.html",
       "title": "차트 선택과 디자인",
       "kind": "노트",
@@ -510,6 +534,7 @@
         [
           "stats-notes.html",
           "pro-methods.html",
+          "rules-note.html",
           "charts.html",
           "deck.html",
           "sources.html"
@@ -590,6 +615,10 @@
         [
           "capex-kit.html",
           "타당성"
+        ],
+        [
+          "rules-note.html",
+          "세금·제도"
         ],
         [
           "doa.html",

@@ -33,6 +33,7 @@
 | `tools/deck.html` | 리포트 07 보고서·PPT 작성 원칙: 피라미드·SCQA·액션 타이틀·MECE, 그리드·위계·색, IBCS·숫자 표기, 고치기 전·후 슬라이드, 점검표 |
 | `tools/charts.html` | 리포트 08 차트 선택과 디자인: 질문별 차트 17종 갤러리, 나쁜 차트 고치기, 팔레트, 엑셀·PPT 만드는 법 |
 | `tools/sources.html` | 리포트 09 정보 출처와 참고 자료: 공시·거시·산업·가치평가·법령 출처, 보고서·차트 서적, 표준·색·서체·도구 |
+| `tools/rules-note.html` | 리포트 12 세액공제·내부회계·지속가능성 공시: 조특법 제24조 공제율표와 추가·이월공제 현재가치 계산(`assets/engines/rules.js`), 외부감사법 제8조 보고 순서와 연결 확대 일정, 금융위 2026.7 ESG 공시 최종안 일정 |
 | `tools/pro-methods.html` | 리포트 11 추정과 가치의 기법: 가치동인 공식(Koller), 역DCF(Rappaport·Mauboussin), 경쟁우위 기간과 페이드, 기준율 보정(Kahneman·Tversky), 경험곡선(Wright·BCG), 바스 확산 모형, 결정나무와 완전정보의 가치, 가격·물량·믹스 분해. 기법마다 쉬운 말 설명, 움직이는 그림, 쓰는 곳·주의점·출처(`assets/engines/prolab.js`, `assets/pro-notes.js`, 검산 9개) |
 | `tools/stats-notes.html` | 리포트 10 통계 기법과 활용: 분포 요약, 신뢰구간과 표본 크기, 부트스트랩, 웰치 t검정과 효과 크기·다중비교, 앤스컴 4종, 회귀 신뢰·예측구간, 심슨의 역설, 고전적 시계열 분해, 홀트 지수평활 예측구간(ETS(A,A,N)), 몬테카를로·토네이도, 베타-이항 베이지안 갱신, 파레토·로렌츠·HHI·ABC, k-평균 군집, 평균으로의 회귀. 기법마다 실무 사용처·함정·엑셀·R 함수(`assets/engines/statlab.js`, `assets/stat-notes.js`) |
 | `tools/plan-risk.html` | 사업계획 달성 확률: 상관된 동인(촐레스키) 몬테카를로, 달성 확률·EaR·CVaR, 토네이도와 오일러 변동 기여도, 초과확률 곡선과 목표 설정 |
