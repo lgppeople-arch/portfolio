@@ -118,6 +118,13 @@ const pct = (v) => Math.round(v * 100);
   const k = (kind) => MAP.pages.filter((p) => p.kind === kind).length;
   const line = "도구 " + k("도구") + "개, 리포트 " + k("리포트") + "편, 노트 " + k("노트") + "편";
   add("홈 숫자", "경력 요약 PDF 원본의 개수 문구 = 사이트 지도", read("scripts/profile.html").indexOf(line) >= 0, line);
+  const so = src["tools/sources.html"], gi = so.indexOf("const G = {"), bi = so.indexOf("const BOOKS = ["), be = so.indexOf("];", bi);
+  const rows = (so.slice(gi, bi).match(/^      \["/gm) || []).length, std = (so.slice(so.indexOf('"g-std": ['), bi).match(/^      \["/gm) || []).length, books = (so.slice(bi, be).match(/^    \["/gm) || []).length, ins = (so.match(/<article class="ins"/g) || []).length;
+  const want = "출처 " + (rows - std) + "곳 · 서적 " + books + "권 · 인사이트 " + ins + "가지";
+  add("홈 숫자", "출처 노트 카드의 출처·서적·인사이트 수 = 실제", home.indexOf(want) >= 0 && so.indexOf("인사이트<b>" + ins + "가지") >= 0, want);
+  const insIds = (so.match(/<article class="ins" id="([^"]+)"/g) || []).map((m) => m.match(/id="([^"]+)"/)[1]);
+  const back = insIds.filter((id) => !pages.some((p) => p !== "tools/sources.html" && src[p].indexOf("sources.html#" + id) >= 0));
+  add("홈 숫자", "인사이트 카드마다 그것을 반영한 페이지가 거꾸로 링크한다", back.length === 0, back.join(", "));
   add("홈 숫자", "경력 요약 PDF 파일이 있다", has("assets/docs/lee-gipyo-profile.pdf"), "");
 })();
 

@@ -71,6 +71,10 @@
   ol.traps b { color: var(--ink); }
   ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
   .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .evid { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); background: color-mix(in srgb, var(--pos) 6%, var(--surface)); display: grid; gap: 6px; max-width: 80ch; }
+  .evid .evk { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  .evid p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink); }
+  .evid a { font-size: 12.5px; font-weight: 600; justify-self: start; }
 </style>
 </head>
 <body>
@@ -147,6 +151,7 @@
             <div class="fig-b plotbox" id="vd-fig"></div>
             <div class="fig-s">가로 점선은 성장이 없을 때의 가치(이익 ÷ WACC)입니다. ROIC가 WACC와 같으면 성장률이 몇이든 이 선 위에 있습니다.</div>
           </div>
+          <div class="evid"><span class="evk">실제 자료로 보면</span><p>이 예시의 WACC 9%는 어디쯤일까요? 다모다란 교수의 2026년 1월 미국 업종 자료에서 금융을 뺀 시장 전체 WACC는 7.72%, 반도체 장비는 9.89%, 반도체는 10.55%였고 반도체 ROIC는 약 42%였습니다. 한국 주식의 위험 프리미엄은 4.87%로 미국(4.23%)보다 국가위험 0.64%p가 더 붙습니다(<a href="sources.html#i-erp">출처</a>). 반도체 부품 사업이라면 9%는 낮은 쪽 가정입니다.</p><a href="sources.html#i-wacc">출처와 확인 방법 →</a></div>
           <div class="use3">
             <div><h4>기획·분석에서</h4><ul><li>사업계획 검토: 매출 성장 목표와 함께 투하자본 수익률 목표를 봄</li><li>증설·인수 심의: 늘어나는 이익보다 들어가는 자본 대비 수익률을 먼저 확인</li><li>사업부 평가: 성장률과 ROIC를 한 표에 놓고 가치를 만드는 사업과 깎는 사업을 구분</li></ul></div>
             <div><h4>주의할 점</h4><ul><li>영구히 같은 성장률·ROIC가 이어진다는 단순한 가정. 실제 평가는 기간을 나눠 계산</li><li>성장률은 WACC보다 낮아야 하고, 장기 성장률은 경제 성장률을 넘기 어려움</li><li>ROIC는 새로 투자하는 돈의 수익률. 과거 평균과 다를 수 있음</li></ul></div>
@@ -192,6 +197,7 @@
             <div class="fig-b plotbox" id="fd-fig"></div>
             <div class="fig-s">ROIC가 직선으로 내려간다고 단순화했습니다. 기간이 0이면 가치는 투하자본과 같습니다(1.0배).</div>
           </div>
+          <div class="evid"><span class="evk">실제 자료로 보면</span><p>맥킨지 분석에서 ROIC 20% 초과 기업이 10년 뒤에도 그 구간에 남은 비율은 50%, ROIC 5~10% 기업은 40%였습니다. 높은 성장률은 이보다 훨씬 빨리 사라졌습니다. 그래서 장기 추정에서는 성장률을 먼저, 수익률을 천천히 내리는 것이 근거에 가깝습니다. 마부신의 연구는 상위 기업의 ROIC가 자본비용까지 떨어지기보다 그 위에서 멈추는 경우가 많다고 봅니다.</p><a href="sources.html#i-roic">출처와 확인 방법 →</a></div>
           <div class="use3">
             <div><h4>기획·분석에서</h4><ul><li>중장기 계획의 마지막 해 이익률이 영구히 이어진다는 가정을 점검</li><li>인수 대상의 높은 이익률이 특허·계약·점유율 중 무엇에서 오고 언제까지 유효한지 질문</li><li>업종 평균으로 돌아가는 속도를 과거 자료로 확인</li></ul></div>
             <div><h4>주의할 점</h4><ul><li>내려가는 속도와 종착점(자본비용인지 업종 평균인지)은 판단. 근거를 적어 둠</li><li>낮은 수익률도 평균으로 올라오는 경향이 있음. 구조조정 계획 평가에 반영</li><li>회계상 ROIC는 무형자산·연구개발 처리에 따라 왜곡될 수 있음</li></ul></div>
@@ -214,6 +220,7 @@
             <div class="readout" id="bs-out" aria-live="polite"></div>
             <div class="fig-b plotbox" id="bs-fig"></div>
           </div>
+          <div class="evid"><span class="evk">실제 자료로 보면</span><p>마부신의 「The Base Rate Book」에서 미국 기업의 3년 연평균 매출 성장률 중앙값은 판본에 따라 4.5~5.5%였고, 연 20~25% 구간에 든 회사는 약 4%였습니다. 이 그림의 가상 참조집단도 중앙값 약 5%로 맞췄습니다. 투자비도 마찬가지입니다. 플루비에르의 1만 6천여 개 사업 자료에서 예산과 일정을 함께 지킨 사업은 8.5%뿐이었습니다.</p><a href="sources.html#i-base">출처와 확인 방법 →</a></div>
           <div class="use3">
             <div><h4>기획·분석에서</h4><ul><li>사업계획·투자안의 매출, 공사 기간, 투자비 전망을 과거 유사 사례 분포와 비교</li><li>투자 사후관리 기록을 쌓아 우리 회사의 기준율(평균 초과율)을 만듦</li><li>심의 자료에 "유사 사례 중 몇 %가 이 수준을 달성했는가"를 한 줄로 추가</li></ul></div>
             <div><h4>주의할 점</h4><ul><li>참조집단을 어떻게 고르느냐에 따라 기준율이 달라짐. 두세 가지로 잡아 비교</li><li>예측력은 추정하기 어려움. 0(전혀 모름)과 1(완전히 앎) 사이에서 보수적으로</li><li>기준율은 출발점. 사례의 특수한 근거가 강하면 그만큼 옮김</li></ul></div>
@@ -253,8 +260,9 @@
               <label class="rg"><span>따라 사는 힘 q <b id="ba-qv"></b></span><input type="range" id="ba-qq" min="0.1" max="0.7" step="0.02" value="0.38"></label>
             </div>
             <div class="fig-b plotbox" id="ba-fig"></div>
-            <div class="fig-s">막대는 연간 판매, 선은 누적 보급률입니다. 여러 제품을 모아 분석한 연구에서 평균은 p 약 0.03, q 약 0.38로 보고됐습니다.</div>
+            <div class="fig-s">막대는 연간 판매, 선은 누적 보급률입니다. 술탄·팔리·레만(1990)의 메타분석에서 평균은 p 약 0.03, q 약 0.38이었습니다.</div>
           </div>
+          <div class="evid"><span class="evk">실제 자료로 보면</span><p>술탄·팔리·레만(1990)이 213개 적용 사례를 모은 결과 평균은 p 약 0.03, q 약 0.38이었습니다. 이 그림의 기본값이 그 평균입니다. q를 0.30으로 인용하는 교재도 있어, 비슷한 제품군의 값이 없으면 0.3~0.5 범위로 시나리오를 둡니다.</p><a href="sources.html#i-bass">출처와 확인 방법 →</a></div>
           <div class="use3">
             <div><h4>기획·분석에서</h4><ul><li>신제품·신시장의 중장기 수요 전망과 증설 시점</li><li>고객사 신제품 보급 속도에 따른 부품 수요 시나리오</li><li>시장조사 기관 전망이 어떤 p·q를 전제하는지 역으로 확인</li></ul></div>
             <div><h4>주의할 점</h4><ul><li>시장 규모 추정이 결과를 좌우. 범위로 잡음</li><li>초기 자료 몇 개로 p·q를 맞추면 불안정. 유사 제품의 값을 참고</li><li>교체 수요·가격 인하·세대 교체는 기본 모형에 없음</li></ul></div>

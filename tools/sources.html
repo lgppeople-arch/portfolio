@@ -6,11 +6,11 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>정보 출처와 참고 자료 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="재무기획·전략기획에서 쓰는 공시·거시·산업·가치평가·법령 데이터 출처와 보고서·차트 디자인 참고 서적·표준·도구 정리">
+<meta name="description" content="재무기획에서 쓰는 공시·통계·산업·가치평가 출처와 연구·디자인 참고 자료, 그리고 이 출처들에서 찾아 분석에 반영한 인사이트 여덟 가지">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="이기표 재무기획 포트폴리오">
 <meta property="og:title" content="정보 출처와 참고 자료 · 이기표">
-<meta property="og:description" content="재무기획·전략기획에서 쓰는 공시·거시·산업·가치평가·법령 데이터 출처와 보고서·차트 디자인 참고 서적·표준·도구 정리">
+<meta property="og:description" content="재무기획에서 쓰는 공시·통계·산업·가치평가 출처와 연구·디자인 참고 자료, 그리고 이 출처들에서 찾아 분석에 반영한 인사이트 여덟 가지">
 <meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/sources.html">
 <meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/sources.png">
 <meta property="og:image:width" content="1200">
@@ -30,6 +30,19 @@
 <style>
   .rpt-hero { min-height: 420px; }
   .srcs { display: grid; gap: 0; border-top: 1px solid var(--rule); margin: 10px 0 8px; }
+  .ins-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0 6px; }
+  @media (max-width: 900px) { .ins-grid { grid-template-columns: minmax(0, 1fr); } }
+  .ins { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: var(--radius); padding: 16px 18px 14px; display: grid; gap: 10px; align-content: start; min-width: 0; scroll-margin-top: 80px; }
+  .ins:target { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent); }
+  .ins-k { font-family: var(--f-num); font-size: 11.5px; letter-spacing: .04em; color: var(--accent); font-weight: 600; }
+  .ins h3 { margin: 4px 0 0; font-size: var(--s-3); font-weight: 700; line-height: 1.4; }
+  .ins-v { width: 100%; max-width: 360px; height: auto; display: block; }
+  .ins-v text { font-family: var(--f-body); }
+  .ins dl { margin: 0; display: grid; gap: 8px; }
+  .ins dt { font-size: 11.5px; font-weight: 700; color: var(--muted); letter-spacing: .02em; }
+  .ins dd { margin: 2px 0 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); }
+  .ins-src { margin: 0; padding-top: 8px; border-top: 1px dashed var(--rule); font-size: 11.5px; line-height: 1.6; color: var(--muted); }
+  .ins-src a { overflow-wrap: anywhere; }
   .src { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 6px 22px; padding: 14px 0; border-bottom: 1px solid var(--rule-soft); }
   @media (max-width: 760px) { .src { grid-template-columns: minmax(0, 1fr); } }
   .src .nm b { display: block; font-size: var(--s-2); color: var(--ink); }
@@ -79,8 +92,8 @@
       <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 정보 출처와 참고 자료</div>
       <div class="rpt-tag">Practice note · 09</div>
       <h1>숫자는<br>어디서 오는가</h1>
-      <p class="dek">분석의 품질은 출처에서 시작합니다. 재무기획·전략기획 업무에서 쓰는 공시·통계·산업·가치평가·법령 출처를 무엇을 얻는지, 어떻게 쓰는지, 무엇을 조심해야 하는지와 함께 정리했습니다. 보고서와 차트 디자인에 참고하는 책·표준·도구도 함께 모았습니다.</p>
-      <div class="rpt-meta"><span>출처<b>공시 · 거시 · 산업 · 가치평가 · 법령</b></span><span>참고<b>서적 · 표준 · 색 · 서체 · 도구</b></span><span>작성<b>이기표</b></span></div>
+      <p class="dek">분석의 품질은 출처에서 시작합니다. 재무기획·전략기획 업무에서 쓰는 공시·통계·산업·가치평가·법령 출처를 무엇을 얻는지, 어떻게 쓰는지, 무엇을 조심해야 하는지와 함께 정리했습니다. 보고서와 차트 디자인에 참고하는 책·표준·도구도 함께 모았습니다. 그리고 이 출처들을 실제로 찾아 읽어 얻은 인사이트 여덟 가지를 사이트의 가정과 분석에 다시 반영했습니다.</p>
+      <div class="rpt-meta"><span>출처<b>공시 · 거시 · 산업 · 가치평가 · 법령</b></span><span>참고<b>연구 · 서적 · 표준 · 도구</b></span><span>인사이트<b>8가지 · 반영한 곳 표시</b></span><span>작성<b>이기표</b></span></div>
     </div>
   </section>
 
@@ -103,6 +116,143 @@
           <div class="foot-ex">자료: ○○㈜ 2025 사업보고서(2026.○ 공시), 연결재무제표 주석 ○○, p.○○ · 단위 백만원<br>자료: 한국은행 ECOS, 원/달러 환율 월평균, 2026.1~9월 · 2026.○.○ 조회</div>
         </section>
 
+        <section id="s-insight" data-toc="출처에서 찾은 인사이트" data-group="인사이트">
+          <h2>출처에서 찾은 인사이트</h2>
+          <p>출처는 목록으로만 두면 쓸모가 반입니다. 아래는 이 목록의 자료를 실제로 찾아 읽고, 이 사이트의 가정과 분석을 다시 점검한 기록입니다. 각 카드에 <b>무엇을 확인했는지</b>, <b>재무기획에 어떤 뜻인지</b>, <b>어느 페이지에 반영했는지</b>를 적었습니다. 수치는 기준일이 있는 값이라 시간이 지나면 바뀝니다. 원문 링크로 최신 값을 다시 확인해 주세요.</p>
+          <div class="ins-grid">
+            <article class="ins" id="i-wacc">
+              <div class="ins-h"><span class="ins-k">자본비용</span><h3>반도체 업종의 자본비용은 시장 평균보다 3%p쯤 높다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="WACC 비교: 미국 시장 전체(금융 제외) 7.72%, 반도체 장비 9.89%, 반도체 10.55%, 이 사이트 예시 9%">
+                <g font-size="11"><text x="0" y="22" style="fill: var(--ink-2)">시장 전체</text><text x="0" y="52" style="fill: var(--ink-2)">반도체 장비</text><text x="0" y="82" style="fill: var(--ink-2)">반도체</text><text x="0" y="112" style="fill: var(--muted)">이 사이트 예시</text></g>
+                <rect x="88" y="12" width="139" height="14" rx="2" style="fill: var(--mark-muted)"/><rect x="88" y="42" width="178" height="14" rx="2" style="fill: var(--input); opacity: .7"/><rect x="88" y="72" width="190" height="14" rx="2" style="fill: var(--accent)"/><rect x="88" y="102" width="162" height="14" rx="2" style="fill: none; stroke: var(--muted); stroke-dasharray: 4 3"/>
+                <g font-size="11" font-weight="700" style="fill: var(--ink)"><text x="232" y="23">7.72%</text><text x="271" y="53">9.89%</text><text x="283" y="83">10.55%</text><text x="255" y="113" style="fill: var(--muted)">9%</text></g>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>다모다란 교수의 2026년 1월 미국 업종 자료에서 반도체(66개사)의 WACC는 10.55%(베타 1.52), 반도체 장비는 9.89%, 금융을 뺀 시장 전체는 7.72%입니다. 같은 자료의 반도체 ROIC는 약 42%입니다.</dd></div>
+                <div><dt>뜻</dt><dd>반도체는 이익이 경기에 크게 흔들려(베타가 높아) 투자자가 더 높은 수익률을 요구합니다. 설비투자 할인율을 시장 평균 수준으로 잡으면 NPV를 부풀리기 쉽습니다. 다만 미국 대형사 표본이라 국내 부품사에 그대로 쓰지 않고, 한국 국가위험(아래)과 회사 규모를 더해 판단합니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-vd">가치동인 공식</a>에 업종 기준값을 붙이고, <a href="capex-kit.html">설비투자 분석 키트</a> 할인율 설명에 참고값을 적었습니다.</dd></div>
+              </dl>
+              <p class="ins-src">출처: Damodaran Online, <a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/wacc.html" target="_blank" rel="noopener">Cost of Equity and Capital (US)</a>, <a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/mgnroc.html" target="_blank" rel="noopener">Margin/ROIC by Sector</a> · 2026년 1월 자료</p>
+            </article>
+
+            <article class="ins" id="i-erp">
+              <div class="ins-h"><span class="ins-k">위험 프리미엄</span><h3>한국 주식의 위험 프리미엄은 미국보다 약 0.6%p 높게 본다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="주식 위험 프리미엄: 미국 4.23%, 한국 4.87%는 성숙시장 프리미엄에 국가위험 0.64%를 더한 값">
+                <rect x="40" y="30" width="60" height="85" style="fill: var(--mark-muted)"/><text x="70" y="24" text-anchor="middle" font-size="11" font-weight="700" style="fill: var(--ink)">4.23%</text><text x="70" y="128" text-anchor="middle" font-size="11" style="fill: var(--ink-2)">미국(내재)</text>
+                <rect x="170" y="30" width="60" height="85" style="fill: var(--mark-muted)"/><rect x="170" y="17" width="60" height="13" style="fill: var(--accent)"/><text x="200" y="11" text-anchor="middle" font-size="11" font-weight="700" style="fill: var(--ink)">4.87%</text><text x="200" y="128" text-anchor="middle" font-size="11" style="fill: var(--ink-2)">한국</text>
+                <text x="238" y="27" font-size="10.5" style="fill: var(--accent)">+0.64%p 국가위험</text>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>다모다란 교수는 2026년 초 미국 S&amp;P 500의 내재 주식위험프리미엄(ERP)을 4.23%로 계산했습니다. 같은 시기 국가별 자료에서 한국(신용등급 Aa2)은 국가위험 프리미엄 0.64%, 총 ERP 4.87%입니다. 7월 개정판부터는 미국 신용등급 하향을 반영해 계산 방식이 바뀌었습니다.</dd></div>
+                <div><dt>뜻</dt><dd>국내 회사의 자기자본비용은 "무위험 금리 + 베타 × 한국 ERP"로 만들 수 있습니다. 해외 자회사나 해외 인수 대상은 그 나라의 ERP로 바꿔 씁니다. 같은 사업이라도 어느 나라에서 하느냐에 따라 할인율이 달라집니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-vd">가치동인 공식</a>의 자본비용 설명, <a href="ma-valuation.html">M&amp;A 가치평가</a> 할인율 참고.</dd></div>
+              </dl>
+              <p class="ins-src">출처: Damodaran Online, <a href="https://pages.stern.nyu.edu/adamodar/New%5FHome%5FPage/datafile/ctryprem.html" target="_blank" rel="noopener">Country Default Spreads and Risk Premiums</a>(2026.1.5 갱신), <a href="https://aswathdamodaran.blogspot.com/2026/01/data-update-2-for-2026-equities-get.html" target="_blank" rel="noopener">Data Update 2 for 2026</a>(2026.1.23), <a href="https://aswathdamodaran.blogspot.com/2026/07/country-risk-drivers-measures-and.html" target="_blank" rel="noopener">Country Risk</a>(2026.7.15)</p>
+            </article>
+
+            <article class="ins" id="i-roic">
+              <div class="ins-h"><span class="ins-k">수익률 지속성</span><h3>높은 수익률은 높은 성장보다 오래 간다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="10년 뒤 같은 ROIC 구간에 남을 확률: ROIC 20% 초과 기업 50%, 5~10% 기업 40%">
+                <g font-size="11" style="fill: var(--ink-2)"><text x="0" y="40">ROIC 20% 초과</text><text x="0" y="90">ROIC 5~10%</text></g>
+                <rect x="104" y="26" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="104" y="26" width="100" height="20" rx="3" style="fill: var(--accent)"/>
+                <rect x="104" y="76" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="104" y="76" width="80" height="20" rx="3" style="fill: var(--input); opacity: .75"/>
+                <g font-size="11" font-weight="700" style="fill: var(--ink)"><text x="210" y="41">50%</text><text x="190" y="91">40%</text></g>
+                <text x="104" y="122" font-size="10.5" style="fill: var(--muted)">10년 뒤에도 같은 구간에 남은 비율</text>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>맥킨지 분석에서 ROIC가 20%를 넘던 기업은 10년 뒤에도 50% 확률로 그 구간에 남았고, 5~10% 기업은 40%였습니다. 높은 ROIC는 비교적 잘 유지되지만 높은 성장률은 거의 유지되지 않았습니다. 모건스탠리(마부신) 연구도 상위 ROIC 기업이 자본비용 쪽으로 내려오되 그 위에서 멈추는 경우가 많다고 봅니다.</dd></div>
+                <div><dt>뜻</dt><dd>장기 추정에서 "성장률은 빨리, 수익률은 천천히" 평균으로 돌아간다고 두는 것이 근거에 가깝습니다. 페이드 기간을 정할 때 이 비대칭을 씁니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-fade">경쟁우위 기간과 페이드</a>, <a href="stats-notes.html#s-rttm">평균으로의 회귀</a>.</dd></div>
+              </dl>
+              <p class="ins-src">출처: McKinsey, <a href="https://www.mckinsey.com/business-functions/strategy-and-corporate-finance/our-insights/balancing-roic-and-growth-to-build-value" target="_blank" rel="noopener">Balancing ROIC and growth to build value</a>(1965~1995년 미국 기업 표본) · Morgan Stanley Counterpoint Global, <a href="https://www.morganstanley.com/im/publication/insights/articles/article_measuringthemoat.pdf" target="_blank" rel="noopener">Measuring the Moat</a></p>
+            </article>
+
+            <article class="ins" id="i-base">
+              <div class="ins-h"><span class="ins-k">성장률 기준율</span><h3>3년간 연 20% 넘게 크는 회사는 열에 하나도 안 된다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="3년 연평균 매출 성장률 분포 개념도. 중앙값 약 5%, 연 20~25% 구간 약 4%">
+                <path d="M10 118 C60 116 80 30 120 22 S190 70 230 104 S290 116 310 117" style="fill: none; stroke: var(--ink-2); stroke-width: 1.8"/>
+                <path d="M228 102 C250 112 285 116 310 117 L310 118 L228 118 Z" style="fill: var(--accent); opacity: .8"/>
+                <line x1="128" x2="128" y1="14" y2="118" style="stroke: var(--input); stroke-dasharray: 4 3"/>
+                <text x="132" y="14" font-size="10.5" font-weight="700" style="fill: var(--input)">중앙값 약 5%</text>
+                <text x="238" y="94" font-size="10.5" font-weight="700" style="fill: var(--accent)">연 20%+</text>
+                <line x1="10" x2="310" y1="118" y2="118" style="stroke: var(--rule)"/><text x="310" y="130" text-anchor="end" font-size="10" style="fill: var(--muted)">개념도</text>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>마부신의 「The Base Rate Book」은 1950년 이후 미국 기업의 3년 매출 성장률 분포를 정리했습니다. 판본에 따라 중앙값은 연 4.5~5.5%, 평균은 6~8%이고, 연 20~25% 구간에 든 회사는 약 4%입니다. 회사가 클수록 성장률의 평균과 흩어짐이 모두 작아집니다.</dd></div>
+                <div><dt>뜻</dt><dd>3년 이상 전망에서는 기준율에 큰 비중을 두라는 것이 이 책의 결론입니다. 사업계획에 연 20% 성장을 쓰려면 "상위 몇 %에 드는 근거"를 함께 적어야 합니다. 이 사이트의 가상 참조집단(중앙값 약 5%)도 이 범위에 맞춰 두었습니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-base">기준율 보정</a>, <a href="plan-risk.html">사업계획 달성 확률</a>.</dd></div>
+              </dl>
+              <p class="ins-src">출처: Michael Mauboussin 외, 「The Base Rate Book: Integrating the Past to Better Anticipate the Future」(Credit Suisse, 2015·2016) · 판본마다 표본 기간이 달라 수치가 조금씩 다릅니다</p>
+            </article>
+
+            <article class="ins" id="i-mega">
+              <div class="ins-h"><span class="ins-k">대형 투자</span><h3>예산·일정·효과를 모두 지킨 대형 사업은 0.5%</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="1만 6천여 개 사업 중 예산 안 47.9%, 예산과 일정 모두 8.5%, 예산·일정·효과 모두 0.5%">
+                <g font-size="11" style="fill: var(--ink-2)"><text x="0" y="30">예산 안</text><text x="0" y="68">예산·일정</text><text x="0" y="106">+ 약속한 효과</text></g>
+                <rect x="96" y="16" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="96" y="16" width="95.8" height="20" rx="3" style="fill: var(--mark-muted)"/>
+                <rect x="96" y="54" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="96" y="54" width="17" height="20" rx="3" style="fill: var(--input); opacity: .8"/>
+                <rect x="96" y="92" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="96" y="92" width="3" height="20" style="fill: var(--accent)"/>
+                <g font-size="11" font-weight="700" style="fill: var(--ink)"><text x="197" y="31">47.9%</text><text x="119" y="69">8.5%</text><text x="105" y="107" style="fill: var(--accent)">0.5%</text></g>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>플루비에르(옥스퍼드대)의 1만 6천여 개 사업 자료에서 예산 안에 끝난 사업은 47.9%, 예산과 일정을 함께 지킨 사업은 8.5%, 약속한 효과까지 낸 사업은 0.5%였습니다. 그는 이를 "예산 초과, 일정 초과, 효과 미달이 반복된다"는 철칙으로 정리했습니다.</dd></div>
+                <div><dt>뜻</dt><dd>투자 심의의 기본 시나리오는 대개 "계획대로"입니다. 과거 사업의 초과율 분포(참조집단)를 쌓아 두면 투자비·일정에 근거 있는 여유를 둘 수 있습니다. 사후관리 기록이 곧 우리 회사의 기준율이 됩니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-base">기준율 보정</a>, <a href="post-review.html">투자 사후관리</a>, <a href="capex-kit.html#mc">설비투자 NPV 분포</a>(투자비를 위로 더 열어 둔 이유).</dd></div>
+              </dl>
+              <p class="ins-src">출처: Bent Flyvbjerg, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2742088" target="_blank" rel="noopener">Introduction: The Iron Law of Megaproject Management</a>(SSRN) · Flyvbjerg·Gardner, 『How Big Things Get Done』(2023) · 세 비율은 2차 정리 자료로 확인해 책 원문 재확인이 필요합니다</p>
+            </article>
+
+            <article class="ins" id="i-wsts">
+              <div class="ins-h"><span class="ins-k">반도체 업황</span><h3>2026년 반도체 시장 전망이 반년 만에 1.5배로 올라갔다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="세계 반도체 시장: 2025년 약 0.8조 달러, 2026년 전망 1.51조 달러, 2027년 전망 약 1.9조 달러. 2025년 가을 전망의 2026년 값은 약 0.98조 달러">
+                <line x1="30" x2="310" y1="118" y2="118" style="stroke: var(--rule)"/>
+                <rect x="50" y="76" width="44" height="42" style="fill: var(--mark-muted)"/><rect x="140" y="38" width="44" height="80" style="fill: var(--accent)"/><rect x="230" y="18" width="44" height="100" style="fill: var(--accent); opacity: .55"/>
+                <rect x="136" y="66" width="52" height="2.5" style="fill: var(--ink)"/><text x="132" y="58" text-anchor="end" font-size="10" style="fill: var(--ink-2)">작년 가을 전망 0.98 →</text>
+                <g font-size="11" font-weight="700" text-anchor="middle" style="fill: var(--ink)"><text x="72" y="70">0.8</text><text x="162" y="32">1.51</text><text x="252" y="12">1.9</text></g>
+                <g font-size="10.5" text-anchor="middle" style="fill: var(--muted)"><text x="72" y="130">2025</text><text x="162" y="130">2026E</text><text x="252" y="130">2027E</text></g>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>WSTS는 2026년 6월 봄 전망에서 올해 세계 반도체 시장을 1조 5,100억 달러(전년 대비 +89.9%), 2027년을 약 1조 9천억 달러(+27%)로 봤습니다. 2025년 가을 전망의 2026년 값(약 9,750억 달러)에서 크게 올렸고, 그 대부분이 메모리(+약 250%, 8천억 달러 이상)입니다.</dd></div>
+                <div><dt>뜻</dt><dd>이번 호황은 메모리 가격이 이끄는 국면입니다. 장비용 세라믹 부품처럼 설비투자에 연동된 사업은 메모리 업체의 투자 계획이 실제 발주로 이어지는 시차를 봐야 합니다. 전망이 반년 사이 50% 넘게 바뀔 수 있으므로 사업계획의 시장 가정은 한 숫자가 아니라 범위로 둡니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="semi-cycle.html">반도체 사이클과 재무</a>, <a href="samsung.html">삼성전자 재무 분석</a>(메모리 중심 이익 구조와 같은 흐름).</dd></div>
+              </dl>
+              <p class="ins-src">출처: WSTS, <a href="https://www.wsts.org/76/103/Global-Semiconductor-Market-Surges-Beyond-15T-2026" target="_blank" rel="noopener">Global Semiconductor Market Surges Beyond $1.5T in 2026</a>(2026.6.2 봄 전망) · 2025년 값은 성장률로 거꾸로 계산 · 가을 전망은 보통 12월 초 발표</p>
+            </article>
+
+            <article class="ins" id="i-bass">
+              <div class="ins-h"><span class="ins-k">수요 확산</span><h3>신제품 수요는 "따라 사는 힘"이 "스스로 사는 힘"의 10배쯤</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="바스 모형 평균 계수: 혁신 계수 p 0.03, 모방 계수 q 0.38">
+                <rect x="40" y="108" width="40" height="10" style="fill: var(--input)"/><rect x="150" y="22" width="40" height="96" style="fill: var(--accent)"/>
+                <g font-size="11" font-weight="700" text-anchor="middle" style="fill: var(--ink)"><text x="60" y="100">p 0.03</text><text x="170" y="16">q 0.38</text></g>
+                <g font-size="10.5" text-anchor="middle" style="fill: var(--muted)"><text x="60" y="130">스스로 사는 힘</text><text x="170" y="130">따라 사는 힘</text></g>
+                <text x="210" y="60" font-size="10.5" style="fill: var(--ink-2)">213개 적용 사례 평균</text>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>술탄·팔리·레만(1990)은 15개 논문의 바스 모형 적용 213건을 모아 평균 p 약 0.03, q 약 0.38을 보고했습니다. 일부 교재는 q를 0.30으로 인용하므로 범위로 보는 것이 안전합니다.</dd></div>
+                <div><dt>뜻</dt><dd>신제품 초반 판매가 더딘 것은 정상이고, 입소문(q)이 붙으면 몇 년 안에 정점이 옵니다. 초기 1~2년 성장률로 장기 수요를 직선으로 늘리면 정점 뒤 감소를 놓칩니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-bass">바스 확산 모형</a>의 기본값과 설명.</dd></div>
+              </dl>
+              <p class="ins-src">출처: Sultan, Farley, Lehmann, "A Meta-Analysis of Applications of Diffusion Models", Journal of Marketing Research 27(1), 1990 · <a href="https://business.columbia.edu/faculty/research/meta-analysis-applications-diffusion-models" target="_blank" rel="noopener">컬럼비아 경영대학원 연구 소개</a></p>
+            </article>
+
+            <article class="ins" id="i-axis">
+              <div class="ins-h"><span class="ins-k">차트 디자인</span><h3>잘 만드는 곳도 같은 실수를 고친다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="이중 축 차트를 같은 축의 두 차트로 나누는 개념도">
+                <g><rect x="6" y="14" width="130" height="96" rx="4" style="fill: none; stroke: var(--rule)"/><path d="M16 96 L46 70 L76 80 L106 40 L126 34" style="fill: none; stroke: var(--input); stroke-width: 2"/><path d="M16 40 L46 56 L76 50 L106 82 L126 90" style="fill: none; stroke: var(--neg); stroke-width: 2"/><text x="71" y="126" text-anchor="middle" font-size="10.5" style="fill: var(--neg-ink)">이중 축: 교차가 임의</text></g>
+                <text x="148" y="66" font-size="16" style="fill: var(--muted)">→</text>
+                <g><rect x="174" y="14" width="140" height="44" rx="4" style="fill: none; stroke: var(--rule)"/><path d="M184 50 L214 38 L244 42 L274 24 L304 20" style="fill: none; stroke: var(--input); stroke-width: 2"/><rect x="174" y="66" width="140" height="44" rx="4" style="fill: none; stroke: var(--rule)"/><path d="M184 78 L214 84 L244 82 L274 96 L304 100" style="fill: none; stroke: var(--neg); stroke-width: 2"/><text x="244" y="126" text-anchor="middle" font-size="10.5" style="fill: var(--pos)">축이 같은 두 그림</text></g>
+              </svg>
+              <dl>
+                <div><dt>확인한 것</dt><dd>이코노미스트의 데이터 저널리스트 세라 레오는 자사 차트를 다시 그리며 흔한 실수를 정리했습니다. 이중 축 차트는 두 축의 기준선을 마음대로 정할 수 있어 교차점과 기울기가 오해를 만들고, 축을 자르는 범위도 일관되게 정해야 한다는 것입니다. 클라우스 윌크의 『Fundamentals of Data Visualization』(온라인 무료 공개)도 같은 원칙을 체계적으로 다룹니다.</dd></div>
+                <div><dt>뜻</dt><dd>매출과 이익률을 한 그림에 겹쳐 그리는 월 보고 장표가 대표적인 이중 축 사례입니다. 같은 가로축의 작은 그림 두 개로 나누는 것이 안전합니다.</dd></div>
+                <div><dt>반영한 곳</dt><dd><a href="charts.html#s-check">차트 점검표</a>에 이중 축 항목 추가.</dd></div>
+              </dl>
+              <p class="ins-src">출처: Sarah Leo, <a href="https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368" target="_blank" rel="noopener">Mistakes, we've drawn a few</a>(The Economist, 2019) · Claus O. Wilke, <a href="https://clauswilke.com/dataviz/" target="_blank" rel="noopener">Fundamentals of Data Visualization</a>(O'Reilly, 2019)</p>
+            </article>
+          </div>
+          <div class="callout"><b>확인 방법과 한계:</b> 이번 기록은 웹 검색으로 원문 페이지와 공개 요약을 확인해 만들었습니다. 일부 수치(플루비에르의 세 비율, 마부신 판본별 수치)는 2차 자료로 확인했고 카드에 그 사실을 적었습니다. 보고서에 쓸 때는 링크의 원문에서 최신 값을 다시 확인합니다.</div>
+        </section>
+
         <section id="s-disc" data-toc="기업 공시" data-group="데이터 출처">
           <h2>기업 공시</h2>
           <div class="srcs" id="g-disc"></div>
@@ -118,6 +268,12 @@
         <section id="s-val" data-toc="가치평가·시장·법령">
           <h2>가치평가·시장·법령·회계</h2>
           <div class="srcs" id="g-val"></div>
+        </section>
+
+        <section id="s-res" data-toc="연구·리포트">
+          <h2>연구·리포트: 추정과 가치평가의 근거</h2>
+          <p>숫자 자체보다 "그 숫자를 어떻게 정할지"에 근거를 주는 자료입니다. 가정이 지나치게 낙관적인지, 할인율이 업종에 맞는지 점검할 때 씁니다.</p>
+          <div class="srcs" id="g-res"></div>
         </section>
 
         <section id="s-books" data-toc="보고서·차트 서적" data-group="디자인 참고">
@@ -197,12 +353,22 @@
       ["한국회계기준원", "https://www.kasb.or.kr", "회계기준위원회", "K-IFRS 기준서, 해석, 질의회신", "리스, 사업결합, 수익인식처럼 숫자를 바꾸는 회계 처리 확인.", "질의회신은 특정 사실관계 기준입니다."],
       ["IFRS 재단", "https://www.ifrs.org", "IFRS Foundation", "국제회계기준 원문과 개정 동향", "해외 법인·해외 경쟁사 회계 처리 비교.", "K-IFRS와 시행 시기가 다를 수 있습니다."]
     ],
+    "g-res": [
+      ["Damodaran Online · 데이터", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html", "애스워스 다모다란(뉴욕대) · 매년 1월 갱신", "업종별 베타·자본비용·ROIC·마진·배수, 국가별 위험 프리미엄, 미국 내재 주식위험프리미엄(월별)", "할인율·배수 가정의 외부 기준. 반도체 업종 WACC와 한국 국가위험을 <a href='#i-wacc'>인사이트</a>에 정리했습니다.", "미국·글로벌 상장사 중심 표본입니다. 국내 중소형 부품사에는 규모·유동성 차이를 따로 고려합니다."],
+      ["Damodaran 블로그 · 데이터 업데이트", "https://aswathdamodaran.blogspot.com", "매년 1월 데이터 해설, 7월 국가위험", "숫자가 왜 그렇게 나왔는지에 대한 설명. 계산 방법이 바뀐 이유", "자료를 쓰기 전에 그해 해설을 먼저 읽고 방법 변경을 확인합니다(예: 2026년 7월 미국 ERP 산정 방식 변경).", "개인 견해가 섞인 해설입니다. 숫자는 데이터 파일로 확인합니다."],
+      ["McKinsey · Strategy & Corporate Finance", "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights", "맥킨지 기업재무 연구", "ROIC와 성장의 균형, 수익률 지속성, 경제적 이익 같은 가치 창출 연구", "가치동인 공식과 페이드 가정의 근거(<a href='#i-roic'>인사이트</a>). 교과서 『Valuation』의 공개 요약판 역할입니다.", "오래된 표본(1965~1995년 미국 기업)을 쓰는 연구가 있어 기간을 확인합니다."],
+      ["Morgan Stanley Counterpoint Global", "https://www.morganstanley.com/im/en-us/institutional-investor/insights/series/consilient-observer.html", "마이클 마부신·댄 캘러핸", "기준율(성장률·이익률 분포), 경쟁우위 측정, ROIC와 자본배분, 시장이 가격에 담은 기대", "사업계획 성장률을 과거 분포와 비교(<a href='#i-base'>인사이트</a>), 역DCF와 경쟁우위 기간 판단.", "미국 상장사 표본입니다. 판본마다 기간이 달라 수치가 조금씩 다릅니다."],
+      ["Oxford Global Projects · Flyvbjerg", "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2742088", "벤트 플루비에르(옥스퍼드대)", "대형 사업 1만 6천여 건의 예산·일정·효과 달성률, 참조집단 예측법", "투자비·일정 가정에 근거 있는 여유를 둘 때(<a href='#i-mega'>인사이트</a>).", "공공·인프라 사업 비중이 큽니다. 제조 설비투자에는 자사 사후관리 기록을 함께 씁니다."],
+      ["WSTS 전망 발표", "https://www.wsts.org/76/103/Global-Semiconductor-Market-Surges-Beyond-15T-2026", "세계반도체시장통계기구 · 봄(6월)·가을(12월)", "세계 반도체 시장 규모, 제품군·지역별 성장률 전망", "업황 가정의 기준선과 전망 변화 폭(<a href='#i-wsts'>인사이트</a>).", "반년 사이에도 전망이 크게 바뀝니다. 발표일을 같이 적습니다."]
+    ],
     "g-std": [
       ["IBCS", "https://www.ibcs.com", "International Business Communication Standards", "보고서·차트 표기 표준(실적·계획·전망, 차이 색, SUCCESS 원칙)", "손익·투자 도구의 시나리오 표기와 차이 색 약속의 기준(<a href='deck.html'>보고서 작성 원칙</a>).", "전부 따르기보다 사내 약속으로 일관되게 적용하는 것이 핵심입니다."],
       ["FT Visual Vocabulary", "https://github.com/Financial-Times/chart-doctor", "파이낸셜타임스", "질문 유형(편차, 상관, 순위, 분포, 시간, 부분과 전체 등)별 차트 지도", "차트 고르기의 출발점(<a href='charts.html'>차트 선택과 디자인</a>).", ""],
       ["From Data to Viz", "https://www.data-to-viz.com", "", "데이터 형태별 차트 선택 흐름도와 흔한 실수", "변수 수와 형태로 차트를 고를 때.", ""],
       ["ColorBrewer", "https://colorbrewer2.org", "Cynthia Brewer", "순차·발산·범주 팔레트, 색각 이상·인쇄 적합성 표시", "히트맵과 민감도 표의 색.", ""],
       ["Okabe–Ito 팔레트", "", "Okabe & Ito, Color Universal Design", "색각 이상이 있어도 구분되는 범주 8색", "범주가 여러 개인 차트의 기본 팔레트.", ""],
+      ["Fundamentals of Data Visualization", "https://clauswilke.com/dataviz/", "Claus O. Wilke · 온라인 무료 공개", "축·색·비율·겹침 등 그림 설계 원칙을 좋은 예·나쁜 예로 정리", "차트 점검표의 근거 자료. 이중 축, 축 자르기, 색 쓰는 법 장을 자주 봅니다.", "예시 코드는 R(ggplot2)이지만 원칙은 엑셀에도 그대로 씁니다."],
+      ["Mistakes, we've drawn a few", "https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368", "The Economist · Sarah Leo(2019)", "자사 차트의 실수를 고쳐 그린 전후 비교", "이중 축과 잘린 축을 고치는 실제 예(<a href='#i-axis'>인사이트</a>).", ""],
       ["Datawrapper Academy", "https://academy.datawrapper.de", "Datawrapper", "차트 디자인 실무 가이드(색, 라벨, 축, 표)", "차트 다듬기 체크리스트.", ""],
       ["Pretendard", "https://github.com/orioncactus/pretendard", "오픈 폰트(SIL OFL)", "한글·영문 숫자 조화가 좋은 본문 서체", "보고서·장표 본문 서체.", "배포 전 사내 서체 정책을 확인합니다."],
       ["Noto Sans KR · IBM Plex", "https://fonts.google.com", "Google Fonts", "오픈 서체(본고딕 계열, IBM Plex Sans KR·Mono)", "이 사이트는 IBM Plex Sans KR(본문), IBM Plex Mono(숫자), Gothic A1(제목)을 씁니다.", ""],
@@ -217,7 +383,11 @@
     ["Storytelling with Data", "콜 너스바우머 내플릭", "맥락 → 차트 고르기 → 군더더기 빼기 → 시선 끌기 → 이야기. 고치기 전후 예시가 많습니다."],
     ["The Wall Street Journal Guide to Information Graphics", "도나 웡", "신문 그래픽 기준의 숫자·축·색 규칙. 금융 차트 표기에 실용적."],
     ["How Charts Lie", "알베르토 카이로", "잘린 축, 잘못된 비율, 선택적 데이터처럼 차트가 오해를 만드는 방식."],
-    ["slide:ology", "낸시 두아르테", "슬라이드 레이아웃, 위계, 시각적 흐름."]
+    ["slide:ology", "낸시 두아르테", "슬라이드 레이아웃, 위계, 시각적 흐름."],
+    ["Valuation", "팀 콜러 외(McKinsey)", "ROIC·성장·현금흐름이 가치를 만드는 방식. 가치동인 공식과 페이드의 표준 교과서."],
+    ["Expectations Investing", "앨프리드 래퍼포트·마이클 마부신", "가격에 담긴 기대를 거꾸로 읽는 역DCF. 인수 가격 검토에 그대로 씁니다."],
+    ["How Big Things Get Done", "벤트 플루비에르·댄 가드너", "대형 사업이 예산과 일정을 넘기는 이유와 참조집단 예측. 투자 심의의 기준율."],
+    ["Thinking, Fast and Slow", "대니얼 카너먼", "안에서 보기와 바깥에서 보기, 기준율 무시, 평균으로의 회귀."]
   ];
 
   function render(id) {
@@ -232,7 +402,7 @@
       host.appendChild(F.el("div", { class: "src" }, [nm, bd]));
     });
   }
-  ["g-disc", "g-macro", "g-ind", "g-val", "g-std"].forEach(render);
+  ["g-disc", "g-macro", "g-ind", "g-val", "g-res", "g-std"].forEach(render);
   const bk = $("g-books"); bk.textContent = "";
   BOOKS.forEach((b) => bk.appendChild(F.el("div", { class: "book" }, [F.el("i", { text: b[0] }), F.el("small", { text: b[1] }), F.el("p", { text: b[2] })])));
 
