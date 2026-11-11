@@ -26,6 +26,7 @@ const PAGES = [
   ["tools/doa.html", "doa", { kick: FPA, label: "실무 도구" }],
   ["tools/capex-kit.html", "capex-kit", { kick: INV, label: "실무 도구" }],
   ["tools/post-review.html", "post-review", { kick: INV, label: "실무 도구" }],
+  ["tools/asset-kit.html", "asset-kit", { kick: INV, label: "실무 도구" }],
   ["tools/ma-process.html", "ma-process", { kick: INV, label: "실무 도구" }],
   ["tools/ma-valuation.html", "ma-valuation", { kick: INV, label: "실무 도구" }],
   ["tools/holdco-nav.html", "holdco-nav", { kick: INV, label: "실무 도구" }],

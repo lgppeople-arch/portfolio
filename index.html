@@ -432,6 +432,7 @@
           <div class="tools">
             <a class="tool-link" href="tools/cash-13w.html">13주 자금수지 · 약정 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/cash-13w.html#mc">자금 부족 확률 (몬테카를로) <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/asset-kit.html#wc">운전자본 개선 효과 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/capital.html">적정 부채 · 파산 위험 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/fx-hedge.html">환리스크 헤지 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/doa.html">위임전결 기준 점검 <span class="arr">→</span></a>
@@ -448,6 +449,7 @@
           <div class="tools">
             <a class="tool-link" href="tools/capex-kit.html#var">계획 대비 실적 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/post-review.html">투자 사후관리 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/asset-kit.html">자산 손상검사 <span class="arr">→</span></a>
           </div>
         </li>
       </ol>
@@ -664,7 +666,7 @@
   /* 홈 검산: 계산 엔진 23개와 검산 165개는 첫 화면에 필요 없으므로, 검산 배지가 가까워지거나 브라우저가 한가할 때 불러와 돌린다 */
   const SRC = ["fin.js", "stats.js", "engines/post.js", "engines/ma.js", "engines/holdco.js", "engines/cash.js", "engines/fx.js", "engines/mbo.js", "engines/pl.js", "engines/three.js", "engines/cycle.js",
     "data/samsung.js", "data/sectors.js", "data/deal-hhi.js", "engines/doa.js", "engines/capital.js", "engines/planrisk.js", "engines/budget.js", "engines/costs.js", "engines/capexmc.js",
-    "engines/kpitree.js", "engines/statlab.js", "engines/prolab.js", "engines/mgmt.js", "checks.js"];
+    "engines/kpitree.js", "engines/statlab.js", "engines/prolab.js", "engines/mgmt.js", "engines/asset.js", "checks.js"];
   let started = false;
   function load(i, done) {
     if (i >= SRC.length) return done();
@@ -674,7 +676,7 @@
   }
   function run() {
     try {
-      const W = window, res = W.Checks.run({ Fin: W.Fin, Stats: W.Stats, Capital: W.CapitalEngine, PlanRisk: W.PlanRiskEngine, Budget: W.BudgetEngine, Costs: W.CostEngine, CapexMc: W.CapexMcEngine, KpiTree: W.KpiTreeEngine, StatLab: W.StatLab, ProLab: W.ProLab, Mgmt: W.MgmtEngine, Post: W.PostEngine, MA: W.MAEngine, Holdco: W.HoldcoEngine, Cash: W.CashEngine, Fx: W.FxEngine, Mbo: W.MboEngine, Pl: W.PlEngine, Three: W.ThreeEngine, Cycle: W.CycleEngine, Samsung: W.SamsungData, Doa: W.DoaEngine, Sectors: W.SectorsData, Deal: W.DealHhi });
+      const W = window, res = W.Checks.run({ Fin: W.Fin, Stats: W.Stats, Capital: W.CapitalEngine, PlanRisk: W.PlanRiskEngine, Budget: W.BudgetEngine, Costs: W.CostEngine, CapexMc: W.CapexMcEngine, KpiTree: W.KpiTreeEngine, StatLab: W.StatLab, ProLab: W.ProLab, Mgmt: W.MgmtEngine, Asset: W.AssetEngine, Post: W.PostEngine, MA: W.MAEngine, Holdco: W.HoldcoEngine, Cash: W.CashEngine, Fx: W.FxEngine, Mbo: W.MboEngine, Pl: W.PlEngine, Three: W.ThreeEngine, Cycle: W.CycleEngine, Samsung: W.SamsungData, Doa: W.DoaEngine, Sectors: W.SectorsData, Deal: W.DealHhi });
       const pass = res.filter((r) => r.ok).length, pill = document.getElementById("live-pill");
       pill.className = "pill " + (pass === res.length ? "ok" : "bad");
       pill.textContent = pass + " / " + res.length;

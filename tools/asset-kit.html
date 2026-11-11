@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>자산 손상·운전자본 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="현금창출단위의 손상검사(사용가치·공정가치·손상차손 배분·민감도)와 운전자본 회전일 개선으로 풀리는 현금과 ROIC를 계산하는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="자산 손상·운전자본 · 이기표">
+<meta property="og:description" content="현금창출단위의 손상검사(사용가치·공정가치·손상차손 배분·민감도)와 운전자본 회전일 개선으로 풀리는 현금과 ROIC를 계산하는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/asset-kit.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/asset-kit.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="자산 손상·운전자본">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/asset-kit.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .mk-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; margin-top: 18px; }
+  @media (max-width: 980px) { .mk-grid { grid-template-columns: minmax(0, 1fr); } }
+  .mk-grid > * { min-width: 0; }
+  .mk-out { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-content: start; min-width: 0; }
+  .mk-out h3 { font-size: var(--s-3); font-weight: 700; margin: 6px 0 0; }
+  .plotbox { position: relative; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  table.mt { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+  table.mt th, table.mt td { padding: 7px 10px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.mt th:first-child, table.mt td:first-child { text-align: left; white-space: normal; }
+  table.mt thead th { font-size: 12px; color: var(--muted); font-weight: 600; background: var(--tab); }
+  table.mt tbody tr.sum td, table.mt tbody tr.sum th { font-weight: 700; border-top: 1px solid var(--ink-2); }
+  table.mt td.u { color: var(--neg-ink); } table.mt td.f { color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  table.mt td.why { text-align: left; white-space: normal; color: var(--muted); font-size: 12px; }
+  table.mt .hl { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+  .scroll { overflow-x: auto; }
+  .seg2 { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg2 button { font: inherit; font-size: var(--s-1); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+  .seg2 button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .rg { display: grid; gap: 2px; font-size: var(--s-1); }
+  .rg span { color: var(--muted); font-size: 12px; } .rg b { color: var(--ink); font-family: var(--f-num); }
+  .rgs { display: flex; flex-wrap: wrap; gap: 10px 24px; } .rgs .rg { flex: 1 1 200px; }
+  .callout2 { padding: 12px 16px; border-radius: var(--radius); background: color-mix(in srgb, var(--input) 6%, var(--surface)); border: 1px solid color-mix(in srgb, var(--input) 25%, var(--rule)); font-size: var(--s-1); line-height: 1.7; }
+  .callout2.warn { background: color-mix(in srgb, var(--neg) 6%, var(--surface)); border-color: color-mix(in srgb, var(--neg) 30%, var(--rule)); }
+  .two2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .two2 { grid-template-columns: minmax(0, 1fr); } }
+  .two2 > * { min-width: 0; }
+  .chk { display: inline-flex; gap: 8px; align-items: center; font-size: var(--s-1); color: var(--ink-2); }
+  .inputs fieldset { border: 0; padding: 0; margin: 0 0 16px; display: grid; gap: 8px; }
+  .inputs legend { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html">추정과 가치의 기법</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="mgmt-kit.html">관리회계 키트</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="asset-kit.html" aria-current="page">자산 손상·운전자본</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 자산 손상·운전자본</div>
+      <h1>자산 손상·운전자본</h1>
+      <p>업황이 꺾이면 결산에서 두 가지를 먼저 봅니다. 공장과 영업권의 장부금액이 앞으로 벌 현금으로 회수되는지(손상검사), 재고와 외상값에 묶인 현금이 얼마인지(운전자본)입니다. 손상검사는 가치평가와 같은 할인현금흐름 계산이고, 운전자본은 회전일 하루가 현금 얼마인지로 바꿔 봅니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 억원</span><span><a class="guide-link" href="guide.html#how-asset">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample"><span>예시: 가상의 반도체 부품 생산라인(현금창출단위) 하나와 회사 전체 운전자본 · 모든 수치는 가상</span></span>
+    <div class="tooltabs" role="tablist" aria-label="자산 손상·운전자본 도구">
+      <button role="tab" id="tab-imp" aria-controls="panel-imp" aria-selected="true">자산 손상검사</button>
+      <button role="tab" id="tab-wc" aria-controls="panel-wc" aria-selected="false" tabindex="-1">운전자본 개선 효과</button>
+    </div>
+
+    <div class="toolpanel" role="tabpanel" id="panel-imp" aria-labelledby="tab-imp">
+      <div class="mk-grid">
+        <form class="inputs" id="imp-form" novalidate>
+          <fieldset><legend>장부금액(현금창출단위)</legend>
+            <div class="field"><label for="a-gw">영업권<small>억원</small></label><input id="a-gw" data-a="0" type="number" step="10" min="0"></div>
+            <div class="field"><label for="a-ppe">유형자산<small>억원</small></label><input id="a-ppe" data-a="1" type="number" step="10" min="0"></div>
+            <div class="field"><label for="a-int">무형자산<small>억원</small></label><input id="a-int" data-a="2" type="number" step="10" min="0"></div>
+          </fieldset>
+          <fieldset><legend>사용가치 가정</legend>
+            <div class="field"><label for="a-cf1">내년 현금흐름<small>억원, 세전</small></label><input id="a-cf1" data-k="cf1" type="number" step="5" min="0"></div>
+            <div class="field"><label for="a-g">1~5년 성장률<small>%/년</small></label><input id="a-g" data-k="g" type="number" step="0.5"></div>
+            <div class="field"><label for="a-gT">영구성장률<small>%, 할인율보다 낮게</small></label><input id="a-gT" data-k="gT" type="number" step="0.5"></div>
+            <div class="field"><label for="a-r">할인율<small>%, 세전</small></label><input id="a-r" data-k="r" type="number" step="0.5" min="0"></div>
+          </fieldset>
+          <fieldset><legend>공정가치</legend>
+            <div class="field"><label for="a-fv">처분부대원가를 뺀 공정가치<small>억원, 감정·매각 사례</small></label><input id="a-fv" data-k="fv" type="number" step="10" min="0"></div>
+          </fieldset>
+          <div class="form-actions"><button type="button" class="btn" id="imp-reset">예시값으로 되돌리기</button></div>
+        </form>
+        <div class="mk-out">
+          <div class="rgs"><label class="rg"><span>업황 악화: 내년 현금흐름 하락 <b id="imp-sv"></b></span><input type="range" id="imp-shock" min="0" max="50" step="1" value="0"></label></div>
+          <div class="kpis k4">
+            <div class="kpi"><div class="label">장부금액</div><div class="v num" id="ik2-car"></div><div class="sub" id="ik2-car-sub"></div></div>
+            <div class="kpi"><div class="label">회수가능액</div><div class="v num" id="ik2-rec"></div><div class="sub" id="ik2-rec-sub"></div></div>
+            <div class="kpi"><div class="label" id="ik2-hl">여유</div><div class="v num" id="ik2-hd"></div><div class="sub" id="ik2-hd-sub"></div></div>
+            <div class="kpi"><div class="label">손익분기 할인율</div><div class="v num" id="ik2-be"></div><div class="sub" id="ik2-be-sub"></div></div>
+          </div>
+          <div class="memo"><span class="label">보고 문장</span><p id="ik2-memo"></p></div>
+          <div class="two2">
+            <div><h3>장부금액과 회수가능액</h3><div class="plotbox" id="imp-fig"></div></div>
+            <div><h3>현금흐름이 줄면 언제 손상인가</h3><div class="plotbox" id="imp-shock-fig"></div></div>
+          </div>
+          <div class="two2">
+            <div><h3>손상차손 배분</h3><div class="scroll"><table class="mt" id="imp-alloc"></table></div><p class="hint">손상차손은 영업권을 먼저 줄이고, 남으면 다른 자산에 장부금액 비례로 나눕니다. 영업권 손상은 나중에 회복돼도 되돌리지 않습니다.</p></div>
+            <div><h3>할인율 × 영구성장률별 여유</h3><div class="scroll"><table class="mt" id="imp-grid"></table></div><p class="hint">빨간 칸은 손상이 나는 조합입니다. 사용가치의 상당 부분이 5년 뒤 잔존가치(이 예시는 <b id="imp-tvs"></b>)라서 할인율과 영구성장률 가정에 민감합니다. 감사에서도 이 두 가정의 근거를 가장 먼저 묻습니다.</p></div>
+          </div>
+          <div class="selfcheck" id="imp-check"></div>
+        </div>
+      </div>
+      <div class="method">
+        <h4>계산 기준</h4>
+        <ul>
+          <li>회수가능액 = max(사용가치, 처분부대원가를 뺀 공정가치). 장부금액이 회수가능액보다 크면 그 차이가 손상차손입니다(K-IFRS 1036호의 계산 구조를 단순화).</li>
+          <li>사용가치 = 1~5년 세전 현금흐름의 현재가치 + 5년차 현금흐름 × (1 + 영구성장률) ÷ (할인율 − 영구성장률)의 현재가치. 기준서는 세전 할인율과 세전 현금흐름을 쓰도록 합니다.</li>
+          <li>배분 시 개별 자산의 회수가능액 하한(장부금액을 그 아래로 줄이지 않는 규정)은 단순화를 위해 생략했습니다.</li>
+          <li>손익분기 할인율은 사용가치가 장부금액과 같아지는 할인율, 손익분기 현금흐름 감소율은 전 기간 현금흐름이 같은 비율로 줄 때 사용가치가 장부금액과 같아지는 비율입니다(공정가치는 고려하지 않음).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toolpanel" role="tabpanel" id="panel-wc" aria-labelledby="tab-wc" hidden>
+      <div class="mk-grid">
+        <form class="inputs" id="wc-form" novalidate>
+          <fieldset><legend>연간 손익과 기말 잔액</legend>
+            <div class="field"><label for="w-rev">매출<small>억원/년</small></label><input id="w-rev" data-k="rev" type="number" step="50" min="1"></div>
+            <div class="field"><label for="w-cogs">매출원가<small>억원/년</small></label><input id="w-cogs" data-k="cogs" type="number" step="50" min="1"></div>
+            <div class="field"><label for="w-ar">매출채권<small>억원</small></label><input id="w-ar" data-k="ar" type="number" step="10" min="0"></div>
+            <div class="field"><label for="w-inv">재고자산<small>억원</small></label><input id="w-inv" data-k="inv" type="number" step="10" min="0"></div>
+            <div class="field"><label for="w-ap">매입채무<small>억원</small></label><input id="w-ap" data-k="ap" type="number" step="10" min="0"></div>
+            <div class="field"><label for="w-nopat">세후영업이익<small>억원/년</small></label><input id="w-nopat" data-k="nopat" type="number" step="10"></div>
+            <div class="field"><label for="w-ic">투하자본<small>억원</small></label><input id="w-ic" data-k="ic" type="number" step="50" min="1"></div>
+            <div class="field"><label for="w-growth">내년 매출 성장률<small>%</small></label><input id="w-growth" data-k="growth" type="number" step="1"></div>
+          </fieldset>
+          <fieldset><legend>목표 회전일</legend>
+            <div class="field"><label for="w-tdso">매출채권 회전일<small>일</small></label><input id="w-tdso" data-t="dso" type="number" step="1" min="0"></div>
+            <div class="field"><label for="w-tdio">재고 회전일<small>일</small></label><input id="w-tdio" data-t="dio" type="number" step="1" min="0"></div>
+            <div class="field"><label for="w-tdpo">매입채무 회전일<small>일</small></label><input id="w-tdpo" data-t="dpo" type="number" step="1" min="0"></div>
+          </fieldset>
+          <div class="form-actions"><button type="button" class="btn" id="wc-reset">예시값으로 되돌리기</button></div>
+        </form>
+        <div class="mk-out">
+          <div class="kpis k4">
+            <div class="kpi"><div class="label">현금전환주기</div><div class="v num" id="wk-ccc"></div><div class="sub" id="wk-ccc-sub"></div></div>
+            <div class="kpi"><div class="label">목표 달성 시 풀리는 현금</div><div class="v num" id="wk-rel"></div><div class="sub" id="wk-rel-sub"></div></div>
+            <div class="kpi"><div class="label">ROIC</div><div class="v num" id="wk-roic"></div><div class="sub" id="wk-roic-sub"></div></div>
+            <div class="kpi"><div class="label">성장에 필요한 운전자본</div><div class="v num" id="wk-need"></div><div class="sub" id="wk-need-sub"></div></div>
+          </div>
+          <div class="memo"><span class="label">보고 문장</span><p id="wk-memo"></p></div>
+          <div><h3>돈이 묶여 있는 날수</h3><div class="plotbox" id="wc-fig"></div><p class="hint">원재료를 사서 대금을 치르기까지(매입채무 회전일)보다, 재고로 들고 있다가 팔아 외상값을 받기까지(재고 + 매출채권 회전일)가 길면 그 차이만큼 회사 돈이 묶입니다. 이 날수가 현금전환주기입니다.</p></div>
+          <div class="two2">
+            <div><h3>어디서 현금이 풀리나</h3><div class="plotbox" id="wc-rel"></div></div>
+            <div><h3>회전일 하루의 값</h3><div class="scroll"><table class="mt" id="wc-tb"></table></div><p class="hint">매입채무를 늘리는 것은 협력사의 자금 부담을 키울 수 있어 거래 조건과 함께 판단합니다. 매출채권은 고객 신용, 재고는 납기·서비스 수준과 맞바꾸는 일입니다.</p></div>
+          </div>
+          <div class="selfcheck" id="wc-check"></div>
+        </div>
+      </div>
+      <div class="method">
+        <h4>계산 기준</h4>
+        <ul>
+          <li>매출채권 회전일 = 매출채권 ÷ 매출 × 365, 재고·매입채무 회전일 = 잔액 ÷ 매출원가 × 365. 평균 잔액을 쓰면 더 정확하고, 계절성이 크면 월별로 봅니다.</li>
+          <li>풀리는 현금 = (현재 회전일 − 목표 회전일) × 하루 매출(또는 매출원가). 매입채무는 회전일이 늘수록 현금이 풀립니다.</li>
+          <li>ROIC = 세후영업이익 ÷ 투하자본. 풀린 현금만큼 투하자본이 줄어든다고 봅니다(이익은 그대로).</li>
+          <li>성장에 필요한 운전자본 = 순운전자본(매출채권 + 재고 − 매입채무) × 매출 성장률. 회전일이 그대로라는 가정입니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-invest">투자 한 건</a> <b>7</b> / 7</span>
+        <ol class="fsteps"><li><a href="capex-kit.html">타당성</a></li><li><a href="doa.html">승인 권한</a></li><li><a href="capital.html">차입 여력</a></li><li><a href="cash-13w.html">자금 일정</a></li><li><a href="fx-hedge.html">외화 대금</a></li><li><a href="post-review.html">사후관리</a></li><li class="cur" aria-current="step"><span>손상·운전자본</span></li></ol>
+        <div class="fnav"><a class="fprev" href="post-review.html"><small>← 이전 단계</small>투자 사후관리</a><a class="fnext" href="index.html#paths"><small>경로의 마지막 단계</small>다른 읽는 경로 보기 →</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="ma-valuation.html">M&amp;A 가치평가(영업권이 생기는 곳)</a></li><li><a href="cash-13w.html">13주 자금수지</a></li><li><a href="kpi-tree.html">KPI 트리(ROIC 동인)</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/asset.js"></script>
+<script src="../assets/asset-kit.js"></script>
+</body>
+</html>

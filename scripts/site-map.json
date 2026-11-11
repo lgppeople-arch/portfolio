@@ -252,6 +252,29 @@
       ]
     },
     {
+      "file": "asset-kit.html",
+      "title": "자산 손상·운전자본",
+      "kind": "도구",
+      "fields": [
+        "투자·M&A"
+      ],
+      "career": "",
+      "more": [
+        [
+          "ma-valuation.html",
+          "M&A 가치평가(영업권이 생기는 곳)"
+        ],
+        [
+          "cash-13w.html",
+          "13주 자금수지"
+        ],
+        [
+          "kpi-tree.html",
+          "KPI 트리(ROIC 동인)"
+        ]
+      ]
+    },
+    {
       "file": "ma-process.html",
       "title": "M&A 절차 지도",
       "kind": "도구",
@@ -514,6 +537,7 @@
         [
           "capex-kit.html",
           "post-review.html",
+          "asset-kit.html",
           "ma-process.html",
           "ma-valuation.html",
           "holdco-nav.html",
@@ -586,6 +610,10 @@
         [
           "post-review.html",
           "사후관리"
+        ],
+        [
+          "asset-kit.html",
+          "손상·운전자본"
         ]
       ]
     },

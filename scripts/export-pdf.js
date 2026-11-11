@@ -38,13 +38,14 @@ const PAGES = [
   ["tools/doa.html", "22_위임전결_기준_점검", "위임전결 기준 점검"],
   ["tools/capex-kit.html", "23_설비투자_분석_키트", "설비투자 분석 키트"],
   ["tools/post-review.html", "24_투자_사후관리", "투자 사후관리"],
-  ["tools/ma-process.html", "25_M_A_절차_지도", "M&A 절차 지도"],
-  ["tools/ma-valuation.html", "26_M_A_가치평가", "M&A 가치평가"],
-  ["tools/holdco-nav.html", "27_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
-  ["tools/fx-hedge.html", "28_환리스크_헤지", "환리스크 헤지"],
-  ["tools/checks.html", "29_계산_검산", "계산 검산"],
-  ["tools/guide.html", "30_쉬운_가이드", "쉬운 가이드"],
-  ["en.html", "31_English_summary", "English summary"]
+  ["tools/asset-kit.html", "25_자산_손상_운전자본", "자산 손상·운전자본"],
+  ["tools/ma-process.html", "26_M_A_절차_지도", "M&A 절차 지도"],
+  ["tools/ma-valuation.html", "27_M_A_가치평가", "M&A 가치평가"],
+  ["tools/holdco-nav.html", "28_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
+  ["tools/fx-hedge.html", "29_환리스크_헤지", "환리스크 헤지"],
+  ["tools/checks.html", "30_계산_검산", "계산 검산"],
+  ["tools/guide.html", "31_쉬운_가이드", "쉬운 가이드"],
+  ["en.html", "32_English_summary", "English summary"]
 ];
 
 /* A4 가로. 인쇄 배율 0.82면 본문 15px이 약 9pt로 찍히고, 화면은 1,277px 폭의 데스크톱 배치가 된다. */
@@ -552,7 +553,7 @@ async function frontMatter(ctx, out, results, pick) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].includes(n) ? "리포트" : ["29", "30", "31"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].includes(n) ? "리포트" : ["30", "31", "32"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>

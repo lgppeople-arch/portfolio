@@ -14,6 +14,7 @@
     StatLab: require("./engines/statlab.js"),
     ProLab: require("./engines/prolab.js"),
     Mgmt: require("./engines/mgmt.js"),
+    Asset: require("./engines/asset.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -73,7 +74,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, ProLab, Mgmt, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, ProLab, Mgmt, Asset, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -672,6 +673,20 @@
       const bp = M.multiBep(D), sp = M.special(M.DEC.special), mb = M.makeBuy(M.DEC.make);
       add(G, "손익분기에서 가중 공헌이익 = 고정비, 특별주문 최저 단가에서 증분이익 0, 외주 무차별 단가에서 두 비용 동일",
         near(bp.bep * bp.wcmr, bp.fixed, 1e-9) && near(M.special(Object.assign({}, M.DEC.special, { offer: sp.minPrice })).gain, 0, 1e-9) && near(M.makeBuy(Object.assign({}, M.DEC.make, { buy: mb.indiff })).diff, 0, 1e-9), "손익분기 " + bp.bep.toFixed(0));
+    }
+    /* ---------- 자산 손상·운전자본 ---------- */
+    if (Asset) {
+      const A = Asset, G = "자산·운전자본", P = clone(A.IMP), I = A.impairment(P);
+      const v = A.viu(P), manual = (function () { let pv = 0, cf = P.cf1; for (let t = 1; t <= 5; t++) { if (t > 1) cf *= 1 + P.g / 100; pv += cf / Math.pow(1 + P.r / 100, t); } return pv + cf * (1 + P.gT / 100) / (P.r / 100 - P.gT / 100) / Math.pow(1 + P.r / 100, 5); })();
+      add(G, "사용가치 = 5년 현금흐름 현재가치 + 영구성장 잔존가치 현재가치(직접 계산과 일치), 회수가능액 = max(사용가치, 공정가치)", near(v.value, manual, 1e-12) && near(I.rec, Math.max(v.value, P.fv), 1e-12) && I.loss === 0, v.value.toFixed(1));
+      const L = A.impairment(Object.assign(clone(P), { shock: 35 })), big = A.impairment(Object.assign(clone(P), { shock: 35, fv: 600 }));
+      add(G, "손상차손 배분: 합계 = 손상차손, 영업권을 먼저 채우고 넘치는 몫만 다른 자산에 장부금액 비례", near(Fin.sum(L.alloc), L.loss, 1e-9) && near(L.alloc[0], 120, 1e-9) && near(L.alloc[1] / L.alloc[2], 900 / 80, 1e-9) && near(Fin.sum(big.alloc), big.loss, 1e-9), L.loss.toFixed(0) + "억원");
+      add(G, "손익분기 할인율에서 사용가치 = 장부금액, 현금흐름을 손익분기 비율만큼 줄여도 사용가치 = 장부금액", near(A.viu(P, I.beR).value, I.carrying, 1e-6) && near(A.viu(P, undefined, undefined, 1 - I.beCut).value, I.carrying, 1e-9), I.beR.toFixed(2) + "%");
+      const gr = A.grid(P, [P.r - 1, P.r, P.r + 1], [P.gT]);
+      add(G, "민감도: 할인율이 오르면 여유가 줄고, 기준 칸 = 여유", gr[0][0] > gr[1][0] && gr[1][0] > gr[2][0] && near(gr[1][0], I.headroom, 1e-9), gr.map((r) => r[0].toFixed(0)).join(" > "));
+      const W = A.wc(A.WC), same = A.wc(A.WC, { dso: W.dso, dio: W.dio, dpo: W.dpo });
+      add(G, "현금전환주기 = 매출채권 + 재고 − 매입채무 회전일, 항목별 합계 = 풀리는 현금, 목표 = 현재면 0", near(W.ccc, W.dso + W.dio - W.dpo, 1e-12) && near(W.rel.ar + W.rel.inv + W.rel.ap, W.release, 1e-12) && near(same.release, 0, 1e-9), W.ccc.toFixed(1) + "일");
+      add(G, "풀리는 현금 = 회전일 단축 × 하루 금액, 순운전자본 감소 = 풀리는 현금", near(W.rel.ar, (W.dso - A.WC.target.dso) * A.WC.rev / 365, 1e-9) && near(W.nwc - (A.WC.target.dso * A.WC.rev / 365 + A.WC.target.dio * A.WC.cogs / 365 - A.WC.target.dpo * A.WC.cogs / 365), W.release, 1e-9) && W.roic1 > W.roic0, W.release.toFixed(1) + "억원");
     }
     return out;
   }
