@@ -3,6 +3,7 @@
 (function () {
   "use strict";
   var KEY = "lgp.theme", root = document.documentElement;
+  var SELF = document.currentScript ? document.currentScript.src : "";
   function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function save(t) { try { localStorage.setItem(KEY, t); } catch (e) { /* 저장이 막혀 있으면 이번 방문에만 적용 */ } }
   var start = saved();
@@ -66,7 +67,12 @@
     new MutationObserver(later).observe(document.body, { childList: true, subtree: true });
     document.addEventListener("click", later); /* 탭을 바꾸면 보이는 제목이 달라진다 */
   }
-  function ready() { wire(); watchTables(); }
+  /* 장식 그림(구역 머리, 제목 옆 그림, 읽기 진행 막대)은 본문이 그려진 뒤에 불러온다 */
+  function loadArt() {
+    if (!SELF) return;
+    var sc = document.createElement("script"); sc.src = SELF.replace(/theme\.js(\?.*)?$/, "art.js"); sc.async = true; document.body.appendChild(sc);
+  }
+  function ready() { wire(); watchTables(); loadArt(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready);
   else ready();
 })();

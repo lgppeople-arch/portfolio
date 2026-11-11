@@ -38,7 +38,8 @@ const PAGES = [
   ["tools/deck.html", "deck", { label: "분석·보고 노트" }],
   ["tools/charts.html", "charts", { label: "분석·보고 노트" }],
   ["tools/sources.html", "sources", { label: "분석·보고 노트" }],
-  ["tools/stats-notes.html", "stats-notes", { label: "분석·보고 노트" }]
+  ["tools/stats-notes.html", "stats-notes", { label: "분석·보고 노트" }],
+  ["tools/pro-methods.html", "pro-methods", { label: "분석·보고 노트" }]
 ];
 const unesc = (t) => t.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
 const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

@@ -12,6 +12,7 @@
     CapexMc: require("./engines/capexmc.js"),
     KpiTree: require("./engines/kpitree.js"),
     StatLab: require("./engines/statlab.js"),
+    ProLab: require("./engines/prolab.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -71,7 +72,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, ProLab, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -620,6 +621,29 @@
       add(G, "평균으로의 회귀: 실력 분산 = 운 분산이면 이듬해 점수의 회귀 기울기 ≈ 0.5(±0.02)", Math.abs(big.slope - big.reliability) < 0.02, "기울기 " + big.slope.toFixed(3));
       const pw = L.power(), rb = L.regBands(pw.x, pw.y), mx0 = S.mean(pw.x), at = rb.at(mx0);
       add(G, "회귀: 예측구간은 늘 신뢰구간보다 넓고, 평균 x에서 예측구간 반폭 = t × s × √(1 + 1/n)", [40, 60, 80, 100].every((v) => rb.at(v).pi > rb.at(v).ci) && near(at.pi, rb.t * rb.se * Math.sqrt(1 + 1 / rb.n), 1e-9), "반폭 ±" + at.pi.toFixed(3));
+    }
+
+    /* ---------- 추정·가치 기법 노트 ---------- */
+    if (ProLab && Stats) {
+      const L = ProLab, S = Stats, G = "추정 기법";
+      add(G, "가치동인 공식: ROIC = WACC이면 성장률이 몇이든 가치 = 이익 ÷ WACC, ROIC > WACC이면 성장할수록 가치가 커지고 반대면 줄어든다",
+        [0, 0.02, 0.05].every((g) => near(L.valueDriver(100, g, 0.09, 0.09), 100 / 0.09, 1e-9)) && L.valueDriver(100, 0.05, 0.15, 0.09) > L.valueDriver(100, 0.02, 0.15, 0.09) && L.valueDriver(100, 0.05, 0.06, 0.09) < L.valueDriver(100, 0.02, 0.06, 0.09), (100 / 0.09).toFixed(1) + "억원");
+      const v = L.twoStage(100, 0.08, 7, 0.15, 0.09, 0.02, 0.09).value, gi = L.impliedGrowth(v, 100, 7, 0.15, 0.09, 0.02, 0.09);
+      add(G, "역DCF: 성장률 8%로 계산한 가치를 넣으면 요구 성장률이 다시 8%로 풀린다", near(gi, 0.08, 1e-8), (gi * 100).toFixed(4) + "%");
+      const ts = L.twoStage(100, 0.02, 7, 0.09, 0.09, 0.02, 0.09).value;
+      add(G, "2단계 모형이 한 줄 공식과 일치: 전 기간 성장률·ROIC가 같으면 가치 = 이익₁ × (1 − g ÷ ROIC) ÷ (WACC − g)", near(ts, L.valueDriver(102, 0.02, 0.09, 0.09), 1e-6), ts.toFixed(2));
+      const fd = [0, 5, 12, 25].map((k) => L.fade(1000, 0.09, 0.09, 0.07, k).value), mono = [0, 5, 10, 20].map((k) => L.fade(1000, 0.18, 0.09, 0.05, k).multiple);
+      add(G, "페이드: ROIC = WACC이면 기간·성장과 무관하게 가치 = 투하자본, ROIC가 높으면 기간이 길수록 배수가 커진다", fd.every((x) => near(x, 1000, 1e-6)) && mono.every((m, i) => i === 0 || m > mono[i - 1]) && near(mono[0], 1, 1e-12), mono.map((m) => m.toFixed(2)).join(" < "));
+      add(G, "기준율 보정: 예측력 0이면 기준율, 1이면 내 예측 그대로", near(L.shrink(20, 5, 0), 5, 1e-12) && near(L.shrink(20, 5, 1), 20, 1e-12) && near(L.shrink(20, 5, 0.3), 9.5, 1e-12), "9.5");
+      const ex = [1, 2, 4, 8, 16, 64].map((n) => ({ n: n, c: L.expCost(100, n, 0.8) })), ef = L.expFit(ex), noisy = L.expFit(L.expData());
+      add(G, "경험곡선: 두 배마다 80%로 만든 자료에서 진척률 80%를 되찾고, 잡음 섞인 자료의 95% 구간이 심어 둔 82%를 포함", near(ef.lr, 0.8, 1e-9) && near(ex[1].c, 80, 1e-9) && near(ex[2].c, 64, 1e-9) && noisy.lrLo < 0.82 && 0.82 < noisy.lrHi, (noisy.lr * 100).toFixed(1) + "% (" + (noisy.lrLo * 100).toFixed(1) + "~" + (noisy.lrHi * 100).toFixed(1) + ")");
+      const p = 0.03, q = 0.38, tp = L.bassPeak(p, q); let bt = 0, bv = 0, area = 0;
+      for (let t = 0.01; t < 60; t += 0.01) { const f = L.bassf(t, p, q); area += f * 0.01; if (f > bv) { bv = f; bt = t; } }
+      add(G, "바스 모형: 판매 정점 시점 = ln(q ÷ p) ÷ (p + q), 판매를 모두 더하면 시장 규모(1), 밀도는 누적의 기울기", Math.abs(bt - tp) < 0.02 && Math.abs(area - 1) < 0.01 && near((L.bassF(5.001, p, q) - L.bassF(4.999, p, q)) / 0.002, L.bassf(5, p, q), 1e-5), tp.toFixed(2) + "년");
+      const d = L.decide(L.TREE.payoff, [0.3, 0.4, 0.3]), dom = L.decide([[10, 8, 6], [5, 4, 3]], [0.3, 0.4, 0.3]);
+      add(G, "정보의 가치: EVPI = 상태별 최선의 기댓값 − 최선 대안의 기댓값 ≥ 0, 한 대안이 늘 최선이면 0", near(d.emv[0], 24, 1e-9) && near(d.perfect, 48, 1e-9) && near(d.evpi, 24, 1e-9) && near(dom.evpi, 0, 1e-12), d.evpi.toFixed(1) + "억원");
+      const pv = L.pvm(L.PVM), same = L.pvm(L.PVM.map((x) => ({ p0: x.p0, q0: x.q0, p1: x.p0, q1: x.q0 * 1.1 })));
+      add(G, "가격 + 물량 + 믹스 = 매출 차이, 단가와 구성이 그대로면 가격·믹스 효과 = 0", near(pv.price + pv.volume + pv.mix, pv.r1 - pv.r0, 1e-6) && near(same.price, 0, 1e-9) && near(same.mix, 0, 1e-6), (pv.volume / 100).toFixed(0) + " + " + (pv.price / 100).toFixed(0) + " + " + (pv.mix / 100).toFixed(0));
     }
     return out;
   }

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>추정과 가치의 기법 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="컨설팅·증권사·학계에서 쓰는 추정 기법 8가지(가치동인 공식, 역DCF, 페이드, 기준율 보정, 경험곡선, 바스 확산, 정보의 가치, 가격·물량·믹스)를 쉬운 설명과 직접 움직이는 그림으로 정리한 노트">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="추정과 가치의 기법 · 이기표">
+<meta property="og:description" content="컨설팅·증권사·학계에서 쓰는 추정 기법 8가지(가치동인 공식, 역DCF, 페이드, 기준율 보정, 경험곡선, 바스 확산, 정보의 가치, 가격·물량·믹스)를 쉬운 설명과 직접 움직이는 그림으로 정리한 노트">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/pro-methods.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/pro-methods.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="숫자 뒤의 기대를 거꾸로 읽는다">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/pro-methods.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html" aria-current="page">추정과 가치의 기법</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 추정과 가치의 기법</div>
+      <div class="rpt-tag">Practice note · 11</div>
+      <h1>숫자 뒤의 기대를<br>거꾸로 읽는다</h1>
+      <p class="dek">컨설팅 회사의 가치평가 교과서, 증권사 리서치, 경영학 논문에서 오래 쓰인 추정 기법 여덟 가지를 골랐습니다. 성장이 언제 가치가 되는지, 주가에 어떤 기대가 담겼는지, 내 전망이 얼마나 낙관적인지, 원가와 수요가 어떤 모양으로 움직이는지를 다룹니다. 기법마다 먼저 쉬운 말로 풀고, 직접 움직여 볼 수 있는 그림과 출처를 붙였습니다.</p>
+      <div class="rpt-meta"><span>기법<b>8가지</b></span><span>함께<b>쉬운 설명 · 그림 · 쓰는 곳 · 출처</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-why" data-toc="무엇을 묻는 기법인가" data-group="시작">
+          <h2>무엇을 묻는 기법인가</h2>
+          <p>재무기획이 만드는 숫자는 대부분 미래에 대한 추정입니다. 아래 기법들은 추정을 더 "정확하게" 만들어 주지는 않습니다. 대신 추정에 어떤 가정이 숨어 있는지 드러내고, 그 가정이 과거의 경험에 비춰 무리한지 점검하게 해 줍니다. 모든 예시 수치는 가상이고, 계산은 이 페이지에서 직접 합니다. 공식이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</p>
+          <div class="takeaways">
+            <div><b>성장보다 수익률</b><p>투자 수익률이 자본비용보다 낮으면 성장할수록 가치가 줄어듭니다.</p></div>
+            <div><b>내 생각보다 남들의 기록</b><p>비슷한 사례들이 실제로 어땠는지(기준율)에서 출발하면 낙관을 줄일 수 있습니다.</p></div>
+            <div><b>숫자보다 모양</b><p>원가는 경험이 쌓일수록 내려가고, 수요는 S자로 퍼집니다. 직선으로 늘리면 틀립니다.</p></div>
+          </div>
+          <div class="tw" role="region" aria-label="질문별 기법" tabindex="0">
+            <table class="pick">
+              <thead><tr><th>받는 질문</th><th>기법</th><th>주로 쓰는 곳</th><th>출처</th></tr></thead>
+              <tbody>
+                <tr><th>매출이 크면 회사 가치도 커지나</th><td><a href="#s-vd">가치동인 공식</a></td><td>컨설팅·기업 재무</td><td>Koller 외, Valuation</td></tr>
+                <tr><th>지금 가격은 어떤 미래를 전제하나</th><td><a href="#s-rdcf">역DCF</a></td><td>증권사·운용사</td><td>Rappaport·Mauboussin</td></tr>
+                <tr><th>높은 수익률은 얼마나 오래 가나</th><td><a href="#s-fade">경쟁우위 기간과 페이드</a></td><td>증권사 장기 추정</td><td>Mauboussin·Johnson</td></tr>
+                <tr><th>이 전망은 너무 낙관적이지 않나</th><td><a href="#s-base">기준율 보정</a></td><td>사업계획·투자 심의</td><td>Kahneman·Tversky</td></tr>
+                <tr><th>많이 만들면 원가는 얼마나 내려가나</th><td><a href="#s-exp">경험곡선</a></td><td>컨설팅·제조 원가</td><td>Wright, BCG</td></tr>
+                <tr><th>새 제품은 언제 가장 많이 팔리나</th><td><a href="#s-bass">바스 확산 모형</a></td><td>시장 전망·수요 예측</td><td>Bass</td></tr>
+                <tr><th>조사에 돈을 얼마까지 쓸 만한가</th><td><a href="#s-tree">결정나무와 정보의 가치</a></td><td>투자 의사결정</td><td>Raiffa, Howard</td></tr>
+                <tr><th>매출이 는 이유가 가격인가 물량인가</th><td><a href="#s-pvm">가격·물량·믹스 분해</a></td><td>실적 분석·월 보고</td><td>관리회계 교과서</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s-vd" data-toc="가치동인 공식: 성장과 수익률" data-group="가치">
+          <h2>가치동인 공식: 성장과 수익률</h2>
+          <p class="qline">매출과 이익이 빨리 크면 회사 가치도 따라 커질까?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 연 9% 이자를 주고 빌린 돈으로 연 6%짜리 장사를 넓히면, 가게는 커지지만 주인은 가난해집니다. 성장은 "번 돈을 다시 넣어 얻는 수익률(ROIC)"이 "돈값(자본비용, WACC)"보다 높을 때만 가치가 됩니다.</div>
+          <p>공식은 한 줄입니다. <b>가치 = 내년 세후영업이익 × (1 − 성장률 ÷ ROIC) ÷ (WACC − 성장률)</b>. 괄호 안은 "성장하려면 이익 중 얼마를 다시 투자해야 하는가"입니다. ROIC가 낮으면 같은 성장에 더 많이 재투자해야 해서 주주에게 남는 현금이 줄어듭니다. 아래에서 ROIC를 자본비용(9%) 아래로 내려 보세요. 성장률을 올릴수록 가치가 줄어드는 것이 보입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>성장률에 따른 기업가치</h4><span class="muted" style="font-size: 12px">가상 · 내년 세후영업이익 100억원 · WACC 9%</span></div>
+            <div class="ctl">
+              <label class="rg"><span>ROIC <b id="vd-rv"></b></span><input type="range" id="vd-r" min="4" max="30" step="1" value="15"></label>
+              <label class="rg"><span>성장률 <b id="vd-gv"></b></span><input type="range" id="vd-g" min="0" max="6" step="0.5" value="4"></label>
+            </div>
+            <div class="readout" id="vd-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="vd-fig"></div>
+            <div class="fig-s">가로 점선은 성장이 없을 때의 가치(이익 ÷ WACC)입니다. ROIC가 WACC와 같으면 성장률이 몇이든 이 선 위에 있습니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>사업계획 검토: 매출 성장 목표와 함께 투하자본 수익률 목표를 봄</li><li>증설·인수 심의: 늘어나는 이익보다 들어가는 자본 대비 수익률을 먼저 확인</li><li>사업부 평가: 성장률과 ROIC를 한 표에 놓고 가치를 만드는 사업과 깎는 사업을 구분</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>영구히 같은 성장률·ROIC가 이어진다는 단순한 가정. 실제 평가는 기간을 나눠 계산</li><li>성장률은 WACC보다 낮아야 하고, 장기 성장률은 경제 성장률을 넘기 어려움</li><li>ROIC는 새로 투자하는 돈의 수익률. 과거 평균과 다를 수 있음</li></ul></div>
+            <div><h4>출처</h4><ul><li>Koller, Goedhart, Wessels, 『Valuation: Measuring and Managing the Value of Companies』(McKinsey)</li><li>엑셀: <code>=NOPAT*(1-g/ROIC)/(WACC-g)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="kpi-tree.html">KPI 트리(ROIC 가치동인)</a> · <a href="ma-valuation.html">M&amp;A 가치평가</a></p>
+        </section>
+
+        <section id="s-rdcf" data-toc="역DCF: 가격에 담긴 기대">
+          <h2>역DCF: 가격에 담긴 기대</h2>
+          <p class="qline">지금 가격이 맞으려면 이 회사는 앞으로 얼마나 커야 하나?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 보통은 "미래를 예측해서 가격을 계산"합니다. 역DCF는 거꾸로, "지금 가격이 맞으려면 어떤 미래가 와야 하는지"를 풉니다. 미래를 맞히는 것보다 "그 미래가 그럴듯한가"를 판단하는 편이 쉽기 때문입니다.</div>
+          <p>올해 세후영업이익 100억원인 회사가 <b id="rd-ev"></b>억원에 평가받고 있다면, 앞으로 7년 동안 이익이 매년 <b id="rd-g"></b>씩 커져야 그 가격이 설명됩니다(ROIC 15%, WACC 9%, 이후 연 2% 성장 가정). 내 사업계획의 성장률이 이보다 낮다면 가격에는 계획보다 큰 기대가 들어 있는 것입니다. 인수 가격을 볼 때나 우리 회사 주가를 설명할 때 같은 방법을 씁니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>성장률별 가치와 가격이 요구하는 성장률</h4><span class="muted" style="font-size: 12px">가상 · 억원</span></div>
+            <div class="ctl">
+              <label class="rg"><span>현재 평가액 <b id="rd-evv"></b></span><input type="range" id="rd-e" min="1200" max="3600" step="100" value="2400"></label>
+              <label class="rg"><span>내 계획의 성장률 <b id="rd-mv"></b></span><input type="range" id="rd-m" min="0" max="20" step="1" value="8"></label>
+            </div>
+            <div class="readout" id="rd-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="rd-fig"></div>
+            <div class="fig-s">곡선은 7년 성장률에 따른 계산 가치입니다. 가로선(현재 평가액)과 만나는 점이 가격이 요구하는 성장률입니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>인수 제시가 검토: 그 가격이 요구하는 성장률·이익률이 사업계획과 맞는지</li><li>경쟁사·고객사 주가 읽기: 시장이 어떤 성장을 전제하는지</li><li>IR·이사회 보고: "주가가 싸다·비싸다" 대신 "어떤 기대가 담겼다"로 설명</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>WACC, ROIC, 영구성장률 가정에 따라 답이 크게 달라짐. 가정을 함께 적음</li><li>전체 가치에서 먼 미래(영구가치)가 차지하는 몫이 큼(이 예시는 <b id="rd-tv"></b>)</li><li>가격이 요구하는 것은 성장률 하나가 아니라 성장·수익률·기간의 조합</li></ul></div>
+            <div><h4>출처</h4><ul><li>Alfred Rappaport, Michael Mauboussin, 『Expectations Investing』(2001)</li><li>엑셀: 데이터 → 가상 분석 → 목표값 찾기로 성장률을 풂</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="ma-valuation.html">M&amp;A 가치평가(제시가와 필요한 시너지)</a> · <a href="samsung.html">삼성전자 재무 분석(시장이 가격에 담은 기대)</a></p>
+        </section>
+
+        <section id="s-fade" data-toc="경쟁우위 기간과 페이드">
+          <h2>경쟁우위 기간과 페이드</h2>
+          <p class="qline">지금의 높은 수익률이 계속된다고 가정해도 될까?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 장사가 잘되는 골목에는 가게가 따라 들어옵니다. 높은 수익률은 경쟁 때문에 시간이 지나면 평범한 수준으로 내려옵니다. 이 내려오는 과정을 "페이드", 내려오기 전까지의 기간을 "경쟁우위 기간"이라고 부릅니다.</div>
+          <p>수익률이 자본비용과 같아지면 그 회사의 가치는 장부에 넣은 돈(투하자본)과 같아집니다. 그래서 "가치가 투하자본의 몇 배인가"는 "높은 수익률이 몇 년 가는가"에 대한 가정입니다. 지금 ROIC <b id="fd-r0"></b>가 <b id="fd-cap"></b>년에 걸쳐 9%로 내려간다면 가치는 투하자본의 <b id="fd-m"></b>배입니다. 장기 추정에서 마지막 해의 높은 이익률을 그대로 영구가치에 넣는 것이 가장 흔한 과대평가입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>경쟁우위 기간에 따른 가치 ÷ 투하자본</h4><span class="muted" style="font-size: 12px">가상 · WACC 9% · 투하자본 성장 연 5%</span></div>
+            <div class="ctl">
+              <label class="rg"><span>지금 ROIC <b id="fd-rv"></b></span><input type="range" id="fd-r" min="9" max="30" step="1" value="18"></label>
+              <label class="rg"><span>경쟁우위 기간 <b id="fd-cv"></b></span><input type="range" id="fd-c" min="0" max="25" step="1" value="10"></label>
+            </div>
+            <div class="fig-b plotbox" id="fd-fig"></div>
+            <div class="fig-s">ROIC가 직선으로 내려간다고 단순화했습니다. 기간이 0이면 가치는 투하자본과 같습니다(1.0배).</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>중장기 계획의 마지막 해 이익률이 영구히 이어진다는 가정을 점검</li><li>인수 대상의 높은 이익률이 특허·계약·점유율 중 무엇에서 오고 언제까지 유효한지 질문</li><li>업종 평균으로 돌아가는 속도를 과거 자료로 확인</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>내려가는 속도와 종착점(자본비용인지 업종 평균인지)은 판단. 근거를 적어 둠</li><li>낮은 수익률도 평균으로 올라오는 경향이 있음. 구조조정 계획 평가에 반영</li><li>회계상 ROIC는 무형자산·연구개발 처리에 따라 왜곡될 수 있음</li></ul></div>
+            <div><h4>출처</h4><ul><li>Mauboussin, Johnson, "Competitive Advantage Period: The Neglected Value Driver"(1997)</li><li>Bartley Madden, 『CFROI Valuation』(1999): 수익률의 페이드</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="stats-notes.html#s-rttm">통계 기법: 평균으로의 회귀</a> · <a href="semi-cycle.html">반도체 사이클과 재무</a></p>
+        </section>
+
+        <section id="s-base" data-toc="기준율 보정: 바깥에서 보기" data-group="추정">
+          <h2>기준율 보정: 바깥에서 보기</h2>
+          <p class="qline">"우리는 3년간 연 20% 성장한다"는 계획, 얼마나 믿어야 할까?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 집을 고칠 때 "우리 집은 3주면 된다"고 생각하지만, 비슷한 집들은 평균 6주 걸렸다면 6주에서 출발하는 편이 맞습니다. 내 사정만 보는 것이 "안에서 보기", 비슷한 사례들의 실제 기록을 보는 것이 "바깥에서 보기(기준율)"입니다.</div>
+          <p>비슷한 규모 회사 200곳의 3년 성장률(가상)을 보면 평균은 <b id="bs-mean"></b>이고, 연 <b id="bs-in"></b> 이상 성장한 곳은 상위 <b id="bs-top"></b>뿐입니다. 카너먼과 트버스키의 보정 방법은 간단합니다. <b>보정 예측 = 기준율 + 예측력 × (내 예측 − 기준율)</b>. 예측력은 "과거에 이런 예측이 실제 결과와 얼마나 맞았는가(상관)"입니다. 예측력이 <b id="bs-r"></b>이면 보정 예측은 <b id="bs-adj"></b>입니다. 계획을 깎자는 뜻이 아니라, 20%를 주장하려면 상위 몇 %에 들 근거가 필요하다는 뜻입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>참조집단의 성장률 분포와 내 예측</h4><span class="muted" style="font-size: 12px">가상 · 200곳 · 3년 연평균 성장률</span></div>
+            <div class="ctl">
+              <label class="rg"><span>내 예측 <b id="bs-iv"></b></span><input type="range" id="bs-i" min="-5" max="35" step="1" value="20"></label>
+              <label class="rg"><span>예측력(상관) <b id="bs-rv"></b></span><input type="range" id="bs-rr" min="0" max="1" step="0.1" value="0.3"></label>
+            </div>
+            <div class="readout" id="bs-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="bs-fig"></div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>사업계획·투자안의 매출, 공사 기간, 투자비 전망을 과거 유사 사례 분포와 비교</li><li>투자 사후관리 기록을 쌓아 우리 회사의 기준율(평균 초과율)을 만듦</li><li>심의 자료에 "유사 사례 중 몇 %가 이 수준을 달성했는가"를 한 줄로 추가</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>참조집단을 어떻게 고르느냐에 따라 기준율이 달라짐. 두세 가지로 잡아 비교</li><li>예측력은 추정하기 어려움. 0(전혀 모름)과 1(완전히 앎) 사이에서 보수적으로</li><li>기준율은 출발점. 사례의 특수한 근거가 강하면 그만큼 옮김</li></ul></div>
+            <div><h4>출처</h4><ul><li>Kahneman, Tversky, "Intuitive Prediction: Biases and Corrective Procedures"(1979)</li><li>Kahneman, Lovallo, "Timid Choices and Bold Forecasts"(1993)</li><li>Bent Flyvbjerg의 참조집단 예측(대형 사업의 비용 초과 연구)</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="post-review.html">투자 사후관리</a> · <a href="plan-risk.html">사업계획 달성 확률</a> · <a href="stats-notes.html#s-bayes">통계 기법: 베이지안 갱신</a></p>
+        </section>
+
+        <section id="s-exp" data-toc="경험곡선: 원가가 내려가는 모양">
+          <h2>경험곡선: 원가가 내려가는 모양</h2>
+          <p class="qline">생산이 늘면 단위원가는 얼마까지 내려갈까?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 같은 요리를 100번 만들면 손이 빨라지고 버리는 재료가 줄어듭니다. 경험곡선은 "지금까지 만든 양이 두 배가 될 때마다 단위원가가 일정한 비율로 내려간다"는 관찰입니다. 그 비율이 80%면 "두 배마다 20% 절감"입니다.</div>
+          <p>누적 생산량과 단위원가를 둘 다 로그로 바꾸면 직선이 됩니다. 아래 자료에 직선을 맞추면 진척률은 <b id="ex-lr"></b>(95% 구간 <b id="ex-ci"></b>), 즉 누적 생산이 두 배가 될 때마다 원가가 약 <b id="ex-cut"></b> 내려갑니다. 중요한 점은 "두 배"가 갈수록 멀어진다는 것입니다. 처음에는 금방 내려가지만 뒤로 갈수록 같은 절감에 훨씬 많은 생산이 필요합니다. 원가 절감 계획을 "매년 5%"처럼 직선으로 잡으면 뒤쪽이 과대해집니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>누적 생산량과 단위원가(로그 눈금)</h4><span class="muted" style="font-size: 12px">가상 · 첫 단위 = 100</span></div>
+            <div class="ctl"><label class="rg"><span>예상 누적 생산량 <b id="ex-nv"></b></span><input type="range" id="ex-n" min="150" max="1200" step="50" value="600"></label></div>
+            <div class="readout" id="ex-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="ex-fig"></div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>신제품·신공정의 중기 원가 목표와 판가 인하 여력</li><li>증설 투자안의 원가 가정이 과거 진척률과 맞는지 점검</li><li>경쟁사와의 누적 생산량 차이로 원가 격차를 가늠</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>저절로 내려가지 않음. 공정 개선·수율 향상·구매 협상의 결과</li><li>기술이 바뀌면 곡선이 새로 시작됨</li><li>물가와 원재료 가격 변동을 빼고(실질 기준) 봐야 함</li></ul></div>
+            <div><h4>출처</h4><ul><li>T. P. Wright, "Factors Affecting the Cost of Airplanes"(1936)</li><li>Boston Consulting Group, 『Perspectives on Experience』(1968)</li><li>엑셀: <code>=LINEST(LN(원가), LN(누적량))</code>의 기울기 b → 진척률 <code>=2^b</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="cost-stats.html">원가 행태 회귀</a> · <a href="stats-notes.html#s-reg">통계 기법: 회귀와 예측구간</a></p>
+        </section>
+
+        <section id="s-bass" data-toc="바스 확산 모형: 수요의 S자">
+          <h2>바스 확산 모형: 수요의 S자</h2>
+          <p class="qline">새 제품의 판매는 언제 정점을 찍을까?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 새 물건은 처음에 광고를 보고 사는 소수(혁신자)가 사고, 그다음에는 "옆 사람이 쓰는 걸 보고" 사는 다수(모방자)가 따라 삽니다. 살 사람이 다 사면 판매가 줄어듭니다. 그래서 누적 판매는 S자, 연간 판매는 종 모양이 됩니다.</div>
+          <p>모형에는 숫자 셋이 들어갑니다. 결국 살 사람 수(시장 규모), 스스로 사는 힘 p, 따라 사는 힘 q입니다. p = <b id="ba-p"></b>, q = <b id="ba-q"></b>이면 판매 정점은 <b id="ba-pk"></b>년 무렵이고, 그때까지 전체의 <b id="ba-sh"></b>가 팔립니다. 초기 몇 년의 증가율을 그대로 늘려 장기 수요를 잡으면 정점 이후의 감소를 놓칩니다. 설비 증설 시점을 정할 때 특히 중요합니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>연간 판매와 누적 보급</h4><span class="muted" style="font-size: 12px">가상 · 시장 규모 1,000</span></div>
+            <div class="ctl">
+              <label class="rg"><span>스스로 사는 힘 p <b id="ba-pv"></b></span><input type="range" id="ba-pp" min="0.005" max="0.06" step="0.005" value="0.03"></label>
+              <label class="rg"><span>따라 사는 힘 q <b id="ba-qv"></b></span><input type="range" id="ba-qq" min="0.1" max="0.7" step="0.02" value="0.38"></label>
+            </div>
+            <div class="fig-b plotbox" id="ba-fig"></div>
+            <div class="fig-s">막대는 연간 판매, 선은 누적 보급률입니다. 여러 제품을 모아 분석한 연구에서 평균은 p 약 0.03, q 약 0.38로 보고됐습니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>신제품·신시장의 중장기 수요 전망과 증설 시점</li><li>고객사 신제품 보급 속도에 따른 부품 수요 시나리오</li><li>시장조사 기관 전망이 어떤 p·q를 전제하는지 역으로 확인</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>시장 규모 추정이 결과를 좌우. 범위로 잡음</li><li>초기 자료 몇 개로 p·q를 맞추면 불안정. 유사 제품의 값을 참고</li><li>교체 수요·가격 인하·세대 교체는 기본 모형에 없음</li></ul></div>
+            <div><h4>출처</h4><ul><li>Frank Bass, "A New Product Growth for Model Consumer Durables", Management Science(1969)</li><li>Sultan, Farley, Lehmann, "A Meta-Analysis of Applications of Diffusion Models", Journal of Marketing Research(1990)</li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="reading.html">AI 인프라 읽기 노트</a> · <a href="capex-kit.html#mc">단계 투자 옵션</a></p>
+        </section>
+
+        <section id="s-tree" data-toc="결정나무와 정보의 가치" data-group="판단과 설명">
+          <h2>결정나무와 정보의 가치</h2>
+          <p class="qline">수요를 더 조사하고 정할까, 지금 정할까? 조사에는 얼마까지 쓸 만한가?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 내일 비가 올지 미리 알 수 있다면 우산을 꼭 필요한 날만 들고 나갑니다. 그렇게 해서 아끼는 수고가 "일기예보의 가치"입니다. 예보를 들어도 어차피 같은 선택을 한다면 그 예보는 가치가 없습니다.</div>
+          <p>대형 라인, 소형 라인, 투자 보류 세 대안이 있고 수요가 강함·보통·약함 중 하나라고 합시다. 지금 정하면 기댓값이 가장 큰 <b id="tr-best"></b>(<b id="tr-emv"></b>억원)을 고릅니다. 수요를 미리 완벽히 알 수 있다면 상태마다 가장 좋은 대안을 골라 기댓값이 <b id="tr-pf"></b>억원이 됩니다. 그 차이 <b id="tr-evpi"></b>억원이 "완전한 정보의 가치"이고, 시장조사·시험 생산·고객 확약에 쓸 수 있는 돈의 상한입니다. 실제 조사는 완벽하지 않으므로 이보다 적게 써야 합니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>대안별 기댓값과 정보의 가치</h4><span class="muted" style="font-size: 12px">가상 · NPV 억원 · 수요 보통 확률 40% 고정</span></div>
+            <div class="ctl"><label class="rg"><span>수요가 강할 확률 <b id="tr-pv"></b></span><input type="range" id="tr-p" min="0" max="60" step="5" value="30"></label></div>
+            <div class="readout" id="tr-out" aria-live="polite"></div>
+            <div class="fig-b duo">
+              <div class="plotbox" id="tr-fig"></div>
+              <div id="tr-tb"></div>
+            </div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>투자 전 시장조사·시험 라인·컨설팅 비용의 타당성</li><li>"지금 결정"과 "정보를 얻고 결정"을 같은 표에서 비교</li><li>단계 투자: 1단계 결과가 2단계 결정을 바꿀 수 있을 때만 나눔</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>확률과 손익은 추정. 확률을 움직여 결론이 바뀌는 지점을 함께 보고</li><li>정보가 결정을 바꾸지 못하면 가치는 0. 조사 전에 "결과에 따라 무엇을 다르게 할지"를 먼저 정함</li><li>기댓값만 봄. 큰 손실을 견딜 수 있는지는 따로 판단</li></ul></div>
+            <div><h4>출처</h4><ul><li>Howard Raiffa, 『Decision Analysis』(1968)</li><li>Ronald Howard, "Information Value Theory"(1966)</li><li>엑셀: <code>=SUMPRODUCT(확률, 손익)</code>, <code>=SUMPRODUCT(확률, 상태별 MAX)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="capex-kit.html#mc">한 번에 지을까, 나눠 지을까(실물옵션)</a> · <a href="budget-opt.html">비용예산 증액 우선순위</a></p>
+        </section>
+
+        <section id="s-pvm" data-toc="가격·물량·믹스 분해">
+          <h2>가격·물량·믹스 분해</h2>
+          <p class="qline">매출이 늘었다. 값을 올려서인가, 많이 팔아서인가, 비싼 것을 더 팔아서인가?</p>
+          <div class="callout"><b>쉽게 말하면:</b> 분식집 매출이 늘었을 때 이유는 셋 중 하나입니다. 값을 올렸거나(가격), 손님이 늘었거나(물량), 김밥 대신 돈가스를 더 팔았거나(믹스)입니다. 셋을 나눠야 다음에 무엇을 할지 정할 수 있습니다.</div>
+          <p>세 제품의 매출은 <b id="pv-r0"></b>억원에서 <b id="pv-r1"></b>억원으로 늘었습니다. 나눠 보면 물량 효과 <b id="pv-v"></b>, 가격 효과 <b id="pv-p"></b>, 믹스 효과 <b id="pv-m"></b>입니다. 많이 팔았지만 값싼 제품 비중이 커져 평균 단가가 <b id="pv-a0"></b>에서 <b id="pv-a1"></b>로 내려갔다는 뜻입니다. "매출 6% 증가"라는 한 줄보다 훨씬 많은 것을 말해 줍니다. 세 효과를 더하면 매출 차이와 정확히 같아야 합니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>매출 차이를 세 효과로</h4><span class="muted" style="font-size: 12px">가상 · 억원</span></div>
+            <div class="fig-b duo">
+              <div class="plotbox" id="pv-fig"></div>
+              <div id="pv-tb"></div>
+            </div>
+            <div class="fig-s">가격 = Σ(올해 단가 − 전년 단가) × 올해 수량. 물량 = (올해 총수량 − 전년 총수량) × 전년 평균 단가. 믹스 = 나머지(제품 구성이 바뀐 효과). 나누는 기준은 여러 가지가 있어, 어떤 기준을 썼는지 적어 둡니다.</div>
+          </div>
+          <div class="use3">
+            <div><h4>기획·분석에서</h4><ul><li>월·분기 매출과 이익 차이 설명</li><li>단가 인하 요구에 대한 대응 효과 점검</li><li>증권사 실적 리뷰의 ASP(평균 판매단가)·출하량 분석과 같은 틀</li></ul></div>
+            <div><h4>주의할 점</h4><ul><li>기준(전년 단가·올해 수량 등)에 따라 효과의 크기가 달라짐. 한번 정하면 계속 같은 기준</li><li>제품을 너무 크게 묶으면 믹스가 가격처럼 보임</li><li>환율이 섞이면 환율 효과를 따로 뗌</li></ul></div>
+            <div><h4>출처</h4><ul><li>Horngren 외, 『Cost Accounting: A Managerial Emphasis』: 판매가격·배합·수량 차이</li><li>엑셀: <code>=SUMPRODUCT(단가차, 올해수량)</code></li></ul></div>
+          </div>
+          <p class="site-use">이 사이트에서: <a href="pl-report.html">월 손익 보고(영업이익 차이 분해)</a> · <a href="stats-notes.html#s-simp">통계 기법: 심슨의 역설</a></p>
+        </section>
+
+        <section id="s-ref" data-toc="정리" data-group="정리">
+          <h2>정리</h2>
+          <ol class="traps">
+            <li><b>성장 목표에는 수익률 목표가 함께 있어야 합니다.</b> ROIC가 자본비용보다 낮은 성장은 가치를 줄입니다.</li>
+            <li><b>가격을 볼 때는 "어떤 미래가 전제됐는가"를 먼저 묻습니다.</b></li>
+            <li><b>높은 수익률은 내려옵니다.</b> 마지막 해 숫자를 영구히 늘리지 않습니다.</li>
+            <li><b>전망은 비슷한 사례의 기록에서 출발합니다.</b></li>
+            <li><b>원가와 수요는 직선이 아닙니다.</b> 경험곡선과 S자를 먼저 그려 봅니다.</li>
+            <li><b>조사는 결정을 바꿀 수 있을 때만 가치가 있습니다.</b></li>
+            <li><b>차이는 가격·물량·믹스로 나눠 설명합니다.</b></li>
+          </ol>
+          <p class="rpt-end">가치평가는 「기업가치평가와 재무실사」 기반 교육에서, 통계 기초는 데이터분석준전문가(ADsP) 준비에서 익혔습니다. 여기 정리한 기법은 그 위에 책과 논문으로 공부한 내용이고, 계산은 모두 이 사이트의 엔진으로 직접 구현해 검산했습니다. 통계 쪽 기초는 <a href="stats-notes.html">통계 기법과 활용</a>에 있습니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-report">분석해서 보고하기</a> <b>3</b> / 5</span>
+        <ol class="fsteps"><li><a href="sources.html">자료</a></li><li><a href="stats-notes.html">분석</a></li><li class="cur" aria-current="step"><span>추정</span></li><li><a href="charts.html">그림</a></li><li><a href="deck.html">보고</a></li></ol>
+        <div class="fnav"><a class="fprev" href="stats-notes.html"><small>← 이전 단계</small>통계 기법과 활용</a><a class="fnext" href="charts.html"><small>다음 단계 →</small>차트 선택과 디자인</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">제 경력과의 연결</span><p>「기업가치평가와 재무실사」 기반 가치평가 교육 수강, 투자 타당성 분석과 심의 자료 작성</p></div><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="ma-valuation.html">M&amp;A 가치평가</a></li><li><a href="stats-notes.html">통계 기법과 활용</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/prolab.js"></script>
+<script src="../assets/report.js"></script>
+<script src="../assets/pro-notes.js"></script>
+</body>
+</html>

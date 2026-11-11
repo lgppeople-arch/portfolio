@@ -32,6 +32,7 @@
 | `tools/deck.html` | 리포트 07 보고서·PPT 작성 원칙: 피라미드·SCQA·액션 타이틀·MECE, 그리드·위계·색, IBCS·숫자 표기, 고치기 전·후 슬라이드, 점검표 |
 | `tools/charts.html` | 리포트 08 차트 선택과 디자인: 질문별 차트 17종 갤러리, 나쁜 차트 고치기, 팔레트, 엑셀·PPT 만드는 법 |
 | `tools/sources.html` | 리포트 09 정보 출처와 참고 자료: 공시·거시·산업·가치평가·법령 출처, 보고서·차트 서적, 표준·색·서체·도구 |
+| `tools/pro-methods.html` | 리포트 11 추정과 가치의 기법: 가치동인 공식(Koller), 역DCF(Rappaport·Mauboussin), 경쟁우위 기간과 페이드, 기준율 보정(Kahneman·Tversky), 경험곡선(Wright·BCG), 바스 확산 모형, 결정나무와 완전정보의 가치, 가격·물량·믹스 분해. 기법마다 쉬운 말 설명, 움직이는 그림, 쓰는 곳·주의점·출처(`assets/engines/prolab.js`, `assets/pro-notes.js`, 검산 9개) |
 | `tools/stats-notes.html` | 리포트 10 통계 기법과 활용: 분포 요약, 신뢰구간과 표본 크기, 부트스트랩, 웰치 t검정과 효과 크기·다중비교, 앤스컴 4종, 회귀 신뢰·예측구간, 심슨의 역설, 고전적 시계열 분해, 홀트 지수평활 예측구간(ETS(A,A,N)), 몬테카를로·토네이도, 베타-이항 베이지안 갱신, 파레토·로렌츠·HHI·ABC, k-평균 군집, 평균으로의 회귀. 기법마다 실무 사용처·함정·엑셀·R 함수(`assets/engines/statlab.js`, `assets/stat-notes.js`) |
 | `tools/plan-risk.html` | 사업계획 달성 확률: 상관된 동인(촐레스키) 몬테카를로, 달성 확률·EaR·CVaR, 토네이도와 오일러 변동 기여도, 초과확률 곡선과 목표 설정 |
 | `tools/budget-opt.html` | 비용예산 증액 우선순위: 삼각분포·성공확률 기대가치, 0-1 배낭 동적계획법 최적 조합, 확실성등가 위험조정, 효율적 경계와 예산 한계가치, 효율 순·일률 삭감 비교 |
@@ -40,7 +41,8 @@
 | `tools/fx-hedge.html` | 환리스크 헤지: 인수대금(선물환·옵션·딜 컨틴전트), 수출 순노출 구간별 헤지 |
 | `tools/checks.html` | 계산 검산: 모든 계산 엔진의 항등식·대조·실무 규칙 테스트 |
 | `assets/fin.js`, `assets/engines/` | 공용 계산 함수와 도구별 계산 엔진 (화면 코드와 분리) |
-| `assets/story.js` | 홈 스크롤 연출: 경력 숫자 4개와 장면(경력 타임라인, 자산투자 블록, 예산 배분, 구조 전환안 분기)을 스크롤에 맞춰 전환. 넓은 화면·움직임 허용일 때만 켜지고 그 밖에는 숫자 띠 |
+| `assets/story.js` | 홈 '경력을 숫자로': 숫자 네 개를 뜻이 바로 보이는 그림(경력 띠와 맡은 일, 연매출 대비 인수 규모, 요청 → 품의 → 승인 흐름, 두 안 비교표)과 함께 보여 줌. 넓은 화면은 스크롤에 붙는 무대, 휴대폰·움직임 줄이기는 카드 |
+| `assets/art.js` | 글 사이의 장식 그림: 홈 구역 머리의 선 그림, 경력 항목 아이콘, 도구 페이지 제목 옆 그림, 긴 페이지의 읽기 진행 막대. theme.js가 본문 뒤에 불러옴 |
 | `assets/surface3d.js` | 외부 라이브러리 없는 3D 곡면 렌더러(캔버스 2D 정사영, 음영, z = 0 등고선, 끌어 돌리기, 시점 버튼). 설비투자 키트의 NPV 곡면에 사용 |
 | `assets/stats.js` | 공용 통계 함수: 기술통계, 정규·t·카이제곱·F 분포, 단순·다중회귀와 예측구간, 연립방정식·역행렬·촐레스키, t·웰치·두 비율·Chow 검정, 더빈-왓슨, 분산분석, 지니·HHI, 삼각분포, 시드 고정 난수 |
 | `assets/engines/statlab.js` | 통계 기법 노트의 계산과 시드 고정 가상 데이터. 검산 16개(앤스컴 알려진 값, 예측분산 공식 대 시뮬레이션, 부트스트랩 표준오차 이론값 등) |
@@ -63,7 +65,7 @@
 
 ```bash
 python3 scripts/build-site.py    # 메뉴·모음·읽는 경로·하단 연결 다시 만들기
-node assets/checks.js            # 계산 검산 165개
+node assets/checks.js            # 계산 검산 174개
 node scripts/check-site.js       # 사이트 점검 24개
 node scripts/qa.js --axe         # 화면·접근성 점검 (Playwright, npm i --no-save axe-core)
 python3 scripts/stamp-dates.py   # 바닥글 최종 업데이트 날짜

@@ -25,24 +25,25 @@ const PAGES = [
   ["tools/charts.html", "09_차트_선택과_디자인", "차트 선택과 디자인"],
   ["tools/sources.html", "10_정보_출처와_참고_자료", "정보 출처와 참고 자료"],
   ["tools/stats-notes.html", "11_통계_기법과_활용", "통계 기법과 활용"],
-  ["tools/kpi-tree.html", "12_KPI_트리", "KPI 트리"],
-  ["tools/plan-risk.html", "13_사업계획_달성_확률", "사업계획 달성 확률"],
-  ["tools/budget-opt.html", "14_비용예산_증액_우선순위", "비용예산 증액 우선순위"],
-  ["tools/pl-report.html", "15_월_손익_보고", "월 손익 보고"],
-  ["tools/cost-stats.html", "16_원가_행태와_불량_관리도", "원가 행태와 불량 관리도"],
-  ["tools/mbo-kpi.html", "17_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
-  ["tools/cash-13w.html", "18_13주_자금수지", "13주 자금수지"],
-  ["tools/capital.html", "19_적정_부채와_파산_위험", "적정 부채와 파산 위험"],
-  ["tools/doa.html", "20_위임전결_기준_점검", "위임전결 기준 점검"],
-  ["tools/capex-kit.html", "21_설비투자_분석_키트", "설비투자 분석 키트"],
-  ["tools/post-review.html", "22_투자_사후관리", "투자 사후관리"],
-  ["tools/ma-process.html", "23_M_A_절차_지도", "M&A 절차 지도"],
-  ["tools/ma-valuation.html", "24_M_A_가치평가", "M&A 가치평가"],
-  ["tools/holdco-nav.html", "25_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
-  ["tools/fx-hedge.html", "26_환리스크_헤지", "환리스크 헤지"],
-  ["tools/checks.html", "27_계산_검산", "계산 검산"],
-  ["tools/guide.html", "28_쉬운_가이드", "쉬운 가이드"],
-  ["en.html", "29_English_summary", "English summary"]
+  ["tools/pro-methods.html", "12_추정과_가치의_기법", "추정과 가치의 기법"],
+  ["tools/kpi-tree.html", "13_KPI_트리", "KPI 트리"],
+  ["tools/plan-risk.html", "14_사업계획_달성_확률", "사업계획 달성 확률"],
+  ["tools/budget-opt.html", "15_비용예산_증액_우선순위", "비용예산 증액 우선순위"],
+  ["tools/pl-report.html", "16_월_손익_보고", "월 손익 보고"],
+  ["tools/cost-stats.html", "17_원가_행태와_불량_관리도", "원가 행태와 불량 관리도"],
+  ["tools/mbo-kpi.html", "18_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
+  ["tools/cash-13w.html", "19_13주_자금수지", "13주 자금수지"],
+  ["tools/capital.html", "20_적정_부채와_파산_위험", "적정 부채와 파산 위험"],
+  ["tools/doa.html", "21_위임전결_기준_점검", "위임전결 기준 점검"],
+  ["tools/capex-kit.html", "22_설비투자_분석_키트", "설비투자 분석 키트"],
+  ["tools/post-review.html", "23_투자_사후관리", "투자 사후관리"],
+  ["tools/ma-process.html", "24_M_A_절차_지도", "M&A 절차 지도"],
+  ["tools/ma-valuation.html", "25_M_A_가치평가", "M&A 가치평가"],
+  ["tools/holdco-nav.html", "26_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
+  ["tools/fx-hedge.html", "27_환리스크_헤지", "환리스크 헤지"],
+  ["tools/checks.html", "28_계산_검산", "계산 검산"],
+  ["tools/guide.html", "29_쉬운_가이드", "쉬운 가이드"],
+  ["en.html", "30_English_summary", "English summary"]
 ];
 
 /* A4 가로. 인쇄 배율 0.82면 본문 15px이 약 9pt로 찍히고, 화면은 1,277px 폭의 데스크톱 배치가 된다. */
@@ -550,7 +551,7 @@ async function frontMatter(ctx, out, results, pick) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11"].includes(n) ? "리포트" : ["27", "28", "29"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].includes(n) ? "리포트" : ["28", "29", "30"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>

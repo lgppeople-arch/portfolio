@@ -634,25 +634,54 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
 @media (max-width: 1100px) { .qgrid.q3 { grid-template-columns: minmax(0, 1fr); } }
 .sub-h2 { font-size: var(--s-3); font-weight: 700; margin: 34px 0 12px; }
 
-/* 홈 스크롤 연출(넓은 화면 + 움직임 허용일 때만 story.js가 켠다) */
+/* 홈 '경력을 숫자로'(assets/story.js가 만든다). 넓은 화면은 붙은 무대(.pinned), 그 밖에는 카드(.cards) */
 @media screen { .story-on .figures { display: none; } }
-.story { margin-top: 8px; border-block: 1px solid var(--rule); }
-.story-track { height: 320vh; position: relative; }
-.story-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; }
-.story-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 32px; align-items: center; width: 100%; padding-top: 56px; }
-.story-text { display: grid; gap: 12px; align-content: center; }
-.story-kick { font-family: var(--f-num); font-size: 12px; letter-spacing: .08em; color: var(--accent); }
-.story-num b { font-family: var(--f-display); font-weight: 800; font-size: clamp(64px, 8vw, 120px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--ink); }
-.story-num small { font-family: var(--f-display); font-size: clamp(20px, 2vw, 30px); font-weight: 700; margin-left: 6px; color: var(--ink-2); }
-.story-text h3 { font-size: var(--s-4); font-weight: 700; }
-.story-text p { font-size: var(--s-2); color: var(--ink-2); line-height: 1.75; max-width: 34em; min-height: 5.4em; }
-.story-text.swap h3, .story-text.swap p { animation: storyIn .5s cubic-bezier(.2, .7, .2, 1) both; }
-@keyframes storyIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.story-dots { display: flex; gap: 8px; margin-top: 6px; }
-.story-dots button { width: 34px; height: 6px; border-radius: 3px; border: 0; padding: 0; font-size: 0; background: var(--rule); cursor: pointer; transition: background .2s, width .2s; }
-.story-dots button[aria-current="step"] { background: var(--accent); width: 54px; }
-.story-skip { font-size: var(--s-1); color: var(--muted); justify-self: start; margin-top: 6px; }
-.story-art { width: 100%; height: min(62vh, 560px); display: block; }
+.story { margin-top: 8px; border-block: 1px solid var(--rule); --st-p: 0%; }
+.st-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+.st-kick { font-family: var(--f-num); font-size: 12px; letter-spacing: .08em; color: var(--accent); }
+.st-tabs { display: flex; gap: 6px; position: relative; }
+.st-tabs button { font: inherit; font-size: var(--s-1); font-weight: 600; color: var(--ink-2); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 5px 12px 5px 8px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; transition: background .25s, color .25s, border-color .25s; }
+.st-tabs button b { font-family: var(--f-num); font-size: 11px; font-weight: 500; color: var(--muted); }
+.st-tabs button[aria-current="step"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.st-tabs button[aria-current="step"] b { color: var(--paper); }
+.st-skip { margin-left: auto; font-size: var(--s-1); color: var(--muted); }
+.st-scene { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 24px 44px; align-items: center; }
+.st-text { display: grid; gap: 12px; align-content: center; }
+.st-num b { font-family: var(--f-display); font-weight: 800; font-size: clamp(56px, 7.4vw, 112px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.st-num small { font-family: var(--f-display); font-size: clamp(18px, 2vw, 28px); font-weight: 700; margin-left: 6px; color: var(--ink-2); }
+.st-text h3 { font-size: var(--s-4); font-weight: 700; line-height: 1.4; }
+.st-text p { font-size: var(--s-2); color: var(--ink-2); line-height: 1.75; max-width: 34em; }
+.st-art { background: #0B1118; border-radius: 14px; overflow: hidden; box-shadow: 0 18px 40px -22px rgba(0, 0, 0, .45); }
+.st-art svg { display: block; width: 100%; height: auto; }
+.st-art svg text { font-family: var(--f-body); }
+/* 그림 조각: 장면이 켜지면(.on) 차례로 나타난다 */
+.st-art .a { opacity: 0; transform: translateY(8px); transition: opacity .55s cubic-bezier(.2, .7, .2, 1), transform .55s cubic-bezier(.2, .7, .2, 1); transition-delay: 0s; transform-box: fill-box; }
+.st-art .a.gx { transform: scaleX(0); transform-origin: left center; }
+.st-art .a.gy { transform: scaleY(0); transform-origin: center top; }
+.st-art .a.gyu { transform: scaleY(0); transform-origin: center bottom; }
+.st-scene.on .st-art .a { opacity: 1; transform: none; transition-delay: var(--d); }
+.st-scene.on .st-art .a.pulse { animation: stPulse 1.8s ease-in-out 2s infinite; }
+@keyframes stPulse { 50% { opacity: .35; } }
+.story.pinned .st-track { height: 330vh; }
+.story.pinned .st-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; }
+.story.pinned .st-wrap { width: 100%; padding-top: 56px; display: grid; gap: 22px; }
+.story.pinned .st-head { padding-bottom: 14px; border-bottom: 1px solid var(--rule); position: relative; }
+.story.pinned .st-head::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: var(--st-p); background: var(--accent); }
+.story.pinned .st-scenes { position: relative; height: min(68vh, 560px); }
+.story.pinned .st-scene { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .45s, visibility 0s .45s; }
+.story.pinned .st-scene.on { opacity: 1; visibility: visible; transition: opacity .45s; }
+.story.pinned .st-scene .st-text { transform: translateY(14px); transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.story.pinned .st-scene.on .st-text { transform: none; }
+.story.pinned .st-art svg { max-height: min(64vh, 540px); }
+.story.cards { padding: 28px 0 8px; }
+.story.cards .st-scenes { display: grid; gap: 34px; margin-top: 20px; }
+.story.cards .st-skip { display: none; }
+@media (max-width: 899px) {
+  .st-scene { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .st-tabs { overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  .st-num b { font-size: 56px; }
+}
+@media (prefers-reduced-motion: reduce) { .st-art .a { transition: none; } }
 @media print { .story { display: none !important; } .figures { display: grid !important; } }
 
 /* 홈 3분 요약 */
@@ -724,3 +753,17 @@ details.sd > summary { display: none; }
 .trail-me .fl a { font-weight: 600; }
 .trail + .site-foot { margin-top: 0; border-top-color: var(--rule); }
 @media print { .trail { display: none !important; } }
+
+/* 글 사이의 작은 그림(assets/art.js) */
+.block-head { position: relative; }
+.sec-art { position: absolute; left: 0; top: 46px; width: 120px; height: 68px; color: var(--ink-2); opacity: .9; pointer-events: none; }
+@media (max-width: 760px) { .sec-art { left: auto; right: 0; top: 12px; width: 84px; height: 48px; opacity: .7; } .block-head h2 { padding-right: 92px; } }
+.duty h4 { align-items: center; }
+.duty-ic { width: 20px; height: 20px; flex: none; color: var(--accent); }
+.tool-hero .wrap, .hub-head { position: relative; }
+.hero-art { position: absolute; right: 16px; top: 34px; width: 300px; height: 150px; color: var(--ink-2); opacity: .85; pointer-events: none; }
+.hub-head .hero-art { right: 0; top: 30px; }
+@media (max-width: 1180px) { .hero-art { display: none; } }
+.read-bar { position: fixed; left: 0; top: 0; height: 3px; width: 100%; background: var(--accent); transform-origin: left center; transform: scaleX(0); z-index: 60; pointer-events: none; }
+@media print { .sec-art, .hero-art, .read-bar, .duty-ic { display: none !important; } }
+@media (min-width: 761px) { .block-head:has(.sec-art) { min-height: 122px; align-items: start; } }
