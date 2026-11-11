@@ -41,6 +41,9 @@
   .ins dl { margin: 0; display: grid; gap: 8px; }
   .ins dt { font-size: 11.5px; font-weight: 700; color: var(--muted); letter-spacing: .02em; }
   .ins dd { margin: 2px 0 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); }
+  .ins-ver { justify-self: start; display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); margin-bottom: 6px; }
+  .ins-ver.ok { border-color: color-mix(in srgb, var(--pos) 45%, var(--rule)); color: color-mix(in srgb, var(--pos) 72%, var(--ink)); background: color-mix(in srgb, var(--pos) 8%, var(--surface)); }
+  .ins-h { display: grid; }
   .ins-src { margin: 0; padding-top: 8px; border-top: 1px dashed var(--rule); font-size: 11.5px; line-height: 1.6; color: var(--muted); }
   .ins-src a { overflow-wrap: anywhere; }
   .src { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 6px 22px; padding: 14px 0; border-bottom: 1px solid var(--rule-soft); }
@@ -121,7 +124,7 @@
           <p>출처는 목록으로만 두면 쓸모가 반입니다. 아래는 이 목록의 자료를 실제로 찾아 읽고, 이 사이트의 가정과 분석을 다시 점검한 기록입니다. 각 카드에 <b>무엇을 확인했는지</b>, <b>재무기획에 어떤 뜻인지</b>, <b>어느 페이지에 반영했는지</b>를 적었습니다. 수치는 기준일이 있는 값이라 시간이 지나면 바뀝니다. 원문 링크로 최신 값을 다시 확인해 주세요.</p>
           <div class="ins-grid">
             <article class="ins" id="i-wacc">
-              <div class="ins-h"><span class="ins-k">자본비용</span><h3>반도체 업종의 자본비용은 시장 평균보다 3%p쯤 높다</h3></div>
+              <div class="ins-h"><span class="ins-ver ok">원문 표와 대조 · 2026.11.11</span><span class="ins-k">자본비용</span><h3>반도체 업종의 자본비용은 시장 평균보다 3%p쯤 높다</h3></div>
               <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="WACC 비교: 미국 시장 전체(금융 제외) 7.72%, 반도체 장비 9.89%, 반도체 10.55%, 이 사이트 예시 9%">
                 <g font-size="11"><text x="0" y="22" style="fill: var(--ink-2)">시장 전체</text><text x="0" y="52" style="fill: var(--ink-2)">반도체 장비</text><text x="0" y="82" style="fill: var(--ink-2)">반도체</text><text x="0" y="112" style="fill: var(--muted)">이 사이트 예시</text></g>
                 <rect x="88" y="12" width="139" height="14" rx="2" style="fill: var(--mark-muted)"/><rect x="88" y="42" width="178" height="14" rx="2" style="fill: var(--input); opacity: .7"/><rect x="88" y="72" width="190" height="14" rx="2" style="fill: var(--accent)"/><rect x="88" y="102" width="162" height="14" rx="2" style="fill: none; stroke: var(--muted); stroke-dasharray: 4 3"/>
@@ -136,22 +139,22 @@
             </article>
 
             <article class="ins" id="i-erp">
-              <div class="ins-h"><span class="ins-k">위험 프리미엄</span><h3>한국 주식의 위험 프리미엄은 미국보다 약 0.6%p 높게 본다</h3></div>
-              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="주식 위험 프리미엄: 미국 4.23%, 한국 4.87%는 성숙시장 프리미엄에 국가위험 0.64%를 더한 값">
-                <rect x="40" y="30" width="60" height="85" style="fill: var(--mark-muted)"/><text x="70" y="24" text-anchor="middle" font-size="11" font-weight="700" style="fill: var(--ink)">4.23%</text><text x="70" y="128" text-anchor="middle" font-size="11" style="fill: var(--ink-2)">미국(내재)</text>
+              <div class="ins-h"><span class="ins-ver ok">원문 표와 대조 · 2026.11.11</span><span class="ins-k">위험 프리미엄</span><h3>한국 주식의 위험 프리미엄은 성숙시장 기준에 0.64%p를 더한다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="주식 위험 프리미엄: 성숙시장 기준 4.23%, 한국 4.87%는 여기에 국가위험 0.64%를 더한 값">
+                <rect x="40" y="30" width="60" height="85" style="fill: var(--mark-muted)"/><text x="70" y="24" text-anchor="middle" font-size="11" font-weight="700" style="fill: var(--ink)">4.23%</text><text x="70" y="128" text-anchor="middle" font-size="11" style="fill: var(--ink-2)">성숙시장 기준</text>
                 <rect x="170" y="30" width="60" height="85" style="fill: var(--mark-muted)"/><rect x="170" y="17" width="60" height="13" style="fill: var(--accent)"/><text x="200" y="11" text-anchor="middle" font-size="11" font-weight="700" style="fill: var(--ink)">4.87%</text><text x="200" y="128" text-anchor="middle" font-size="11" style="fill: var(--ink-2)">한국</text>
                 <text x="238" y="27" font-size="10.5" style="fill: var(--accent)">+0.64%p 국가위험</text>
               </svg>
               <dl>
-                <div><dt>확인한 것</dt><dd>다모다란 교수는 2026년 초 미국 S&amp;P 500의 내재 주식위험프리미엄(ERP)을 4.23%로 계산했습니다. 같은 시기 국가별 자료에서 한국(신용등급 Aa2)은 국가위험 프리미엄 0.64%, 총 ERP 4.87%입니다. 7월 개정판부터는 미국 신용등급 하향을 반영해 계산 방식이 바뀌었습니다.</dd></div>
-                <div><dt>뜻</dt><dd>국내 회사의 자기자본비용은 "무위험 금리 + 베타 × 한국 ERP"로 만들 수 있습니다. 해외 자회사나 해외 인수 대상은 그 나라의 ERP로 바꿔 씁니다. 같은 사업이라도 어느 나라에서 하느냐에 따라 할인율이 달라집니다.</dd></div>
+                <div><dt>확인한 것</dt><dd>다모다란 교수는 2026년 1월 1일 미국 S&amp;P 500의 내재 주식위험프리미엄(ERP)을 4.23%로 계산했습니다. 같은 시기(1월 5일 갱신) 국가별 표에서 한국(무디스 Aa2)은 부도 스프레드 0.42%, 국가위험 프리미엄 0.64%, 총 ERP 4.87%입니다. 미국도 신용등급(Aa1)만큼 0.23%가 붙어 4.46%입니다. 2025년까지는 미국 내재 ERP를 그대로 성숙시장 기준으로 썼지만, 2026년 7월 개정에서는 미국 내재 ERP 4.42%에서 미국 부도 스프레드 0.22%를 뺀 4.20%를 기준으로 씁니다.</dd></div>
+                <div><dt>뜻</dt><dd>국내 회사의 자기자본비용은 "무위험 금리 + 베타 × 한국 ERP"로 만들 수 있습니다. 해외 자회사나 해외 인수 대상은 그 나라의 ERP로 바꿔 씁니다. 같은 사업이라도 어느 나라에서 하느냐에 따라 할인율이 달라집니다. 기준 자체도 해마다 방법이 바뀔 수 있으므로, 숫자를 옮길 때 그해 해설을 함께 읽습니다.</dd></div>
                 <div><dt>반영한 곳</dt><dd><a href="pro-methods.html#s-vd">가치동인 공식</a>의 자본비용 설명, <a href="ma-valuation.html">M&amp;A 가치평가</a> 할인율 참고.</dd></div>
               </dl>
               <p class="ins-src">출처: Damodaran Online, <a href="https://pages.stern.nyu.edu/adamodar/New%5FHome%5FPage/datafile/ctryprem.html" target="_blank" rel="noopener">Country Default Spreads and Risk Premiums</a>(2026.1.5 갱신), <a href="https://aswathdamodaran.blogspot.com/2026/01/data-update-2-for-2026-equities-get.html" target="_blank" rel="noopener">Data Update 2 for 2026</a>(2026.1.23), <a href="https://aswathdamodaran.blogspot.com/2026/07/country-risk-drivers-measures-and.html" target="_blank" rel="noopener">Country Risk</a>(2026.7.15)</p>
             </article>
 
             <article class="ins" id="i-roic">
-              <div class="ins-h"><span class="ins-k">수익률 지속성</span><h3>높은 수익률은 높은 성장보다 오래 간다</h3></div>
+              <div class="ins-h"><span class="ins-ver">검색으로 요지 확인 · 원문 재확인 필요</span><span class="ins-k">수익률 지속성</span><h3>높은 수익률은 높은 성장보다 오래 간다</h3></div>
               <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="10년 뒤 같은 ROIC 구간에 남을 확률: ROIC 20% 초과 기업 50%, 5~10% 기업 40%">
                 <g font-size="11" style="fill: var(--ink-2)"><text x="0" y="40">ROIC 20% 초과</text><text x="0" y="90">ROIC 5~10%</text></g>
                 <rect x="104" y="26" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="104" y="26" width="100" height="20" rx="3" style="fill: var(--accent)"/>
@@ -168,7 +171,7 @@
             </article>
 
             <article class="ins" id="i-base">
-              <div class="ins-h"><span class="ins-k">성장률 기준율</span><h3>3년간 연 20% 넘게 크는 회사는 열에 하나도 안 된다</h3></div>
+              <div class="ins-h"><span class="ins-ver">검색으로 요지 확인 · 원문 재확인 필요</span><span class="ins-k">성장률 기준율</span><h3>3년간 연 20% 넘게 크는 회사는 열에 하나도 안 된다</h3></div>
               <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="3년 연평균 매출 성장률 분포 개념도. 중앙값 약 5%, 연 20~25% 구간 약 4%">
                 <path d="M10 118 C60 116 80 30 120 22 S190 70 230 104 S290 116 310 117" style="fill: none; stroke: var(--ink-2); stroke-width: 1.8"/>
                 <path d="M228 102 C250 112 285 116 310 117 L310 118 L228 118 Z" style="fill: var(--accent); opacity: .8"/>
@@ -186,7 +189,7 @@
             </article>
 
             <article class="ins" id="i-mega">
-              <div class="ins-h"><span class="ins-k">대형 투자</span><h3>예산·일정·효과를 모두 지킨 대형 사업은 0.5%</h3></div>
+              <div class="ins-h"><span class="ins-ver">검색으로 요지 확인 · 원문 재확인 필요</span><span class="ins-k">대형 투자</span><h3>예산·일정·효과를 모두 지킨 대형 사업은 0.5%</h3></div>
               <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="1만 6천여 개 사업 중 예산 안 47.9%, 예산과 일정 모두 8.5%, 예산·일정·효과 모두 0.5%">
                 <g font-size="11" style="fill: var(--ink-2)"><text x="0" y="30">예산 안</text><text x="0" y="68">예산·일정</text><text x="0" y="106">+ 약속한 효과</text></g>
                 <rect x="96" y="16" width="200" height="20" rx="3" style="fill: var(--rule-soft)"/><rect x="96" y="16" width="95.8" height="20" rx="3" style="fill: var(--mark-muted)"/>
@@ -203,24 +206,24 @@
             </article>
 
             <article class="ins" id="i-wsts">
-              <div class="ins-h"><span class="ins-k">반도체 업황</span><h3>2026년 반도체 시장 전망이 반년 만에 1.5배로 올라갔다</h3></div>
-              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="세계 반도체 시장: 2025년 약 0.8조 달러, 2026년 전망 1.51조 달러, 2027년 전망 약 1.9조 달러. 2025년 가을 전망의 2026년 값은 약 0.98조 달러">
+              <div class="ins-h"><span class="ins-ver ok">원문 표와 대조 · 2026.11.11</span><span class="ins-k">반도체 업황</span><h3>2026년 반도체 시장은 두 배 넘게 커질 전망이고, 대부분이 메모리다</h3></div>
+              <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="세계 반도체 시장: 2025년 약 0.8조 달러, 2026년 봄 전망 1.51조 달러에서 2분기 실적 반영 후 1.655조 달러, 2027년 약 2.1조 달러">
                 <line x1="30" x2="310" y1="118" y2="118" style="stroke: var(--rule)"/>
-                <rect x="50" y="76" width="44" height="42" style="fill: var(--mark-muted)"/><rect x="140" y="38" width="44" height="80" style="fill: var(--accent)"/><rect x="230" y="18" width="44" height="100" style="fill: var(--accent); opacity: .55"/>
-                <rect x="136" y="66" width="52" height="2.5" style="fill: var(--ink)"/><text x="132" y="58" text-anchor="end" font-size="10" style="fill: var(--ink-2)">작년 가을 전망 0.98 →</text>
-                <g font-size="11" font-weight="700" text-anchor="middle" style="fill: var(--ink)"><text x="72" y="70">0.8</text><text x="162" y="32">1.51</text><text x="252" y="12">1.9</text></g>
+                <rect x="50" y="80" width="44" height="38" style="fill: var(--mark-muted)"/><rect x="140" y="39" width="44" height="79" style="fill: var(--accent)"/><rect x="230" y="18" width="44" height="100" style="fill: var(--accent); opacity: .55"/>
+                <rect x="136" y="46" width="52" height="2.5" style="fill: var(--ink)"/><text x="132" y="50" text-anchor="end" font-size="10" style="fill: var(--ink-2)">6월 전망 1.51 →</text>
+                <g font-size="11" font-weight="700" text-anchor="middle" style="fill: var(--ink)"><text x="72" y="74">0.8</text><text x="162" y="33">1.66</text><text x="252" y="12">2.1</text></g>
                 <g font-size="10.5" text-anchor="middle" style="fill: var(--muted)"><text x="72" y="130">2025</text><text x="162" y="130">2026E</text><text x="252" y="130">2027E</text></g>
               </svg>
               <dl>
-                <div><dt>확인한 것</dt><dd>WSTS는 2026년 6월 봄 전망에서 올해 세계 반도체 시장을 1조 5,100억 달러(전년 대비 +89.9%), 2027년을 약 1조 9천억 달러(+27%)로 봤습니다. 2025년 가을 전망의 2026년 값(약 9,750억 달러)에서 크게 올렸고, 그 대부분이 메모리(+약 250%, 8천억 달러 이상)입니다.</dd></div>
-                <div><dt>뜻</dt><dd>이번 호황은 메모리 가격이 이끄는 국면입니다. 장비용 세라믹 부품처럼 설비투자에 연동된 사업은 메모리 업체의 투자 계획이 실제 발주로 이어지는 시차를 봐야 합니다. 전망이 반년 사이 50% 넘게 바뀔 수 있으므로 사업계획의 시장 가정은 한 숫자가 아니라 범위로 둡니다.</dd></div>
+                <div><dt>확인한 것</dt><dd>WSTS는 2026년 봄 전망에서 올해 세계 반도체 시장을 1조 5,100억 달러(+90%), 2027년을 약 1조 9천억 달러(+27%)로 봤고, 메모리가 약 250% 늘어 8천억 달러를 넘는다고 했습니다. 이후 2분기 실적을 넣은 계산에서는 상반기 시장이 7,020억 달러(+102%, 메모리 +305%)였고, 연간 2026년은 1조 6,550억 달러(+약 108%), 2027년은 약 2조 1천억 달러(+약 29%)로 올라갔습니다. WSTS는 이 값이 새 전망이 아니라 봄 전망에 2분기 실적만 바꿔 넣은 계산이라고 밝혔습니다.</dd></div>
+                <div><dt>뜻</dt><dd>이번 호황은 메모리가 이끄는 국면입니다. 장비용 세라믹 부품처럼 설비투자에 연동된 사업은 메모리 업체의 투자 계획이 실제 발주로 이어지는 시차를 봐야 합니다. 같은 기관의 숫자도 몇 달 만에 18%p 올라갔으므로, 사업계획의 시장 가정은 한 숫자가 아니라 범위로 두고 발표일을 함께 적습니다.</dd></div>
                 <div><dt>반영한 곳</dt><dd><a href="semi-cycle.html">반도체 사이클과 재무</a>, <a href="samsung.html">삼성전자 재무 분석</a>(메모리 중심 이익 구조와 같은 흐름).</dd></div>
               </dl>
-              <p class="ins-src">출처: WSTS, <a href="https://www.wsts.org/76/103/Global-Semiconductor-Market-Surges-Beyond-15T-2026" target="_blank" rel="noopener">Global Semiconductor Market Surges Beyond $1.5T in 2026</a>(2026.6.2 봄 전망) · 2025년 값은 성장률로 거꾸로 계산 · 가을 전망은 보통 12월 초 발표</p>
+              <p class="ins-src">출처: WSTS, <a href="https://www.wsts.org/76/103/Global-Semiconductor-Market-Surges-Beyond-15T-2026" target="_blank" rel="noopener">Global Semiconductor Market Surges Beyond $1.5T 2026</a>(봄 전망), <a href="https://www.wsts.org/76/Global-Semiconductor-Market-records-exceptional-growth-in-Q2-2026" target="_blank" rel="noopener">Global Semiconductor Market records exceptional growth in Q2 2026</a>(2분기 실적 반영) · 2025년 값은 성장률로 거꾸로 계산 · 가을 전망은 보통 12월 초 발표</p>
             </article>
 
             <article class="ins" id="i-bass">
-              <div class="ins-h"><span class="ins-k">수요 확산</span><h3>신제품 수요는 "따라 사는 힘"이 "스스로 사는 힘"의 10배쯤</h3></div>
+              <div class="ins-h"><span class="ins-ver">검색으로 요지 확인 · 원문 재확인 필요</span><span class="ins-k">수요 확산</span><h3>신제품 수요는 "따라 사는 힘"이 "스스로 사는 힘"의 10배쯤</h3></div>
               <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="바스 모형 평균 계수: 혁신 계수 p 0.03, 모방 계수 q 0.38">
                 <rect x="40" y="108" width="40" height="10" style="fill: var(--input)"/><rect x="150" y="22" width="40" height="96" style="fill: var(--accent)"/>
                 <g font-size="11" font-weight="700" text-anchor="middle" style="fill: var(--ink)"><text x="60" y="100">p 0.03</text><text x="170" y="16">q 0.38</text></g>
@@ -236,7 +239,7 @@
             </article>
 
             <article class="ins" id="i-axis">
-              <div class="ins-h"><span class="ins-k">차트 디자인</span><h3>잘 만드는 곳도 같은 실수를 고친다</h3></div>
+              <div class="ins-h"><span class="ins-ver">검색으로 요지 확인 · 원문 재확인 필요</span><span class="ins-k">차트 디자인</span><h3>잘 만드는 곳도 같은 실수를 고친다</h3></div>
               <svg class="ins-v" viewBox="0 0 320 132" role="img" aria-label="이중 축 차트를 같은 축의 두 차트로 나누는 개념도">
                 <g><rect x="6" y="14" width="130" height="96" rx="4" style="fill: none; stroke: var(--rule)"/><path d="M16 96 L46 70 L76 80 L106 40 L126 34" style="fill: none; stroke: var(--input); stroke-width: 2"/><path d="M16 40 L46 56 L76 50 L106 82 L126 90" style="fill: none; stroke: var(--neg); stroke-width: 2"/><text x="71" y="126" text-anchor="middle" font-size="10.5" style="fill: var(--neg-ink)">이중 축: 교차가 임의</text></g>
                 <text x="148" y="66" font-size="16" style="fill: var(--muted)">→</text>
@@ -250,7 +253,7 @@
               <p class="ins-src">출처: Sarah Leo, <a href="https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368" target="_blank" rel="noopener">Mistakes, we've drawn a few</a>(The Economist, 2019) · Claus O. Wilke, <a href="https://clauswilke.com/dataviz/" target="_blank" rel="noopener">Fundamentals of Data Visualization</a>(O'Reilly, 2019)</p>
             </article>
           </div>
-          <div class="callout"><b>확인 방법과 한계:</b> 이번 기록은 웹 검색으로 원문 페이지와 공개 요약을 확인해 만들었습니다. 일부 수치(플루비에르의 세 비율, 마부신 판본별 수치)는 2차 자료로 확인했고 카드에 그 사실을 적었습니다. 보고서에 쓸 때는 링크의 원문에서 최신 값을 다시 확인합니다.</div>
+          <div class="callout"><b>확인 방법과 한계:</b> 카드마다 확인 수준을 표시했습니다. "원문 표와 대조"는 출처 페이지를 직접 내려받아 표의 해당 행을 읽어 맞춘 것이고(다모다란 업종·국가 표와 해설, WSTS 발표 2건), "검색으로 요지 확인"은 웹 검색으로 원문 요지와 2차 정리를 확인한 것입니다. 맥킨지·모건스탠리·SSRN 원문은 사이트가 자동 접근을 막아 열지 못했습니다. 원문 대조 과정에서 WSTS의 2026년 전망이 2분기 실적 반영으로 1.51조에서 1.655조 달러로 바뀐 것을 확인해 이 페이지와 반도체 사이클 리포트를 고쳤습니다.</div>
         </section>
 
         <section id="s-disc" data-toc="기업 공시" data-group="데이터 출처">
@@ -359,7 +362,7 @@
       ["McKinsey · Strategy & Corporate Finance", "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights", "맥킨지 기업재무 연구", "ROIC와 성장의 균형, 수익률 지속성, 경제적 이익 같은 가치 창출 연구", "가치동인 공식과 페이드 가정의 근거(<a href='#i-roic'>인사이트</a>). 교과서 『Valuation』의 공개 요약판 역할입니다.", "오래된 표본(1965~1995년 미국 기업)을 쓰는 연구가 있어 기간을 확인합니다."],
       ["Morgan Stanley Counterpoint Global", "https://www.morganstanley.com/im/en-us/institutional-investor/insights/series/consilient-observer.html", "마이클 마부신·댄 캘러핸", "기준율(성장률·이익률 분포), 경쟁우위 측정, ROIC와 자본배분, 시장이 가격에 담은 기대", "사업계획 성장률을 과거 분포와 비교(<a href='#i-base'>인사이트</a>), 역DCF와 경쟁우위 기간 판단.", "미국 상장사 표본입니다. 판본마다 기간이 달라 수치가 조금씩 다릅니다."],
       ["Oxford Global Projects · Flyvbjerg", "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2742088", "벤트 플루비에르(옥스퍼드대)", "대형 사업 1만 6천여 건의 예산·일정·효과 달성률, 참조집단 예측법", "투자비·일정 가정에 근거 있는 여유를 둘 때(<a href='#i-mega'>인사이트</a>).", "공공·인프라 사업 비중이 큽니다. 제조 설비투자에는 자사 사후관리 기록을 함께 씁니다."],
-      ["WSTS 전망 발표", "https://www.wsts.org/76/103/Global-Semiconductor-Market-Surges-Beyond-15T-2026", "세계반도체시장통계기구 · 봄(6월)·가을(12월)", "세계 반도체 시장 규모, 제품군·지역별 성장률 전망", "업황 가정의 기준선과 전망 변화 폭(<a href='#i-wsts'>인사이트</a>).", "반년 사이에도 전망이 크게 바뀝니다. 발표일을 같이 적습니다."]
+      ["WSTS 전망 발표", "https://www.wsts.org/76/103/Global-Semiconductor-Market-Surges-Beyond-15T-2026", "세계반도체시장통계기구 · 봄(6월)·가을(12월) 전망, 분기 실적 발표", "세계 반도체 시장 규모, 제품군·지역별 성장률 전망과 분기 실적", "업황 가정의 기준선과 전망 변화 폭(<a href='#i-wsts'>인사이트</a>).", "분기 실적 발표에서 연간 값이 다시 계산되기도 합니다. 발표일과 '전망인지 실적 반영 계산인지'를 같이 적습니다."]
     ],
     "g-std": [
       ["IBCS", "https://www.ibcs.com", "International Business Communication Standards", "보고서·차트 표기 표준(실적·계획·전망, 차이 색, SUCCESS 원칙)", "손익·투자 도구의 시나리오 표기와 차이 색 약속의 기준(<a href='deck.html'>보고서 작성 원칙</a>).", "전부 따르기보다 사내 약속으로 일관되게 적용하는 것이 핵심입니다."],
