@@ -133,6 +133,29 @@
       ]
     },
     {
+      "file": "mgmt-kit.html",
+      "title": "관리회계 키트",
+      "kind": "도구",
+      "fields": [
+        "경영관리"
+      ],
+      "career": "표준원가·실제원가 차이분석, 사업부별 구분회계와 제품별 수익성 분석, SAP 관리손익 월 마감",
+      "more": [
+        [
+          "cost-stats.html",
+          "원가 행태 회귀(고정비·변동비 추정)"
+        ],
+        [
+          "semi-cycle.html",
+          "반도체 사이클(저조업 비용)"
+        ],
+        [
+          "pl-report.html",
+          "월 손익 보고"
+        ]
+      ]
+    },
+    {
       "file": "cost-stats.html",
       "title": "원가 행태·불량 관리도",
       "kind": "도구",
@@ -478,6 +501,7 @@
           "plan-risk.html",
           "budget-opt.html",
           "pl-report.html",
+          "mgmt-kit.html",
           "cost-stats.html",
           "mbo-kpi.html",
           "cash-13w.html",
@@ -515,6 +539,10 @@
         [
           "pl-report.html",
           "월 손익"
+        ],
+        [
+          "mgmt-kit.html",
+          "원가 차이·사업부"
         ],
         [
           "cost-stats.html",

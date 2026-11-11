@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>관리회계 키트 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="표준원가 차이(가격·수량·능률·조업도), 전부원가와 변동원가, 사업부 손익과 공통비·보조부문 배부, 재고 회전·충당금·저가법·EOQ, 특별주문·외주·병목 배합·다제품 손익분기를 계산하는 도구">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="관리회계 키트 · 이기표">
+<meta property="og:description" content="표준원가 차이(가격·수량·능률·조업도), 전부원가와 변동원가, 사업부 손익과 공통비·보조부문 배부, 재고 회전·충당금·저가법·EOQ, 특별주문·외주·병목 배합·다제품 손익분기를 계산하는 도구">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/mgmt-kit.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/mgmt-kit.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="관리회계 키트">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/mgmt-kit.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .mk-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; margin-top: 18px; }
+  @media (max-width: 980px) { .mk-grid { grid-template-columns: minmax(0, 1fr); } }
+  .mk-grid > * { min-width: 0; }
+  .mk-out { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-content: start; min-width: 0; }
+  .mk-out h3 { font-size: var(--s-3); font-weight: 700; margin: 6px 0 0; }
+  .plotbox { position: relative; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  table.mt { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+  table.mt th, table.mt td { padding: 7px 10px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
+  table.mt th:first-child, table.mt td:first-child { text-align: left; white-space: normal; }
+  table.mt thead th { font-size: 12px; color: var(--muted); font-weight: 600; background: var(--tab); }
+  table.mt tbody tr.sum td, table.mt tbody tr.sum th { font-weight: 700; border-top: 1px solid var(--ink-2); }
+  table.mt td.u { color: var(--neg-ink); } table.mt td.f { color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  table.mt td.why { text-align: left; white-space: normal; color: var(--muted); font-size: 12px; }
+  table.mt .hl { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+  .scroll { overflow-x: auto; }
+  .seg2 { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg2 button { font: inherit; font-size: var(--s-1); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+  .seg2 button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .rg { display: grid; gap: 2px; font-size: var(--s-1); }
+  .rg span { color: var(--muted); font-size: 12px; } .rg b { color: var(--ink); font-family: var(--f-num); }
+  .rgs { display: flex; flex-wrap: wrap; gap: 10px 24px; } .rgs .rg { flex: 1 1 200px; }
+  .callout2 { padding: 12px 16px; border-radius: var(--radius); background: color-mix(in srgb, var(--input) 6%, var(--surface)); border: 1px solid color-mix(in srgb, var(--input) 25%, var(--rule)); font-size: var(--s-1); line-height: 1.7; }
+  .callout2.warn { background: color-mix(in srgb, var(--neg) 6%, var(--surface)); border-color: color-mix(in srgb, var(--neg) 30%, var(--rule)); }
+  .two2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .two2 { grid-template-columns: minmax(0, 1fr); } }
+  .two2 > * { min-width: 0; }
+  .chk { display: inline-flex; gap: 8px; align-items: center; font-size: var(--s-1); color: var(--ink-2); }
+  .inputs fieldset { border: 0; padding: 0; margin: 0 0 16px; display: grid; gap: 8px; }
+  .inputs legend { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html">추정과 가치의 기법</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g cur"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="mgmt-kit.html" aria-current="page">관리회계 키트</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-hero">
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 관리회계 키트</div>
+      <h1>관리회계 키트</h1>
+      <p>월 결산 뒤 "원가가 왜 계획과 달랐나", "어느 사업부가 실제로 돈을 버나", "재고에 묶인 돈이 얼마인가", "이 주문을 받아야 하나"에 답하는 네 가지 계산입니다. 표준원가 차이를 가격·수량·능률·조업도로 나누고, 공통비 배부 기준에 따라 사업부 손익이 어떻게 달라지는지, 재고와 의사결정까지 한 공장 예시로 이어 봅니다.</p>
+      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 바꿀 수 있는 입력값</span><span><i>123</i> 계산값</span><span>금액 백만원 · 단가 천원</span><span><a class="guide-link" href="guide.html#how-mgmt">처음이면 쉬운 사용법 보기 →</a></span></div>
+    </div>
+  </div>
+
+  <div class="wrap wide tool-body">
+    <span class="sample"><span>예시: 가상의 세라믹 부품 공장 한 달, 사업부 셋 · 모든 수치는 가상</span></span>
+    <div class="tooltabs" role="tablist" aria-label="관리회계 도구">
+      <button role="tab" id="tab-std" aria-controls="panel-std" aria-selected="true">표준원가 차이·조업도</button>
+      <button role="tab" id="tab-div" aria-controls="panel-div" aria-selected="false" tabindex="-1">사업부 손익·배부</button>
+      <button role="tab" id="tab-inv" aria-controls="panel-inv" aria-selected="false" tabindex="-1">재고</button>
+      <button role="tab" id="tab-dec" aria-controls="panel-dec" aria-selected="false" tabindex="-1">의사결정·손익분기</button>
+    </div>
+
+    <!-- ===== 표준원가 ===== -->
+    <div class="toolpanel" role="tabpanel" id="panel-std" aria-labelledby="tab-std">
+      <div class="mk-grid">
+        <form class="inputs" id="std-form" novalidate>
+          <fieldset><legend>단위당 표준</legend>
+            <div class="field"><label for="s-matQ">재료 사용량<small>kg/개</small></label><input id="s-matQ" data-k="matQ" type="number" step="0.1" min="0"></div>
+            <div class="field"><label for="s-matP">재료 단가<small>천원/kg</small></label><input id="s-matP" data-k="matP" type="number" step="0.5" min="0"></div>
+            <div class="field"><label for="s-labH">노무 시간<small>시간/개</small></label><input id="s-labH" data-k="labH" type="number" step="0.05" min="0"></div>
+            <div class="field"><label for="s-labR">임률<small>천원/시간</small></label><input id="s-labR" data-k="labR" type="number" step="0.5" min="0"></div>
+            <div class="field"><label for="s-mchH">기계 시간<small>시간/개, 간접비 배부 기준</small></label><input id="s-mchH" data-k="mchH" type="number" step="0.05" min="0.01"></div>
+            <div class="field"><label for="s-vohR">변동간접비 배부율<small>천원/기계시간</small></label><input id="s-vohR" data-k="vohR" type="number" step="0.5" min="0"></div>
+            <div class="field"><label for="s-fohBudget">고정간접비 월 예산<small>백만원</small></label><input id="s-fohBudget" data-k="fohBudget" type="number" step="10" min="0"></div>
+            <div class="field"><label for="s-normal">기준 조업도<small>개/월, 정상 생산량</small></label><input id="s-normal" data-k="normal" type="number" step="1000" min="1"></div>
+          </fieldset>
+          <fieldset><legend>이번 달 실제</legend>
+            <div class="field"><label for="s-prod">생산량<small>개</small></label><input id="s-prod" data-k="prod" type="number" step="1000" min="0"></div>
+            <div class="field"><label for="s-matAQ">재료 사용량<small>kg</small></label><input id="s-matAQ" data-k="matAQ" type="number" step="1000" min="0"></div>
+            <div class="field"><label for="s-matAP">재료 단가<small>천원/kg</small></label><input id="s-matAP" data-k="matAP" type="number" step="0.1" min="0"></div>
+            <div class="field"><label for="s-labAH">노무 시간<small>시간</small></label><input id="s-labAH" data-k="labAH" type="number" step="500" min="0"></div>
+            <div class="field"><label for="s-labAR">임률<small>천원/시간</small></label><input id="s-labAR" data-k="labAR" type="number" step="0.5" min="0"></div>
+            <div class="field"><label for="s-mchAH">기계 시간<small>시간</small></label><input id="s-mchAH" data-k="mchAH" type="number" step="500" min="0"></div>
+            <div class="field"><label for="s-vohA">변동간접비<small>백만원</small></label><input id="s-vohA" data-k="vohA" type="number" step="10" min="0"></div>
+            <div class="field"><label for="s-fohA">고정간접비<small>백만원</small></label><input id="s-fohA" data-k="fohA" type="number" step="10" min="0"></div>
+          </fieldset>
+          <fieldset><legend>판매</legend>
+            <div class="field"><label for="s-sold">판매량<small>개</small></label><input id="s-sold" data-k="sold" type="number" step="1000" min="0"></div>
+            <div class="field"><label for="s-price">판매단가<small>천원/개</small></label><input id="s-price" data-k="price" type="number" step="1" min="0"></div>
+            <div class="field"><label for="s-sellV">변동 판매비<small>천원/개</small></label><input id="s-sellV" data-k="sellV" type="number" step="0.5" min="0"></div>
+            <div class="field"><label for="s-sga">고정 판관비<small>백만원</small></label><input id="s-sga" data-k="sga" type="number" step="10" min="0"></div>
+          </fieldset>
+          <div class="form-actions"><button type="button" class="btn" id="std-reset">예시값으로 되돌리기</button></div>
+        </form>
+        <div class="mk-out">
+          <div class="kpis k4">
+            <div class="kpi"><div class="label">총 원가 차이</div><div class="v num" id="sk-tot"></div><div class="sub" id="sk-tot-sub"></div></div>
+            <div class="kpi"><div class="label">조업도 차이(저조업)</div><div class="v num" id="sk-vol"></div><div class="sub" id="sk-vol-sub"></div></div>
+            <div class="kpi"><div class="label">단위당 표준원가</div><div class="v num" id="sk-unit"></div><div class="sub" id="sk-unit-sub"></div></div>
+            <div class="kpi"><div class="label">전부원가 − 변동원가 이익</div><div class="v num" id="sk-cd"></div><div class="sub" id="sk-cd-sub"></div></div>
+          </div>
+          <div class="memo"><span class="label">보고 문장</span><p id="sk-memo"></p></div>
+          <div><h3>표준원가에서 실제원가까지</h3><div class="plotbox" id="sv-wf"></div></div>
+          <div class="scroll"><table class="mt" id="sv-tb"></table></div>
+          <div class="two2">
+            <div><h3>생산량과 조업도 차이</h3><div class="plotbox" id="sv-vol"></div><p class="hint">고정간접비는 기준 조업도만큼 만들 때 다 배부되도록 배부율을 정합니다. 덜 만들면 배부되지 못한 몫이 조업도 차이(불리)로 남습니다. 경기가 꺾여 가동률이 떨어질 때 원가가 갑자기 나빠 보이는 이유이고, 반도체 업황의 저조업 비용이 바로 이것입니다.</p></div>
+            <div><h3>전부원가 대 변동원가 손익</h3><div class="scroll"><table class="mt" id="sv-cost"></table></div>
+              <label class="chk"><input type="checkbox" id="sv-pro"> 원가 차이를 기말재고와 매출원가에 수량 비례로 나누기</label>
+              <p class="hint">전부원가에서는 고정간접비가 재고에 실려 다음 달로 넘어갑니다. 판매보다 많이 만들면 이익이 좋아 보이고, 그 크기는 (생산 − 판매) × 단위당 고정간접비입니다. 재고를 쌓아 이익을 만들 수 있다는 뜻이라 사업부 평가에는 변동원가 손익을 함께 봅니다.</p></div>
+          </div>
+          <div class="selfcheck" id="sv-check"></div>
+        </div>
+      </div>
+      <div class="method">
+        <h4>계산 기준</h4>
+        <ul>
+          <li>단위당 표준원가 = 재료(사용량 × 단가) + 노무(시간 × 임률) + 변동간접비(기계시간 × 배부율) + 고정간접비(기계시간 × 고정 배부율). 고정 배부율 = 고정간접비 예산 ÷ (기준 조업도 × 단위당 기계시간).</li>
+          <li>차이는 양수가 불리(원가 증가), 음수가 유리입니다. 가격·임률·소비 차이는 실제 투입량 기준, 수량·능률 차이는 표준 단가 기준, 조업도 차이는 예산 − 실제 생산량에 허용된 표준 기계시간 × 고정 배부율로 계산합니다.</li>
+          <li>재료는 구매량과 사용량이 같다고 가정합니다. 변동간접비와 고정간접비는 기계시간으로 배부합니다.</li>
+          <li>전부원가·변동원가 손익은 기초재고가 없고, 차이는 당기 매출원가(또는 기간비용)로 처리한다고 봅니다. 수량 비례 안분을 고르면 차이 중 기말재고 몫은 재고자산에 남깁니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== 사업부 ===== -->
+    <div class="toolpanel" role="tabpanel" id="panel-div" aria-labelledby="tab-div" hidden>
+      <div class="mk-out" style="margin-top: 8px">
+        <div><span class="lbl hint">본사 공통비 배부 기준</span><div class="seg2" id="dv-basis" role="group" aria-label="배부 기준"></div></div>
+        <div class="kpis k4">
+          <div class="kpi"><div class="label">회사 영업이익</div><div class="v num" id="dk-tot"></div><div class="sub">배부 기준과 무관</div></div>
+          <div class="kpi"><div class="label">C 사업부 공헌이익</div><div class="v num" id="dk-dcm"></div><div class="sub">직접 고정비 차감 후</div></div>
+          <div class="kpi"><div class="label">C 사업부 배부 후 이익</div><div class="v num" id="dk-oi"></div><div class="sub" id="dk-oi-sub"></div></div>
+          <div class="kpi"><div class="label">C를 접으면 회사 이익</div><div class="v num" id="dk-drop"></div><div class="sub" id="dk-drop-sub"></div></div>
+        </div>
+        <div class="memo"><span class="label">보고 문장</span><p id="dk-memo"></p></div>
+        <div><h3>사업부 이익의 단계</h3><div class="plotbox" id="dv-fig"></div></div>
+        <div class="scroll"><table class="mt" id="dv-tb"></table></div>
+        <div><h3>배부 기준별 배부 후 이익</h3><div class="scroll"><table class="mt" id="dv-mx"></table></div>
+          <p class="hint">같은 회사, 같은 실적인데 기준만 바꾸면 C 사업부가 흑자도 되고 적자도 됩니다. 배부 후 이익으로 사업부를 평가하거나 철수를 판단하면 배부 기준이 결론을 정해 버립니다. 사업부장이 통제할 수 있는 "사업부 공헌이익"으로 평가하고, 공통비는 원인(사용량)에 가까운 기준으로 나누는 것이 원칙입니다.</p></div>
+        <div class="two2">
+          <div><h3>보조부문 원가 배부 방법 비교</h3><div class="scroll"><table class="mt" id="dv-svc"></table></div>
+            <p class="hint">전력·유틸리티와 설비보전 부문은 서로에게도 서비스를 줍니다. 직접배부법은 이를 무시하고, 단계배부법은 한 방향만 반영하며, 상호배부법은 연립방정식으로 서로 주고받는 몫을 모두 반영합니다. 어느 방법이든 운영부문이 받는 총액은 보조부문 원가 합계와 같습니다.</p></div>
+          <div><h3>보조부문 사용 비율</h3><div class="scroll"><table class="mt" id="dv-use"></table></div>
+            <div class="callout2 warn" id="dv-drop"></div></div>
+        </div>
+        <div class="selfcheck" id="dv-check"></div>
+      </div>
+      <div class="method">
+        <h4>계산 기준</h4>
+        <ul>
+          <li>공헌이익 = 매출 − 변동비. 사업부 공헌이익 = 공헌이익 − 사업부 직접 고정비(사업부를 접으면 없어지는 고정비). 배부 후 이익 = 사업부 공헌이익 − 본사 공통비 배부액.</li>
+          <li>공통비 배부액 = 공통비 × 사업부의 기준값 ÷ 기준값 합계. 기준은 매출액, 인원, 면적, 설비 사용시간 네 가지를 비교합니다.</li>
+          <li>사업부를 접을 때 본사 공통비는 줄지 않고 남은 사업부가 나눠 진다고 봅니다. 실제로 줄어드는 공통비가 있으면 그만큼을 직접 고정비로 옮겨 다시 봅니다.</li>
+          <li>상호배부법은 T₁ = c₁ + u₂₁T₂, T₂ = c₂ + u₁₂T₁을 풀어 각 보조부문의 총원가(받은 몫 포함)를 구한 뒤 운영부문에 사용 비율대로 나눕니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== 재고 ===== -->
+    <div class="toolpanel" role="tabpanel" id="panel-inv" aria-labelledby="tab-inv" hidden>
+      <div class="mk-out" style="margin-top: 8px">
+        <div class="kpis k4">
+          <div class="kpi"><div class="label">재고 총액</div><div class="v num" id="ik-tot"></div><div class="sub" id="ik-tot-sub"></div></div>
+          <div class="kpi"><div class="label">재고 회전일</div><div class="v num" id="ik-dio"></div><div class="sub">재고 ÷ 연 매출원가 × 365</div></div>
+          <div class="kpi"><div class="label">목표까지 줄이면 풀리는 현금</div><div class="v num" id="ik-cash"></div><div class="sub" id="ik-cash-sub"></div></div>
+          <div class="kpi"><div class="label">평가충당금 + 저가법 손실</div><div class="v num" id="ik-res"></div><div class="sub" id="ik-res-sub"></div></div>
+        </div>
+        <div class="rgs"><label class="rg"><span>목표 재고 회전일 <b id="iv-tv"></b></span><input type="range" id="iv-t" min="30" max="70" step="1" value="55"></label></div>
+        <div class="memo"><span class="label">보고 문장</span><p id="ik-memo"></p></div>
+        <div class="two2">
+          <div><h3>재고 연령과 충당금</h3><div class="plotbox" id="iv-age"></div><p class="hint">오래된 재고일수록 팔릴 가능성이 낮아 회사 정책(예시: 91~180일 10%, 181~365일 30%, 1년 초과 100%)으로 충당금을 쌓습니다. 연령 구간과 비율은 회사마다 다릅니다.</p></div>
+          <div><h3>저가법: 원가와 순실현가능가치</h3><div class="scroll"><table class="mt" id="iv-nrv"></table></div><p class="hint">순실현가능가치 = 예상 판매가 − 완성까지 드는 원가 − 판매비. 장부원가보다 낮으면 그 차이만큼 평가손실을 인식합니다(K-IFRS 1002호 재고자산). 가격이 떨어지는 국면에서 연령과 관계없이 생깁니다.</p></div>
+        </div>
+        <div><h3>얼마씩, 언제 주문할까</h3>
+          <div class="rgs">
+            <label class="rg"><span>1회 주문비 <b id="eo-sv"></b></span><input type="range" id="eo-s" min="0.2" max="3" step="0.1" value="0.8"></label>
+            <label class="rg"><span>단위당 연 보유비 <b id="eo-hv"></b></span><input type="range" id="eo-h" min="0.6" max="6" step="0.2" value="2.4"></label>
+            <label class="rg"><span>서비스 수준 <b id="eo-zv"></b></span><input type="range" id="eo-z" min="1.28" max="2.33" step="0.01" value="1.65"></label>
+          </div>
+          <div class="readout hint" id="eo-out" aria-live="polite" style="margin-top: 8px"></div>
+          <div class="plotbox" id="eo-fig"></div>
+          <p class="hint">주문을 자주 하면 주문비가, 한 번에 많이 사면 보관·자금 비용이 늘어납니다. 두 비용의 합이 가장 작은 주문량이 경제적 주문량(EOQ)이고, 그 점에서 두 비용은 같습니다. 안전재고 = 서비스 수준의 z × 일 수요 표준편차 × √조달기간.</p></div>
+        <div class="selfcheck" id="iv-check"></div>
+      </div>
+      <div class="method">
+        <h4>계산 기준</h4>
+        <ul>
+          <li>재고 회전일 = 기말 재고 ÷ 연 매출원가 × 365(평균 재고를 쓰면 더 정확합니다). 회전일 하루 = 연 매출원가 ÷ 365만큼의 현금이 재고에 묶여 있다는 뜻입니다.</li>
+          <li>연령별 충당 비율과 품목별 판매가·완성원가는 가상 값입니다. 저가법 평가는 품목별로 하고, 손실은 매출원가에 넣습니다.</li>
+          <li>EOQ = √(2 × 연간 수요 × 1회 주문비 ÷ 단위당 연 보유비). 재주문점 = 일평균 수요 × 조달기간 + 안전재고. 수요가 정규분포라고 봅니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== 의사결정 ===== -->
+    <div class="toolpanel" role="tabpanel" id="panel-dec" aria-labelledby="tab-dec" hidden>
+      <div class="mk-out" style="margin-top: 8px">
+        <div class="two2">
+          <div><h3>특별주문: 받을까?</h3>
+            <div class="rgs">
+              <label class="rg"><span>주문 수량 <b id="sp-qv"></b></span><input type="range" id="sp-q" min="5000" max="40000" step="1000" value="25000"></label>
+              <label class="rg"><span>제시 단가 <b id="sp-pv"></b></span><input type="range" id="sp-p" min="45" max="80" step="1" value="58"></label>
+            </div>
+            <div class="plotbox" id="sp-fig"></div>
+            <div class="callout2" id="sp-out"></div></div>
+          <div><h3>외주 대 자가제조</h3>
+            <div class="rgs"><label class="rg"><span>외주 단가 <b id="mb-bv"></b></span><input type="range" id="mb-b" min="20" max="34" step="0.5" value="27"></label>
+              <label class="rg"><span>비운 설비로 벌 수 있는 공헌이익 <b id="mb-fv"></b></span><input type="range" id="mb-f" min="0" max="300" step="10" value="120"></label></div>
+            <div class="plotbox" id="mb-fig"></div>
+            <div class="callout2" id="mb-out"></div></div>
+        </div>
+        <div><h3>병목 공정이 있을 때 무엇을 먼저 만들까</h3><div class="plotbox" id="mx-fig"></div><div class="scroll"><table class="mt" id="mx-tb"></table></div>
+          <p class="hint">설비 시간이 모자라면 "개당 공헌이익"이 아니라 "병목 1분당 공헌이익" 순서로 채웁니다. 개당으로는 가장 남는 제품이 병목 시간을 많이 먹으면 회사 전체로는 덜 법니다. 제약이론(TOC)의 출발점입니다.</p></div>
+        <div><h3>여러 제품일 때의 손익분기</h3>
+          <div class="rgs"><label class="rg"><span>A 사업부 매출 비중 <b id="bp-wv"></b></span><input type="range" id="bp-w" min="30" max="90" step="0.5" value="61.5"></label></div>
+          <div class="readout hint" id="bp-out" aria-live="polite"></div>
+          <div class="plotbox" id="bp-fig"></div>
+          <p class="hint">제품마다 공헌이익률이 다르면 손익분기 매출은 구성비에 따라 움직입니다. 총매출이 같아도 공헌이익률이 낮은 제품 비중이 커지면 손익분기점이 올라갑니다. 사업부 손익 탭의 세 사업부를 그대로 썼습니다.</p></div>
+        <div class="selfcheck" id="dc-check"></div>
+      </div>
+      <div class="method">
+        <h4>계산 기준</h4>
+        <ul>
+          <li>특별주문 증분이익 = 주문 수량 × (제시 단가 − 단위 변동비) − 추가 고정비 − 밀려나는 기존 판매 × 기존 단위 공헌이익. 남는 설비 = 생산능력 − 기존 판매량.</li>
+          <li>외주 대 자가제조: 자가제조 비용 = 변동비 + 외주하면 없앨 수 있는 고정비. 외주 비용 = 외주 대금 − 비운 설비로 벌 수 있는 공헌이익. 회피할 수 없는 고정비는 어느 쪽이든 같아 비교에서 뺍니다.</li>
+          <li>병목 배합은 병목 하나, 수량을 연속값으로 볼 때 분당 공헌이익 순으로 수요까지 채우는 방법이 최적입니다. 검산 페이지에서 격자 탐색과 비교합니다.</li>
+          <li>여러 제품의 손익분기 매출 = 고정비 합계(직접 고정비 + 공통비) ÷ 가중 공헌이익률, 구성비가 그대로라고 봅니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-year">경영관리 한 해</a> <b>4</b> / 7</span>
+        <ol class="fsteps"><li><a href="plan-risk.html">계획</a></li><li><a href="budget-opt.html">예산</a></li><li><a href="pl-report.html">월 손익</a></li><li class="cur" aria-current="step"><span>원가 차이·사업부</span></li><li><a href="cost-stats.html">원가</a></li><li><a href="kpi-tree.html">지표</a></li><li><a href="mbo-kpi.html">평가·보상</a></li></ol>
+        <div class="fnav"><a class="fprev" href="pl-report.html"><small>← 이전 단계</small>월 손익 보고</a><a class="fnext" href="cost-stats.html"><small>다음 단계 →</small>원가 행태·불량 관리도</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">제 경력과의 연결</span><p>표준원가·실제원가 차이분석, 사업부별 구분회계와 제품별 수익성 분석, SAP 관리손익 월 마감</p></div><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="cost-stats.html">원가 행태 회귀(고정비·변동비 추정)</a></li><li><a href="semi-cycle.html">반도체 사이클(저조업 비용)</a></li><li><a href="pl-report.html">월 손익 보고</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/stats.js"></script>
+<script src="../assets/engines/mgmt.js"></script>
+<script src="../assets/mgmt-kit.js"></script>
+</body>
+</html>

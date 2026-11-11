@@ -43,7 +43,7 @@ add("기본 정보", "og:url이 실제 주소와 같다", badUrl.length === 0, b
 /* ---------- 3. 링크 ---------- */
 const ids = {}; pages.forEach((p) => { ids[p] = new Set((src[p].match(/\sid="([^"]+)"/g) || []).map((m) => m.slice(5, -1))); });
 /* 화면 코드가 탭으로 바꿔 여는 위치(정적 id가 아님) */
-const JS_ANCHORS = { "tools/capex-kit.html": ["bep", "var"] };
+const JS_ANCHORS = { "tools/capex-kit.html": ["bep", "var"], "tools/mgmt-kit.html": ["std", "div", "inv", "dec"] };
 const dead = [];
 pages.forEach((p) => {
   if (p === "404.html") return; /* 404는 사이트 루트 기준 절대 경로를 쓴다 */

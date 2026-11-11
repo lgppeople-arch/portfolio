@@ -18,6 +18,7 @@ const PAGES = [
   ["tools/plan-risk.html", "plan-risk", { kick: FPA, label: "실무 도구" }],
   ["tools/budget-opt.html", "budget-opt", { kick: FPA, label: "실무 도구" }],
   ["tools/pl-report.html", "pl-report", { kick: FPA, label: "실무 도구" }],
+  ["tools/mgmt-kit.html", "mgmt-kit", { kick: FPA, label: "실무 도구" }],
   ["tools/cost-stats.html", "cost-stats", { kick: FPA, label: "실무 도구" }],
   ["tools/mbo-kpi.html", "mbo-kpi", { kick: FPA, label: "실무 도구" }],
   ["tools/cash-13w.html", "cash-13w", { kick: FPA, label: "실무 도구" }],

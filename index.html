@@ -327,6 +327,7 @@
           </ul></details>
           <div class="tools">
             <a class="tool-link" href="tools/pl-report.html">월 손익 보고 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/mgmt-kit.html#div">사업부 손익·공통비 배부 <span class="arr">→</span></a>
           </div>
         </li>
         <li class="stage">
@@ -342,6 +343,7 @@
           <div class="tools">
             <a class="tool-link" href="tools/pl-report.html">3개월 추정 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/pl-report.html#trend">추세선·±1σ 이상치 <span class="arr">→</span></a>
+            <a class="tool-link" href="tools/mgmt-kit.html">표준원가 차이·조업도 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/cost-stats.html">원가 회귀·불량 관리도 <span class="arr">→</span></a>
             <a class="tool-link" href="tools/capex-kit.html#var">계획 대비 실적 <span class="arr">→</span></a>
           </div>
@@ -662,7 +664,7 @@
   /* 홈 검산: 계산 엔진 23개와 검산 165개는 첫 화면에 필요 없으므로, 검산 배지가 가까워지거나 브라우저가 한가할 때 불러와 돌린다 */
   const SRC = ["fin.js", "stats.js", "engines/post.js", "engines/ma.js", "engines/holdco.js", "engines/cash.js", "engines/fx.js", "engines/mbo.js", "engines/pl.js", "engines/three.js", "engines/cycle.js",
     "data/samsung.js", "data/sectors.js", "data/deal-hhi.js", "engines/doa.js", "engines/capital.js", "engines/planrisk.js", "engines/budget.js", "engines/costs.js", "engines/capexmc.js",
-    "engines/kpitree.js", "engines/statlab.js", "engines/prolab.js", "checks.js"];
+    "engines/kpitree.js", "engines/statlab.js", "engines/prolab.js", "engines/mgmt.js", "checks.js"];
   let started = false;
   function load(i, done) {
     if (i >= SRC.length) return done();
@@ -672,7 +674,7 @@
   }
   function run() {
     try {
-      const W = window, res = W.Checks.run({ Fin: W.Fin, Stats: W.Stats, Capital: W.CapitalEngine, PlanRisk: W.PlanRiskEngine, Budget: W.BudgetEngine, Costs: W.CostEngine, CapexMc: W.CapexMcEngine, KpiTree: W.KpiTreeEngine, StatLab: W.StatLab, ProLab: W.ProLab, Post: W.PostEngine, MA: W.MAEngine, Holdco: W.HoldcoEngine, Cash: W.CashEngine, Fx: W.FxEngine, Mbo: W.MboEngine, Pl: W.PlEngine, Three: W.ThreeEngine, Cycle: W.CycleEngine, Samsung: W.SamsungData, Doa: W.DoaEngine, Sectors: W.SectorsData, Deal: W.DealHhi });
+      const W = window, res = W.Checks.run({ Fin: W.Fin, Stats: W.Stats, Capital: W.CapitalEngine, PlanRisk: W.PlanRiskEngine, Budget: W.BudgetEngine, Costs: W.CostEngine, CapexMc: W.CapexMcEngine, KpiTree: W.KpiTreeEngine, StatLab: W.StatLab, ProLab: W.ProLab, Mgmt: W.MgmtEngine, Post: W.PostEngine, MA: W.MAEngine, Holdco: W.HoldcoEngine, Cash: W.CashEngine, Fx: W.FxEngine, Mbo: W.MboEngine, Pl: W.PlEngine, Three: W.ThreeEngine, Cycle: W.CycleEngine, Samsung: W.SamsungData, Doa: W.DoaEngine, Sectors: W.SectorsData, Deal: W.DealHhi });
       const pass = res.filter((r) => r.ok).length, pill = document.getElementById("live-pill");
       pill.className = "pill " + (pass === res.length ? "ok" : "bad");
       pill.textContent = pass + " / " + res.length;

@@ -13,6 +13,7 @@
     KpiTree: require("./engines/kpitree.js"),
     StatLab: require("./engines/statlab.js"),
     ProLab: require("./engines/prolab.js"),
+    Mgmt: require("./engines/mgmt.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -72,7 +73,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, ProLab, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, StatLab, ProLab, Mgmt, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -644,6 +645,33 @@
       add(G, "정보의 가치: EVPI = 상태별 최선의 기댓값 − 최선 대안의 기댓값 ≥ 0, 한 대안이 늘 최선이면 0", near(d.emv[0], 24, 1e-9) && near(d.perfect, 48, 1e-9) && near(d.evpi, 24, 1e-9) && near(dom.evpi, 0, 1e-12), d.evpi.toFixed(1) + "억원");
       const pv = L.pvm(L.PVM), same = L.pvm(L.PVM.map((x) => ({ p0: x.p0, q0: x.q0, p1: x.p0, q1: x.q0 * 1.1 })));
       add(G, "가격 + 물량 + 믹스 = 매출 차이, 단가와 구성이 그대로면 가격·믹스 효과 = 0", near(pv.price + pv.volume + pv.mix, pv.r1 - pv.r0, 1e-6) && near(same.price, 0, 1e-9) && near(same.mix, 0, 1e-6), (pv.volume / 100).toFixed(0) + " + " + (pv.price / 100).toFixed(0) + " + " + (pv.mix / 100).toFixed(0));
+    }
+
+    /* ---------- 관리회계 키트 ---------- */
+    if (Mgmt) {
+      const M = Mgmt, G = "관리회계", x = clone(M.STD), V = M.variances(x);
+      add(G, "표준원가 차이 8개의 합 = 실제원가 − 실제 생산량의 표준원가", near(V.total, V.actual - V.stdCost, 1e-9), V.total.toFixed(1) + "백만원");
+      const y = clone(x); Object.assign(y, { prod: y.normal, matAQ: y.matQ * y.normal, matAP: y.matP, labAH: y.labH * y.normal, labAR: y.labR, mchAH: y.mchH * y.normal, vohA: y.mchH * y.normal * y.vohR / 1000, fohA: y.fohBudget });
+      const Vz = M.variances(y);
+      add(G, "실제가 모두 표준과 같고 기준 조업도만큼 만들면 모든 차이 = 0", Vz.list.every((d) => Math.abs(d.val) < 1e-9), "");
+      const lo = M.volVar(x, x.normal * 0.5), hi = M.volVar(x, x.normal * 1.2);
+      add(G, "조업도 차이: 기준 조업도에서 0, 덜 만들면 불리(+), 더 만들면 유리(−)", near(M.volVar(x, x.normal), 0, 1e-9) && lo > 0 && hi < 0, (lo).toFixed(0) + " / " + hi.toFixed(0));
+      const cs = M.costing(x, false), cp = M.costing(x, true), eq = M.costing(Object.assign(clone(x), { sold: x.prod }), false);
+      add(G, "전부원가 이익 − 변동원가 이익 = (생산 − 판매) × 단위 고정간접비, 생산 = 판매면 0", near(cs.diff, cs.theory, 1e-9) && near(eq.diff, 0, 1e-9) && near(cp.endInvAbs - cp.endInvVar, cp.diff, 1e-9), cs.diff.toFixed(1));
+      const D = M.DIV, tots = Object.keys(D.bases).map((b) => M.divisions(D, b).total);
+      add(G, "공통비 배부: 기준이 달라도 회사 이익 동일, 배부액 합계 = 공통비", tots.every((t) => near(t, tots[0], 1e-9)) && Object.keys(D.bases).every((b) => near(Fin.sum(M.divisions(D, b).alloc), D.common, 1e-9)), tots[0].toFixed(0));
+      const sv = ["direct", "step", "reciprocal"].map((k) => Fin.sum(M.service(D, k))), T = M.reciprocalTotals(D);
+      add(G, "보조부문 배부 세 방법 모두 원가 합계 보존, 상호배부 연립방정식 성립", sv.every((v) => near(v, Fin.sum(D.svc.cost), 1e-9)) && near(T[0], D.svc.cost[0] + D.svc.use[1][0] * T[1], 1e-9) && near(T[1], D.svc.cost[1] + D.svc.use[0][1] * T[0], 1e-9), sv.map((v) => v.toFixed(0)).join(" / "));
+      const dr = M.dropTest(D, 2);
+      add(G, "사업부를 접으면 회사 이익이 그 사업부 공헌이익만큼 줄어든다(공통비는 남음)", near(dr.before - dr.after, dr.loss, 1e-9), dr.before.toFixed(0) + " → " + dr.after.toFixed(0));
+      const e = M.eoq(M.INV.eoq), d = e.q * 1e-3, I = M.inventory(M.INV);
+      add(G, "EOQ: 주문비 = 보유비, 양옆보다 총비용이 작다 · 저가법 손실 = max(0, 원가 − 순실현가능가치) × 수량", near(M.INV.eoq.D / e.q * M.INV.eoq.S, e.q / 2 * M.INV.eoq.H / 1000, 1e-9) && e.cost(e.q - d) > e.minCost && e.cost(e.q + d) > e.minCost && I.nrv.every((n) => near(n.loss, Math.max(0, n.cost - n.nrv) * n.qty / 1000, 1e-12)), Math.round(e.q) + "개");
+      const mx = M.mix(M.DEC.mix, "min"), it = mx.items; let best = 0;
+      for (let a = 0; a <= it[0].dem; a += 25) for (let b = 0; b <= it[1].dem; b += 25) { const left = M.DEC.mix.cap - a * it[0].min - b * it[1].min; if (left < 0) continue; const cq = Math.min(it[2].dem, left / it[2].min); best = Math.max(best, (a * it[0].cm + b * it[1].cm + cq * it[2].cm) / 1000); }
+      add(G, "병목 배합: 분당 공헌이익 순 배합 ≥ 격자 탐색 최대값, 병목 시간 초과 없음", mx.cm >= best - 1e-9 && mx.left >= -1e-9, mx.cm.toFixed(1) + " ≥ " + best.toFixed(1));
+      const bp = M.multiBep(D), sp = M.special(M.DEC.special), mb = M.makeBuy(M.DEC.make);
+      add(G, "손익분기에서 가중 공헌이익 = 고정비, 특별주문 최저 단가에서 증분이익 0, 외주 무차별 단가에서 두 비용 동일",
+        near(bp.bep * bp.wcmr, bp.fixed, 1e-9) && near(M.special(Object.assign({}, M.DEC.special, { offer: sp.minPrice })).gain, 0, 1e-9) && near(M.makeBuy(Object.assign({}, M.DEC.make, { buy: mb.indiff })).diff, 0, 1e-9), "손익분기 " + bp.bep.toFixed(0));
     }
     return out;
   }
