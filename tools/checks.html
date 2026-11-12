@@ -83,7 +83,7 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.12</span><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
@@ -113,6 +113,7 @@
 <script src="../assets/engines/mgmt.js"></script>
 <script src="../assets/engines/asset.js"></script>
 <script src="../assets/engines/rules.js"></script>
+<script src="../assets/op-sim.js"></script>
 <script src="../assets/checks.js"></script>
 <script>
 (function () {
@@ -122,7 +123,7 @@
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, Bsc: window.BscEngine, StatLab: window.StatLab, ProLab: window.ProLab, Mgmt: window.MgmtEngine, Asset: window.AssetEngine, Rules: window.RulesEngine, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, Bsc: window.BscEngine, StatLab: window.StatLab, ProLab: window.ProLab, Mgmt: window.MgmtEngine, Asset: window.AssetEngine, Rules: window.RulesEngine, OpSim: window.OpSim, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }

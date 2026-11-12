@@ -17,6 +17,7 @@
     Mgmt: require("./engines/mgmt.js"),
     Asset: require("./engines/asset.js"),
     Rules: require("./engines/rules.js"),
+    OpSim: require("./op-sim.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -76,7 +77,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -676,6 +677,16 @@
       add(G, "손익분기에서 가중 공헌이익 = 고정비, 특별주문 최저 단가에서 증분이익 0, 외주 무차별 단가에서 두 비용 동일",
         near(bp.bep * bp.wcmr, bp.fixed, 1e-9) && near(M.special(Object.assign({}, M.DEC.special, { offer: sp.minPrice })).gain, 0, 1e-9) && near(M.makeBuy(Object.assign({}, M.DEC.make, { buy: mb.indiff })).diff, 0, 1e-9), "손익분기 " + bp.bep.toFixed(0));
     }
+    if (Mgmt && Mgmt.pvm) {
+      const M = Mgmt, G = "관리회계", R = M.pvm(M.PVM), same = M.pvm({ items: M.PVM.items.map((x) => Object.assign({}, x, { qa: x.qb, pa: x.pb, va: x.vb })), fb: 1, fa: 1 }), up = M.pvm({ items: M.PVM.items.map((x) => Object.assign({}, x, { qa: x.qb * 1.2, pa: x.pb, va: x.vb })), fb: 1, fa: 1 });
+      add(G, "판매 차이(PVM): 물량 + 믹스 + 단가 + 변동비 + 고정비 = 영업이익 차이, 실적 = 계획이면 모두 0, 구성비가 같으면 믹스 0", near(R.volume + R.mix + R.price + R.cost + R.fixed, R.diff, 1e-9) && [same.volume, same.mix, same.price, same.cost, same.fixed].every((v) => Math.abs(v) < 1e-12) && Math.abs(up.mix) < 1e-9 && near(up.volume, up.diff, 1e-9), "믹스 " + R.mix.toFixed(1) + " · 차이 " + R.diff.toFixed(1));
+    }
+
+    if (OpSim) {
+      const O = OpSim, G = "관리회계", z = O.calc(0, 0, 0), r = O.calc(0.03, -0.08, 0.04), p1 = O.calc(0.01, 0, 0);
+      add(G, "홈 미니 시뮬레이터: 단가 + 물량 + 원가 효과 = 영업이익 차이, 기준에서 영업이익 100억·이익률 10%, 단가 1% = 10억", near(z.op, 100, 1e-12) && near(z.m, 0.1, 1e-12) && near(r.eff.price + r.eff.volume + r.eff.cost, r.op - r.op0, 1e-9) && near(p1.op - 100, 10, 1e-9) && near(z.dol, 3.5, 1e-12), (r.op - r.op0).toFixed(1) + "억원");
+    }
+
     /* ---------- 균형성과표 ---------- */
     if (Bsc && KpiTree) {
       const B = Bsc, G = "균형성과표", cov = B.coverage(KpiTree.KEYS), ids = B.OBJ.map((o) => o.id);

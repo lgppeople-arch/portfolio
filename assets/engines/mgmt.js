@@ -152,5 +152,31 @@
     return { cmr: cmr, w: w, wcmr: wcmr, fixed: fixed, bep: fixed / wcmr, rev: sum(d.rev), mos: 1 - fixed / wcmr / sum(d.rev) };
   }
 
-  return { K, STD, standard, variances, volVar, costing, DIV, divisions, allBases, service, reciprocalTotals, dropTest, INV, inventory, eoq, DEC, special, makeBuy, mix, multiBep };
+  /* ---------- 판매 차이(PVM) 영업이익 브리지 ----------
+     제품 i의 계획(qb, pb, vb)과 실적(qa, pa, va). 수량 천 개, 단가·단위 변동비 만원 → 금액 억원 = 수량 × 단가 ÷ 10.
+     물량 = (실적 총수량 − 계획 총수량) × 계획 구성비 기준 가중평균 단위 공헌이익
+     믹스 = Σ(실적 수량 − 실적 총수량 × 계획 구성비) × 계획 단위 공헌이익
+     단가 = Σ(실적 단가 − 계획 단가) × 실적 수량, 변동비 = −Σ(실적 변동비 − 계획 변동비) × 실적 수량, 고정비 = −(실적 − 계획)
+     다섯 효과의 합 = 실적 영업이익 − 계획 영업이익 */
+  const PVM = {
+    items: [
+      { name: "A 고부가 부품", qb: 30, pb: 60, vb: 30, qa: 24, pa: 62, va: 31 },
+      { name: "B 범용 부품", qb: 100, pb: 20, vb: 14, qa: 118, pa: 19.2, va: 14.3 },
+      { name: "C 신규 부품", qb: 20, pb: 40, vb: 26, qa: 22, pa: 39, va: 25 }
+    ],
+    fb: 120, fa: 123
+  };
+  function pvm(d) {
+    const it = d.items, U = 10, TQb = sum(it.map((x) => x.qb)), TQa = sum(it.map((x) => x.qa));
+    const cmb = it.map((x) => x.pb - x.vb), mb = it.map((x) => (TQb > 0 ? x.qb / TQb : 0)), wcm = sum(cmb.map((c, i) => c * mb[i]));
+    const rows = it.map((x, i) => ({ name: x.name, mixB: mb[i], mixA: TQa > 0 ? x.qa / TQa : 0, cmb: cmb[i], cma: x.pa - x.va,
+      mix: (x.qa - TQa * mb[i]) * cmb[i] / U, price: (x.pa - x.pb) * x.qa / U, cost: -(x.va - x.vb) * x.qa / U,
+      opB: x.qb * cmb[i] / U, opA: x.qa * (x.pa - x.va) / U, revB: x.qb * x.pb / U, revA: x.qa * x.pa / U }));
+    const volume = (TQa - TQb) * wcm / U, mix = sum(rows.map((r) => r.mix)), price = sum(rows.map((r) => r.price)), cost = sum(rows.map((r) => r.cost)), fixed = -(d.fa - d.fb);
+    const opB = sum(rows.map((r) => r.opB)) - d.fb, opA = sum(rows.map((r) => r.opA)) - d.fa;
+    return { rows: rows, TQb: TQb, TQa: TQa, wcm: wcm, volume: volume, mix: mix, price: price, cost: cost, fixed: fixed, opB: opB, opA: opA, diff: opA - opB,
+      revB: sum(rows.map((r) => r.revB)), revA: sum(rows.map((r) => r.revA)) };
+  }
+
+  return { K, STD, standard, variances, volVar, costing, DIV, divisions, allBases, service, reciprocalTotals, dropTest, INV, inventory, eoq, DEC, special, makeBuy, mix, multiBep, PVM, pvm };
 });

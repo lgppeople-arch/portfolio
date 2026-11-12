@@ -173,13 +173,59 @@
   }
   ["sp-q", "sp-p", "mb-b", "mb-f", "bp-w"].forEach((id) => $(id).addEventListener("input", drawDec));
 
+
+  /* ================= 5. 판매 차이(PVM) ================= */
+  let PV = clone(M.PVM);
+  const PVK = [["qb", "계획 수량"], ["pb", "계획 단가"], ["vb", "계획 변동비"], ["qa", "실적 수량"], ["pa", "실적 단가"], ["va", "실적 변동비"]];
+  function buildPvm() {
+    const t = $("pv-in"); t.textContent = "";
+    const th = F.el("thead"), tr = F.el("tr"); tr.appendChild(F.el("th", { text: "제품" })); PVK.forEach((k) => tr.appendChild(F.el("th", { text: k[1] }))); th.appendChild(tr); t.appendChild(th);
+    const tb = F.el("tbody");
+    PV.items.forEach((it, i) => { const row = F.el("tr"); row.appendChild(F.el("th", { text: it.name }));
+      PVK.forEach((k) => { const td = F.el("td"), inp = F.el("input", { type: "number", step: k[0][0] === "q" ? "1" : "0.1", min: "0", value: String(it[k[0]]), "aria-label": it.name + " " + k[1], class: "pv-cell" });
+        inp.addEventListener("input", () => { const v = +inp.value; if (inp.value === "" || !isFinite(v) || v < 0) return; PV.items[i][k[0]] = v; drawPvm(); }); td.appendChild(inp); row.appendChild(td); });
+      tb.appendChild(row); });
+    t.appendChild(tb);
+    $("pv-fa").value = PV.fa;
+  }
+  function drawPvm() {
+    PV.fa = +$("pv-fa").value; $("pv-fav").textContent = fmt(PV.fa) + "억원"; $("pv-fbv").textContent = fmt(PV.fb);
+    const R = M.pvm(PV), eff = [["물량", R.volume], ["믹스", R.mix], ["단가", R.price], ["변동비", R.cost], ["고정비", R.fixed]];
+    const big = eff.slice().sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))[0];
+    put({ "pv-opb": fmt(R.opB, 1), "pv-opb-sub": "매출 " + fmt(R.revB, 1) + " · 이익률 " + pc(R.opB / R.revB), "pv-opa": fmt(R.opA, 1), "pv-opa-sub": sg(R.diff, 1) + " · 매출 " + fmt(R.revA, 1),
+      "pv-q": fmt(R.TQb) + " → " + fmt(R.TQa), "pv-q-sub": "천 개 · " + sg((R.TQa / R.TQb - 1) * 100, 1) + "%", "pv-big": big[0] + " " + sg(big[1], 1), "pv-big-sub": "억원 · 다섯 효과 중 절댓값 최대" });
+    const worst = R.rows.slice().sort((a, b) => a.mix - b.mix)[0], gain = R.rows.slice().sort((a, b) => b.mix - a.mix)[0];
+    $("pv-memo").textContent = "영업이익은 계획 " + fmt(R.opB, 1) + "억원에서 실적 " + fmt(R.opA, 1) + "억원으로 " + sg(R.diff, 1) + "억원 차이가 났습니다. 매출은 " + sg(R.revA - R.revB, 1) + "억원" + (Math.abs(R.revA - R.revB) < Math.abs(R.diff) / 3 ? "으로 거의 같아 매출만 보면 원인이 보이지 않습니다. " : "입니다. ") +
+      "총수량이 " + sg((R.TQa / R.TQb - 1) * 100, 1) + "% 바뀌어 물량 효과는 " + sg(R.volume, 1) + "억원이지만, 판매가 " + gain.name + " 쪽으로 옮겨 가고 " + worst.name + " 판매는 줄어 믹스 효과가 " + sg(R.mix, 1) + "억원입니다. 단가 " + sg(R.price, 1) + ", 변동비 " + sg(R.cost, 1) + ", 고정비 " + sg(R.fixed, 1) + "억원을 더하면 차이와 정확히 같습니다.";
+    /* 다리 그림 */
+    const fr = frame("pv-fig", 250, "계획 영업이익에서 물량·믹스·단가·변동비·고정비 효과를 거쳐 실적 영업이익까지의 다리"), s2 = fr.svg, l = 46, r = fr.W - 10, steps = [["계획", R.opB, true]].concat(eff.map((e) => [e[0], e[1], false])).concat([["실적", R.opA, true]]);
+    let run = 0; const segs = steps.map((st) => { if (st[2]) { run = st[1]; return [st[0], 0, st[1], st[2], st[1]]; } const a0 = run; run += st[1]; return [st[0], a0, run, false, st[1]]; });
+    const vals = [0].concat(segs.map((g) => g[1]), segs.map((g) => g[2])), lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), tk = F.niceTicks(lo, hi, 4), y = lin(Math.min(tk.lo, lo), Math.max(tk.hi, hi), 200, 18);
+    tk.ticks.forEach((t) => { sv("line", { x1: l, x2: r, y1: y(t), y2: y(t), stroke: t === 0 ? c("--ink-2") : c("--rule-soft") }, s2); tx(s2, l - 6, y(t) + 4, fmt(t), { "text-anchor": "end", "font-size": 10, fill: c("--muted"), class: "n" }); });
+    const n = segs.length, bw = (r - l) / n * 0.6, X = (i) => l + (i + 0.5) * (r - l) / n;
+    segs.forEach((g, i) => { const top = Math.max(g[1], g[2]), bot = Math.min(g[1], g[2]), col = g[3] ? c("--total") : g[4] >= 0 ? c("--pos") : c("--neg");
+      sv("rect", { x: X(i) - bw / 2, y: y(top), width: bw, height: Math.max(1, y(bot) - y(top)), fill: col, opacity: g[3] ? 0.85 : 0.75, rx: 2 }, s2);
+      if (i < n - 1) sv("line", { x1: X(i) + bw / 2, x2: X(i + 1) - bw / 2, y1: y(g[2]), y2: y(g[2]), stroke: c("--muted"), "stroke-dasharray": "3 3" }, s2);
+      tx(s2, X(i), y(top) - 5, g[3] ? fmt(g[4], 1) : sg(g[4], 1), { "text-anchor": "middle", "font-size": fr.nar ? 9.5 : 11, fill: c("--ink"), "font-weight": g[3] ? 700 : 400, class: "n" });
+      tx(s2, X(i), 222, g[0], { "text-anchor": "middle", "font-size": fr.nar ? 10 : 11.5, fill: c("--ink"), "font-weight": g[3] ? 700 : 400 }); });
+    tx(s2, r, 244, "억원 · 초록 = 이익을 늘린 효과, 빨강 = 줄인 효과", { "text-anchor": "end", "font-size": 10, fill: c("--muted") });
+    const pe = (v) => ({ t: sg(v, 1), c: v < -0.05 ? "u" : v > 0.05 ? "f" : "" });  /* 이익 효과: 마이너스 = 불리 */
+    table("pv-out", ["제품", "구성비 계획→실적", "단위 공헌이익 계획→실적", "믹스", "단가", "변동비"], R.rows.map((q) => [q.name, pc(q.mixB, 0) + " → " + pc(q.mixA, 0), fmt(q.cmb, 1) + " → " + fmt(q.cma, 1), pe(q.mix), pe(q.price), pe(q.cost)]).concat([["합계", "", "", pe(R.mix), pe(R.price), pe(R.cost)]]), { sum: true });
+    const same = M.pvm({ items: PV.items.map((x) => Object.assign({}, x, { qa: x.qb, pa: x.pb, va: x.vb })), fb: PV.fb, fa: PV.fb }), scaled = M.pvm({ items: PV.items.map((x) => Object.assign({}, x, { qa: x.qb * 1.1, pa: x.pb, va: x.vb })), fb: PV.fb, fa: PV.fb });
+    checks("pv-check", [["다섯 효과의 합 = 실적 − 계획 영업이익", near(R.volume + R.mix + R.price + R.cost + R.fixed, R.diff, 1e-9)], ["실적 = 계획이면 모든 효과 0", [same.volume, same.mix, same.price, same.cost, same.fixed].every((v) => Math.abs(v) < 1e-9)], ["구성비가 그대로면 믹스 0, 물량만 남음", Math.abs(scaled.mix) < 1e-9 && near(scaled.volume, scaled.diff, 1e-9)]]);
+  }
+  $("pv-fa").addEventListener("input", drawPvm);
+  $("pv-same").addEventListener("click", () => { PV.items.forEach((x) => { x.qa = x.qb; x.pa = x.pb; x.va = x.vb; }); PV.fa = PV.fb; buildPvm(); drawPvm(); });
+  $("pv-reset").addEventListener("click", () => { PV = clone(M.PVM); buildPvm(); drawPvm(); });
+  buildPvm();
+
   /* ================= 연결 ================= */
   const drawn = {};
-  const DRAW = [drawStd, drawDiv, drawInv, drawDec];
+  const DRAW = [drawStd, drawDiv, drawInv, drawDec, drawPvm];
   let cur = 0;
-  const select = F.tabs(["tab-std", "tab-div", "tab-inv", "tab-dec"], (i) => { cur = i; DRAW[i](); drawn[i] = true; try { history.replaceState(null, "", "#" + ["std", "div", "inv", "dec"][i]); } catch (e) { /* 무시 */ } });
+  const select = F.tabs(["tab-std", "tab-div", "tab-inv", "tab-dec", "tab-pvm"], (i) => { cur = i; DRAW[i](); drawn[i] = true; try { history.replaceState(null, "", "#" + ["std", "div", "inv", "dec", "pvm"][i]); } catch (e) { /* 무시 */ } });
   fill();
-  const h = (location.hash || "").slice(1), idx = ["std", "div", "inv", "dec"].indexOf(h);
+  const h = (location.hash || "").slice(1), idx = ["std", "div", "inv", "dec", "pvm"].indexOf(h);
   select(idx >= 0 ? idx : 0);
   F.onRedraw(() => DRAW[cur]());
 })();
