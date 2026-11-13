@@ -83,7 +83,7 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.12</span><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.13</span><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
@@ -114,16 +114,17 @@
 <script src="../assets/engines/asset.js"></script>
 <script src="../assets/engines/rules.js"></script>
 <script src="../assets/op-sim.js"></script>
+<script src="../assets/engines/advviz.js"></script>
 <script src="../assets/checks.js"></script>
 <script>
 (function () {
   "use strict";
   const F = window.Fin, $ = F.$;
-  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html", "재무제표": "fsa.html", "반도체 사이클": "semi-cycle.html", "삼성전자 공시": "samsung.html", "위임전결": "doa.html", "통계": null, "적정부채": "capital.html", "사업계획": "plan-risk.html", "예산배분": "budget-opt.html", "원가관리": "cost-stats.html", "설비투자 확률": "capex-kit.html#mc", "KPI 트리": "kpi-tree.html", "통계 기법": "stats-notes.html", "추정 기법": "pro-methods.html", "관리회계": "mgmt-kit.html", "균형성과표": "kpi-tree.html#bsc", "자산·운전자본": "asset-kit.html", "제도 노트": "rules-note.html#s-tax" };
+  const TOOL = { "공통": null, "사후관리": "post-review.html", "M&A": "ma-valuation.html", "지주사": "holdco-nav.html", "자금수지": "cash-13w.html", "환리스크": "fx-hedge.html", "성과평가": "mbo-kpi.html", "손익보고": "pl-report.html", "재무제표": "fsa.html", "반도체 사이클": "semi-cycle.html", "삼성전자 공시": "samsung.html", "위임전결": "doa.html", "통계": null, "적정부채": "capital.html", "사업계획": "plan-risk.html", "예산배분": "budget-opt.html", "원가관리": "cost-stats.html", "설비투자 확률": "capex-kit.html#mc", "KPI 트리": "kpi-tree.html", "통계 기법": "stats-notes.html", "추정 기법": "pro-methods.html", "관리회계": "mgmt-kit.html", "균형성과표": "kpi-tree.html#bsc", "자산·운전자본": "asset-kit.html", "제도 노트": "rules-note.html#s-tax", "고급 차트": "charts.html#s-adv" };
   const t0 = performance.now();
   let res;
   try {
-    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, Bsc: window.BscEngine, StatLab: window.StatLab, ProLab: window.ProLab, Mgmt: window.MgmtEngine, Asset: window.AssetEngine, Rules: window.RulesEngine, OpSim: window.OpSim, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
+    res = window.Checks.run({ Fin: window.Fin, Stats: window.Stats, Capital: window.CapitalEngine, PlanRisk: window.PlanRiskEngine, Budget: window.BudgetEngine, Costs: window.CostEngine, CapexMc: window.CapexMcEngine, KpiTree: window.KpiTreeEngine, Bsc: window.BscEngine, StatLab: window.StatLab, ProLab: window.ProLab, Mgmt: window.MgmtEngine, Asset: window.AssetEngine, Rules: window.RulesEngine, OpSim: window.OpSim, AdvViz: window.AdvViz, Post: window.PostEngine, MA: window.MAEngine, Holdco: window.HoldcoEngine, Cash: window.CashEngine, Fx: window.FxEngine, Mbo: window.MboEngine, Pl: window.PlEngine, Three: window.ThreeEngine, Cycle: window.CycleEngine, Samsung: window.SamsungData, Doa: window.DoaEngine, Sectors: window.SectorsData, Deal: window.DealHhi });
   } catch (e) {
     res = [{ group: "실행", name: "검산을 실행하지 못했습니다", ok: false, detail: String(e && e.message || e) }];
   }

@@ -6,11 +6,11 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>차트 선택과 디자인 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법">
+<meta name="description" content="질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리와 고급 차트 8종(생키·트리맵·마리메꼬·평행 좌표 등)의 쓸모와 한계, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="이기표 재무기획 포트폴리오">
 <meta property="og:title" content="차트 선택과 디자인 · 이기표">
-<meta property="og:description" content="질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법">
+<meta property="og:description" content="질문 유형별로 고르는 재무·경영관리 차트 17종 갤러리와 고급 차트 8종(생키·트리맵·마리메꼬·평행 좌표 등)의 쓸모와 한계, 나쁜 차트 고치기, 색 쓰는 법, 엑셀·PPT에서 만드는 법">
 <meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/charts.html">
 <meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/charts.png">
 <meta property="og:image:width" content="1200">
@@ -65,6 +65,47 @@
   details.how { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 8px 0; }
   details.how summary { cursor: pointer; padding: 12px 16px; font-weight: 700; font-size: var(--s-2); }
   details.how ol { margin: 0 16px 14px 34px; padding: 0; display: grid; gap: 4px; font-size: var(--s-1); color: var(--ink-2); line-height: 1.65; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .adv { margin: 30px 0 38px; padding-top: 18px; border-top: 1px solid var(--rule); scroll-margin-top: 80px; }
+  .adv h3 { font-family: var(--f-display); font-size: var(--s-4); font-weight: 800; margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  .vd { display: inline-block; padding: 2px 9px; border-radius: 999px; font-family: var(--f-body); font-size: 11.5px; font-weight: 700; line-height: 1.6; white-space: nowrap; border: 1px solid var(--rule); }
+  .vd.ok { color: color-mix(in srgb, var(--pos) 75%, var(--ink)); background: color-mix(in srgb, var(--pos) 10%, var(--surface)); border-color: color-mix(in srgb, var(--pos) 35%, var(--rule)); }
+  .vd.mid { color: var(--input); background: color-mix(in srgb, var(--input) 8%, var(--surface)); border-color: color-mix(in srgb, var(--input) 30%, var(--rule)); }
+  .vd.no { color: var(--neg-ink); background: color-mix(in srgb, var(--neg) 7%, var(--surface)); border-color: color-mix(in srgb, var(--neg) 30%, var(--rule)); }
+  .vd.out { color: var(--muted); background: var(--surface); }
+  table.advt { min-width: 760px; }
+  .minard { margin: 16px 0; padding: 14px 18px; border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); background: var(--surface); max-width: 86ch; }
+  .minard .mk { font-size: 12px; font-weight: 700; color: var(--accent); }
+  .minard p { margin: 6px 0 0; font-size: var(--s-1); line-height: 1.75; color: var(--ink-2); }
+  .minard p b { color: var(--ink); }
+  .ctl .chips2 button { padding: 4px 10px; font-size: 12px; }
+  .ctl { align-items: center; }
+  .pair .plotbox { min-height: 200px; }
 </style>
 </head>
 <body>
@@ -91,8 +132,8 @@
       <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 차트 선택과 디자인</div>
       <div class="rpt-tag">Practice note · 08</div>
       <h1>질문이<br>차트를 고른다</h1>
-      <p class="dek">차트는 예쁘게 보이려는 장식이 아니라 질문에 답하는 도구입니다. "무엇이 큰가", "어떻게 변했나", "왜 달라졌나", "얼마나 불확실한가"에 따라 맞는 모양이 다릅니다. 재무·경영관리에서 자주 쓰는 차트 17가지를 실제로 그려 두고, 언제 쓰고 언제 피하는지, 엑셀에서 어떻게 만드는지 정리했습니다.</p>
-      <div class="rpt-meta"><span>차트<b>17종</b></span><span>함께<b>나쁜 예 고치기 · 색 · 엑셀·PPT 만드는 법</b></span><span>작성<b>이기표</b></span></div>
+      <p class="dek">차트는 예쁘게 보이려는 장식이 아니라 질문에 답하는 도구입니다. "무엇이 큰가", "어떻게 변했나", "왜 달라졌나", "얼마나 불확실한가"에 따라 맞는 모양이 다릅니다. 재무·경영관리에서 자주 쓰는 차트 17가지를 실제로 그려 두고, 언제 쓰고 언제 피하는지, 엑셀에서 어떻게 만드는지 정리했습니다. 생키·트리맵·평행 좌표처럼 복잡해서 잘 안 쓰이는 차트 8가지도 쓸모와 한계를 따져 함께 그렸습니다.</p>
+      <div class="rpt-meta"><span>차트<b>17종 + 고급 8종</b></span><span>함께<b>나쁜 예 고치기 · 색 · 엑셀·PPT 만드는 법</b></span><span>작성<b>이기표</b></span></div>
     </div>
   </section>
 
@@ -106,6 +147,194 @@
           <p>먼저 <b>답하려는 질문</b>을 고르면 맞는 차트만 남습니다. 모든 차트는 이 페이지에서 직접 그린 것이고, 숫자는 이 사이트 도구의 가상 예시입니다. 카드 아래 '이 사이트에서'는 실제로 쓰인 곳, '적용하면 좋은 곳'은 아직 쓰지 않았지만 어울리는 곳입니다.</p>
           <div class="chips2" id="chips" role="group" aria-label="질문 유형"></div>
           <div class="gal" id="gal"></div>
+        </section>
+
+        <section id="s-adv" data-toc="복잡한 차트를 쓰는 기준" data-group="넓히기">
+          <h2>복잡하지만 쓸 만한 차트</h2>
+          <p>생키, 마리메꼬, 평행 좌표 같은 차트는 그리기 어렵고 낯설다는 이유로 보고서에서 빠지곤 합니다. 그런데 "돈이 어디서 와서 어디로 갔나", "여섯 가지 기준으로 여섯 개 안을 한 번에 비교하면"처럼 막대와 꺾은선으로는 여러 장이 필요한 질문에는 이런 차트가 한 장으로 답합니다. 반대로 화려하기만 하고 읽기 어려운 차트도 많습니다. 아래 여덟 가지는 재무·전략기획 업무에서 실제로 쓸 곳이 있는지, 읽기 실험 연구가 뭐라고 하는지, 더 단순한 대안은 없는지를 따져서 골랐고, 모두 이 페이지에서 직접 그렸습니다(수치는 가상).</p>
+          <div class="takeaways">
+            <div><b>단순한 차트로 안 보이는 것이 있을 때만</b><p>흐름, 계층, 세 개 이상의 변수, 순환처럼 막대·꺾은선이 못 담는 구조가 있을 때 씁니다.</p></div>
+            <div><b>읽는 법을 한 줄로 붙인다</b><p>낯선 차트는 "폭이 매출, 높이가 이익률"처럼 읽는 법을 제목 아래에 적어야 보고에서 통합니다.</p></div>
+            <div><b>정확한 값은 숫자로</b><p>굵기·넓이·각도는 눈으로 정확히 재기 어렵습니다. 결론에 쓰이는 값은 차트 위에 숫자로 적습니다.</p></div>
+          </div>
+          <div class="callout"><b>근거:</b> 클리블랜드와 맥길(1984)은 같은 기준선 위의 위치를 가장 정확히 읽고, 길이, 각도·기울기, 넓이 순으로 부정확해진다는 실험 결과를 냈습니다. 히어와 보스톡(2010)이 온라인 실험으로 다시 확인했습니다. 그래서 막대가 기본이고, 넓이와 굵기를 쓰는 차트는 "정밀한 비교"가 아니라 "구조를 한눈에" 보여 주는 데 씁니다.</div>
+          <div class="minard">
+            <span class="mk">원형이 된 한 장</span>
+            <p><b>미나르의 나폴레옹 러시아 원정도(1869)</b>는 병력 규모(띠의 굵기), 위치(경도·위도), 진군과 퇴각(색), 날짜, 기온을 한 장에 담았습니다. 터프티는 이 그림을 "지금까지 그려진 통계 그래픽 중 최고일 것"이라고 평했습니다. 복잡해서가 아니라, 여러 변수가 "추위와 함께 병력이 줄었다"는 <b>하나의 이야기</b>로 묶여 있어서 좋은 그림입니다. 아래 생키 다이어그램이 같은 원리(굵기 = 양)를 씁니다. 변수를 많이 넣는 것이 목표가 아니라, 넣은 변수가 모두 같은 질문에 답해야 한다는 것이 이 그림의 교훈입니다.</p>
+          </div>
+          <div class="tw" role="region" aria-label="복잡한 차트 판정표" tabindex="0">
+            <table class="pick advt">
+              <thead><tr><th>차트</th><th>판정</th><th>쓸 곳</th><th>한계와 더 단순한 대안</th></tr></thead>
+              <tbody>
+                <tr><th><a href="#adv-sankey">생키 다이어그램</a></th><td><span class="vd ok">조건부 권장</span></td><td>손익 구조, 자금 흐름, 예산 배분을 한 장으로</td><td>노드가 열두세 개를 넘으면 선이 엉킴. 굵기 비교는 부정확하므로 숫자를 적음</td></tr>
+                <tr><th><a href="#adv-tree">트리맵</a></th><td><span class="vd ok">권장</span></td><td>비용·매출의 계층 구조와 큰 항목 찾기</td><td>비슷한 크기의 정밀 비교는 정렬 막대. 음수는 못 그림</td></tr>
+                <tr><th><a href="#adv-mekko">마리메꼬</a></th><td><span class="vd ok">권장</span></td><td>사업부 매출 × 이익률, 시장 규모 × 점유율</td><td>항목이 일곱 개를 넘거나 폭이 좁은 항목은 읽기 어려움</td></tr>
+                <tr><th><a href="#adv-pc">평행 좌표</a></th><td><span class="vd mid">조건부</span></td><td>투자안·사업부를 다섯 개 이상 기준으로 비교(탐색용)</td><td>축 순서에 따라 인상이 달라짐. 보고에는 한두 개만 강조하거나 표로</td></tr>
+                <tr><th><a href="#adv-bubble">버블 매트릭스</a></th><td><span class="vd ok">권장</span></td><td>자회사·사업 포트폴리오(수익률 × 성장 × 규모)</td><td>원의 넓이는 과소평가됨. 크기는 순위 정도만 전달</td></tr>
+                <tr><th><a href="#adv-loop">연결 산점도</a></th><td><span class="vd mid">조건부</span></td><td>재고와 가격처럼 두 지표가 돌며 움직이는 순환</td><td>시간 방향을 놓치기 쉬움. 화살표와 시점 라벨이 필수. 처음 보는 사람에겐 꺾은선 두 개</td></tr>
+                <tr><th><a href="#adv-ridge">능선 그림</a></th><td><span class="vd mid">조건부</span></td><td>여러 집단의 분포 모양 비교(평가 점수, 시뮬레이션 결과)</td><td>겹치면 뒤쪽이 가려짐. 값 읽기는 상자 그림이 나음</td></tr>
+                <tr><th><a href="#adv-chord">코드 다이어그램</a></th><td><span class="vd no">참고만</span></td><td>항목 간 주고받는 양(내부거래)</td><td>같은 자료를 행렬(히트맵)로 그리면 더 빨리, 정확히 읽힘</td></tr>
+                <tr><th>네트워크(노드-링크)</th><td><span class="vd mid">조건부</span></td><td>지분 구조도, 경로를 따라가야 하는 관계</td><td>노드가 스무 개를 넘으면 행렬이 대부분의 과제에서 더 잘 읽힘(Ghoniem 외, 2004). 경로 찾기만 예외</td></tr>
+                <tr><th>호라이즌 차트</th><td><span class="vd mid">조건부</span></td><td>수십 개 시계열을 좁은 공간에 나란히</td><td>읽는 법을 배워야 함(Heer 외, 2009). 열 개 이하면 작은 다중</td></tr>
+                <tr><th>선버스트</th><td><span class="vd no">참고만</span></td><td>계층 구조</td><td>바깥 고리일수록 같은 값의 호가 길어져 커 보임. 트리맵이나 들여쓴 막대</td></tr>
+                <tr><th>방사형(레이더)</th><td><span class="vd no">참고만</span></td><td>여러 기준의 종합 비교</td><td>축 순서에 따라 넓이가 달라지고 넓이는 값의 제곱으로 커짐. 평행 좌표나 작은 다중 막대</td></tr>
+                <tr><th>스트림 그래프</th><td><span class="vd no">참고만</span></td><td>구성의 시간 변화</td><td>기준선이 물결쳐 개별 층의 크기를 읽을 수 없음. 누적 영역이나 작은 다중</td></tr>
+                <tr><th>일목균형표</th><td><span class="vd out">업무 밖</span></td><td>주가의 기술적 분석</td><td>재무기획 보고에는 쓸 곳이 없음. 여러 기간의 이동평균을 겹쳐 본다는 생각만 참고</td></tr>
+                <tr><th>서커스 플롯</th><td><span class="vd out">업무 밖</span></td><td>유전체 자료(Krzywinski 외, 2009)</td><td>코드 다이어그램에 여러 고리를 더한 것. 기업 자료에는 과함</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s-adv-flow" data-toc="흐름과 구조: 생키·트리맵·마리메꼬">
+          <h2>흐름과 구조</h2>
+          <div class="adv" id="adv-sankey">
+            <h3>생키 다이어그램 <span class="vd ok">조건부 권장</span></h3>
+            <p class="qline">매출 1,000억원은 어디서 와서 어디로 갔나?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>손익 흐름: 매출에서 순이익까지</h4><span class="muted" style="font-size: 12px">가상 · 억원 · 띠의 굵기 = 금액</span></div>
+              <div class="fig-b plotbox" id="f-sankey"></div>
+              <div class="fig-s">왼쪽에서 오른쪽으로 읽습니다. 회색 띠는 비용으로 빠지는 돈, 초록 띠는 이익으로 남는 돈입니다. 손익계산서 다섯 줄이 한 장에 들어갑니다.</div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>손익 구조를 처음 보는 사람(이사회, 신임 임원)에게 한 장으로 설명</li><li>자금의 원천과 용도, 예산이 본부 → 팀 → 과제로 나뉘는 모습</li><li>두 기간을 나란히 그리면 굵기가 달라진 띠가 바로 보임</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>굵기는 눈으로 정확히 비교하기 어려움. 띠마다 숫자를 적어야 함</li><li>노드가 많으면 띠가 교차해 "스파게티"가 됨. 열두세 개가 한계</li><li>들어온 양과 나간 양이 맞지 않으면 그림이 거짓말을 함. 그리기 전에 합계를 검산</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>엑셀 기본 차트에는 없음. Power BI 시각적 개체, Python <code>plotly.graph_objects.Sankey</code></li><li>PPT에서는 도형으로 직접 그리되 굵기를 금액 비율로 맞춤</li><li>대안: 정확한 증감이 목적이면 <a href="#s-gal">폭포 차트</a></li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="pl-report.html">월 손익 보고(손익 구조 요약)</a> · <a href="cash-13w.html">13주 자금수지(자금 원천과 용도)</a> · 유래: M. H. Sankey가 1898년 증기기관의 에너지 효율을 그린 그림</p>
+          </div>
+
+          <div class="adv" id="adv-tree">
+            <h3>트리맵 <span class="vd ok">권장</span></h3>
+            <p class="qline">비용 870억원 중 어디가 크고, 어디가 예산을 넘었나?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>비용 구조: 크기 = 금액, 색 = 예산 대비 증감</h4><span class="muted" style="font-size: 12px">가상 · 억원</span></div>
+              <div class="fig-b plotbox" id="f-tree"></div>
+              <div class="fig-s">사각형의 넓이가 금액입니다. 붉을수록 예산을 넘었고 푸를수록 덜 썼습니다. "크고 붉은 칸"이 먼저 볼 곳입니다.</div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>항목이 수십 개인 계층 자료(계정 → 세목, 사업부 → 제품)에서 큰 것 찾기</li><li>크기와 또 하나의 지표(증감률, 이익률)를 색으로 함께</li><li>원 그래프 여러 개를 대신함</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>넓이 비교는 길이 비교보다 부정확. 모양(가로세로비)이 다르면 더 틀림</li><li>그래서 정사각형에 가깝게 나누는 방식(squarified)을 씀</li><li>음수(환입, 손실)는 그릴 수 없고, 깊이 3단계부터는 읽기 어려움</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>엑셀 2016 이상: 삽입 → 계층 구조 차트 → 트리맵</li><li>색은 조건부로 못 넣으므로 증감 구간별로 계열을 나누거나 Power BI 사용</li><li>대안: 상위 열 개만 정렬 막대로, 나머지는 '기타'</li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="budget-opt.html">비용예산 증액 우선순위</a> · <a href="mgmt-kit.html#div">사업부 손익</a> · 출처: Shneiderman(1992), Bruls·Huizing·van Wijk(2000)</p>
+          </div>
+
+          <div class="adv" id="adv-mekko">
+            <h3>마리메꼬(폭이 다른 막대) <span class="vd ok">권장</span></h3>
+            <p class="qline">이익률이 가장 높은 사업부가 이익도 가장 많이 내나?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>사업부별 매출(폭) × 영업이익률(높이) = 영업이익(넓이)</h4><span class="muted" style="font-size: 12px">가상 · 억원</span></div>
+              <div class="fig-b plotbox" id="f-mekko"></div>
+              <div class="fig-s" id="mekko-note"></div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>"비율"과 "규모"를 함께 봐야 오해가 없는 비교: 이익률 × 매출, 점유율 × 시장 크기</li><li>사업 포트폴리오 설명, 가격·수익성 분석</li><li>막대 두 개(매출, 이익률)를 따로 그리면 놓치는 "넓이 = 이익"이 보임</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>폭이 좁은 항목은 라벨을 넣기 어렵고 눈에 안 띔</li><li>항목 순서를 바꾸면 가로 위치가 모두 바뀌어 기간 비교가 어려움</li><li>넓이로 읽는 차트이므로 이익 금액을 숫자로 적음</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>엑셀: 가로축을 누적 매출로 둔 분산형이나 계단식 영역 차트로 그림. PPT 추가 기능(think-cell 등)에 전용 차트가 있음</li><li>대안: 가로 = 매출, 세로 = 이익률인 산점도에 이름표</li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="mgmt-kit.html#div">관리회계 키트(사업부 손익)</a> · <a href="mgmt-kit.html#pvm">판매 차이(제품 믹스)</a></p>
+          </div>
+        </section>
+
+        <section id="s-adv-multi" data-toc="여러 변수: 평행 좌표·버블·연결 산점도·능선">
+          <h2>여러 변수를 한 번에</h2>
+          <div class="adv" id="adv-pc">
+            <h3>평행 좌표 <span class="vd mid">조건부</span></h3>
+            <p class="qline">투자안 여섯 개를 다섯 가지 기준으로 한 번에 비교하면?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>투자안 다기준 비교</h4><span class="muted" style="font-size: 12px">가상 · 모든 축에서 위쪽이 좋은 쪽</span></div>
+              <div class="ctl"><div class="chips2" id="pc-chips" role="group" aria-label="강조할 투자안" style="margin: 0"></div><button type="button" class="btn sm" id="pc-order" aria-pressed="false">축 순서 바꾸기</button></div>
+              <div class="readout" id="pc-out" aria-live="polite"></div>
+              <div class="fig-b plotbox" id="f-pc"></div>
+              <div class="fig-s">한 줄이 투자안 하나입니다. 회수기간·손실확률·투자액은 작을수록 좋아 축을 뒤집었습니다. 선이 위쪽으로만 지나가는 안이 있으면 그 안이 모든 기준에서 낫습니다. "축 순서 바꾸기"를 눌러 같은 자료가 얼마나 달라 보이는지 확인해 보세요.</div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>투자 심의에서 여러 안을 NPV 하나가 아닌 여러 기준으로 견줄 때</li><li>사업부·공장을 여러 KPI로 비교해 "모양이 비슷한 집단"을 찾을 때</li><li>분석 단계의 탐색용. 걸러 낸 뒤 보고에는 두세 개만 남김</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>이웃한 축끼리의 관계만 잘 보임. 축 순서가 인상을 좌우함</li><li>선이 수십 개면 겹쳐서 읽을 수 없음. 강조와 걸러 내기가 전제</li><li>축마다 눈금이 달라 "선의 높이"는 순위일 뿐 크기가 아님</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>엑셀: 축마다 0~1로 맞춘 값을 만들어 꺾은선 차트(항목 = 계열)</li><li>Python <code>pandas.plotting.parallel_coordinates</code>, <code>plotly.express.parallel_coordinates</code></li><li>대안: 조건부 서식을 넣은 표(히트맵 표)가 보고에는 더 안전</li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="capex-kit.html">설비투자 분석 키트(여러 안 비교)</a> · <a href="budget-opt.html">비용예산 증액 우선순위</a> · 출처: Inselberg(1985)</p>
+          </div>
+
+          <div class="adv" id="adv-bubble">
+            <h3>버블 매트릭스 <span class="vd ok">권장</span></h3>
+            <p class="qline">어느 자회사가 자본비용을 넘게 벌면서 크고 있나?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>자회사 포트폴리오: 수익률 초과분 × 성장률 × 투하자본</h4><span class="muted" style="font-size: 12px">가상 · 원의 넓이 = 투하자본</span></div>
+              <div class="fig-b plotbox" id="f-bubble"></div>
+              <div class="fig-s" id="bubble-note"></div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>지주사·다각화 기업의 자본 배분: 어디에 더 넣고 어디서 뺄지</li><li>가로축을 "ROIC − WACC"로 두면 0의 오른쪽이 가치를 만드는 사업</li><li>제품·고객 포트폴리오에도 같은 틀(수익성 × 성장 × 규모)</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>원의 크기 차이는 실제보다 작게 느껴짐. 반지름이 아니라 넓이를 값에 맞춰야 하고, 크기는 순위 정도만 전달</li><li>사분면 이름표(키운다·판다)가 판단을 대신하면 안 됨. 경계선(0)은 가정에 따라 움직임</li><li>한 시점의 사진. 화살표로 전년 위치를 함께 그리면 방향이 보임</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>엑셀: 삽입 → 분산형 → 거품형. 크기 표현을 '영역'으로(너비 아님)</li><li>이름표는 '셀 값' 레이블로 붙임</li><li>대안: 항목이 스무 개를 넘으면 표와 조건부 서식</li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="holdco-nav.html">지주사 포트폴리오 가치</a> · <a href="kpi-tree.html">KPI 트리(ROIC와 EVA)</a> · <a href="pro-methods.html#s-vd">가치동인 공식</a></p>
+          </div>
+
+          <div class="adv" id="adv-loop">
+            <h3>연결 산점도 <span class="vd mid">조건부</span></h3>
+            <p class="qline">재고가 쌓이면 단가가 내리고, 단가가 내리면 재고가 줄어드는 순환은 어떤 모양인가?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>재고일수와 판매단가의 3년 경로</h4><span class="muted" style="font-size: 12px">가상 · 12분기</span></div>
+              <div class="ctl"><div class="chips2" id="loop-mode" role="group" aria-label="보기 방식" style="margin: 0"><button type="button" data-m="loop" aria-pressed="true">연결 산점도</button><button type="button" data-m="lines" aria-pressed="false">꺾은선 두 개</button></div></div>
+              <div class="fig-b plotbox" id="f-loop"></div>
+              <div class="fig-s" id="loop-note"></div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>두 지표가 시차를 두고 서로를 쫓는 순환: 재고와 가격, 가동률과 마진, 수주와 매출</li><li>"지금 순환의 어디쯤인가"를 한 점으로 보여 줄 때</li><li>이중 축 꺾은선을 피하는 방법 중 하나</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>시간이 축에 없어 방향을 놓치기 쉬움. 화살표와 시점 라벨이 없으면 읽을 수 없음</li><li>하로즈·코사라·프랜코네리(2016) 실험: 단순한 경우는 설명 없이도 읽고 독자가 선호했지만, 자주 생기는 오독도 함께 보고됨</li><li>움직임이 불규칙하면 실타래가 됨. 순환이 뚜렷할 때만</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>엑셀: 분산형(직선 및 표식). 자료를 시간순으로 두면 그 순서로 이어짐. 시점은 데이터 레이블로</li><li>대안: 같은 자료를 위아래 두 칸의 꺾은선으로(위 버튼)</li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="semi-cycle.html">반도체 사이클과 재무</a> · <a href="asset-kit.html#wc">운전자본(재고 회전일)</a></p>
+          </div>
+
+          <div class="adv" id="adv-ridge">
+            <h3>능선 그림 <span class="vd mid">조건부</span></h3>
+            <p class="qline">본부마다 평가 점수의 수준과 퍼짐이 얼마나 다른가?</p>
+            <div class="fig" data-rv>
+              <div class="fig-h"><h4>본부별 평가 점수 분포</h4><span class="muted" style="font-size: 12px">가상 · 핵 밀도 추정 · 세로선 = 중앙값</span></div>
+              <div class="fig-b plotbox" id="f-ridge"></div>
+              <div class="fig-s">산이 오른쪽에 있을수록 점수가 높고, 좁고 뾰족할수록 점수가 몰려 있습니다. 평균만 비교하면 안 보이는 "후하고 몰아 주는 평가"가 모양으로 드러납니다.</div>
+            </div>
+            <div class="use3">
+              <div><h4>언제 쓰나</h4><ul><li>집단이 다섯 개 이상이고 분포의 모양(봉우리 수, 치우침)이 중요할 때</li><li>시나리오별 NPV 분포, 연도별 단가 분포</li><li>상자 그림이 숨기는 쌍봉(봉우리 두 개)을 보여 줌</li></ul></div>
+              <div><h4>비판적으로 보면</h4><ul><li>매끄러운 곡선은 띠 너비(평활 정도)의 산물. 표본이 서른 개 안팎이면 모양을 과신하면 안 됨</li><li>겹치게 그리면 뒤쪽 분포의 일부가 가려짐</li><li>사분위 값을 읽으려면 상자 그림이 나음</li></ul></div>
+              <div><h4>만드는 법과 대안</h4><ul><li>R <code>ggridges</code>, Python <code>seaborn</code>의 <code>kdeplot</code>을 행별로. 엑셀로는 어려움</li><li>대안: <a href="#s-gal">상자 그림</a>이나 같은 축의 작은 히스토그램</li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="mbo-kpi.html#dist">성과평가 분포 분석</a> · <a href="capex-kit.html#mc">NPV 분포</a> · <a href="stats-notes.html">통계 기법과 활용</a></p>
+          </div>
+        </section>
+
+        <section id="s-adv-net" data-toc="화려한 차트 대 단순한 대안">
+          <h2>화려한 차트와 단순한 대안을 나란히</h2>
+          <div class="adv" id="adv-chord">
+            <h3>코드 다이어그램 대 행렬 <span class="vd no">참고만</span></h3>
+            <p class="qline">계열사 다섯 곳 사이의 내부거래에서 가장 큰 거래는 무엇인가?</p>
+            <div class="pair">
+              <figure><div class="plotbox" id="f-chord"></div><figcaption><b class="x">코드 다이어그램</b> 눈길을 끌고 "서로 얽혀 있다"는 인상은 주지만, 누가 누구에게 얼마를 팔았는지 읽으려면 띠를 하나씩 따라가야 합니다. 방향(파는 쪽·사는 쪽)도 구분하기 어렵습니다.</figcaption></figure>
+              <figure><div class="plotbox" id="f-matrix"></div><figcaption><b class="o">행렬(히트맵)</b> 같은 자료입니다. 가장 진한 칸이 가장 큰 거래이고, 행은 파는 회사, 열은 사는 회사라 방향이 분명합니다. 숫자도 함께 읽힙니다.</figcaption></figure>
+            </div>
+            <p id="chord-note" class="hint" style="font-size: var(--s-1); color: var(--ink-2); max-width: 80ch"></p>
+            <div class="use3">
+              <div><h4>배울 점</h4><ul><li>코드 다이어그램은 표지나 도입부에서 "관계가 촘촘하다"는 인상을 줄 때만</li><li>분석과 판단에는 행렬. 내부거래 제거, 이전가격 검토는 칸 단위로 봐야 함</li></ul></div>
+              <div><h4>근거</h4><ul><li>노드-링크와 행렬을 비교한 실험(Ghoniem·Fekete·Castagliola, 2004)에서, 노드가 스무 개를 넘으면 경로 찾기를 뺀 대부분의 과제에서 행렬이 더 잘 읽혔음</li><li>각도와 굽은 띠의 굵기는 위치·길이보다 부정확하게 읽힘</li></ul></div>
+              <div><h4>만드는 법</h4><ul><li>행렬: 엑셀 표 + 조건부 서식(색조). 행·열을 합계 순으로 정렬</li><li>코드: R <code>circlize</code>, D3 <code>d3-chord</code></li></ul></div>
+            </div>
+            <p class="site-use">적용하면 좋은 곳: <a href="holdco-nav.html">지주사 포트폴리오 가치(계열사 관계)</a> · <a href="mgmt-kit.html#div">보조부문 상호배부(주고받는 용역)</a></p>
+          </div>
+          <div class="callout"><b>정리:</b> 복잡한 차트를 쓸지 말지는 "어려워 보이는가"가 아니라 "이 질문에 더 단순한 차트가 답할 수 있는가"로 정합니다. 답할 수 있으면 단순한 쪽을 쓰고, 없으면 복잡한 차트에 읽는 법 한 줄과 숫자를 붙여 씁니다. 여덟 차트의 배치 계산(흐름 보존, 넓이 비례, 각도 합)은 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</div>
+          <ul class="refs">
+            <li>Cleveland, W. S. &amp; McGill, R. (1984). Graphical Perception: Theory, Experimentation, and Application to the Development of Graphical Methods. <i>Journal of the American Statistical Association</i> 79(387).</li>
+            <li>Heer, J. &amp; Bostock, M. (2010). Crowdsourcing Graphical Perception: Using Mechanical Turk to Assess Visualization Design. <i>CHI 2010</i>, 203–212.</li>
+            <li>Ghoniem, M., Fekete, J.-D. &amp; Castagliola, P. (2004). A Comparison of the Readability of Graphs Using Node-Link and Matrix-Based Representations. <i>IEEE InfoVis 2004</i>.</li>
+            <li>Haroz, S., Kosara, R. &amp; Franconeri, S. L. (2016). The Connected Scatterplot for Presenting Paired Time Series. <i>IEEE TVCG</i> 22(9), 2174–2186.</li>
+            <li>Heer, J., Kong, N. &amp; Agrawala, M. (2009). Sizing the Horizon: The Effects of Chart Size and Layering on the Graphical Perception of Time Series Visualizations. <i>CHI 2009</i>.</li>
+            <li>Inselberg, A. (1985). The Plane with Parallel Coordinates. <i>The Visual Computer</i> 1. · Shneiderman, B. (1992). Tree Visualization with Tree-Maps. <i>ACM Transactions on Graphics</i> 11(1). · Bruls, M., Huizing, K. &amp; van Wijk, J. J. (2000). Squarified Treemaps.</li>
+            <li>Tufte, E. R. (1983). <i>The Visual Display of Quantitative Information</i>(미나르 원정도 평). · Krzywinski, M. 외 (2009). Circos: An Information Aesthetic for Comparative Genomics. <i>Genome Research</i> 19(9).</li>
+          </ul>
+          <p class="hint" style="font-size: 12.5px; color: var(--muted)">확인 수준: 클리블랜드·맥길, 히어·보스톡, 고니엠 외, 하로즈 외의 요지는 2026.11.13 웹 검색으로 초록과 서지를 확인했습니다. 나머지 문헌은 서지 정보만 적었고 원문 전체를 다시 읽지는 않았습니다.</p>
         </section>
 
         <section id="s-fix" data-toc="나쁜 차트 고치기" data-group="다듬기">
@@ -172,12 +401,13 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.13</span><span>예시 수치는 모두 가상입니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
 <script src="../assets/stats.js"></script>
 <script src="../assets/report.js"></script>
+<script src="../assets/engines/advviz.js"></script>
 <script>
 (function () {
   "use strict";
@@ -468,5 +698,6 @@
   Report.reveal("[data-rv]");
 })();
 </script>
+<script src="../assets/adv-charts.js"></script>
 </body>
 </html>

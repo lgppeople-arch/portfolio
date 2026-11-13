@@ -18,6 +18,7 @@
     Asset: require("./engines/asset.js"),
     Rules: require("./engines/rules.js"),
     OpSim: require("./op-sim.js"),
+    AdvViz: require("./engines/advviz.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -77,7 +78,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -685,6 +686,23 @@
     if (OpSim) {
       const O = OpSim, G = "관리회계", z = O.calc(0, 0, 0), r = O.calc(0.03, -0.08, 0.04), p1 = O.calc(0.01, 0, 0);
       add(G, "홈 미니 시뮬레이터: 단가 + 물량 + 원가 효과 = 영업이익 차이, 기준에서 영업이익 100억·이익률 10%, 단가 1% = 10억", near(z.op, 100, 1e-12) && near(z.m, 0.1, 1e-12) && near(r.eff.price + r.eff.volume + r.eff.cost, r.op - r.op0, 1e-9) && near(p1.op - 100, 10, 1e-9) && near(z.dol, 3.5, 1e-12), (r.op - r.op0).toFixed(1) + "억원");
+    }
+
+    /* ---------- 고급 차트의 배치 계산 ---------- */
+    if (AdvViz) {
+      const V = AdvViz, G = "고급 차트", S = V.sankey(V.SANKEY), L = V.sankeyLayout(V.SANKEY, 300, 10), end = S.nodes.filter((n) => n.out === 0);
+      add(G, "생키: 중간 노드마다 들어온 양 = 나간 양, 끝 노드 합계 = 매출, 띠 굵기 = 금액 × 같은 배율", S.balanced && near(Fin.sum(end.map((n) => n.in)), S.total, 1e-9) && L.links.every((l) => near(l.sy1 - l.sy0, l.v * L.k, 1e-9) && near(l.ty1 - l.ty0, l.v * L.k, 1e-9)), S.total + "억원");
+      const T = V.treemap(V.TREE, 600, 300), k = 600 * 300 / T.total, inside = T.cells.every((q) => q.x >= -1e-9 && q.y >= -1e-9 && q.x + q.w <= 600 + 1e-9 && q.y + q.h <= 300 + 1e-9);
+      add(G, "트리맵: 사각형 넓이 = 금액 × 같은 배율, 넓이 합 = 전체, 모두 틀 안, 가로세로비 3 이하", T.cells.every((q) => near(q.w * q.h, q.it.v * k, 1e-9)) && near(Fin.sum(T.cells.map((q) => q.w * q.h)), 600 * 300, 1e-9) && inside && T.cells.every((q) => Math.max(q.w / q.h, q.h / q.w) <= 3), T.cells.length + "칸");
+      const M = V.mekko(V.MEKKO);
+      add(G, "마리메꼬: 폭의 합 = 1, 폭 × 높이 × 전체 매출 = 사업부 이익, 넓이 합 = 전사 이익", near(Fin.sum(M.rows.map((r) => r.w)), 1, 1e-12) && M.rows.every((r) => near(r.w * r.m / 100 * M.total, r.profit, 1e-9)) && near(M.profit, 116, 1e-9), M.profit + "억원");
+      const P = V.pcScale(V.PC), dom = V.dominated({ axes: V.PC.axes, items: V.PC.items.concat([{ name: "열등안", npv: 12, irr: 10.1, pb: 7.4, loss: 41, capex: 1500 }]) });
+      add(G, "평행 좌표: 축마다 0~1로 맞춘 값의 최소 0·최대 1, 모든 축에서 지는 안만 '지배당함'으로 판정", V.PC.axes.every((a, i) => near(Math.min.apply(null, P.rows.map((r) => r.t[i])), 0, 1e-12) && near(Math.max.apply(null, P.rows.map((r) => r.t[i])), 1, 1e-12)) && dom[dom.length - 1] === true && V.dominated(V.PC).every((d) => !d), "");
+      const C = V.chord(V.FLOW, 0.07), last = C.groups[C.groups.length - 1];
+      add(G, "코드 다이어그램: 호의 각 ∝ 행 합계, 호와 간격을 더하면 한 바퀴, 행 합계의 합 = 열 합계의 합", near(last.a1 + 0.07, 2 * Math.PI, 1e-9) && C.groups.every((g) => near(g.a1 - g.a0, g.v * C.k, 1e-12)) && near(Fin.sum(C.colSum), C.total, 1e-9), C.total + "억원");
+      const xs = []; for (let x = 20; x <= 130; x += 0.25) xs.push(x);
+      const kd = V.samples(V.RIDGE).map((g) => V.kde(g.v, xs)), po = V.portfolio(V.PORT);
+      add(G, "능선 그림의 밀도는 적분 1, 버블 넓이 ∝ 값(반지름 ∝ √값), 포트폴리오 EVA = Σ 투하자본 × 초과수익률", kd.every((q) => Math.abs(Fin.sum(q.y) * 0.25 - 1) < 0.005) && near(Math.pow(V.bubbleR(400, 1600, 40), 2) * 4, 1600, 1e-9) && near(po.eva, Fin.sum(V.PORT.map((d) => d.ic * d.sp / 100)), 1e-9) && V.loopArea(V.LOOP) < 0, po.eva.toFixed(1) + "억원");
     }
 
     /* ---------- 균형성과표 ---------- */
