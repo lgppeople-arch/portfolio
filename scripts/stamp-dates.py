@@ -1,4 +1,4 @@
-"""각 페이지 바닥글에 '최종 업데이트 날짜'를 찍는다.
+"""각 페이지 바닥글에 '페이지 수정일'을 찍는다. 데이터 기준일이 아니다(리포트의 자료 기준 시점은 표지에 따로 적는다).
 실행: python3 scripts/stamp-dates.py   (커밋 직전에)
 - 마지막 커밋 이후 내용이 바뀐 파일(또는 새 파일)은 오늘 날짜
 - 바뀌지 않은 파일은 그 파일을 마지막으로 바꾼 커밋 날짜
@@ -7,7 +7,7 @@ import datetime, glob, os, re, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TODAY = datetime.date.today().isoformat()
-KO = re.compile(r'<span class="upd">최종 업데이트 [0-9.]+</span>')
+KO = re.compile(r'<span class="upd">(?:최종 업데이트|페이지 수정) [0-9.]+</span>')
 EN = re.compile(r'English summary · updated [^<]*')
 
 
@@ -35,7 +35,7 @@ for rel in files:
     if rel == "en.html":
         t = EN.sub("English summary · updated " + d, s)
     else:
-        stamp = '<span class="upd">최종 업데이트 ' + d.replace("-", ".") + "</span>"
+        stamp = '<span class="upd">페이지 수정 ' + d.replace("-", ".") + "</span>"
         if KO.search(s):
             t = KO.sub(stamp, s)
         elif "<span>마지막 업데이트 " in s:

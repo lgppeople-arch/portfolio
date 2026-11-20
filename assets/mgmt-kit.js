@@ -66,7 +66,7 @@
     const ok1 = near(V.total, V.actual - V.stdCost, 1e-9), ok2 = near(C.diff, C.theory, 1e-9) || $("sv-pro").checked, ok3 = near(C.endInvAbs - C.endInvVar, C.diff, 1e-9);
     checks("sv-check", [["차이 합계 = 실제 − 표준 " + fmt(V.total, 1), ok1], ["이익 차이 = (생산−판매) × 단위 고정비" + ($("sv-pro").checked ? " (안분 시 생략)" : ""), ok2], ["이익 차이 = 기말재고 차이", ok3]]);
   }
-  inputs.forEach((i) => i.addEventListener("input", () => { const v = +i.value; if (isFinite(v) && i.value !== "") { X[i.dataset.k] = v; drawStd(); } }));
+  inputs.forEach((i) => i.addEventListener("input", () => { const v = +i.value, ok = isFinite(v) && i.value !== "" && (i.min === "" || v >= +i.min); i.setAttribute("aria-invalid", ok ? "false" : "true"); if (ok) { X[i.dataset.k] = v; drawStd(); } }));  /* 최솟값 아래(0으로 나누기)는 받지 않는다 */
   $("std-reset").addEventListener("click", () => { X = clone(M.STD); fill(); drawStd(); });
   $("sv-pro").addEventListener("change", drawStd);
 

@@ -541,6 +541,8 @@
       add("예산배분", "최적 ≥ 효율 순 채우기 ≥ 일률 삭감, 승인액 ≤ 한도, 필수 요청 포함", a.opt.value >= a.greedy.value - 1e-9 && a.greedy.value >= a.proRata.value - 1e-9 && a.used <= x.budget + 1e-9 && a.E.every((e) => !e.it.must || a.opt.sel.indexOf(e.i) >= 0), a.opt.value.toFixed(2) + " ≥ " + a.greedy.value.toFixed(2) + " ≥ " + a.proRata.value.toFixed(2));
       const fv = a.frontier.filter((f) => f.v !== null), mono = fv.every((f, i) => i === 0 || f.v >= fv[i - 1].v - 1e-12);
       add("예산배분", "효율적 경계는 예산이 늘수록 줄지 않는다", mono, fv.length + "개 예산 수준");
+      const big = clone(x); big.budget = 1e9; const ab = Budget.analyze(big), allUnits = ab.E.reduce((t, e) => t + e.units, 0);
+      add("예산배분", "한도를 아주 크게 넣어도 계산 표가 후보 합계 크기에서 멈추고, 모든 효과가 있는 요청을 승인한다", ab.opt.dp.length <= allUnits + 1 && ab.opt.sel.length === ab.E.filter((e) => e.it.must || e.ce > 0).length, "표 " + ab.opt.dp.length + "칸");
       const rnd = rng(77); let allOk = true;
       for (let t = 0; t < 40; t++) {
         const y = clone(x); y.items = y.items.slice(0, 10).map((it) => Object.assign(it, { cost: Math.round((0.5 + rnd() * 5) * 10) / 10, mode: rnd() * 6, lo: 0, hi: 8, p: 30 + rnd() * 70, must: false })); y.budget = 5 + rnd() * 20; y.riskAversion = rnd() * 0.3;

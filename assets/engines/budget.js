@@ -53,13 +53,14 @@
     const must = E.filter((e) => e.it.must || force.indexOf(e.i) >= 0), cand = E.filter((e) => !e.it.must && force.indexOf(e.i) < 0 && ban.indexOf(e.i) < 0 && e.ce > 0);
     const mustUnits = must.reduce((s, e) => s + e.units, 0), mustVal = must.reduce((s, e) => s + e.ce, 0);
     const capTotal = cand.reduce((s, e) => s + e.units, 0), C = Math.max(0, Math.round(budget / UNIT) - mustUnits);
-    const top = Math.max(C, opts.frontierTo ? Math.round(opts.frontierTo / UNIT) - mustUnits : 0, 0);
+    /* 후보를 모두 담는 용량(capTotal)을 넘는 칸은 값이 같으므로 표를 그 크기에서 자른다(아주 큰 한도를 넣어도 메모리가 터지지 않게) */
+    const top = Math.min(capTotal, Math.max(C, opts.frontierTo ? Math.round(opts.frontierTo / UNIT) - mustUnits : 0, 0));
     const dp = new Float64Array(top + 1), keep = cand.map(() => new Uint8Array(top + 1));
     cand.forEach((e, k) => { for (let c = top; c >= e.units; c--) { const v = dp[c - e.units] + e.ce; if (v > dp[c] + 1e-12) { dp[c] = v; keep[k][c] = 1; } } });
-    const pick = (cap) => { const sel = []; let c = cap; for (let k = cand.length - 1; k >= 0; k--) if (c >= 0 && keep[k][c]) { sel.push(cand[k].i); c -= cand[k].units; } return sel; };
+    const pick = (cap) => { const sel = []; let c = Math.min(cap, top); for (let k = cand.length - 1; k >= 0; k--) if (c >= 0 && keep[k][c]) { sel.push(cand[k].i); c -= cand[k].units; } return sel; };
     const feasible = Math.round(budget / UNIT) >= mustUnits;
     const sel = feasible ? must.map((e) => e.i).concat(pick(C)).sort((a, b) => a - b) : must.map((e) => e.i);
-    return { feasible: feasible, sel: sel, value: mustVal + (feasible ? dp[C] : 0), mustUnits: mustUnits, dp: dp, mustVal: mustVal, capTotal: capTotal, pick: pick };
+    return { feasible: feasible, sel: sel, value: mustVal + (feasible ? dp[Math.min(C, top)] : 0), mustUnits: mustUnits, dp: dp, mustVal: mustVal, capTotal: capTotal, pick: pick };
   }
 
   /* 비교 방식: 효율(위험조정가치 ÷ 요청액) 순으로 넣을 수 있는 만큼 */

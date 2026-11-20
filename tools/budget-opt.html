@@ -105,7 +105,7 @@
     <span class="sample"><span>예시: 가상 제조사의 연간 비용예산 증액 요청 15건(43.8억원), 승인 한도 30억원 · 모든 수치는 가상</span></span>
 
     <div class="ctl" role="group" aria-label="예산 조건">
-      <div class="field"><label for="b-budget">승인 한도<small>억원</small></label><input id="b-budget" type="number" inputmode="decimal" step="1" min="0"></div>
+      <div class="field"><label for="b-budget">승인 한도<small>억원</small></label><input id="b-budget" type="number" inputmode="decimal" step="1" min="0" max="1000"></div>
       <div class="field"><label for="b-rate">할인율<small>%</small></label><input id="b-rate" type="number" inputmode="decimal" step="1" min="0" max="30"></div>
       <div class="field"><label for="b-ra">위험회피 계수 a<small>0이면 기대값만</small></label><input id="b-ra" type="number" inputmode="decimal" step="0.05" min="0" max="2"></div>
       <div class="btn-row"><button type="button" class="btn sm" id="b-reset">예시값으로 되돌리기</button></div>
@@ -197,7 +197,7 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.11</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.20</span><span>예시 수치는 모두 가상입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
@@ -230,8 +230,8 @@
       const nm = F.el("input", { type: "text", value: it.name, "aria-label": (i + 1) + "번 요청 내용" }); nm.addEventListener("input", () => { it.name = nm.value; render(); });
       tr.appendChild(F.el("td", { class: "l" }, [dp])); tr.appendChild(F.el("td", { class: "l" }, [nm]));
       COLS.forEach((c) => {
-        const inp = F.el("input", { type: "number", inputmode: "decimal", step: c[2], min: 0, max: c[0] === "p" ? 100 : null, value: it[c[0]], "aria-label": (i + 1) + "번 " + c[1] });
-        inp.addEventListener("input", () => { const v = Number(inp.value); if (inp.value.trim() !== "" && isFinite(v) && v >= 0) { it[c[0]] = c[0] === "years" ? Math.max(1, Math.round(v)) : v; render(); } });
+        const inp = F.el("input", { type: "number", inputmode: "decimal", step: c[2], min: 0, max: c[0] === "p" ? 100 : 1000, value: it[c[0]], "aria-label": (i + 1) + "번 " + c[1] });
+        inp.addEventListener("input", () => { const v = Number(inp.value); if (inp.value.trim() !== "" && isFinite(v) && v >= 0 && v <= 1000) {  /* 1,000억원 초과는 받지 않는다(계산 표가 너무 커짐) */ it[c[0]] = c[0] === "years" ? Math.max(1, Math.round(v)) : v; render(); } });
         tr.appendChild(F.el("td", null, [inp]));
       });
       const mu = F.el("input", { type: "checkbox", "aria-label": (i + 1) + "번 필수 여부" }); mu.checked = it.must; mu.addEventListener("change", () => { it.must = mu.checked; render(); });

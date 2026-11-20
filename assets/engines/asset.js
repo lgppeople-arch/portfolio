@@ -27,7 +27,7 @@
     let pv = 0, cf = cf1; const rows = [];
     for (let t = 1; t <= 5; t++) { if (t > 1) cf *= 1 + g; const d = cf / Math.pow(1 + r, t); pv += d; rows.push({ t: t, cf: cf, pv: d }); }
     const tv = cf * (1 + gT) / (r - gT), pvTv = tv / Math.pow(1 + r, 5);
-    return { value: pv + pvTv, pvCf: pv, pvTv: pvTv, tvShare: pvTv / (pv + pvTv), rows: rows };
+    return { value: pv + pvTv, pvCf: pv, pvTv: pvTv, tvShare: pv + pvTv !== 0 ? pvTv / (pv + pvTv) : 0, rows: rows };
   }
   function impairment(p) {
     const carrying = sum(p.assets.map((a) => a[1])), v = viu(p), rec = Math.max(v.value, p.fv), loss = Math.max(0, carrying - rec);
@@ -39,8 +39,8 @@
     let lo = p.gT + 0.01, hi = 60;
     const f = (r) => viu(p, r).value;
     let beR = null; if (f(lo) >= target && f(hi) <= target) { for (let i = 0; i < 90; i++) { const m = (lo + hi) / 2; if (f(m) > target) lo = m; else hi = m; } beR = (lo + hi) / 2; }
-    const beScale = target / v.value; /* 현금흐름 전체가 이 배수가 되면 사용가치 = 장부금액(선형) */
-    return { carrying: carrying, viu: v, fv: p.fv, rec: rec, basis: v.value >= p.fv ? "사용가치" : "공정가치", loss: loss, alloc: alloc, headroom: rec - carrying, beR: beR, beCut: 1 - beScale };
+    const beScale = v.value > 0 ? target / v.value : null; /* 현금흐름 전체가 이 배수가 되면 사용가치 = 장부금액(선형) */
+    return { carrying: carrying, viu: v, fv: p.fv, rec: rec, basis: v.value >= p.fv ? "사용가치" : "공정가치", loss: loss, alloc: alloc, headroom: rec - carrying, beR: beR, beCut: beScale === null ? null : 1 - beScale };
   }
   /* 할인율 × 영구성장률 격자의 여유(회수가능액 − 장부금액) */
   function grid(p, rs, gs) {
