@@ -189,7 +189,7 @@
     </section>
 
     <section class="sec" id="pl" aria-labelledby="pl-h">
-      <div class="sec-h"><h2 id="pl-h">연도별 손익과 적정주가</h2><p>적정주가는 잔여이익모델입니다: 2026년 말 BPS + 2027~29년 잔여이익(EPS − 자기자본비용 × 기초 BPS)의 현재가치 + 이후 감쇠하는 잔존가치.</p></div>
+      <div class="sec-h"><h2 id="pl-h">연도별 손익과 적정주가</h2><p>적정주가는 잔여이익모델입니다: 2026년 말 BPS + 2027~29년 잔여이익(EPS − 자기자본비용 × 기초 BPS)의 현재가치 + 이후 감쇠하는 잔존가치. 결과 칸의 PER·PBR은 2029E 기준입니다. 2027년은 이 모형에서 이익이 가장 큰 해라 그해 배수는 실제보다 싸 보이므로, 정상화에 가까운 마지막 해를 기본으로 두고 연도별 배수를 아래 표에 함께 적었습니다.</p></div>
       <div class="two">
         <div class="card"><h3>SK하이닉스</h3><div class="scroll" style="border: 0"><table class="mt" id="pl-skh"></table></div><div class="scroll" style="border: 0"><table class="mt" id="val-skh"></table></div></div>
         <div class="card"><h3>삼성전자</h3><div class="scroll" style="border: 0"><table class="mt" id="pl-sec"></table></div><div class="scroll" style="border: 0"><table class="mt" id="val-sec"></table></div></div>
@@ -357,7 +357,7 @@
     COS.forEach((co) => {
       const r = R[co];
       kpiValue("k-" + co, man(r.value) + "원");
-      $("k-" + co + "-sub").textContent = "2027E PER " + F.num(r.per27, 1) + "배 · PBR " + F.num(r.pbr27, 2) + "배";
+      $("k-" + co + "-sub").textContent = "2029E " + (r.per29 === null ? "적자" : "PER " + F.num(r.per29, 1) + "배") + " · PBR " + F.num(r.pbr29, 2) + "배";
       kpiValue("k-" + co + "-up", F.pctSigned(r.upside, 0), r.upside >= 0 ? "up" : "down");
       $("k-" + co + "-up-sub").textContent = "기준주가 " + man(r.price) + "원 · COE " + F.pct(r.coe, 1);
     });
@@ -464,6 +464,8 @@
       row("기말 BPS", F.num(M.CO[co].bps0, 0), (y) => ({ t: F.num(y.bps, 0) }));
       row("ROE", "–", (y) => ({ t: F.pct(y.roe, 0), neg: y.roe < 0 }));
       row("잔여이익(주당)", "–", (y) => ({ t: F.num(y.ri, 0), neg: y.ri < 0 }));
+      row("PER(적정주가 ÷ EPS)", "–", (y) => ({ t: y.eps > 0 ? F.num(r.value / y.eps, 1) + "배" : "적자" }));
+      row("PBR(적정주가 ÷ 기말 BPS)", "–", (y) => ({ t: F.num(r.value / y.bps, 2) + "배" }));
       tb.appendChild(body);
       const vt = $("val-" + co); vt.textContent = "";
       const pvRi = r.years.reduce((s, y, t) => s + y.ri / Math.pow(1 + r.coe, t + 1), 0);

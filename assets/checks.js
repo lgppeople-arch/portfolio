@@ -740,6 +740,8 @@
       const M = MemScen, G = "메모리 시나리오", C = M.CENTRAL;
       const ok1 = [0, 1, 77, 12345, 200000, M.TOTAL - 1].every((n) => M.encode(M.decode(n)) === n);
       add(G, "조합 수 = 5^8 = 390,625, 조합 번호 ↔ 단계 배열이 서로 되돌아온다", M.TOTAL === 390625 && M.NV === 8 && ok1 && M.code(M.decode(0)) === "11111111", M.TOTAL + "개");
+      const rv = M.evaluate("skh", C), y3 = rv.years[2], worst = M.evaluate("skh", M.decode(M.TOTAL - 1));
+      add(G, "화면 배수는 2029E: PER = 적정주가 ÷ 2029 EPS, PBR = 적정주가 ÷ 2029 기말 BPS, 적자면 PER 없음", near(rv.per29, rv.value / y3.eps, 1e-12) && near(rv.pbr29, rv.value / y3.bps, 1e-12) && (worst.years[2].eps > 0 ? near(worst.per29, worst.value / worst.years[2].eps, 1e-12) : worst.per29 === null), "PER " + rv.per29.toFixed(1) + "배 · PBR " + rv.pbr29.toFixed(2) + "배");
       const ps = [0.17, 0.4, 0.75, 1, 1.15, 1.25];
       add(G, "가격식 왕복: 가격 → 갭 → 가격이 같고, 갭 0이면 가격 1, 갭이 커지면 가격이 내린다", ps.every((p) => near(M.priceOfGap(M.gapOfPrice(p)), p, 1e-12)) && M.priceOfGap(0) === 1 && M.priceOfGap(0.05) < M.priceOfGap(0.02), "k " + M.K.over.toFixed(2) + " / " + M.K.short.toFixed(2));
       const vi = ["skh", "sec"].every((co) => { const r = M.evaluate(co, C); let pv = 0; r.years.forEach((y, t) => { pv += (y.eps - r.coe * y.bpsBeg) / Math.pow(1 + r.coe, t + 1); }); return near(r.value, M.CO[co].bps0 + pv + r.tv, 1e-12) && near(r.years[2].bps, M.CO[co].bps0 + Fin.sum(r.years.map((y) => y.eps)) * (1 - M.CO[co].payout), 1e-9); });

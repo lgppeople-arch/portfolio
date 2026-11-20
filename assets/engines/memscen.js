@@ -230,7 +230,9 @@
     const value = V0 + tv;
     return {
       co: coKey, coe: coe, years: years, tv: tv, value: value, price: price,
-      upside: value / price - 1, per27: value / years[0].eps, pbr27: value / years[0].bps
+      upside: value / price - 1, per27: value / years[0].eps, pbr27: value / years[0].bps,
+      /* 화면 기본 배수는 2029E: 2027년은 이익 정점이라 배수가 실제보다 싸 보인다. EPS가 0 이하이면 PER은 null */
+      per29: years[2].eps > 0 ? value / years[2].eps : null, pbr29: value / years[2].bps
     };
   }
 

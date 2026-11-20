@@ -6,7 +6,7 @@
 
 ```
 python3 scripts/build-site.py   # 메뉴·모음·읽는 경로·하단 '이어서 볼 것'을 site-map.json에서 다시 만든다
-node assets/checks.js           # 계산 엔진 검산 (현재 213개)
+node assets/checks.js           # 계산 엔진 검산 (현재 214개)
 node scripts/check-site.js      # 사이트 구성 검사 (현재 26개)
 ```
 
