@@ -29,4 +29,4 @@ node scripts/check-site.js      # 사이트 구성 검사 (현재 26개)
 - 모형을 고치기 전에 `docs/mem-scenario-model.md`를 먼저 읽습니다. 그 문서에 계산식, 변수 정의, 출처, 분기 갱신 순서, 한계가 있습니다.
 - 남은 개선 후보:
   - 함께 움직이는 변수를 묶은 대표 조합 프리셋(예: 긴축+원화 강세, 무역분쟁+AI 수요 둔화)
-  - 분기 실적 발표 때 `CO.skh/sec`의 출발점(`exit`, `op26`, `bps0`, `price`) 갱신
+  - 분기 실적 발표 때 `CO.skh/sec`의 출발점(`exit`, `op26`, `bps0`, `price`) 갱신. 이때 `tools/mem-scenario.html` 상단의 분석 기준일·기준주가 상자와 하단 문구도 같은 날짜로 고친다

@@ -70,6 +70,14 @@
   svg.plot text.val { fill: var(--ink); font-family: var(--f-num); font-size: 11px; }
   .kpi .v.up { color: var(--pos); }
   .kpi .v.down { color: var(--neg-ink); }
+  .asof { margin-top: 18px; border: 1px solid color-mix(in srgb, var(--neg) 35%, var(--rule)); border-left: 4px solid var(--neg); border-radius: var(--radius); background: var(--surface); padding: 14px 18px; display: grid; gap: 12px; max-width: 1100px; }
+  .asof-k { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 20px; }
+  @media (max-width: 860px) { .asof-k { grid-template-columns: minmax(0, 1fr); } }
+  .asof-k dt { font-size: 12px; font-weight: 700; color: var(--neg-ink); }
+  .asof-k dd { margin: 2px 0 0; font-size: var(--s-2); font-weight: 700; color: var(--ink); }
+  .asof-k dd small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+  .asof-w { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
+  .asof-w b { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -95,6 +103,19 @@
       <h1>메모리 사이클 시나리오 가치평가</h1>
       <p>삼성전자와 SK하이닉스의 2027~2029년 손익과 적정주가를, 결과를 움직이는 변수 8개의 조합으로 봅니다. 변수마다 1(가장 우호적)부터 5(가장 비우호적)까지 고르면 5<sup>8</sup> = 390,625개 조합 가운데 하나가 수급 갭 → 가격 → 장기공급계약 → 매출·이익 → 적정주가로 바로 계산됩니다. 가격 민감도는 Micron 10-K의 과거 D램 가격으로 보정했고, 출발점과 가정은 2026년 11월 공시·보도 기준입니다. 교육용 모형이며 투자 권유가 아닙니다.</p>
       <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 고를 수 있는 단계·입력값</span><span><i>123</i> 계산값</span><span>금액 조원 · 주당 원 · 가격·물량은 2026년 4분기 = 1.00</span><span><a class="guide-link" href="#method">계산 방법과 출처 보기 →</a></span></div>
+      <div class="asof" role="note" aria-label="분석 기준과 유의사항">
+        <dl class="asof-k">
+          <div><dt>분석 기준일</dt><dd>2026년 11월 20일</dd></div>
+          <div><dt>기준주가</dt><dd>SK하이닉스 1,112,000원 · 삼성전자 187,500원<small>2026.11.20 장중 가격(종가 아님)</small></dd></div>
+          <div><dt>실적 출발점</dt><dd>2026년 3분기 실적 발표<small>BPS·2027 컨센서스는 증권사 추정(2026.11.6 등)</small></dd></div>
+        </dl>
+        <ul class="asof-w">
+          <li><b>투자 권유가 아닙니다.</b> 특정 종목의 매수·매도를 권하거나 목표주가를 제시하려는 것이 아니라, 변수가 가치에 어떻게 이어지는지 보여 주는 교육용 시나리오 계산입니다.</li>
+          <li><b>공개 정보만 썼습니다.</b> 공시·실적 발표·언론 보도·증권사 공개 자료만 사용했고, 어떤 회사의 내부 정보도 들어 있지 않습니다. 작성자 소속 회사의 견해와 무관한 개인 학습 자료입니다.</li>
+          <li><b>숫자는 가정에 따라 크게 달라집니다.</b> '적정주가'는 고른 단계와 가정이 맞을 때의 계산값일 뿐 예측이 아닙니다. 단계별 수치 상당수는 보도를 근거로 정한 가정입니다.</li>
+          <li><b>기준일 이후의 정보는 반영되지 않았습니다.</b> 주가·실적·정책이 바뀌면 결과도 달라지며, 기준주가는 아래 '기준주가 바꾸기'에서 바꿔 볼 수 있습니다.</li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -112,10 +133,10 @@
         </div>
         <div class="vars" id="vars"></div>
         <details class="fs" style="margin-top: 10px">
-          <summary>현재가 바꾸기</summary>
+          <summary>기준주가 바꾸기</summary>
           <div class="inputs2" style="margin-top: 10px">
-            <div class="field"><label for="px-skh">SK하이닉스 현재가<small>원, 기본 2026.11.20 장중</small></label><input id="px-skh" type="number" inputmode="decimal" step="1000" min="1"></div>
-            <div class="field"><label for="px-sec">삼성전자 현재가<small>원, 기본 2026.11.20 장중</small></label><input id="px-sec" type="number" inputmode="decimal" step="100" min="1"></div>
+            <div class="field"><label for="px-skh">SK하이닉스 기준주가<small>원, 기본 1,112,000원(2026.11.20 장중)</small></label><input id="px-skh" type="number" inputmode="decimal" step="1000" min="1"></div>
+            <div class="field"><label for="px-sec">삼성전자 기준주가<small>원, 기본 187,500원(2026.11.20 장중)</small></label><input id="px-sec" type="number" inputmode="decimal" step="100" min="1"></div>
           </div>
         </details>
       </section>
@@ -124,9 +145,9 @@
         <div class="board-head"><h2 id="board-h">이 조합의 적정주가</h2><span class="pill" id="verdict"></span></div>
         <div class="kpis k4">
           <div class="kpi"><div class="label">SK하이닉스 적정가</div><div class="v num" id="k-skh"></div><div class="sub" id="k-skh-sub"></div></div>
-          <div class="kpi"><div class="label">현재가 대비</div><div class="v num" id="k-skh-up"></div><div class="sub" id="k-skh-up-sub"></div></div>
+          <div class="kpi"><div class="label">기준주가 대비</div><div class="v num" id="k-skh-up"></div><div class="sub" id="k-skh-up-sub"></div></div>
           <div class="kpi"><div class="label">삼성전자 적정가</div><div class="v num" id="k-sec"></div><div class="sub" id="k-sec-sub"></div></div>
-          <div class="kpi"><div class="label">현재가 대비</div><div class="v num" id="k-sec-up"></div><div class="sub" id="k-sec-up-sub"></div></div>
+          <div class="kpi"><div class="label">기준주가 대비</div><div class="v num" id="k-sec-up"></div><div class="sub" id="k-sec-up-sub"></div></div>
         </div>
         <div class="chart" id="op-chart">
           <div class="chart-head"><h4>연도별 영업이익 <span class="muted">(조원)</span></h4>
@@ -176,7 +197,7 @@
     </section>
 
     <section class="sec" id="tornado" aria-labelledby="tor-h">
-      <div class="sec-h"><h2 id="tor-h">어떤 변수가 가장 크게 움직이나</h2><p>지금 고른 조합에서 변수 하나만 1단계부터 5단계까지 바꿨을 때 적정주가의 범위입니다. 막대 안의 점은 단계 1~5, 굵은 점은 지금 고른 단계, 세로선은 현재가입니다.</p></div>
+      <div class="sec-h"><h2 id="tor-h">어떤 변수가 가장 크게 움직이나</h2><p>지금 고른 조합에서 변수 하나만 1단계부터 5단계까지 바꿨을 때 적정주가의 범위입니다. 막대 안의 점은 단계 1~5, 굵은 점은 지금 고른 단계, 세로선은 기준주가입니다.</p></div>
       <div class="two">
         <div class="card"><div class="chart" id="tor-skh"><div class="chart-head"><h4>SK하이닉스 <span class="muted">(만원)</span></h4></div><div class="plot-host"></div></div></div>
         <div class="card"><div class="chart" id="tor-sec"><div class="chart-head"><h4>삼성전자 <span class="muted">(만원)</span></h4></div><div class="plot-host"></div></div></div>
@@ -208,11 +229,11 @@
         <div class="progress" aria-hidden="true"><i id="dist-bar"></i></div>
         <div class="kpis k4" id="dist-kpis" hidden>
           <div class="kpi"><div class="label" id="d-mean-l">평균</div><div class="v num" id="d-mean"></div><div class="sub" id="d-mean-sub"></div></div>
-          <div class="kpi"><div class="label">현재가 이상인 비율</div><div class="v num" id="d-above"></div><div class="sub">조합 비중 기준</div></div>
+          <div class="kpi"><div class="label">기준주가 이상인 비율</div><div class="v num" id="d-above"></div><div class="sub">조합 비중 기준</div></div>
           <div class="kpi"><div class="label">최저</div><div class="v num" id="d-min"></div><div class="sub" id="d-min-sub"></div></div>
           <div class="kpi"><div class="label">최고</div><div class="v num" id="d-max"></div><div class="sub" id="d-max-sub"></div></div>
         </div>
-        <div class="chart" id="dist-chart" hidden><div class="chart-head"><h4 id="dist-title"></h4><div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>현재가 이상</span><span><i class="key-bar" style="background: var(--mark-muted)"></i>현재가 미만</span></div></div><div class="plot-host"></div></div>
+        <div class="chart" id="dist-chart" hidden><div class="chart-head"><h4 id="dist-title"></h4><div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>기준주가 이상</span><span><i class="key-bar" style="background: var(--mark-muted)"></i>기준주가 미만</span></div></div><div class="plot-host"></div></div>
         <p class="hint" id="dist-hint">계산은 이 브라우저 안에서만 돕니다(1~2초).</p>
       </div>
     </section>
@@ -222,7 +243,7 @@
       <div class="two">
         <div class="card">
           <h3>계산 순서</h3>
-<div class="formula">① 갭  G = −ln(P_업황) ÷ k + 수요손실 × 노출도 × (1 − 백로그 흡수)
+<div class="formula" tabindex="0" role="region" aria-label="계산 순서 수식">① 갭  G = −ln(P_업황) ÷ k + 수요손실 × 노출도 × (1 − 백로그 흡수)
          + 중국 공급 + 무역(공급 차질)
 ② 시장가격  P_m = exp(−k × G_시장)      k = 7.39(과잉) / 8.54(부족)
    G_시장 = G − L × 0.5 × max(G,0) + 0.6 × 전년 흡수분
@@ -244,9 +265,9 @@
         <h3>출처와 한계</h3>
         <ul class="src">
           <li>출발점: SK하이닉스 2026년 3분기 경영실적(매출 104.6조원, 영업이익 83.3조원), 삼성전자 2026년 3분기 실적(DS 매출 147.1조원, 영업이익 106.5조원). 4분기 연환산 값은 추정.</li>
-          <li>BPS: 메리츠증권 리서치(2026.11.6) 2026E. 현재가: 2026.11.20 장중. 2027년 컨센서스: 에프엔가이드(하이닉스 영업이익 약 404조원, 삼성 약 545조원)와 2단계를 맞춤.</li>
+          <li>BPS: 메리츠증권 리서치(2026.11.6) 2026E. 기준주가: 2026.11.20 장중. 2027년 컨센서스: 에프엔가이드(하이닉스 영업이익 약 404조원, 삼성 약 545조원)와 2단계를 맞춤.</li>
           <li>가격 민감도 k: Micron 10-K의 회계연도 D램 평균판매가격 변화(FY2019 약 −30%, FY2023 40%대 후반 하락)와 TrendForce 수급 갭으로 보정. 2006~2026년 백테스트에서 연간 가격 예측력은 낮았음(방향 적중 3/7). 이 식은 갭이 주어졌을 때의 환산기로만 씀.</li>
-          <li>장기공급계약: 하이닉스 14개 고객·2027~28년 생산능력 50% 이상, 삼성 생산능력 60~70%·롤링 5년, 일부 계약 하한 현재가 80%, 선급금 10~30%, Micron 10-K의 테이크오어페이 구조(2026년 7~11월 보도·공시).</li>
+          <li>장기공급계약: 하이닉스 14개 고객·2027~28년 생산능력 50% 이상, 삼성 생산능력 60~70%·롤링 5년, 일부 계약 하한 당시 현물가의 80%, 선급금 10~30%, Micron 10-K의 테이크오어페이 구조(2026년 7~11월 보도·공시).</li>
           <li>거시·정책: 연준·한은 금리 전망, 232조 반도체 관세, 미중 휴전(2027.1.10 만료), 중국 공장 연간 장비 허가, CXMT 생산능력(2028년 월 60만 장 전망), 2026.11.19 시행 원격접속·동남아 수출 규제.</li>
           <li>한계: 단계별 수치(하한, 이행률, 수요 손실, 할인율 가감 등)는 보도를 근거로 정한 가정입니다. 우선주는 보통주와 같은 값으로 셌고, 메모리 외 사업은 단순화했습니다. 투자 판단의 책임은 읽는 사람에게 있습니다.</li>
         </ul>
@@ -272,7 +293,7 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.20</span><span>교육용 시나리오 모형입니다. 투자 권유가 아니며, 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">최종 업데이트 2026.11.20</span><span>분석 기준일 2026.11.20, 기준주가는 같은 날 장중 가격입니다. 교육용 시나리오 모형이며 투자 권유가 아닙니다. 공개 정보만 사용했고, 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
@@ -338,11 +359,11 @@
       kpiValue("k-" + co, man(r.value) + "원");
       $("k-" + co + "-sub").textContent = "2027E PER " + F.num(r.per27, 1) + "배 · PBR " + F.num(r.pbr27, 2) + "배";
       kpiValue("k-" + co + "-up", F.pctSigned(r.upside, 0), r.upside >= 0 ? "up" : "down");
-      $("k-" + co + "-up-sub").textContent = "현재가 " + man(r.price) + "원 · COE " + F.pct(r.coe, 1);
+      $("k-" + co + "-up-sub").textContent = "기준주가 " + man(r.price) + "원 · COE " + F.pct(r.coe, 1);
     });
     const both = R.skh.upside >= 0 && R.sec.upside >= 0, none = R.skh.upside < 0 && R.sec.upside < 0;
     const v = $("verdict"); v.className = "pill " + (both ? "ok" : none ? "bad" : "warn");
-    v.textContent = both ? "두 종목 모두 현재가 위" : none ? "두 종목 모두 현재가 아래" : "한 종목만 현재가 위";
+    v.textContent = both ? "두 종목 모두 기준주가 위" : none ? "두 종목 모두 기준주가 아래" : "한 종목만 기준주가 위";
     /* 보고 문장 */
     const lv = state.lv, tag = (i) => M.VARS[i].levels[lv[i]].tag;
     const memo = $("memo"); memo.textContent = "";
@@ -448,7 +469,7 @@
       const pvRi = r.years.reduce((s, y, t) => s + y.ri / Math.pow(1 + r.coe, t + 1), 0);
       const vb = F.el("tbody");
       [["2026년 말 BPS", M.CO[co].bps0], ["+ 3년 잔여이익 현재가치", pvRi], ["+ 잔존가치(감쇠)", r.tv], ["= 적정주가", r.value]].forEach((x, i) => vb.appendChild(F.el("tr", { class: i === 3 ? "em" : null }, [F.el("td", { text: x[0] }), F.el("td", { class: x[1] < 0 ? "neg" : null, text: won(x[1]) })])));
-      vb.appendChild(F.el("tr", null, [F.el("td", { text: "자기자본비용 · 현재가 대비" }), F.el("td", { text: F.pct(r.coe, 1) + " · " + F.pctSigned(r.upside, 0) })]));
+      vb.appendChild(F.el("tr", null, [F.el("td", { text: "자기자본비용 · 기준주가 대비" }), F.el("td", { text: F.pct(r.coe, 1) + " · " + F.pctSigned(r.upside, 0) })]));
       vt.appendChild(vb);
     });
   }
@@ -528,7 +549,7 @@
   function showDist(co, bins, lo, hi, acc, price) {
     $("dist-kpis").hidden = false; $("dist-chart").hidden = false;
     const mean = acc.sum / acc.total;
-    $("d-mean-l").textContent = state.distW === "p" ? "업황 확률 가중 평균" : "평균(같은 무게)"; $("d-mean").textContent = man(mean) + "원"; $("d-mean-sub").textContent = "현재가 대비 " + F.pctSigned(mean / price - 1, 0);
+    $("d-mean-l").textContent = state.distW === "p" ? "업황 확률 가중 평균" : "평균(같은 무게)"; $("d-mean").textContent = man(mean) + "원"; $("d-mean-sub").textContent = "기준주가 대비 " + F.pctSigned(mean / price - 1, 0);
     $("d-above").textContent = F.pct(acc.above / acc.total, 0);
     $("d-min").textContent = man(acc.min) + "원"; $("d-min-sub").textContent = "모든 변수 5단계 근처";
     $("d-max").textContent = man(acc.max) + "원"; $("d-max-sub").textContent = "모든 변수 1단계 근처";
@@ -548,8 +569,8 @@
       F.wireHit(hit, host, tip, () => ({ title: man(x0) + "~" + man(x0 + step) + "원", rows: [["비중", F.pct(s, 1)]] }));
     });
     F.svgEl("line", { x1: X(price), x2: X(price), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-width": 1, "stroke-dasharray": "3 3" }, svg);
-    F.svgText(svg, X(price), padT - 8, "현재가 " + man(price), { class: "lab", "text-anchor": "middle" });
-    $("dist-hint").textContent = "390,625개 조합 계산 완료. 현재가 이상인 조합의 비중은 " + F.pct(acc.above / acc.total, 0) + "입니다. 같은 무게는 '모든 변수의 모든 단계가 똑같이 가능하다'는 뜻이라 극단 조합이 과대 대표됩니다.";
+    F.svgText(svg, X(price), padT - 8, "기준주가 " + man(price), { class: "lab", "text-anchor": "middle" });
+    $("dist-hint").textContent = "390,625개 조합 계산 완료. 기준주가 이상인 조합의 비중은 " + F.pct(acc.above / acc.total, 0) + "입니다. 같은 무게는 '모든 변수의 모든 단계가 똑같이 가능하다'는 뜻이라 극단 조합이 과대 대표됩니다.";
   }
 
   /* ---------- 표: 정의·가정 ---------- */
