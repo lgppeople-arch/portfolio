@@ -31,6 +31,7 @@ const PAGES = [
   ["tools/ma-valuation.html", "ma-valuation", { kick: INV, label: "실무 도구" }],
   ["tools/holdco-nav.html", "holdco-nav", { kick: INV, label: "실무 도구" }],
   ["tools/fx-hedge.html", "fx-hedge", { kick: INV, label: "실무 도구" }],
+  ["tools/mem-scenario.html", "mem-scenario", { kick: INV, label: "실무 도구" }],
   ["tools/fsa.html", "fsa", { label: "분석 리포트" }],
   ["tools/semi-cycle.html", "semi-cycle", { label: "분석 리포트" }],
   ["tools/samsung.html", "samsung", { label: "분석 리포트" }],

@@ -31,7 +31,8 @@
     Samsung: require("./data/samsung.js"),
     Sectors: require("./data/sectors.js"),
     Deal: require("./data/deal-hhi.js"),
-    Doa: require("./engines/doa.js")
+    Doa: require("./engines/doa.js"),
+    MemScen: require("./engines/memscen.js")
   } : null;
   const api = factory();
   if (node) {
@@ -78,7 +79,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -730,6 +731,32 @@
       const W = A.wc(A.WC), same = A.wc(A.WC, { dso: W.dso, dio: W.dio, dpo: W.dpo });
       add(G, "현금전환주기 = 매출채권 + 재고 − 매입채무 회전일, 항목별 합계 = 풀리는 현금, 목표 = 현재면 0", near(W.ccc, W.dso + W.dio - W.dpo, 1e-12) && near(W.rel.ar + W.rel.inv + W.rel.ap, W.release, 1e-12) && near(same.release, 0, 1e-9), W.ccc.toFixed(1) + "일");
       add(G, "풀리는 현금 = 회전일 단축 × 하루 금액, 순운전자본 감소 = 풀리는 현금", near(W.rel.ar, (W.dso - A.WC.target.dso) * A.WC.rev / 365, 1e-9) && near(W.nwc - (A.WC.target.dso * A.WC.rev / 365 + A.WC.target.dio * A.WC.cogs / 365 - A.WC.target.dpo * A.WC.cogs / 365), W.release, 1e-9) && W.roic1 > W.roic0, W.release.toFixed(1) + "억원");
+    }
+
+    /* ---------- 메모리 사이클 시나리오 ---------- */
+    if (MemScen) {
+      const M = MemScen, G = "메모리 시나리오", C = M.CENTRAL;
+      const ok1 = [0, 1, 77, 12345, 200000, M.TOTAL - 1].every((n) => M.encode(M.decode(n)) === n);
+      add(G, "조합 수 = 5^8 = 390,625, 조합 번호 ↔ 단계 배열이 서로 되돌아온다", M.TOTAL === 390625 && M.NV === 8 && ok1 && M.code(M.decode(0)) === "11111111", M.TOTAL + "개");
+      const ps = [0.17, 0.4, 0.75, 1, 1.15, 1.25];
+      add(G, "가격식 왕복: 가격 → 갭 → 가격이 같고, 갭 0이면 가격 1, 갭이 커지면 가격이 내린다", ps.every((p) => near(M.priceOfGap(M.gapOfPrice(p)), p, 1e-12)) && M.priceOfGap(0) === 1 && M.priceOfGap(0.05) < M.priceOfGap(0.02), "k " + M.K.over.toFixed(2) + " / " + M.K.short.toFixed(2));
+      const vi = ["skh", "sec"].every((co) => { const r = M.evaluate(co, C); let pv = 0; r.years.forEach((y, t) => { pv += (y.eps - r.coe * y.bpsBeg) / Math.pow(1 + r.coe, t + 1); }); return near(r.value, M.CO[co].bps0 + pv + r.tv, 1e-12) && near(r.years[2].bps, M.CO[co].bps0 + Fin.sum(r.years.map((y) => y.eps)) * (1 - M.CO[co].payout), 1e-9); });
+      add(G, "적정가 = 2026년 말 BPS + 잔여이익 현재가치 + 잔존가치, 기말 BPS = 기초 + 이익 × (1 − 환원율)", vi, "");
+      const off = C.slice(); off[6] = 4;
+      const noL = ["skh", "sec"].every((co) => M.evaluate(co, off).years.every((y) => y.peff === y.pm && y.lta === 0 && y.pen === 0 && y.pc === null));
+      add(G, "장기공급계약 무력화(5단계)면 실현가격 = 시장가격, 보호 물량·몰수 선급금 0", noL, "");
+      const mono = ["skh", "sec"].every((co) => { const v = [0, 1, 2, 3, 4].map((s) => { const l = C.slice(); l[0] = s; return M.evaluate(co, l).value; }); return v.every((x, i) => i === 0 || x < v[i - 1]); });
+      const each = ["skh", "sec"].every((co) => M.VARS.every((x, i) => { const a = C.slice(), b = C.slice(); a[i] = 0; b[i] = 4; return M.evaluate(co, a).value >= M.evaluate(co, b).value; }));
+      add(G, "업황이 나빠질수록 적정가 하락, 변수마다 1단계 적정가 ≥ 5단계", mono && each, "");
+      const neu = C.slice(); neu[0] = 1; neu[5] = 0;
+      const s1 = M.evaluate("skh", neu).years[0].op, s2 = M.evaluate("sec", neu).years[0].op;
+      add(G, "2단계(호황)·수요 충격 없음의 2027 영업이익이 컨센서스(하이닉스 약 404조, 삼성 약 545조)의 ±10% 안", Math.abs(s1 / 404 - 1) < 0.1 && Math.abs(s2 / 545 - 1) < 0.1, s1.toFixed(0) + " / " + s2.toFixed(0) + "조원");
+      const fa = off.slice(), fb = off.slice(); fa[2] = 0; fb[2] = 2;
+      const ra = M.evaluate("skh", fa).years, rb = M.evaluate("skh", fb).years;
+      add(G, "환율 단계를 바꾸면 매출이 환율 비율만큼 바뀐다(1,450 ÷ 1,335)", ra.every((y, t) => near(y.rev / rb[t].rev, 1450 / 1335, 1e-12)), (1450 / 1335).toFixed(4));
+      const w = M.weighted("sec", C, [0, 0, 1, 0, 0]), l2 = C.slice(); l2[0] = 2;
+      const bins = new Array(10).fill(0), sc = M.scan("skh", 0, 3125, bins, 0, 4e6, null);
+      add(G, "확률을 한 단계에 100% 주면 그 단계 값과 같고, 분포 칸의 합 = 계산한 조합 수", near(w.value, M.evaluate("sec", l2).value, 1e-12) && sc.total === 3125 && Fin.sum(bins) === 3125, "");
     }
 
     /* ---------- 제도 노트: 통합투자세액공제 ---------- */
