@@ -330,6 +330,32 @@
       ]
     },
     {
+      "file": "mem-scenario.html",
+      "title": "메모리 사이클 시나리오 가치평가",
+      "nav": "메모리 시나리오 가치평가",
+      "kind": "도구",
+      "fields": [
+        "기업·산업 분석",
+        "투자·M&A",
+        "통계·확률"
+      ],
+      "career": "반도체 전공정 장비용 세라믹 부품 제조사 재무기획팀 재직",
+      "more": [
+        [
+          "samsung.html",
+          "삼성전자 재무 분석"
+        ],
+        [
+          "semi-cycle.html",
+          "반도체 사이클과 재무"
+        ],
+        [
+          "pro-methods.html",
+          "추정과 가치의 기법"
+        ]
+      ]
+    },
+    {
       "file": "sectors.html",
       "title": "업종별 재무제표 읽기",
       "kind": "리포트",
@@ -566,7 +592,8 @@
           "ma-process.html",
           "ma-valuation.html",
           "holdco-nav.html",
-          "fx-hedge.html"
+          "fx-hedge.html",
+          "mem-scenario.html"
         ]
       ]
     ]
@@ -672,7 +699,7 @@
     {
       "id": "read",
       "name": "공시로 기업 읽기",
-      "why": "읽는 틀을 세우고, 한 회사를 깊게, 여러 업종을 넓게, 산업의 흐름까지",
+      "why": "읽는 틀을 세우고, 한 회사를 깊게, 여러 업종을 넓게, 산업의 흐름과 시나리오 가치평가까지",
       "steps": [
         [
           "fsa.html",
@@ -693,6 +720,10 @@
         [
           "reading.html",
           "산업 전망"
+        ],
+        [
+          "mem-scenario.html",
+          "시나리오 가치"
         ]
       ]
     },

@@ -44,6 +44,7 @@ const PAGES = [
   ["tools/ma-valuation.html", "28_M_A_가치평가", "M&A 가치평가"],
   ["tools/holdco-nav.html", "29_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
   ["tools/fx-hedge.html", "30_환리스크_헤지", "환리스크 헤지"],
+  ["tools/mem-scenario.html", "30a_메모리_사이클_시나리오_가치평가", "메모리 사이클 시나리오 가치평가"],
   ["tools/checks.html", "31_계산_검산", "계산 검산"],
   ["tools/guide.html", "32_쉬운_가이드", "쉬운 가이드"],
   ["en.html", "33_English_summary", "English summary"]
