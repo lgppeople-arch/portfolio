@@ -10,13 +10,16 @@
   const fmt = (v, d) => (v < 0 ? "−" : "") + Math.abs(v).toLocaleString("ko-KR", { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
   const sg = (v, d) => (v > 0 ? "+" : "") + fmt(v, d);
   const pp = (v, d) => sg(v * 100, d === undefined ? 2 : d) + "%p";
+  const ap = (v) => fmt(v * 100, 2) + "%p";   /* 평균 오차처럼 부호가 없는 크기 */
   function frame(id, H, label) { const host = $(id); host.textContent = ""; const W = Math.max(300, Math.round(host.clientWidth || 680)); return { svg: sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": label }, host), W: W, nar: W < 560 }; }
   function yAxis(s, l, r2, y, tk, f) { tk.ticks.forEach((t) => { sv("line", { x1: l, x2: r2, y1: y(t), y2: y(t), stroke: Math.abs(t) < 1e-12 ? c("--ink-2") : c("--rule-soft") }, s); tx(s, l - 6, y(t) + 4, f(t), { "text-anchor": "end", "font-size": 9.5, fill: c("--muted"), class: "n" }); }); }
 
   const A = E.analyze(D), P = A.P, M = D.meta, fm = A.fm, Q = A.quint, O = A.oos;
   const st = (m, j) => fm[m].stats[j];
   const inv = st("M2_fe", 0), mr = st("M2_fe", 1), naive = st("M1", 0), ag = st("M3_fe", 0), qs = Q.spread;
-  const sig = (s) => Math.abs(s.tNw) >= 2;
+  /* 단순 t와 뉴이-웨스트 t가 모두 |2| 이상일 때만 "뚜렷하다"고 쓴다. 연도가 7개뿐이라 한쪽만 넘으면 단정하지 않는다 */
+  const sig = (s) => Math.abs(s.tNw) >= 2 && Math.abs(s.t) >= 2, half = (s) => !sig(s) && Math.max(Math.abs(s.tNw), Math.abs(s.t)) >= 2;
+  const tt = (s) => "단순 t " + fmt(s.t, 1) + " · 보정 t " + fmt(s.tNw, 1);
   $("hm-n").textContent = M.n_firms + "곳 · " + P.D.length.toLocaleString("ko-KR") + "개 관측치";
   $("dl-date").textContent = "2026.11.22";
   $("data-note").textContent = "대상은 2026년 3~5월에 2025년 사업보고서를 낸 코스피 12월 결산 제조업체 중 " + M.n_firms + "곳이고, 투자한 해 " + M.years[0] + "~" + M.years[1] + "년(3년 뒤는 " + (M.years[0] + 3) + "~" + (M.years[1] + 3) + "년)의 " + P.D.length.toLocaleString("ko-KR") + "개 관측치입니다. 극단값의 영향을 줄이려고 해마다 변수별 위아래 1%를 그 경계값으로 바꿨습니다(절단). 지금 상장된 회사만 들어 있어, 투자했다가 실패해 상장폐지된 회사는 빠져 있습니다(생존 편향: 결과를 투자에 유리한 쪽으로 기울게 함).";
@@ -24,16 +27,17 @@
   /* ---------- 결론 ---------- */
   const qd = Q.mean.droa, q5 = qd[4] - qd[0];
   const tk = $("tk");
+  const res = Q.mean.resid, sg3 = Q.mean.sg3, mid = Math.max(res[1], res[2], res[3]);
   const tkRows = [
-    [q5 < 0 ? "많이 늘린 회사의 ROA는 오히려 내려갔다" : "많이 늘린 회사의 ROA가 더 올랐다", "투자율 상위 20% 묶음의 3년 뒤 ROA 변화는 " + pp(qd[4]) + ", 하위 20%는 " + pp(qd[0]) + "로 차이가 " + pp(q5) + "였습니다(연도별 차이의 t " + fmt(qs.droa.tNw, 1) + ")."],
-    [sig(inv) ? (inv.mean < 0 ? "평균 회귀를 빼도 투자율은 불리했다" : "평균 회귀를 빼면 투자율은 유리했다") : "평균 회귀를 빼면 투자율의 효과는 뚜렷하지 않았다", "올해 ROA·규모·매출 증가율·업종을 함께 넣은 회귀에서 투자율 10%p당 3년 뒤 ROA 변화는 " + pp(inv.mean * 0.1) + "(t " + fmt(inv.tNw, 1) + ")였습니다. 같은 식에서 올해 ROA의 계수는 " + fmt(mr.mean, 2) + "로, 3년이면 격차의 " + fmt(-mr.mean * 100, 0) + "%가 사라졌습니다."],
-    [O.mae.M2 < O.mae.M0 ? "예측에는 조금 보탬이 됐다" : "예측에는 보탬이 되지 않았다", "과거 자료만으로 3년 뒤를 예측한 평균 오차는 평균 회귀만 쓴 식 " + pp(O.mae.M0) + ", 투자율 등을 더한 식 " + pp(O.mae.M2) + "였습니다(" + O.years.length + "개 연도 중 " + O.wins + "번 더 나음). 둘 다 'ROA 그대로'(" + pp(O.mae.naive) + ")보다는 정확했습니다."]
+    [q5 < 0 ? "통념과 달리, 많이 늘린 회사의 ROA는 내려갔다" : "많이 늘린 회사의 ROA가 더 올랐다", "투자율 상위 20%의 3년 뒤 ROA 변화는 " + pp(qd[4]) + ", 하위 20%는 " + pp(qd[0]) + "였습니다(차이 " + pp(q5) + "). 반면 이후 3년 연평균 매출 증가율은 상위 20%가 " + fmt(sg3[4] * 100, 1) + "%로 하위 20%(" + fmt(sg3[0] * 100, 1) + "%)보다 높았습니다. 더 컸지만 더 벌지는 못했습니다."],
+    ["그 차이의 대부분은 평균 회귀였다", "투자를 적게 한 묶음은 출발 ROA가 " + fmt(Q.mean.roa0[0] * 100, 1) + "%로 낮아 원래 오를 자리였습니다. 올해 ROA로 설명되는 부분을 빼면 차이는 " + pp(qs.resid.mean) + "로 줄었고(" + tt(qs.resid) + "), 그마저 가장 많이 늘린 20%(" + pp(res[4]) + ")에 몰려 있었습니다. 중간 묶음은 평균보다 조금 나았습니다(최대 " + pp(mid) + ", 작은 차이)."],
+    [sig(inv) ? (inv.mean < 0 ? "통제 후에도 투자율은 불리했다" : "통제 후 투자율은 유리했다") : "직선 관계로는 효과가 작고 불확실하다", "올해 ROA·규모·매출 증가율·업종을 함께 넣은 회귀에서 투자율 10%p당 3년 뒤 ROA 변화는 " + pp(inv.mean * 0.1) + "였습니다(" + tt(inv) + (half(inv) ? ", 두 t값이 기준 2를 사이에 두고 엇갈림" : "") + "). 과거 자료만으로 3년 뒤를 맞히는 데도 평균 오차를 " + ap(O.mae.M0) + "에서 " + ap(O.mae.M2) + "로 줄이는 데 그쳤습니다."]
   ];
   tkRows.forEach((q) => { const d = F.el("div"); d.appendChild(F.el("b", { text: q[0] })); d.appendChild(F.el("p", { text: q[1] })); tk.appendChild(d); });
   const qa = $("qa-tb");
   [["투자를 많이 늘린 회사는 3년 뒤 ROA가 올랐나", "해마다 투자율 5분위로 나눠 3년 뒤 ROA 변화 평균", "상위 20% " + pp(qd[4]) + " vs 하위 20% " + pp(qd[0]) + " (차이 " + pp(q5) + ")"],
-   ["평균 회귀를 빼도 남나", "연도별 횡단면 회귀(올해 ROA·규모·매출 증가율·업종 통제), 뉴이-웨스트 t", "투자율 10%p당 " + pp(inv.mean * 0.1) + " (t " + fmt(inv.tNw, 1) + (sig(inv) ? ", |t| ≥ 2" : ", |t| < 2: 우연과 구별 어려움") + "). 통제 전 " + pp(naive.mean * 0.1) + " (t " + fmt(naive.tNw, 1) + ")"],
-   ["투자율을 알면 더 잘 맞히나", "해마다 과거 관측치만으로 추정한 식으로 3년 뒤 예측(" + O.years.map((r) => r.year).join("·") + "년)", "평균 오차 " + pp(O.mae.M2) + " vs 평균 회귀만 " + pp(O.mae.M0) + (O.mae.M2 < O.mae.M0 ? " (조금 나음)" : " (나아지지 않음)")],
+   ["평균 회귀를 빼도 남나", "① 5분위에서 올해 ROA로 예측한 변화를 뺀 나머지 ② 연도별 횡단면 회귀(올해 ROA·규모·매출 증가율·업종 통제)", "① 상위 − 하위 " + pp(qs.resid.mean) + " (" + tt(qs.resid) + "), 상위 20%에 몰림 ② 투자율 10%p당 " + pp(inv.mean * 0.1) + " (" + tt(inv) + (sig(inv) ? ")" : "): 단정하기 어려움") + ". 통제 전에는 " + pp(naive.mean * 0.1) + " (" + tt(naive) + ")"],
+   ["투자율을 알면 더 잘 맞히나", "해마다 과거 관측치만으로 추정한 식으로 3년 뒤 예측(" + O.years.map((r) => r.year).join("·") + "년)", "평균 오차 " + ap(O.mae.M2) + " vs 평균 회귀만 " + ap(O.mae.M0) + (O.mae.M2 < O.mae.M0 ? " (" + O.years.length + "개 연도 중 " + O.wins + "번 나음, 개선 폭 " + ap(O.mae.M0 - O.mae.M2) + ")" : " (나아지지 않음)")],
    ["매출은 따라오나", "투자율 5분위별 이후 3년 연평균 매출 증가율", "상위 20% " + sg(Q.mean.sg3[4] * 100, 1) + "% vs 하위 20% " + sg(Q.mean.sg3[0] * 100, 1) + "% (차이 t " + fmt(qs.sg3.tNw, 1) + ")"]
   ].forEach((q) => { const tr = F.el("tr"); tr.appendChild(F.el("th", { text: q[0] })); tr.appendChild(F.el("td", { text: q[1] })); tr.appendChild(F.el("td", { text: q[2] })); qa.appendChild(tr); });
 
@@ -54,13 +58,14 @@
   const ot = $("oos-tb");
   ot.appendChild(F.el("thead", null, [F.el("tr", null, ["예측 대상(투자한 해)", "회사 수", "추정에 쓴 관측치", "ROA 그대로", "평균 회귀만", "평균 회귀 + 투자율 등"].map((h) => F.el("th", { text: h })))]));
   const otb = F.el("tbody");
-  O.years.forEach((r) => { const tr = F.el("tr"); tr.appendChild(F.el("th", { text: r.year + "년 → " + (r.year + 3) + "년" })); [r.n + "곳", r.trainN.toLocaleString("ko-KR") + "개 (" + "~" + (r.year - 3) + "년)", pp(r.naive), pp(r.M0), pp(r.M2)].forEach((v, i) => { const td = F.el("td", { text: v }); if (i === 4 && r.M2 < r.M0) td.style.fontWeight = "700"; tr.appendChild(td); }); otb.appendChild(tr); });
-  const tr0 = F.el("tr"); tr0.appendChild(F.el("th", { text: "전체(회사 수 가중)" })); ["", "", pp(O.mae.naive), pp(O.mae.M0), pp(O.mae.M2)].forEach((v) => tr0.appendChild(F.el("td", { text: v }))); otb.appendChild(tr0);
+  O.years.forEach((r) => { const tr = F.el("tr"); tr.appendChild(F.el("th", { text: r.year + "년 → " + (r.year + 3) + "년" })); [r.n + "곳", r.trainN.toLocaleString("ko-KR") + "개 (" + "~" + (r.year - 3) + "년)", ap(r.naive), ap(r.M0), ap(r.M2)].forEach((v, i) => { const td = F.el("td", { text: v }); if (i === 4 && r.M2 < r.M0) td.style.fontWeight = "700"; tr.appendChild(td); }); otb.appendChild(tr); });
+  const tr0 = F.el("tr"); tr0.appendChild(F.el("th", { text: "전체(회사 수 가중)" })); ["", "", ap(O.mae.naive), ap(O.mae.M0), ap(O.mae.M2)].forEach((v) => tr0.appendChild(F.el("td", { text: v }))); otb.appendChild(tr0);
   ot.appendChild(otb);
 
   /* ---------- 실무·한계 ---------- */
   const useRows = [
-    ["투자 심의에서 '투자하면 수익성이 오른다'를 기본 전제로 두지 않습니다.", " 평균적으로는 투자를 많이 늘린 회사의 3년 뒤 수익성이 " + (q5 < 0 ? "덜 좋았습니다" : "더 좋았지만, 그 차이의 상당 부분은 원래 수익성 차이로 설명됐습니다") + ". 개별 안건의 NPV 가정(가동률·가격·마진)이 업계 평균 경로보다 낙관적이면 근거를 따로 요구합니다."],
+    ["투자 심의에서 '투자하면 수익성이 오른다'를 기본 전제로 두지 않습니다.", " 코스피 제조업 평균으로는 투자를 많이 늘린 회사의 3년 뒤 ROA가 " + (q5 < 0 ? "오히려 내려갔습니다" : "더 올랐습니다") + ". 개별 안건의 NPV 가정(가동률·가격·마진)이 '투자 뒤 수익성 개선'을 전제로 하면, 그 근거를 업계 평균보다 강하게 요구합니다."],
+    ["자산을 한 해에 크게 늘리는 안건은 한 번 더 봅니다.", " 평균 회귀를 빼고 남는 불리함은 투자율 상위 20%(평균 투자율 " + fmt(Q.mean.inv[4] * 100, 0) + "%)에 몰려 있었고, 중간 수준의 투자는 오히려 평균보다 조금 나았습니다(차이는 작습니다). 한 해에 총자산의 15~20%를 넘게 늘리는 증설·인수는 단계 투자(설비투자 키트의 단계투자 옵션)로 나눠 볼 여지를 검토합니다."],
     ["수익성 비교는 반드시 평균 회귀를 빼고 합니다.", " 사후관리에서 '투자한 사업부의 ROA가 떨어졌다'는 결과만으로 실패라고 판단하면 안 됩니다. 올해 ROA가 높던 회사는 투자와 상관없이 3년이면 격차의 " + fmt(-mr.mean * 100, 0) + "% 정도가 사라졌습니다. 비교 기준을 '같은 출발점의 회사들'로 잡아야 합니다."],
     ["매출 성장과 수익성은 따로 봅니다.", " 투자는 매출을 " + (Q.mean.sg3[4] > Q.mean.sg3[0] ? "더 키웠지만" : "키우지도 못했고") + " 수익성으로 바로 이어지지 않았습니다. 투자 후 KPI를 매출만으로 잡으면 성과를 과대평가하기 쉽습니다."],
     ["이 결과는 사전 확률로 씁니다.", " 업종 평균의 경향일 뿐 개별 안건의 답이 아닙니다. 투자안 NPV 분포(설비투자 키트의 몬테카를로)를 그릴 때 '3년 뒤 수익성 개선' 가정의 기준선으로 씁니다."]
@@ -75,7 +80,7 @@
   ].forEach((q) => { const li = F.el("li"); li.appendChild(F.el("b", { text: q[0] })); li.appendChild(document.createTextNode(q[1])); lim.appendChild(li); });
 
   /* ---------- 업종 고르기 ---------- */
-  const IND = { 0: "제조업 전체", 10: "식료품", 13: "섬유", 17: "펄프·종이", 20: "화학", 21: "의약품", 22: "고무·플라스틱", 23: "비금속 광물", 24: "1차 금속", 25: "금속 가공", 26: "전자부품·컴퓨터·통신", 27: "의료·정밀기기", 28: "전기장비", 29: "기타 기계", 30: "자동차·부품", 31: "기타 운송장비" };
+  const IND = { 0: "제조업 전체", 10: "식료품", 11: "음료", 12: "담배", 13: "섬유", 14: "의복", 15: "가죽·신발", 16: "목재", 17: "펄프·종이", 19: "석유 정제", 20: "화학", 21: "의약품", 22: "고무·플라스틱", 23: "비금속 광물", 24: "1차 금속", 25: "금속 가공", 26: "전자부품·컴퓨터·통신", 27: "의료·정밀기기", 28: "전기장비", 29: "기타 기계", 30: "자동차·부품", 31: "기타 운송장비", 32: "가구", 33: "기타 제품" };
   const cnt = {}; P.D.forEach((d) => { cnt[d.ind] = (cnt[d.ind] || 0) + 1; });
   const minYear = (k) => Math.min.apply(null, P.years.map((t) => P.D.filter((d) => d.year === t && d.ind === k).length));
   const sel = $("ind-sel");
@@ -129,7 +134,7 @@
     const m = inv.mean * 10; sv("line", { x1: l, x2: r2, y1: y(m), y2: y(m), stroke: c("--accent"), "stroke-width": 1.6, "stroke-dasharray": "5 3" }, s);
     tx(s, l + 4, y(m) - 5, "평균 " + sg(m, 2) + "%p", { "font-size": 10.5, fill: c("--accent"), "font-weight": 700 });
     const neg = by.filter((v) => v < 0).length;
-    $("coef-note").textContent = P.years.length + "개 연도 중 " + neg + "개 연도에서 음수였습니다. 연도별 값의 흩어짐으로 계산한 t는 " + fmt(inv.t, 1) + ", 3년 구간이 겹치는 것을 보정한 뉴이-웨스트 t는 " + fmt(inv.tNw, 1) + "입니다. 연도 수가 적어 t값 자체도 흔들릴 수 있으므로, 부호가 해마다 같은 쪽인지를 함께 봅니다.";
+    $("coef-note").textContent = P.years.length + "개 연도 중 " + neg + "개 연도에서 음수였습니다. 연도별 값의 흩어짐으로 계산한 단순 t는 " + fmt(inv.t, 1) + ", 3년 구간이 겹치는 것을 보정한 뉴이-웨스트 t는 " + fmt(inv.tNw, 1) + "입니다." + (half(inv) ? " 보정 t가 더 큰 것은 연도별 계수가 해마다 번갈아 움직였기 때문인데, 연도가 " + P.years.length + "개뿐이라 이 보정 자체가 불안정합니다. 그래서 '통제 후에도 불리하다'고 단정하지 않습니다." : "") + " 같은 식에서 투자율 대신 총자산 증가율을 넣으면 10%p당 " + pp(ag.mean * 0.1) + "(" + tt(ag) + ")로, 자산을 빨리 키운 회사일수록 3년 뒤 ROA가 낮아지는 관계는 더 분명했습니다.";
   }
 
   /* ---------- 그림 4: 매출 증가율 ---------- */
