@@ -402,6 +402,30 @@
       ]
     },
     {
+      "file": "trade-lead.html",
+      "title": "장비 수출입으로 읽는 반도체 투자 사이클",
+      "kind": "리포트",
+      "fields": [
+        "기업·산업 분석",
+        "통계·확률"
+      ],
+      "career": "",
+      "more": [
+        [
+          "semi-cycle.html",
+          "반도체 사이클과 재무"
+        ],
+        [
+          "stats-notes.html",
+          "통계 기법과 활용(시차 상관·검정)"
+        ],
+        [
+          "mem-scenario.html",
+          "메모리 시나리오 가치평가"
+        ]
+      ]
+    },
+    {
       "file": "reading.html",
       "title": "AI 인프라 읽기 노트",
       "kind": "리포트",
@@ -551,6 +575,7 @@
         "산업·분석 틀",
         [
           "semi-cycle.html",
+          "trade-lead.html",
           "reading.html",
           "fsa.html"
         ]
@@ -716,6 +741,10 @@
         [
           "semi-cycle.html",
           "산업 사이클"
+        ],
+        [
+          "trade-lead.html",
+          "산업 데이터"
         ],
         [
           "reading.html",

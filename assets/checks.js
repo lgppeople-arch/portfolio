@@ -19,6 +19,8 @@
     Rules: require("./engines/rules.js"),
     OpSim: require("./op-sim.js"),
     AdvViz: require("./engines/advviz.js"),
+    TradeLead: require("./engines/tradelead.js"),
+    TradeSemi: require("./data/trade-semi.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -79,7 +81,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -689,6 +691,16 @@
     if (OpSim) {
       const O = OpSim, G = "관리회계", z = O.calc(0, 0, 0), r = O.calc(0.03, -0.08, 0.04), p1 = O.calc(0.01, 0, 0);
       add(G, "홈 미니 시뮬레이터: 단가 + 물량 + 원가 효과 = 영업이익 차이, 기준에서 영업이익 100억·이익률 10%, 단가 1% = 10억", near(z.op, 100, 1e-12) && near(z.m, 0.1, 1e-12) && near(r.eff.price + r.eff.volume + r.eff.cost, r.op - r.op0, 1e-9) && near(p1.op - 100, 10, 1e-9) && near(z.dol, 3.5, 1e-12), (r.op - r.op0).toFixed(1) + "억원");
+    }
+
+    /* ---------- 데이터 분석: 장비 수출입 ---------- */
+    if (TradeLead && TradeSemi) {
+      const T = TradeLead, D = TradeSemi, P = D.py, A = T.analyze(D), G = "데이터 분석";
+      const same = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+      add(G, "Python(examples/trade/analyze.py)과 브라우저 엔진이 같은 답: 시차·상관·검정 기준·예측 오차·적중률 14개", P.level_lag === A.peak.lag && P.diff_lag === A.peakD.lag && P.n_bt === A.bt2.n && [[P.level_r, A.peak.r], [P.diff_r, A.peakD.r], [P.h1_r, A.h1.r], [P.h1_thr, A.h1.thr], [P.h2_thr, A.h2.thr], [P.bt1_mae, A.bt1.maeModel], [P.bt1_naive, A.bt1.maeNaive], [P.bt1_hit, A.bt1.hit], [P.bt2_mae, A.bt2.maeModel], [P.bt2_naive, A.bt2.maeNaive], [P.bt2_hit, A.bt2.hit]].every((q) => same(q[0], q[1])), "시차 " + A.peakD.lag + "개월 · r " + A.peakD.r.toFixed(3));
+      const v = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260], g = T.yoy3(v), s2 = [1, 3, 2, 5, 4, 6], lag = [null, null].concat(s2);
+      const xc = T.xcorr(s2.concat([7, 9, 8]), [0, 0].concat(s2, [7]), 3).find((q) => q.lag === 2);
+      add(G, "3개월 합계 증가율 손계산과 일치, 2개월 밀어 둔 같은 계열의 상관은 그 시차에서 1, 표본 밖 예측은 미래 자료를 쓰지 않음", near(g[14], ((240 + 230 + 220) / (120 + 110 + 100) - 1) * 100, 1e-12) && g[13] === null && near(xc.r, 1, 1e-12) && A.bt2.rows.every((r) => r.t + 6 < D.months.length), "");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */

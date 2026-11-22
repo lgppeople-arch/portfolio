@@ -34,6 +34,7 @@ const PAGES = [
   ["tools/mem-scenario.html", "mem-scenario", { kick: INV, label: "실무 도구" }],
   ["tools/fsa.html", "fsa", { label: "분석 리포트" }],
   ["tools/semi-cycle.html", "semi-cycle", { label: "분석 리포트" }],
+  ["tools/trade-lead.html", "trade-lead", { label: "데이터 분석" }],
   ["tools/samsung.html", "samsung", { label: "분석 리포트" }],
   ["tools/reading.html", "reading", { label: "분석 리포트" }],
   ["tools/sectors.html", "sectors", { label: "분석 리포트" }],

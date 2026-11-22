@@ -21,33 +21,34 @@ const PAGES = [
   ["tools/reading.html", "05_AI_인프라_읽기_노트", "AI 인프라 읽기 노트"],
   ["tools/fsa.html", "06_재무제표_분석_프레임워크", "재무제표 분석 프레임워크"],
   ["tools/semi-cycle.html", "07_반도체_사이클과_재무", "반도체 사이클과 재무"],
-  ["tools/deck.html", "08_보고서_PPT_작성_원칙", "보고서·PPT 작성 원칙"],
-  ["tools/charts.html", "09_차트_선택과_디자인", "차트 선택과 디자인"],
-  ["tools/sources.html", "10_정보_출처와_참고_자료", "정보 출처와 참고 자료"],
-  ["tools/stats-notes.html", "11_통계_기법과_활용", "통계 기법과 활용"],
-  ["tools/pro-methods.html", "12_추정과_가치의_기법", "추정과 가치의 기법"],
-  ["tools/rules-note.html", "13_세액공제_내부회계_지속가능성_공시", "세액공제·내부회계·지속가능성 공시"],
-  ["tools/kpi-tree.html", "14_KPI_트리", "KPI 트리"],
-  ["tools/plan-risk.html", "15_사업계획_달성_확률", "사업계획 달성 확률"],
-  ["tools/budget-opt.html", "16_비용예산_증액_우선순위", "비용예산 증액 우선순위"],
-  ["tools/pl-report.html", "17_월_손익_보고", "월 손익 보고"],
-  ["tools/mgmt-kit.html", "18_관리회계_키트", "관리회계 키트"],
-  ["tools/cost-stats.html", "19_원가_행태와_불량_관리도", "원가 행태와 불량 관리도"],
-  ["tools/mbo-kpi.html", "20_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
-  ["tools/cash-13w.html", "21_13주_자금수지", "13주 자금수지"],
-  ["tools/capital.html", "22_적정_부채와_파산_위험", "적정 부채와 파산 위험"],
-  ["tools/doa.html", "23_위임전결_기준_점검", "위임전결 기준 점검"],
-  ["tools/capex-kit.html", "24_설비투자_분석_키트", "설비투자 분석 키트"],
-  ["tools/post-review.html", "25_투자_사후관리", "투자 사후관리"],
-  ["tools/asset-kit.html", "26_자산_손상_운전자본", "자산 손상·운전자본"],
-  ["tools/ma-process.html", "27_M_A_절차_지도", "M&A 절차 지도"],
-  ["tools/ma-valuation.html", "28_M_A_가치평가", "M&A 가치평가"],
-  ["tools/holdco-nav.html", "29_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
-  ["tools/fx-hedge.html", "30_환리스크_헤지", "환리스크 헤지"],
+  ["tools/trade-lead.html", "08_장비_수출입으로_읽는_반도체_투자_사이클", "장비 수출입으로 읽는 반도체 투자 사이클"],
+  ["tools/deck.html", "09_보고서_PPT_작성_원칙", "보고서·PPT 작성 원칙"],
+  ["tools/charts.html", "10_차트_선택과_디자인", "차트 선택과 디자인"],
+  ["tools/sources.html", "11_정보_출처와_참고_자료", "정보 출처와 참고 자료"],
+  ["tools/stats-notes.html", "12_통계_기법과_활용", "통계 기법과 활용"],
+  ["tools/pro-methods.html", "13_추정과_가치의_기법", "추정과 가치의 기법"],
+  ["tools/rules-note.html", "14_세액공제_내부회계_지속가능성_공시", "세액공제·내부회계·지속가능성 공시"],
+  ["tools/kpi-tree.html", "15_KPI_트리", "KPI 트리"],
+  ["tools/plan-risk.html", "16_사업계획_달성_확률", "사업계획 달성 확률"],
+  ["tools/budget-opt.html", "17_비용예산_증액_우선순위", "비용예산 증액 우선순위"],
+  ["tools/pl-report.html", "18_월_손익_보고", "월 손익 보고"],
+  ["tools/mgmt-kit.html", "19_관리회계_키트", "관리회계 키트"],
+  ["tools/cost-stats.html", "20_원가_행태와_불량_관리도", "원가 행태와 불량 관리도"],
+  ["tools/mbo-kpi.html", "21_성과평가_MBO_KPI", "성과평가 MBO·KPI"],
+  ["tools/cash-13w.html", "22_13주_자금수지", "13주 자금수지"],
+  ["tools/capital.html", "23_적정_부채와_파산_위험", "적정 부채와 파산 위험"],
+  ["tools/doa.html", "24_위임전결_기준_점검", "위임전결 기준 점검"],
+  ["tools/capex-kit.html", "25_설비투자_분석_키트", "설비투자 분석 키트"],
+  ["tools/post-review.html", "26_투자_사후관리", "투자 사후관리"],
+  ["tools/asset-kit.html", "27_자산_손상_운전자본", "자산 손상·운전자본"],
+  ["tools/ma-process.html", "28_M_A_절차_지도", "M&A 절차 지도"],
+  ["tools/ma-valuation.html", "29_M_A_가치평가", "M&A 가치평가"],
+  ["tools/holdco-nav.html", "30_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
+  ["tools/fx-hedge.html", "31_환리스크_헤지", "환리스크 헤지"],
   ["tools/mem-scenario.html", "30a_메모리_사이클_시나리오_가치평가", "메모리 사이클 시나리오 가치평가"],
-  ["tools/checks.html", "31_계산_검산", "계산 검산"],
-  ["tools/guide.html", "32_쉬운_가이드", "쉬운 가이드"],
-  ["en.html", "33_English_summary", "English summary"]
+  ["tools/checks.html", "32_계산_검산", "계산 검산"],
+  ["tools/guide.html", "33_쉬운_가이드", "쉬운 가이드"],
+  ["en.html", "34_English_summary", "English summary"]
 ];
 
 /* A4 가로. 인쇄 배율 0.82면 본문 15px이 약 9pt로 찍히고, 화면은 1,277px 폭의 데스크톱 배치가 된다. */
@@ -555,7 +556,7 @@ async function frontMatter(ctx, out, results, pick) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"].includes(n) ? "리포트" : ["31", "32", "33"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14"].includes(n) ? "리포트" : ["32", "33", "34"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
