@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>투자를 늘린 제조업체는 3년 뒤 더 벌까 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="코스피 제조업 공시 재무제표(OpenDART) 패널로 투자(비유동자산 증가)를 많이 늘린 회사의 3년 뒤 수익성 변화를 검증한 데이터 분석 프로젝트. 평균 회귀 통제, 연도별 횡단면 회귀(뉴이-웨스트 보정), 표본 밖 예측, Python·브라우저 이중 계산">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="투자를 늘린 제조업체는 3년 뒤 더 벌까 · 이기표">
+<meta property="og:description" content="코스피 제조업 공시 재무제표(OpenDART) 패널로 투자(비유동자산 증가)를 많이 늘린 회사의 3년 뒤 수익성 변화를 검증한 데이터 분석 프로젝트. 평균 회귀 통제, 연도별 횡단면 회귀(뉴이-웨스트 보정), 표본 밖 예측, Python·브라우저 이중 계산">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/capex-panel.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/capex-panel.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="H1_PLACEHOLDER">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/capex-panel.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .evid { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); background: color-mix(in srgb, var(--pos) 6%, var(--surface)); display: grid; gap: 6px; max-width: 80ch; }
+  .evid .evk { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  .evid p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink); }
+  .evid a { font-size: 12.5px; font-weight: 600; justify-self: start; }
+  .ver { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.6; white-space: nowrap; vertical-align: 1px; }
+  .ver.ok { color: color-mix(in srgb, var(--pos) 75%, var(--ink)); background: color-mix(in srgb, var(--pos) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); }
+  .ver.mid { color: var(--neg-ink); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  td .ver { margin-left: 0; }
+  .ctl select { font: inherit; font-size: 13px; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); max-width: 100%; }
+  ol.flow5 { list-style: none; margin: 16px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: f5; }
+  @media (max-width: 960px) { ol.flow5 { grid-template-columns: minmax(0, 1fr); } }
+  ol.flow5 li { counter-increment: f5; position: relative; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--input); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 3px; align-content: start; min-width: 0; }
+  ol.flow5 li::before { content: counter(f5); position: absolute; right: 10px; top: 8px; font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  ol.flow5 .fk { font-size: 11px; font-weight: 600; color: var(--muted); padding-right: 14px; }
+  ol.flow5 b { font-size: var(--s-2); color: var(--ink); }
+  ol.flow5 p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+  .formula { font-family: var(--f-num); font-size: var(--s-1); background: var(--ledger); border-radius: var(--radius); padding: 12px 14px; line-height: 1.8; overflow-x: auto; white-space: pre; margin: 12px 0; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="trade-lead.html" aria-current="page">투자를 늘린 제조업체는 3년 뒤 더 벌까</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html">추정과 가치의 기법</a><a href="rules-note.html">세액공제·내부회계·지속가능성 공시</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="mgmt-kit.html">관리회계 키트</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="asset-kit.html">자산 손상·운전자본</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a><a href="mem-scenario.html">메모리 시나리오 가치평가</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 투자를 늘린 제조업체는 3년 뒤 더 벌까</div>
+      <div class="rpt-tag">Data project · 02</div>
+      <h1 id="h1">H1_PLACEHOLDER</h1>
+      <p class="dek">DEK_PLACEHOLDER</p>
+      <div class="rpt-meta"><span>자료<b>OpenDART 사업보고서 주요 계정</b></span><span>표본<b id="hm-n"></b></span><span>방법<b>평균 회귀 통제 · 연도별 회귀 · 표본 밖 예측</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-q" data-toc="질문과 답" data-group="요약">
+          <h2>질문과 답</h2>
+          <p>설비투자 심의에서는 "지금 투자해야 3년 뒤에 번다"는 말이 자주 나옵니다. 개별 안건은 NPV로 따지지만, 이 말이 <b>평균적으로</b> 맞는지는 따로 확인하기 어렵습니다. 그래서 코스피 제조업체의 공시 재무제표를 모아, 투자를 많이 늘린 회사가 3년 뒤 실제로 더 벌었는지 미리 정한 순서대로 검증했습니다.</p>
+          <div class="takeaways" id="tk"></div>
+          <div class="tw" role="region" aria-label="질문별 결과" tabindex="0">
+            <table class="pick">
+              <thead><tr><th>질문</th><th>방법</th><th>결과</th></tr></thead>
+              <tbody id="qa-tb"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s-data" data-toc="데이터와 정의" data-group="데이터">
+          <h2>데이터: 무엇을 어떻게 쟀나</h2>
+          <div class="tw" role="region" aria-label="변수 정의" tabindex="0">
+            <table class="pick">
+              <thead><tr><th>변수</th><th>정의</th><th>주의할 점</th></tr></thead>
+              <tbody>
+                <tr><th>투자율</th><td>(올해 말 비유동자산 − 작년 말 비유동자산) ÷ 작년 말 총자산</td><td>유형·무형자산뿐 아니라 장기 금융자산·관계기업 투자도 포함. 감가상각을 뺀 순증가라 유지보수 투자는 잘 드러나지 않음</td></tr>
+                <tr><th>수익성(ROA)</th><td>영업이익 ÷ 총자산</td><td>영업이익을 써서 금융 손익·일회성 영업외 손익을 뺌</td></tr>
+                <tr><th>3년 뒤 변화</th><td>3년 뒤 ROA − 올해 ROA (%p)</td><td>투자한 해(t)와 3년 뒤(t+3)의 연결·별도 기준이 같아야 표본에 넣음</td></tr>
+                <tr><th>통제 변수</th><td>올해 ROA, 규모(연도 안 총자산 10분위), 매출 증가율, 업종(표준산업분류 2자리)</td><td>업종 효과는 같은 해·같은 업종 평균을 빼서 없앰(5곳 미만 업종은 '기타'로 묶음)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p id="data-note"></p>
+        </section>
+
+        <section id="s-q1" data-toc="Q1 단순 비교" data-group="분석">
+          <h2>Q1. 투자를 많이 늘린 회사는 3년 뒤 ROA가 올랐나</h2>
+          <p>매년 투자율 순서로 회사를 다섯 묶음(5분위)으로 나누고, 묶음별로 3년 뒤 ROA 변화를 평균했습니다. 아래 업종을 고르면 브라우저가 그 업종만으로 다시 계산합니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>투자율 5분위별 3년 뒤 ROA 변화</h4><span class="muted" style="font-size: 12px">%p · 연도별 평균의 평균</span></div>
+            <div class="ctl"><label><span class="lbl">업종</span><select id="ind-sel" aria-label="업종 고르기"></select></label></div>
+            <div class="readout" id="q-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="f-q"></div>
+            <div class="fig-s" id="q-note"></div>
+          </div>
+        </section>
+
+        <section id="s-q2" data-toc="Q2 평균 회귀 빼기">
+          <h2>Q2. '원래 잘 벌던 회사가 평균으로 돌아오는 효과'를 빼도 남나</h2>
+          <p>ROA가 높던 회사는 경쟁이 붙어 낮아지고, 낮던 회사는 구조조정·업황 회복으로 올라가는 경향(평균 회귀)이 있습니다. 투자를 많이 하는 회사가 마침 수익성이 높은 회사라면, Q1의 결과는 투자 때문이 아니라 평균 회귀 때문일 수 있습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>올해 ROA 10분위별 3년 뒤 ROA 변화</h4><span class="muted" style="font-size: 12px">%p</span></div>
+            <div class="fig-b plotbox" id="f-mr"></div>
+            <div class="fig-s" id="mr-note"></div>
+          </div>
+          <p>그래서 매년 회사들을 놓고 "3년 뒤 ROA 변화 = 투자율 + 올해 ROA + 규모 + 매출 증가율 + 업종"을 따로 추정하고, 연도별 계수를 평균했습니다(파마-맥베스 방식). 같은 회사가 겹치는 3년 구간이 해마다 이어지므로 t값은 뉴이-웨스트 방식(시차 2)으로 보정했습니다.</p>
+          <div class="tw" role="region" aria-label="회귀 결과" tabindex="0"><table class="pick" id="fm-tb"></table></div>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>연도별 투자율 계수 (모든 통제 포함)</h4><span class="muted" style="font-size: 12px">투자율 10%p 더 높을 때 3년 뒤 ROA 변화(%p)</span></div>
+            <div class="fig-b plotbox" id="f-coef"></div>
+            <div class="fig-s" id="coef-note"></div>
+          </div>
+        </section>
+
+        <section id="s-q3" data-toc="Q3 예측에 보탬이 되나">
+          <h2>Q3. 투자율을 알면 3년 뒤를 더 잘 맞히나</h2>
+          <p>계수가 0이 아니어도 예측에 쓸모가 있는지는 다른 문제입니다. 그래서 각 해마다 <b>그때 결과를 알 수 있었던 과거 관측치만으로</b> 식을 추정해 그해 회사들의 3년 뒤 ROA 변화를 예측하고, 실제와 비교했습니다. 비교 대상은 '올해 ROA 그대로'와 '평균 회귀만 쓴 식'입니다.</p>
+          <div class="tw" role="region" aria-label="표본 밖 예측 성적" tabindex="0"><table class="pick" id="oos-tb"></table></div>
+        </section>
+
+        <section id="s-q4" data-toc="Q4 매출은 따라오나">
+          <h2>Q4. 수익성이 아니라 매출은 따라오나</h2>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>투자율 5분위별 이후 3년 연평균 매출 증가율</h4><span class="muted" style="font-size: 12px">%</span></div>
+            <div class="fig-b plotbox" id="f-sg"></div>
+            <div class="fig-s" id="sg-note"></div>
+          </div>
+        </section>
+
+        <section id="s-use" data-toc="실무에서 쓰는 법" data-group="활용">
+          <h2>실무에서 쓰는 법</h2>
+          <ol class="traps" id="use-list"></ol>
+        </section>
+
+        <section id="s-lim" data-toc="한계">
+          <h2>한계</h2>
+          <ol class="traps" id="lim-list"></ol>
+        </section>
+
+        <section id="s-rep" data-toc="다시 돌려 보기">
+          <h2>다시 돌려 보기</h2>
+          <p>수집과 분석 코드는 저장소에 있고 표준 라이브러리만 씁니다. OpenDART 인증키는 각자 발급받아 저장소 밖 파일에 두고 환경변수로 경로만 알려 줍니다(키는 코드·로그·결과 어디에도 남지 않습니다). 화면에 실린 자료는 회사 이름·코드·금액을 지운 비율뿐이고, 같은 계산을 브라우저 엔진으로도 구현해 <a href="checks.html">검산 페이지</a>에서 Python 결과와 대조합니다.</p>
+<div class="formula" tabindex="0" role="region" aria-label="실행 명령">export DART_KEY_FILE=~/keys/dart.key              # 인증키 한 줄(저장소 밖)
+python3 examples/dart/fetch_dart.py list           # 대상 회사와 업종
+python3 examples/dart/fetch_dart.py fin 2015 2025  # 연도별 주요 계정(100곳씩 묶어 조회)
+python3 examples/dart/fetch_dart.py panel          # 패널(회사 식별자 포함, 저장소에 올리지 않음)
+python3 examples/dart/analyze.py                   # 결과 JSON과 화면용 익명 데이터</div>
+          <ul class="refs">
+            <li>수집 코드: <a href="https://github.com/lgppeople-arch/portfolio/blob/main/examples/dart/fetch_dart.py" target="_blank" rel="noopener">examples/dart/fetch_dart.py</a> · 분석 코드: <a href="https://github.com/lgppeople-arch/portfolio/blob/main/examples/dart/analyze.py" target="_blank" rel="noopener">examples/dart/analyze.py</a></li>
+            <li>자료: 금융감독원 OpenDART, 공시검색·기업개황·다중회사 주요계정(사업보고서). 내려받은 날: <span id="dl-date"></span></li>
+            <li>방법 참고: Fama &amp; MacBeth (1973) 연도별 횡단면 회귀, Newey &amp; West (1987) 자기상관 보정, Fama &amp; French (2000) 수익성의 평균 회귀, Fairfield, Whisenant &amp; Yohn (2003) 장기 영업자산 증가와 이후 수익성, Titman, Wei &amp; Xie (2004) 설비투자와 이후 성과.</li>
+          </ul>
+          <p class="rpt-end">이 분석은 공개 공시 자료로 업종 전체의 평균적 경향을 본 것이며 특정 회사의 평가나 내부 자료를 담지 않습니다. 개별 투자안의 판단을 대신하지 않으며 투자 권유가 아닙니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-read">공시로 기업 읽기</a> <b>5</b> / 7</span>
+        <ol class="fsteps"><li><a href="fsa.html">읽는 틀</a></li><li><a href="samsung.html">한 회사 깊게</a></li><li><a href="sectors.html">업종 넓게</a></li><li><a href="semi-cycle.html">산업 사이클</a></li><li class="cur" aria-current="step"><span>산업 데이터</span></li><li><a href="reading.html">산업 전망</a></li><li><a href="mem-scenario.html">시나리오 가치</a></li></ol>
+        <div class="fnav"><a class="fprev" href="semi-cycle.html"><small>← 이전 단계</small>반도체 사이클과 재무</a><a class="fnext" href="reading.html"><small>다음 단계 →</small>AI 인프라 읽기 노트</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="semi-cycle.html">반도체 사이클과 재무</a></li><li><a href="stats-notes.html">통계 기법과 활용(시차 상관·검정)</a></li><li><a href="mem-scenario.html">메모리 시나리오 가치평가</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.22</span><span>공개 공시 자료(OpenDART) 분석입니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/data/capex-panel.js"></script>
+<script src="../assets/engines/capexpanel.js"></script>
+<script src="../assets/report.js"></script>
+<script src="../assets/capex-panel.js"></script>
+</body>
+</html>

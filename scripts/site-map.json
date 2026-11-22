@@ -19,6 +19,10 @@
         [
           "post-review.html",
           "투자 사후관리"
+        ],
+        [
+          "capex-panel.html",
+          "투자를 늘린 제조업체는 3년 뒤 더 벌까(공시 패널 분석)"
         ]
       ]
     },
@@ -248,6 +252,10 @@
         [
           "kpi-tree.html",
           "KPI 트리(같은 샤플리 분해)"
+        ],
+        [
+          "capex-panel.html",
+          "투자를 늘린 제조업체는 3년 뒤 더 벌까(공시 패널 분석)"
         ]
       ]
     },
@@ -426,6 +434,30 @@
       ]
     },
     {
+      "file": "capex-panel.html",
+      "title": "투자를 늘린 제조업체는 3년 뒤 더 벌까",
+      "kind": "리포트",
+      "fields": [
+        "투자·M&A",
+        "통계·확률"
+      ],
+      "career": "",
+      "more": [
+        [
+          "capex-kit.html",
+          "설비투자 키트(NPV 분포)"
+        ],
+        [
+          "post-review.html",
+          "투자 사후관리"
+        ],
+        [
+          "stats-notes.html",
+          "통계 기법과 활용(회귀·검정)"
+        ]
+      ]
+    },
+    {
       "file": "reading.html",
       "title": "AI 인프라 읽기 노트",
       "kind": "리포트",
@@ -576,6 +608,7 @@
         [
           "semi-cycle.html",
           "trade-lead.html",
+          "capex-panel.html",
           "reading.html",
           "fsa.html"
         ]
@@ -662,7 +695,7 @@
     {
       "id": "invest",
       "name": "투자 한 건",
-      "why": "타당성을 따지고, 누가 승인하는지 확인하고, 자금을 마련하고, 집행 뒤 검증하기까지",
+      "why": "타당성을 따지고, 누가 승인하는지 확인하고, 자금을 마련하고, 집행 뒤 검증하고, 업계 평균과 맞춰 보기까지",
       "steps": [
         [
           "capex-kit.html",
@@ -691,6 +724,10 @@
         [
           "post-review.html",
           "사후관리"
+        ],
+        [
+          "capex-panel.html",
+          "업계 평균 검증"
         ],
         [
           "asset-kit.html",

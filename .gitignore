@@ -1,1 +1,6 @@
 pdf/
+
+# 비밀 키는 저장소에 두지 않는다
+*.key
+.env
+examples/dart/cache/

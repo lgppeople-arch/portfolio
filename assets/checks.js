@@ -21,6 +21,8 @@
     AdvViz: require("./engines/advviz.js"),
     TradeLead: require("./engines/tradelead.js"),
     TradeSemi: require("./data/trade-semi.js"),
+    CapexPanel: require("./engines/capexpanel.js"),
+    CapexPanelData: require("./data/capex-panel.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
     Holdco: require("./engines/holdco.js"),
@@ -81,7 +83,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -701,6 +703,17 @@
       const v = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260], g = T.yoy3(v), s2 = [1, 3, 2, 5, 4, 6], lag = [null, null].concat(s2);
       const xc = T.xcorr(s2.concat([7, 9, 8]), [0, 0].concat(s2, [7]), 3).find((q) => q.lag === 2);
       add(G, "3개월 합계 증가율 손계산과 일치, 2개월 밀어 둔 같은 계열의 상관은 그 시차에서 1, 표본 밖 예측은 미래 자료를 쓰지 않음", near(g[14], ((240 + 230 + 220) / (120 + 110 + 100) - 1) * 100, 1e-12) && g[13] === null && near(xc.r, 1, 1e-12) && A.bt2.rows.every((r) => r.t + 6 < D.months.length), "");
+    }
+
+    /* ---------- 데이터 분석: 공시 패널(투자와 3년 뒤 수익성) ---------- */
+    if (CapexPanel && CapexPanelData) {
+      const E = CapexPanel, D = CapexPanelData, P = D.py, A = E.analyze(D), G = "공시 패널";
+      const same = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b)), S = (m, j) => A.fm[m].stats[j];
+      const js = [[P.m1_b, S("M1", 0).mean], [P.m1_t, S("M1", 0).tNw], [P.m0_b, S("M0", 0).mean], [P.m2_inv, S("M2_fe", 0).mean], [P.m2_inv_t, S("M2_fe", 0).tNw], [P.m2_inv_t0, S("M2_fe", 0).t], [P.m2_roa, S("M2_fe", 1).mean], [P.m3_ag, S("M3_fe", 0).mean], [P.m3_ag_t, S("M3_fe", 0).tNw], [P.q_droa, A.quint.spread.droa.mean], [P.q_resid, A.quint.spread.resid.mean], [P.q_resid_t, A.quint.spread.resid.tNw], [P.q_sg3, A.quint.spread.sg3.mean], [P.oos_m0, A.oos.mae.M0], [P.oos_m2, A.oos.mae.M2], [P.oos_naive, A.oos.mae.naive]];
+      add(G, "Python(examples/dart/analyze.py)과 브라우저 엔진이 같은 답: 회귀 계수·t값·5분위 차이·표본 밖 오차 16개와 관측치 수", P.n === D.rows.length && P.oos_wins === A.oos.wins && js.every((q) => same(q[0], q[1])), "관측치 " + D.rows.length + " · 투자율 계수 " + S("M2_fe", 0).mean.toFixed(4));
+      const w = E.winsor([5, 1, 2, 3, 4, 100, 6, 7, 8, 9], 0.2), b = E.ols([[1, 1], [1, 2], [1, 3], [1, 4]], [3, 5, 7, 9]), nw = E.nwT([1, 2, 3, 4, 5], 0);
+      add(G, "절단은 경계값으로 바꾸기, 정확히 직선인 자료의 회귀는 기울기·절편을 그대로, 시차 0의 뉴이-웨스트 분산은 (n−1)/n × 표본분산", w[5] === 9 && w[1] === 2 && near(b[0], 1, 1e-12) && near(b[1], 2, 1e-12) && near(nw.tNw, nw.t * Math.sqrt(5 / 4), 1e-12), "");
+      add(G, "표본 밖 예측은 결과가 확정된 과거 관측치(투자한 해 ≤ 대상 연도 − 3)만으로 추정, 공개 자료에 회사 식별자 없음", A.oos.years.every((r) => r.trainN === A.P.D.filter((d) => d.year <= r.year - 3).length && r.trainN > 0) && D.cols.join() === "year,ind,size,roa0,roa3,inv,ag,g0,sg3", A.oos.years.length + "개 연도");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */
