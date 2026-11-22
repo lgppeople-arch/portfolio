@@ -4,3 +4,4 @@ pdf/
 *.key
 .env
 examples/dart/cache/
+__pycache__/
