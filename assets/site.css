@@ -830,3 +830,10 @@ ul.nums li b { display: block; font-family: var(--f-display); font-size: var(--s
 .more-line { margin-top: 16px; font-size: var(--s-1); color: var(--ink-2); }
 .hub-jump { margin: 22px 0 0; font-size: var(--s-1); color: var(--ink-2); }
 @media print { .more-cases > .cases { display: grid !important; } }
+
+/* ---------- 홈: 신분 카드의 일러스트 캐릭터 ---------- */
+.id-av { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.id-av img { width: 84px; height: auto; border-radius: 50%; flex: none; background: #E7ECF2; }
+.id-av span { font-weight: 700; font-size: var(--s-3); color: var(--ink); display: grid; gap: 2px; }
+.id-av small { font-weight: 400; font-size: var(--s-1); color: var(--muted); }
+@media print { .id-av img { width: 64px; } }

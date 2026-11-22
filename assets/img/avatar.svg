@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440" role="img" aria-labelledby="av-t">
+  <title id="av-t">이기표 일러스트 캐릭터</title>
+  <defs>
+    <clipPath id="av-frame"><circle cx="200" cy="220" r="200"/></clipPath>
+    <clipPath id="av-tie"><path d="M188 322 L212 322 L222 344 L214 440 L186 440 L178 344 Z"/></clipPath>
+    <linearGradient id="av-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7ECF2"/><stop offset="1" stop-color="#CBD6E2"/></linearGradient>
+  </defs>
+  <g clip-path="url(#av-frame)">
+    <rect width="400" height="440" fill="url(#av-bg)"/>
+    <!-- 목 -->
+    <path d="M170 240 L230 240 L234 292 L166 292 Z" fill="#D59D7E"/>
+    <path d="M170 254 Q200 274 230 254 L230 244 L170 244 Z" fill="#C48A6B" opacity=".55"/>
+    <!-- 정장 -->
+    <path d="M20 440 Q28 322 104 300 L166 280 L200 326 L234 280 L296 300 Q372 322 380 440 Z" fill="#26282E"/>
+    <path d="M166 280 L200 326 L176 344 L146 290 Z" fill="#33363E"/>
+    <path d="M234 280 L200 326 L224 344 L254 290 Z" fill="#33363E"/>
+    <!-- 셔츠와 깃 -->
+    <path d="M166 278 L200 320 L234 278 L228 440 L172 440 Z" fill="#F7F7F5"/>
+    <path d="M166 276 L200 312 L186 326 L158 288 Z" fill="#FFFFFF" stroke="#D9DCE1" stroke-width="2"/>
+    <path d="M234 276 L200 312 L214 326 L242 288 Z" fill="#FFFFFF" stroke="#D9DCE1" stroke-width="2"/>
+    <!-- 넥타이: 남색 바탕에 하늘색·흰 사선 -->
+    <path d="M189 306 L211 306 L215 322 L200 330 L185 322 Z" fill="#2C4C8F"/>
+    <g clip-path="url(#av-tie)">
+      <rect x="170" y="300" width="60" height="140" fill="#2C4C8F"/>
+      <g transform="rotate(-38 200 380)">
+        <rect x="120" y="340" width="160" height="9" fill="#9FC4EE"/><rect x="120" y="349" width="160" height="3" fill="#FFFFFF"/>
+        <rect x="120" y="372" width="160" height="9" fill="#9FC4EE"/><rect x="120" y="381" width="160" height="3" fill="#FFFFFF"/>
+        <rect x="120" y="404" width="160" height="9" fill="#9FC4EE"/><rect x="120" y="413" width="160" height="3" fill="#FFFFFF"/>
+        <rect x="120" y="436" width="160" height="9" fill="#9FC4EE"/>
+      </g>
+    </g>
+    <!-- 귀 -->
+    <ellipse cx="126" cy="176" rx="14" ry="21" fill="#E2AC8C"/>
+    <ellipse cx="274" cy="176" rx="14" ry="21" fill="#E2AC8C"/>
+    <path d="M126 166 Q120 176 127 188" fill="none" stroke="#C48A6B" stroke-width="3" stroke-linecap="round"/>
+    <path d="M274 166 Q280 176 273 188" fill="none" stroke="#C48A6B" stroke-width="3" stroke-linecap="round"/>
+    <!-- 얼굴 -->
+    <path d="M132 136 Q132 76 200 72 Q268 76 268 136 L268 172 Q266 224 234 246 Q216 258 200 258 Q184 258 166 246 Q134 224 132 172 Z" fill="#EBB898"/>
+    <ellipse cx="158" cy="198" rx="15" ry="9" fill="#E79A86" opacity=".35"/>
+    <ellipse cx="242" cy="198" rx="15" ry="9" fill="#E79A86" opacity=".35"/>
+    <!-- 머리카락: 위로 볼륨, 이마를 덮은 앞머리가 오른쪽으로 쓸림 -->
+    <path d="M124 170 Q112 104 144 66 Q180 32 232 40 Q284 50 290 108 Q294 144 278 172 L270 140 Q266 118 256 108
+             Q246 122 228 126 Q236 116 234 108 Q214 124 186 128 Q160 130 146 118 Q138 134 136 160 Z" fill="#2A2629"/>
+    <path d="M146 118 Q154 94 192 90 Q232 88 256 108 Q240 116 234 108 Q214 124 186 128 Q160 130 146 118 Z" fill="#2A2629"/>
+    <path d="M160 72 Q204 46 256 66" fill="none" stroke="#4A4247" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+    <path d="M170 98 Q212 82 250 100" fill="none" stroke="#4A4247" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+    <!-- 눈썹 -->
+    <path d="M156 146 Q172 139 188 144" fill="none" stroke="#2A2629" stroke-width="7" stroke-linecap="round"/>
+    <path d="M212 144 Q228 139 244 146" fill="none" stroke="#2A2629" stroke-width="7" stroke-linecap="round"/>
+    <!-- 눈 -->
+    <path d="M160 170 Q172 161 184 170 Q172 176 160 170 Z" fill="#2A2629"/>
+    <path d="M216 170 Q228 161 240 170 Q228 176 216 170 Z" fill="#2A2629"/>
+    <circle cx="175" cy="167" r="2" fill="#FFFFFF"/><circle cx="231" cy="167" r="2" fill="#FFFFFF"/>
+    <path d="M158 166 Q172 156 186 166" fill="none" stroke="#2A2629" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M214 166 Q228 156 242 166" fill="none" stroke="#2A2629" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- 코 -->
+    <path d="M200 176 Q196 196 190 204 Q198 210 208 205" fill="none" stroke="#C48A6B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- 입: 옅은 미소 -->
+    <path d="M182 224 Q200 236 218 224" fill="none" stroke="#B8604E" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M186 226 Q200 233 214 226" fill="none" stroke="#E38F7B" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+  </g>
+</svg>
