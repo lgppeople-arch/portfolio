@@ -22,6 +22,7 @@
     TradeLead: require("./engines/tradelead.js"),
     TradeSemi: require("./data/trade-semi.js"),
     CapexPanel: require("./engines/capexpanel.js"),
+    PartsMap: require("./engines/partsmap.js"),
     CapexPanelData: require("./data/capex-panel.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
@@ -83,7 +84,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -714,6 +715,18 @@
       const w = E.winsor([5, 1, 2, 3, 4, 100, 6, 7, 8, 9], 0.2), b = E.ols([[1, 1], [1, 2], [1, 3], [1, 4]], [3, 5, 7, 9]), nw = E.nwT([1, 2, 3, 4, 5], 0);
       add(G, "절단은 경계값으로 바꾸기, 정확히 직선인 자료의 회귀는 기울기·절편을 그대로, 시차 0의 뉴이-웨스트 분산은 (n−1)/n × 표본분산", w[5] === 9 && w[1] === 2 && near(b[0], 1, 1e-12) && near(b[1], 2, 1e-12) && near(nw.tNw, nw.t * Math.sqrt(5 / 4), 1e-12), "");
       add(G, "표본 밖 예측은 결과가 확정된 과거 관측치(투자한 해 ≤ 대상 연도 − 3)만으로 추정, 공개 자료에 회사 식별자 없음", A.oos.years.every((r) => r.trainN === A.P.D.filter((d) => d.year <= r.year - 3).length && r.trainN > 0) && D.cols.join() === "year,ind,size,roa0,roa3,inv,ag,g0,sg3", A.oos.years.length + "개 연도");
+    }
+
+    /* ---------- 부품 세그먼트 지도 ---------- */
+    if (PartsMap) {
+      const P = PartsMap, G = "부품 지도", ids = P.SEGS.map((s) => s.id), pids = P.PROCS.map((p) => p.id);
+      const okSeg = P.SEGS.every((s) => ["m", "b", "r", "p", "raw", "g", "br"].every((k) => Number.isInteger(s[k]) && s[k] >= 1 && s[k] <= 5) && [s.y, s.cn].every((v) => v >= 0 && v <= 3) && s.cyc >= 1 && s.cyc <= 3 && Object.keys(s.procs).every((k) => pids.indexOf(k) >= 0) && P.TECH_LABEL[s.tech] && P.GROUPS[s.grp]);
+      const full = (rows) => rows.every((r) => ids.every((id) => [0, 1, 2, 3].indexOf(r.v[id]) >= 0) && Object.keys(r.v).length === ids.length);
+      add(G, "자료 완결성: 세그먼트 점수는 1~5 정수, 공정·제조기술·기능 묶음이 정의된 값, 플레이어 유형과 역량 유형 표에 모든 세그먼트 값이 있음", okSeg && full(P.PLAYERS) && full(P.BASES) && P.RINGS.every((r) => r.v.length === P.RING_MATS.length), P.SEGS.length + "개 세그먼트 · " + P.PLAYERS.length + "개 유형 · " + P.BASES.length + "개 역량");
+      const sg = P.SEGS[0], avg = (sg.b + sg.r + sg.p + sg.raw) / 4, R = P.score(), inRange = R.rows.every((q) => q.profit >= 1 && q.profit <= 5 && q.scal >= 1 && q.scal <= 5);
+      add(G, "수익성 점수 = 가중 평균: 같은 가중치면 단순 평균, 가중치를 모두 같은 배수로 키워도 같음, 모두 0이면 단순 평균, 한 요인만 두면 그 요인 점수", near(P.profit(sg, { b: 1, r: 1, p: 1, raw: 1 }), avg, 1e-12) && near(P.profit(sg, { b: 70, r: 60, p: 40, raw: 30 }), P.profit(sg, P.W0), 1e-12) && near(P.profit(sg, { b: 0, r: 0, p: 0, raw: 0 }), avg, 1e-12) && P.profit(sg, { b: 0, r: 100, p: 0, raw: 0 }) === sg.r && inRange, "기본 가중치 1위 " + R.order[0].name);
+      const rc = P.reach("A"), sorted = rc.every((q, i) => i === 0 || rc[i - 1].adj >= q.adj), ranks = R.order.map((q) => q.rank).join() === ids.map((_, i) => i + 1).join();
+      add(G, "인접성 목록은 인접성 높은 순, '거의 그대로' 유형 = 인접성 3인 유형, 순위는 1부터 빠짐없이", sorted && P.SEGS.every((s) => P.owners(s.id).every((b) => P.BASES.find((x) => x.id === b).v[s.id] === 3)) && ranks, "");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */

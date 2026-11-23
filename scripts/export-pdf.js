@@ -21,6 +21,7 @@ const PAGES = [
   ["tools/reading.html", "05_AI_인프라_읽기_노트", "AI 인프라 읽기 노트"],
   ["tools/fsa.html", "06_재무제표_분석_프레임워크", "재무제표 분석 프레임워크"],
   ["tools/semi-cycle.html", "07_반도체_사이클과_재무", "반도체 사이클과 재무"],
+  ["tools/parts-map.html", "07a_반도체_장비_부품_세그먼트_지도", "반도체 장비 부품 세그먼트 지도"],
   ["tools/trade-lead.html", "08_장비_수출입으로_읽는_반도체_투자_사이클", "장비 수출입으로 읽는 반도체 투자 사이클"],
   ["tools/capex-panel.html", "08a_투자를_늘린_제조업체는_3년_뒤_더_벌까", "투자를 늘린 제조업체는 3년 뒤 더 벌까"],
   ["tools/deck.html", "09_보고서_PPT_작성_원칙", "보고서·PPT 작성 원칙"],
@@ -557,7 +558,7 @@ async function frontMatter(ctx, out, results, pick) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "08", "08a", "09", "10", "11", "12", "13", "14"].includes(n) ? "리포트" : ["32", "33", "34"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "07a", "08", "08a", "09", "10", "11", "12", "13", "14"].includes(n) ? "리포트" : ["32", "33", "34"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
