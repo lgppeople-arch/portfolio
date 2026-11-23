@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}  .hm { border-collapse: collapse; font-size: 12.5px; min-width: 760px; width: 100%; }
+  .hm th, .hm td { border: 1px solid var(--rule-soft); padding: 7px 8px; text-align: center; vertical-align: middle; }
+  .hm thead th { font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  .hm tbody th { text-align: left; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .hm td.l { text-align: left; color: var(--ink-2); }
+  .hm td.c0 { color: var(--muted); }
+  .hm td.c1 { background: color-mix(in srgb, var(--input) 14%, transparent); color: var(--ink); }
+  .hm td.c2 { background: color-mix(in srgb, var(--input) 34%, transparent); color: var(--ink); font-weight: 700; }
+  .hm td.c3 { background: color-mix(in srgb, var(--input) 58%, transparent); color: var(--ink); font-weight: 700; }
+  .hm .gh { font-size: 11px; color: var(--muted); font-weight: 500; display: block; }
+  .hm tr.on th, .hm tr.on td { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .wts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 18px; padding: 12px 18px 0; }
+  @media (max-width: 760px) { .wts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .wts label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+  .wts b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .lgd { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 18px 0; font-size: 12px; color: var(--ink-2); }
+  .lgd i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  .facts { margin: 12px 0 6px; display: grid; gap: 8px; padding: 0; list-style: none; max-width: 82ch; }
+  .facts li { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 10px 14px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
+  .facts li b { color: var(--ink); }
+  .facts li small { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; }
+  #eval-tb { min-width: 1080px; } #eval-tb thead th, #eval-tb td:not(:last-child) { white-space: nowrap; } #eval-tb tbody th { white-space: normal; min-width: 150px; } #eval-tb td:last-child { min-width: 280px; }
+</style>
+<title>반도체 장비 세그먼트 지도 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="반도체 전공정·후공정 장비 19개 세그먼트를 공정 단계·핵심 기술·주요 부품군·업체로 잇는 지도와 탐색기. 성숙도·집중도·성장 동인·중국 노출·서비스 중요도 정성 점수, 업체별 사업 폭, 부품 수요와 부품 지도 연결">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="반도체 장비 세그먼트 지도 · 이기표">
+<meta property="og:description" content="반도체 전공정·후공정 장비 19개 세그먼트를 공정 단계·핵심 기술·주요 부품군·업체로 잇는 지도와 탐색기. 성숙도·집중도·성장 동인·중국 노출·서비스 중요도 정성 점수, 업체별 사업 폭, 부품 수요와 부품 지도 연결">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/equip-map.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/equip-map.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="장비를 알면 부품 수요가 보인다">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/equip-map.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .evid { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); background: color-mix(in srgb, var(--pos) 6%, var(--surface)); display: grid; gap: 6px; max-width: 80ch; }
+  .evid .evk { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  .evid p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink); }
+  .evid a { font-size: 12.5px; font-weight: 600; justify-self: start; }
+  .ver { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.6; white-space: nowrap; vertical-align: 1px; }
+  .ver.ok { color: color-mix(in srgb, var(--pos) 75%, var(--ink)); background: color-mix(in srgb, var(--pos) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); }
+  .ver.mid { color: var(--neg-ink); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  td .ver { margin-left: 0; }
+  .ctl select { font: inherit; font-size: 13px; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); max-width: 100%; }
+  ol.flow5 { list-style: none; margin: 16px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: f5; }
+  @media (max-width: 960px) { ol.flow5 { grid-template-columns: minmax(0, 1fr); } }
+  ol.flow5 li { counter-increment: f5; position: relative; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--input); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 3px; align-content: start; min-width: 0; }
+  ol.flow5 li::before { content: counter(f5); position: absolute; right: 10px; top: 8px; font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  ol.flow5 .fk { font-size: 11px; font-weight: 600; color: var(--muted); padding-right: 14px; }
+  ol.flow5 b { font-size: var(--s-2); color: var(--ink); }
+  ol.flow5 p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+  .formula { font-family: var(--f-num); font-size: var(--s-1); background: var(--ledger); border-radius: var(--radius); padding: 12px 14px; line-height: 1.8; overflow-x: auto; white-space: pre; margin: 12px 0; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="equip-cos.html">해외 장비사 5곳 심층 분석</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="parts-map.html">반도체 장비 부품 세그먼트 지도</a><a href="equip-map.html" aria-current="page">반도체 장비 세그먼트 지도</a><a href="trade-lead.html">장비 수출입으로 읽는 반도체 투자 사이클</a><a href="capex-panel.html">투자를 늘린 제조업체는 3년 뒤 더 벌까</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html">추정과 가치의 기법</a><a href="rules-note.html">세액공제·내부회계·지속가능성 공시</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="mgmt-kit.html">관리회계 키트</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="asset-kit.html">자산 손상·운전자본</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a><a href="mem-scenario.html">메모리 시나리오 가치평가</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 반도체 장비 세그먼트 지도</div>
+      <div class="rpt-tag">Industry map · 장비</div>
+      <h1>장비를 알면<br>부품 수요가 보인다</h1>
+      <p class="dek">반도체 장비 19개 세그먼트를 공정 단계 → 장비 → 핵심 기술 → 주요 부품군 → 업체로 잇고, 보고 싶은 변수만 켜서 조건을 걸어 볼 수 있게 했습니다. 어떤 장비가 몇 회사에 몰려 있는지, 어떤 장비가 소모 부품을 가장 많이 돌리는지, 어느 업체가 몇 개 공정에 걸쳐 있는지를 한 지도에서 읽습니다. 업체별 실적은 <a href="equip-cos.html">해외 장비사 5곳 심층 분석</a>에 따로 정리했습니다.</p>
+      <div class="rpt-meta"><span>대상<b>장비 19개 세그먼트</b></span><span>축<b>공정 · 장비 · 기술 · 부품 · 업체</b></span><span>자료<b>각사 연차보고서·제품 소개, 일반 공학 문헌</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-q" data-toc="요약" data-group="요약">
+          <h2>요약</h2>
+          <div class="takeaways" id="tk"></div>
+        </section>
+
+        <section id="s-flow" data-toc="한 장으로 보기" data-group="지도">
+          <h2>한 장으로 보기: 공정에서 업체까지</h2>
+          <p>장비마다 한 줄기로 다섯 기둥을 잇습니다. 보고 싶은 변수만 켜고 칸을 눌러 조건을 거세요. 예를 들어 '정전척'을 포함하고 '중국 장비사군'을 제외하면, 정전척을 쓰는 장비 중 중국 업체가 아직 들어오지 않은 장비만 남습니다. 칸 오른쪽 숫자는 지금 조건에서 그 칸을 지나는 장비 수입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>공정 단계 → 장비 → 핵심 기술 → 주요 부품군 → 업체</h4><span class="muted" style="font-size: 12px">기둥 켜고 끄기 · 칸 포함·제외</span></div>
+            <div id="lm-equip"></div>
+          </div>
+        </section>
+
+        <section id="s-eval" data-toc="세그먼트 평가">
+          <h2>세그먼트 평가: 집중도와 성장 동인</h2>
+          <p>다섯 가지를 1~5점으로 매겼습니다. <b>집중도</b>는 공급자가 몇 곳에 몰려 있는지(5는 사실상 한 회사), <b>성장 동인</b>은 AI·HBM·선단 공정 투자와의 연동, <b>서비스 중요도</b>는 설치된 장비가 돌아가며 만드는 부품·서비스 매출의 크기, <b>중국 노출</b>은 중국 투자 비중과 국산화 압력입니다. 회사별 점유율 숫자는 출처마다 정의가 달라 넣지 않았습니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>집중도 × 성장 동인 (원 크기 = 서비스 중요도)</h4><span class="muted" style="font-size: 12px">정성 점수 1~5</span></div>
+            <div class="lgd" id="lgd"></div>
+            <div class="fig-b plotbox" id="f-sc"></div>
+            <div class="readout" id="sc-key"></div>
+            <div class="fig-s" id="sc-note"></div>
+          </div>
+          <div class="tw" role="region" aria-label="장비 세그먼트 점수와 근거" tabindex="0"><table class="pick" id="eval-tb"></table></div>
+        </section>
+
+        <section id="s-co" data-toc="업체별 사업 폭">
+          <h2>업체별 사업 폭</h2>
+          <p>지도에서 업체마다 주력·참여 세그먼트 수를 세었습니다. 한 장비에 집중한 회사와 여러 공정에 걸친 회사는 사이클을 겪는 방식이 다릅니다. 실제 매출 구성은 <a href="equip-cos.html">해외 장비사 5곳 심층 분석</a>에서 공시 숫자로 확인할 수 있습니다.</p>
+          <div class="tw" role="region" aria-label="업체별 사업 폭" tabindex="0"><table class="pick" id="co-tb"></table></div>
+        </section>
+
+        <section id="s-part" data-toc="부품 수요로 읽기" data-group="연결">
+          <h2>부품 수요로 읽기</h2>
+          <p>주요 부품군마다 그것을 쓰는 장비 세그먼트 수를 셌습니다. 많은 장비에 들어가는 부품일수록 특정 장비 사이클에 덜 흔들리고, 식각처럼 소모가 큰 장비에 몰린 부품일수록 설치 기반이 늘 때 반복 수요가 커집니다. 세라믹·쿼츠·실리콘 부품은 <a href="parts-map.html">부품 세그먼트 지도</a>와 이어집니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>부품군별로 그 부품을 쓰는 장비 세그먼트 수</h4><span class="muted" style="font-size: 12px">진한 막대: 주력으로 씀 · 옅은 막대: 일부 포함</span></div>
+            <div class="fig-b plotbox" id="f-part"></div>
+            <div class="fig-s" id="part-note"></div>
+          </div>
+        </section>
+
+        <section id="s-ext" data-toc="외부 변수" data-group="환경">
+          <h2>지도를 흔드는 외부 변수</h2>
+          <ul class="facts" id="facts"></ul>
+        </section>
+
+        <section id="s-use" data-toc="실무에서 쓰는 법" data-group="활용">
+          <h2>실무에서 쓰는 법</h2>
+          <ol class="traps" id="use-list"></ol>
+        </section>
+
+        <section id="s-lim" data-toc="한계와 출처">
+          <h2>한계와 출처</h2>
+          <ol class="traps" id="lim-list"></ol>
+          <ul class="refs">
+            <li>장비 시장 전망: SEMI 2026년 중간 전망(EMSNow 보도, 2026)</li>
+            <li>중국 장비 국산화율: Yole Group 보도자료(2026.6.22)</li>
+            <li>업체별 제품군: 각사 연차보고서(10-K, 20-F, 통합보고서)와 제품 소개</li>
+            <li>업체별 실적: <a href="equip-cos.html">해외 장비사 5곳 심층 분석</a>(Fiscal.ai 표준화 재무제표·SEC 제출 원문, Tokyo Electron IR 원문)</li>
+          </ul>
+          <p class="rpt-end">공개 자료와 일반 공학 지식으로 산업 구조를 정리한 것이며, 특정 회사의 내부 자료나 거래 관계를 담지 않습니다. 점수는 작성자의 정성 판단이고 투자 권유가 아닙니다.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-read">공시로 기업 읽기</a> <b>6</b> / 10</span>
+        <ol class="fsteps"><li><a href="fsa.html">읽는 틀</a></li><li><a href="samsung.html">한 회사 깊게</a></li><li><a href="sectors.html">업종 넓게</a></li><li><a href="semi-cycle.html">산업 사이클</a></li><li><a href="parts-map.html">부품 산업 지도</a></li><li class="cur" aria-current="step"><span>장비 산업 지도</span></li><li><a href="equip-cos.html">장비사 비교</a></li><li><a href="trade-lead.html">산업 데이터</a></li><li><a href="reading.html">산업 전망</a></li><li><a href="mem-scenario.html">시나리오 가치</a></li></ol>
+        <div class="fnav"><a class="fprev" href="parts-map.html"><small>← 이전 단계</small>반도체 장비 부품 세그먼트 지도</a><a class="fnext" href="equip-cos.html"><small>다음 단계 →</small>해외 장비사 5곳 심층 분석</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="parts-map.html">반도체 장비 부품 세그먼트 지도</a></li><li><a href="equip-cos.html">해외 장비사 5곳 심층 분석</a></li><li><a href="semi-cycle.html">반도체 사이클과 재무</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.23</span><span>공개 자료 기반의 일반 산업 지도입니다. 특정 회사의 내부 자료나 전략을 담지 않습니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/engines/equipmap.js"></script>
+<script src="../assets/engines/linkmap.js"></script>
+<script src="../assets/linkmap-ui.js"></script>
+<script src="../assets/report.js"></script>
+<script src="../assets/equip-map.js"></script>
+</body>
+</html>

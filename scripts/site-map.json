@@ -419,6 +419,10 @@
       "career": "",
       "more": [
         [
+          "equip-map.html",
+          "반도체 장비 세그먼트 지도(부품 수요로 연결)"
+        ],
+        [
           "semi-cycle.html",
           "반도체 사이클과 재무"
         ],
@@ -429,6 +433,52 @@
         [
           "capex-kit.html",
           "설비투자 키트(단계 투자)"
+        ]
+      ]
+    },
+    {
+      "file": "equip-map.html",
+      "title": "반도체 장비 세그먼트 지도",
+      "kind": "리포트",
+      "fields": [
+        "기업·산업 분석"
+      ],
+      "career": "",
+      "more": [
+        [
+          "parts-map.html",
+          "반도체 장비 부품 세그먼트 지도"
+        ],
+        [
+          "equip-cos.html",
+          "해외 장비사 5곳 심층 분석"
+        ],
+        [
+          "semi-cycle.html",
+          "반도체 사이클과 재무"
+        ]
+      ]
+    },
+    {
+      "file": "equip-cos.html",
+      "title": "해외 장비사 5곳 심층 분석",
+      "kind": "리포트",
+      "fields": [
+        "기업·산업 분석"
+      ],
+      "career": "",
+      "more": [
+        [
+          "equip-map.html",
+          "반도체 장비 세그먼트 지도"
+        ],
+        [
+          "fsa.html",
+          "재무제표 분석 프레임워크"
+        ],
+        [
+          "sectors.html",
+          "업종별 재무제표 읽기"
         ]
       ]
     },
@@ -622,6 +672,7 @@
         "기업·업종 분석",
         [
           "samsung.html",
+          "equip-cos.html",
           "sectors.html",
           "ma-case.html"
         ]
@@ -631,6 +682,7 @@
         [
           "semi-cycle.html",
           "parts-map.html",
+          "equip-map.html",
           "trade-lead.html",
           "capex-panel.html",
           "reading.html",
@@ -806,6 +858,14 @@
         [
           "parts-map.html",
           "부품 산업 지도"
+        ],
+        [
+          "equip-map.html",
+          "장비 산업 지도"
+        ],
+        [
+          "equip-cos.html",
+          "장비사 비교"
         ],
         [
           "trade-lead.html",

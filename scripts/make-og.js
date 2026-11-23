@@ -35,6 +35,8 @@ const PAGES = [
   ["tools/fsa.html", "fsa", { label: "분석 리포트" }],
   ["tools/semi-cycle.html", "semi-cycle", { label: "분석 리포트" }],
   ["tools/parts-map.html", "parts-map", { label: "분석 리포트" }],
+  ["tools/equip-map.html", "equip-map", { label: "분석 리포트" }],
+  ["tools/equip-cos.html", "equip-cos", { label: "기업 분석" }],
   ["tools/trade-lead.html", "trade-lead", { label: "데이터 분석" }],
   ["tools/capex-panel.html", "capex-panel", { label: "데이터 분석" }],
   ["tools/samsung.html", "samsung", { label: "분석 리포트" }],

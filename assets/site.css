@@ -17,6 +17,7 @@
   --neg-ink: #9E2A23;
   --total: #4A5560;
   --mark-muted: #98A1A8;
+  --violet: #6A4C9C;
   --f-display: "Gothic A1", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --f-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -27,14 +28,14 @@
   :root:not([data-theme="light"]) {
     --paper: #0D1114; --surface: #141A1F; --ink: #E6EAED; --ink-2: #B5BEC6; --muted: #909BA5;
     --rule: #28323B; --rule-soft: #1D252C; --ledger: #172027; --tab: #11171C;
-    --accent: #E08A57; --input: #8EAEFF; --pos: #3DB384; --neg: #E5604F; --neg-ink: #F08C7E; --total: #A3AEB8; --mark-muted: #5C6873;
+    --accent: #E08A57; --input: #8EAEFF; --pos: #3DB384; --neg: #E5604F; --neg-ink: #F08C7E; --total: #A3AEB8; --mark-muted: #5C6873; --violet: #B49BE0;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0D1114; --surface: #141A1F; --ink: #E6EAED; --ink-2: #B5BEC6; --muted: #909BA5;
   --rule: #28323B; --rule-soft: #1D252C; --ledger: #172027; --tab: #11171C;
-  --accent: #E08A57; --input: #8EAEFF; --pos: #3DB384; --neg: #E5604F; --neg-ink: #F08C7E; --total: #A3AEB8; --mark-muted: #5C6873;
+  --accent: #E08A57; --input: #8EAEFF; --pos: #3DB384; --neg: #E5604F; --neg-ink: #F08C7E; --total: #A3AEB8; --mark-muted: #5C6873; --violet: #B49BE0;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -579,7 +580,7 @@ table.ledger th.lft, table.ledger td.lft { text-align: left; }
   html:root[data-theme], html:root {
     --paper: #FFFFFF; --surface: #FFFFFF; --ink: #111A22; --ink-2: #2E3842; --muted: #5E6872;
     --rule: #C9CED0; --rule-soft: #E3E6E6; --ledger: #F2F3F1; --tab: #EEF0EC;
-    --accent: #A6491B; --input: #1D4FC4; --pos: #1B7A55; --neg: #B8332B; --neg-ink: #9E2A23; --total: #4A5560; --mark-muted: #98A1A8;
+    --accent: #A6491B; --input: #1D4FC4; --pos: #1B7A55; --neg: #B8332B; --neg-ink: #9E2A23; --total: #4A5560; --mark-muted: #98A1A8; --violet: #6A4C9C;
     --s-1: 8.6pt; --s-2: 9.6pt; --s-3: 10.6pt; --s-4: 12.6pt; --s-5: 17pt; --s-6: 30pt;
     color-scheme: light;
   }

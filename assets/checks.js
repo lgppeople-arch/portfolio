@@ -24,6 +24,9 @@
     CapexPanel: require("./engines/capexpanel.js"),
     PartsMap: require("./engines/partsmap.js"),
     LinkMap: require("./engines/linkmap.js"),
+    EquipMap: require("./engines/equipmap.js"),
+    EquipCosEngine: require("./engines/equipcos.js"),
+    EquipCos: require("./data/equip-cos.js"),
     CapexPanelData: require("./data/capex-panel.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
@@ -85,7 +88,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -741,6 +744,27 @@
         add(G, "지도 탐색기: 조건 없으면 전체, 같은 기둥 포함은 OR(식각 CCP 또는 ICP ⊇ CCP), 다른 기둥은 AND(CCP 그리고 핫프레스), 제외는 그 칸에 닿는 항목을 뺌, 상태는 포함→제외→해제로 돌아옴, 기둥을 끄면 남은 기둥끼리 이음", all.length === P.SEGS.length && ccp === ccpSegs && both >= ccp.split(",").length && andc === ["esc_etch", "shower"].sort().join() && out.every((it) => !it.m.tier.g2) && !Object.keys(cyc).length && hide, "부품 " + all.length + "개");
       }
       add(G, "인접성 목록은 인접성 높은 순, '거의 그대로' 유형 = 인접성 3인 유형, 순위는 1부터 빠짐없이", sorted && P.SEGS.every((s) => P.owners(s.id).every((b) => P.BASES.find((x) => x.id === b).v[s.id] === 3)) && ranks, "");
+    }
+
+    /* ---------- 장비 지도 ---------- */
+    if (EquipMap) {
+      const M = EquipMap, G = "장비 지도", ids = (arr) => arr.map((q) => q[0]), cols = { step: ids(M.STEPS), tech: ids(M.TECH), part: ids(M.PARTS), co: ids(M.COS) };
+      const ok = M.SEGS.every((sg) => M.SCORE_KEYS.every((k) => Number.isInteger(sg[k]) && sg[k] >= 1 && sg[k] <= 5) && M.GROUPS[sg.grp] && Object.keys(cols).every((cc) => Object.keys(sg[cc]).length > 0 && Object.keys(sg[cc]).every((id) => cols[cc].indexOf(id) >= 0 && [1, 2].indexOf(sg[cc][id]) >= 0)));
+      const link = !PartsMap || Object.keys(M.PART_LINK).every((k) => cols.part.indexOf(k) >= 0 && M.PART_LINK[k].every((sid) => PartsMap.SEGS.some((x) => x.id === sid)));
+      const B = M.coBreadth(), sumMain = B.reduce((a, q) => a + q.main, 0) === M.SEGS.reduce((a, sg) => a + Object.keys(sg.co).filter((k) => sg.co[k] === 2).length, 0);
+      add(G, "자료 완결성: 장비 세그먼트 점수 1~5 정수, 다섯 기둥 모두 정의된 칸에만 닿음(굵기 1·2), 부품군 연결이 부품 지도 세그먼트와 일치, 업체별 주력 수 합 = 세그먼트별 주력 업체 수 합", ok && link && sumMain, M.SEGS.length + "개 장비 · " + M.COS.length + "개 업체");
+      if (LinkMap) { const SP = M.lmSpec(), esc = LinkMap.filterItems(SP, { pt_esc: "in" }).map((i) => i.id).sort().join(), exp = M.SEGS.filter((sg) => sg.part.pt_esc).map((sg) => sg.id).sort().join();
+        add(G, "장비 지도 탐색기: 정전척을 포함하면 정전척을 쓰는 장비만, 중국 장비사군을 제외하면 중국 업체가 없는 장비만", esc === exp && LinkMap.filterItems(SP, { c_cn: "out" }).every((it) => !it.m.co.c_cn), esc.split(",").length + "개"); }
+    }
+
+    /* ---------- 해외 장비사 5곳 ---------- */
+    if (EquipCosEngine && EquipCos) {
+      const E2 = EquipCosEngine, D2 = EquipCos, G = "장비사 비교", A2 = E2.analyze(D2);
+      const geoOk = D2.cos.every((co) => { const last = co.years[co.years.length - 1], g = co.geo[String(last.fy)]; if (!g) return false; const t = Object.keys(g).reduce((a, k) => a + g[k], 0); return Math.abs(t / last.rev - 1) < 0.002; });
+      const six = D2.cos.every((co) => co.years.length === 6 && co.years.every((y, i) => i === 0 || y.fy === co.years[i - 1].fy + 1));
+      add(G, "공시 숫자 정합: 5곳 모두 연속 6개 회계연도, 최근 회계연도 지역별 매출 합 = 총매출(오차 0.2% 이내)", six && geoOk, D2.cos.map((co) => co.id + " FY" + co.years[co.years.length - 1].fy).join(" · "));
+      const k = A2.find((a) => a.id === "KLAC"), ky = D2.cos.find((co) => co.id === "KLAC").years, asml = D2.cos.find((co) => co.id === "ASML"), tel = D2.cos.find((co) => co.id === "TEL");
+      add(G, "비율·환산 손계산 일치: 영업이익률 = 영업이익 ÷ 매출, 연평균 성장률 = (마지막/처음)^(1/5) − 1, 유로는 같은 해·엔(3월 결산)은 앞 해 연준 연평균 환율", near(k.last.opm, ky[5].op / ky[5].rev * 100, 1e-9) && near(k.cagr, (Math.pow(ky[5].rev / ky[0].rev, 1 / 5) - 1) * 100, 1e-9) && E2.usdRate(asml, D2.fx) === D2.fx.EUR[2025] && near(E2.usdRate(tel, D2.fx), 1 / D2.fx.JPY[2025], 1e-15) && E2.usdRate(D2.cos[1], D2.fx) === 1, "KLA 영업이익률 " + k.last.opm.toFixed(1) + "%");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */
