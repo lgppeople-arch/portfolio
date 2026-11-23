@@ -74,7 +74,7 @@
   (function () {
     const host = $("wts");
     E.PROFIT_KEYS.forEach((k) => { const lab = el("label"); const sp = el("span"); sp.append(E.PROFIT_NAMES[k] + " 가중치 ", el("b", { id: "w-" + k, text: W[k] + "" })); lab.appendChild(sp);
-      const inp = el("input", { type: "range", min: 0, max: 100, step: 5, value: W[k], "aria-label": E.PROFIT_NAMES[k] + " 가중치" }); inp.addEventListener("input", () => { W[k] = +inp.value; $("w-" + k).textContent = inp.value; drawEval(); if ($("flow-col").value === "profit") drawFlow(); }); lab.appendChild(inp); host.appendChild(lab); });
+      const inp = el("input", { type: "range", min: 0, max: 100, step: 5, value: W[k], "aria-label": E.PROFIT_NAMES[k] + " 가중치" }); inp.addEventListener("input", () => { W[k] = +inp.value; $("w-" + k).textContent = inp.value; drawEval(); drawFlow(); }); lab.appendChild(inp); host.appendChild(lab); });
     const lg = $("lgd"); Object.keys(E.GROUPS).forEach((g) => { const s = el("span"); const i = el("i"); i.style.background = c(GCOL[g]); s.appendChild(i); s.appendChild(document.createTextNode(E.GROUPS[g])); lg.appendChild(s); });
   })();
   function drawEval() {
@@ -174,62 +174,14 @@
     ].forEach((q) => { const li = el("li"); li.appendChild(el("b", { text: q[0] })); li.appendChild(document.createTextNode(q[1])); lim.appendChild(li); });
   })();
 
-  /* ---------- 0. 한 장 지도 ---------- */
-  const G = E.graph();
+  /* ---------- 0. 한 장 지도: 공용 탐색기 ---------- */
   const NSHORT = { pl_jp: "일본 종합 세라믹", pl_west: "미·유럽 소재 전문", pl_oem: "장비사 계열·내재화", pl_qz: "쿼츠 전문", pl_svc: "코팅·재생 서비스", pl_chem: "원료 화학사", pl_kr: "한국 부품 전문", pl_cn: "중국 신흥 업체" };
-  const nname = (n) => (n.col === "seg" ? SHORT[n.seg] : NSHORT[n.id] || n.name);
-  let pick = null;
-  (function () {
-    const sel = $("flow-sel"); const o0 = el("option", { text: "전체 보기" }); o0.value = ""; sel.appendChild(o0);
-    G.cols.forEach((cc) => { const og = el("optgroup"); og.label = cc.name; G.nodes.filter((n) => n.col === cc.id).forEach((n) => { const o = el("option", { text: nname(n) }); o.value = n.id; og.appendChild(o); }); sel.appendChild(og); });
-    sel.addEventListener("change", () => { pick = sel.value || null; drawFlow(); });
-    $("flow-col").addEventListener("change", drawFlow);
-  })();
-  function profitCol(v) { /* 수익성 1~5 → 옅은 회색에서 진한 주황 */ const t = Math.max(0, Math.min(1, (v - 1.5) / 3)); return "color-mix(in srgb, " + c("--accent") + " " + Math.round(15 + t * 85) + "%, " + c("--mark-muted") + ")"; }
-  function drawFlow() {
-    const host = $("f-flow"); host.textContent = "";
-    const FW = Math.max(920, Math.round(host.clientWidth || 920)), NW = 138, NH = 24, top = 30, colsN = G.cols.length;
-    const maxN = Math.max.apply(null, G.cols.map((cc) => G.nodes.filter((n) => n.col === cc.id).length)), H = top + maxN * (NH + 9) + 10;
-    const s = sv("svg", { viewBox: "0 0 " + FW + " " + H, width: FW, height: H, role: "img", "aria-label": "공정, 부품, 제조기술, 가공 등급, 플레이어 유형을 잇는 지도" + (pick ? ". 고른 칸: " + nname(G.nodes.find((n) => n.id === pick)) : "") }, host);
-    const gapX = (FW - 16 - NW * colsN) / (colsN - 1), P = {};
-    G.cols.forEach((cc, ci) => {
-      const list = G.nodes.filter((n) => n.col === cc.id), span = maxN * (NH + 9), step = span / list.length;
-      tx(s, 8 + ci * (NW + gapX) + NW / 2, 16, cc.name, { "text-anchor": "middle", "font-size": 12, "font-weight": 700, fill: c("--ink") });
-      list.forEach((n, i) => { P[n.id] = { x: 8 + ci * (NW + gapX), y: top + i * step + (step - NH) / 2, n: n }; });
-    });
-    const R = pick ? E.select(G, pick) : null, mode = $("flow-col").value, prof = {}; E.score(W).rows.forEach((q) => { prof[q.id] = q.profit; });
-    const colorOf = (b) => { if (mode === "profit") return profitCol(b.segs.reduce((a, id) => a + prof[id], 0) / b.segs.length); const gs = Array.from(new Set(b.segs.map((id) => byId[id].grp))); return gs.length === 1 ? c(GCOL[gs[0]]) : c("--mark-muted"); };
-    const path = (b) => { const A = P[b.a], B = P[b.b], x1 = A.x + NW, y1 = A.y + NH / 2, x2 = B.x, y2 = B.y + NH / 2, mx = (x1 + x2) / 2; return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2; };
-    const lw = (w) => Math.min(14, 0.8 + w * 0.9);
-    const gl = sv("g", {}, s);
-    E.bundle(G.links).forEach((b) => sv("path", { d: path(b), fill: "none", stroke: colorOf(b), "stroke-width": lw(b.w), opacity: R ? 0.06 : 0.38 }, gl));
-    if (R) E.bundle(R.links).forEach((b) => sv("path", { d: path(b), fill: "none", stroke: colorOf(b), "stroke-width": lw(b.w), opacity: 0.85 }, gl));
-    G.nodes.forEach((n) => {
-      const p = P[n.id], on = !R || R.nodes.has(n.id), me = pick === n.id;
-      const g = sv("g", { class: "nd", opacity: on ? 1 : 0.35 }, s);
-      sv("rect", { x: p.x, y: p.y, width: NW, height: NH, rx: 4, fill: me ? c("--accent") : c("--surface"), stroke: n.col === "seg" ? c(GCOL[n.grp]) : c("--rule"), "stroke-width": n.col === "seg" ? 1.6 : 1 }, g);
-      tx(g, p.x + 8, p.y + NH / 2 + 4, nname(n), { "font-size": 11, fill: me ? "#fff" : c("--ink"), "font-weight": n.col === "seg" ? 600 : 500 });
-      g.addEventListener("click", (ev) => { ev.stopPropagation(); pick = pick === n.id ? null : n.id; $("flow-sel").value = pick || ""; drawFlow(); });
-    });
-    s.addEventListener("click", () => { if (pick) { pick = null; $("flow-sel").value = ""; drawFlow(); } });
-    const out = $("flow-out"); out.textContent = "";
-    if (!R) { out.append("칸을 누르거나 위에서 고르면 그 칸을 지나는 경로만 남습니다. 다시 누르면 전체로 돌아갑니다."); }
-    else {
-      const names = (colId) => G.nodes.filter((n) => n.col === colId && R.nodes.has(n.id) && n.id !== pick).map(nname);
-      const main = E.PLAYERS.filter((p) => R.segs.some((id) => p.v[id] === 2)).map((p) => NSHORT["pl_" + p.id]);
-      const avg = R.segs.reduce((a, id) => a + prof[id], 0) / R.segs.length;
-      out.append(el("b", { text: nname(R.node) }), " → 부품 " + R.segs.length + "개(" + R.segs.map((id) => SHORT[id]).join(", ") + ")" + (R.node.col !== "tech" ? " · 제조기술: " + names("tech").join(", ") : "") + (R.node.col !== "tier" ? " · 가공: " + names("tier").map((t) => t.replace("가공 ", "")).join(", ") : "") + (R.node.col !== "player" ? " · 주력 플레이어 유형: " + (main.join(", ") || "없음") : "") + " · 평균 수익성 점수 " + f1(avg));
-    }
-    const lg = $("flow-lgd"); lg.textContent = "";
-    if (mode === "grp") Object.keys(E.GROUPS).forEach((gk) => { const sp = el("span"); const i = el("i"); i.style.background = c(GCOL[gk]); sp.appendChild(i); sp.appendChild(document.createTextNode(E.GROUPS[gk])); lg.appendChild(sp); });
-    else [1.5, 3, 4.5].forEach((v) => { const sp = el("span"); const i = el("i"); i.style.background = profitCol(v); sp.appendChild(i); sp.appendChild(document.createTextNode("수익성 " + v)); lg.appendChild(sp); });
-  }
-  (function () {
-    const B = E.bundle(G.links), busiest = G.nodes.filter((n) => n.col === "tech").map((n) => ({ n: n, k: new Set(G.links.filter((l) => l.a === n.id || l.b === n.id).map((l) => l.seg)).size })).sort((a, b) => b.k - a.k)[0];
-    $("flow-note").textContent = "줄기 " + G.links.length + "개를 같은 두 칸 사이끼리 묶어 " + B.length + "개 선으로 그렸습니다. 제조기술 기둥에서 가장 많은 부품이 지나가는 칸은 " + busiest.n.name + "(" + busiest.k + "개 부품)입니다. 같은 기술 하나에 여러 부품이 몰리면 그 설비가 병목이 되기 쉽고, 반대로 단결정 성장·용융·CVD처럼 한 부품만 지나가는 기술은 그 부품 전용 사업이라는 뜻입니다. 플레이어 유형 칸을 눌러 보면 각 유형이 어떤 공정·기술 조합에 서 있는지 거꾸로 따라갈 수 있습니다.";
-  })();
+  const GRP = {}; Object.keys(E.GROUPS).forEach((g) => { GRP[g] = { name: E.GROUPS[g], css: GCOL[g] }; });
+  const profOf = (id) => E.profit(byId[id], W);
+  const LM = window.LinkMapUI.mount($("lm-parts"), E.lmSpec(), { label: (n) => (n.col === "seg" ? SHORT[n.seg] : NSHORT[n.id] || n.name), itemName: (id) => SHORT[id], groups: GRP, score: profOf, scoreName: "수익성", itemWord: "부품", itemCol: "seg" });
+  function drawFlow() { LM.setScore(); }
 
-  function all() { drawFlow(); drawEval(); drawAdj(); }
+  function all() { drawEval(); drawAdj(); }
   all(); F.onRedraw(all);
   if (window.Report) {
     Report.flows($("hero-art"), { area: { span: 0.42, max: 580, min: 1000, within: ".rpt-hero .wrap" },

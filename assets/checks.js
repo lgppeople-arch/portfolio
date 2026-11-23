@@ -23,6 +23,7 @@
     TradeSemi: require("./data/trade-semi.js"),
     CapexPanel: require("./engines/capexpanel.js"),
     PartsMap: require("./engines/partsmap.js"),
+    LinkMap: require("./engines/linkmap.js"),
     CapexPanelData: require("./data/capex-panel.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
@@ -84,7 +85,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -732,6 +733,13 @@
       const one = P.select(GR, "s_heater"), ccp = P.select(GR, "p_ccp"), ccpSegs = P.SEGS.filter((sg) => sg.procs.ccp).map((sg) => sg.id).sort().join();
       const bw = P.bundle(GR.links).reduce((a, b) => a + b.w, 0) === GR.links.reduce((a, l) => a + l.w, 0);
       add(G, "한 장 지도: 모든 부품 줄기가 다섯 기둥을 다 지나고 선은 이웃 기둥끼리만, 부품을 고르면 그 부품 줄기만, 공정을 고르면 그 공정에 쓰이는 부품만, 묶어 그려도 굵기 합은 같음", chain && adj && one.segs.join() === "heater" && one.links.every((l) => l.seg === "heater") && ccp.segs.slice().sort().join() === ccpSegs && ccp.links.every((l) => colOf[l.a] !== "proc" || l.a === "p_ccp") && bw, GR.nodes.length + "칸 · 줄기 " + GR.links.length + "개");
+      if (LinkMap) {
+        const LM = LinkMap, SP = P.lmSpec(), all = LM.filterItems(SP, {}), ccp = LM.filterItems(SP, { p_ccp: "in" }).map((i) => i.id).sort().join();
+        const both = LM.filterItems(SP, { p_ccp: "in", p_icp: "in" }).length, andc = LM.filterItems(SP, { p_ccp: "in", t_hp: "in" }).map((i) => i.id).sort().join();
+        const out = LM.filterItems(SP, { g2: "out" }), cyc = LM.cycle(LM.cycle(LM.cycle({}, "x"), "x"), "x");
+        const hide = LM.links(SP, ["proc", "tech"], all).every((l) => SP.nodes.find((n) => n.id === l.a).col === "proc" && SP.nodes.find((n) => n.id === l.b).col === "tech");
+        add(G, "지도 탐색기: 조건 없으면 전체, 같은 기둥 포함은 OR(식각 CCP 또는 ICP ⊇ CCP), 다른 기둥은 AND(CCP 그리고 핫프레스), 제외는 그 칸에 닿는 항목을 뺌, 상태는 포함→제외→해제로 돌아옴, 기둥을 끄면 남은 기둥끼리 이음", all.length === P.SEGS.length && ccp === ccpSegs && both >= ccp.split(",").length && andc === ["esc_etch", "shower"].sort().join() && out.every((it) => !it.m.tier.g2) && !Object.keys(cyc).length && hide, "부품 " + all.length + "개");
+      }
       add(G, "인접성 목록은 인접성 높은 순, '거의 그대로' 유형 = 인접성 3인 유형, 순위는 1부터 빠짐없이", sorted && P.SEGS.every((s) => P.owners(s.id).every((b) => P.BASES.find((x) => x.id === b).v[s.id] === 3)) && ranks, "");
     }
 

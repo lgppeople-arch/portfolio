@@ -837,3 +837,18 @@ ul.nums li b { display: block; font-family: var(--f-display); font-size: var(--s
 .id-av span { font-weight: 700; font-size: var(--s-3); color: var(--ink); display: grid; gap: 2px; }
 .id-av small { font-weight: 400; font-size: var(--s-1); color: var(--muted); }
 @media print { .id-av img { width: 64px; } }
+
+/* 다단 연결 지도 탐색기(assets/linkmap-ui.js) */
+.flowwrap { overflow-x: auto; padding: 4px 0 6px; }
+.flowwrap .nd { cursor: pointer; }
+.flowwrap .nd:hover rect { stroke-width: 2.2; }
+.lm-ctl { display: grid; gap: 8px; padding: 12px 18px 0; font-size: 13px; }
+.lm-cols, .lm-row { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.lm-cols .lbl { font-size: 12px; color: var(--muted); margin-right: 2px; }
+.lm-chk { display: inline-flex; gap: 5px; align-items: center; padding: 3px 9px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); cursor: pointer; }
+.lm-row select { font: inherit; font-size: 13px; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); max-width: 100%; }
+.lm-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 18px 0; min-height: 4px; }
+.lm-chip { font: inherit; font-size: 12px; padding: 3px 10px; border-radius: 999px; cursor: pointer; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.lm-chip.in { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border-color: var(--accent); }
+.lm-chip.out { border-color: var(--neg); color: var(--neg-ink, var(--neg)); border-style: dashed; }
+.lm-out { padding: 8px 18px 0; }

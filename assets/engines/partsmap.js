@@ -189,5 +189,16 @@
     links.forEach((l) => { const k = l.a + ">" + l.b; const q = m[k] || (m[k] = { a: l.a, b: l.b, w: 0, segs: [] }); q.w += l.w; if (q.segs.indexOf(l.seg) < 0) q.segs.push(l.seg); });
     return Object.keys(m).map((k) => m[k]);
   }
-  return { PROCS, GROUPS, SEGS, TECHS, TECH_ORDER, TECH_LABEL, TIERS, RING_MATS, RINGS, PLAYERS, BASES, PROFIT_KEYS, PROFIT_NAMES, W0, profit, scal, score, reach, owners, MAP_TECH, SEG_TECH, MAP_TIER, COLS, segTiers, graph, select, bundle };
+  /* 공용 지도 탐색기(assets/engines/linkmap.js)용 자료: 부품 세그먼트 하나가 항목 하나 */
+  function lmSpec() {
+    const G = graph(), items = SEGS.map((s) => {
+      const m = { proc: {}, seg: {}, tech: Object.assign({}, SEG_TECH[s.id]), tier: segTiers(s), player: {} };
+      const pr = Object.keys(s.procs); if (pr.length) pr.forEach((k) => { m.proc["p_" + k] = s.procs[k]; }); else m.proc.p_raw = 2;
+      m.seg["s_" + s.id] = 2;
+      PLAYERS.forEach((p) => { if (p.v[s.id]) m.player["pl_" + p.id] = p.v[s.id]; });
+      return { id: s.id, name: s.name, grp: s.grp, m: m };
+    });
+    return { cols: G.cols, nodes: G.nodes, items: items };
+  }
+  return { PROCS, GROUPS, SEGS, TECHS, TECH_ORDER, TECH_LABEL, TIERS, RING_MATS, RINGS, PLAYERS, BASES, PROFIT_KEYS, PROFIT_NAMES, W0, profit, scal, score, reach, owners, MAP_TECH, SEG_TECH, MAP_TIER, COLS, segTiers, graph, select, bundle, lmSpec };
 });
