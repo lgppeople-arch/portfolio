@@ -24,7 +24,7 @@
   .facts li { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 10px 14px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
   .facts li b { color: var(--ink); }
   .facts li small { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; }
-  #cmp-tb { min-width: 900px; } #cmp-tb td { white-space: nowrap; font-variant-numeric: tabular-nums; } #co-tb td { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #cmp-tb { min-width: 900px; } #cmp-tb td { white-space: nowrap; font-variant-numeric: tabular-nums; } #co-tb td { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; } #aud-tb { min-width: 860px; } #aud-tb td:not(:last-child), #aud-tb th { white-space: nowrap; } #aud-tb td:nth-child(4), #aud-tb td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; }
 </style>
 <title>해외 장비사 5곳 심층 분석 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
@@ -137,7 +137,7 @@
       <div class="rpt-tag">Company analysis · 장비</div>
       <h1>같은 호황, 다른 체력:<br>장비 5강의 6년</h1>
       <p class="dek">ASML, Applied Materials, Lam Research, Tokyo Electron, KLA의 최근 6개 회계연도 공시 숫자로 규모·수익성·현금 창출·연구개발·지역 구성·서비스 매출을 나란히 놓았습니다. 같은 장비 호황을 겪어도 무엇을 파는지(노광, 증착·식각, 검사)와 설치 기반 서비스가 얼마나 큰지에 따라 이익률과 하강기 체력이 크게 갈립니다.</p>
-      <div class="rpt-meta"><span>대상<b>해외 상장 장비사 5곳</b></span><span>기간<b>최근 6개 회계연도</b></span><span>자료<b>SEC 제출 원문(Fiscal.ai 표준화), TEL IR 원문</b></span><span>작성<b>이기표</b></span></div>
+      <div class="rpt-meta"><span>대상<b>해외 상장 장비사 5곳</b></span><span>기간<b>최근 6개 회계연도</b></span><span>자료<b>SEC EDGAR 원문(무료 API), TEL IR 원문</b></span><span>작성<b>이기표</b></span></div>
     </div>
   </section>
 
@@ -206,6 +206,13 @@
           </div>
         </section>
 
+        <section id="s-audit" data-toc="출처 대조" data-group="검증">
+          <h2>출처 대조: 표준화 데이터를 원문과 맞춰 보기</h2>
+          <p>처음에는 유료 표준화 데이터(Fiscal.ai)로 표를 만들었고, 이후 SEC EDGAR 무료 API로 같은 숫자를 원문 XBRL에서 직접 받아 항목마다 대조했습니다. 지금 페이지의 손익·현금흐름 숫자는 SEC 원문 값(그 회계연도를 처음 보고한 10-K·20-F)입니다. 차이가 0.1%를 넘은 항목과 원인은 아래와 같습니다.</p>
+          <div class="readout" id="aud-sum"></div>
+          <div class="tw" role="region" aria-label="출처 대조 결과" tabindex="0"><table class="pick" id="aud-tb"></table></div>
+        </section>
+
         <section id="s-use" data-toc="읽는 법과 시사점" data-group="활용">
           <h2>읽는 법과 시사점</h2>
           <ol class="traps" id="use-list"></ol>
@@ -238,7 +245,7 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.23</span><span>각사 공시 숫자 비교입니다. 거래 관계나 내부 자료를 담지 않으며 투자 권유가 아닙니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.22</span><span>각사 공시 숫자 비교입니다. 거래 관계나 내부 자료를 담지 않으며 투자 권유가 아닙니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>

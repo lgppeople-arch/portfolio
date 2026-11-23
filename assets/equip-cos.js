@@ -136,7 +136,7 @@
     if (co.units) { const uy = Object.keys(co.units).sort(); endOut.append(el("br"), el("b", { text: "장비 판매 대수: " }), uy.map((y) => y + "년 EUV " + co.units[y].EUV + "대 · DUV " + co.units[y].DUV + "대").join(" → "), " · 순수주(bookings) " + uy.map((y) => y + "년 " + fmt(co.bookings[y], 0)).join(" → ") + " " + uName); }
     /* 6년 표 */
     const tb = $("co-tb"); tb.textContent = "";
-    tb.appendChild(el("thead", null, [el("tr", null, [el("th", { text: uName, scope: "col" })].concat(co.years.map((y) => el("th", { text: "FY" + y.fy, scope: "col" }))))]));
+    tb.appendChild(el("thead", null, [el("tr", null, [el("th", { text: uName, scope: "col" })].concat(co.years.map((y) => el("th", { text: "FY" + y.fy + (y.prelim ? " 잠정" : ""), scope: "col" }))))]));
     const body = el("tbody"), rr = (name, f) => { const tr = el("tr"); tr.appendChild(el("th", { text: name, scope: "row" })); co.years.forEach((y, i) => tr.appendChild(el("td", { text: f(y, i) }))); body.appendChild(tr); };
     rr("매출", (y) => fmt(y.rev / unit, 0)); rr("매출총이익", (y) => fmt(y.gp / unit, 0)); rr("연구개발비", (y) => fmt(y.rd / unit, 0)); rr("영업이익", (y) => fmt(y.op / unit, 0)); rr("순이익", (y) => fmt(y.ni / unit, 0));
     rr("영업현금흐름", (y) => fmt(y.ocf / unit, 0) + (y.ocfNote ? "*" : "")); rr("설비투자", (y) => fmt(y.capex / unit, 0));
@@ -144,9 +144,25 @@
     rr("영업이익률", (y) => pc(y.op / y.rev * 100)); rr("연구개발비 / 매출", (y) => pc(y.rd / y.rev * 100));
     tb.appendChild(body);
     const src = $("co-src"); src.textContent = "";
-    src.append("출처: " + (co.id === "TEL" ? "Tokyo Electron IR 원문(결산 설명회 자료, 연결재무제표). *표시는 분기 영업현금흐름의 합. " : "SEC 제출 원문(Fiscal.ai 표준화 재무제표, 값마다 원문 쪽수 연결). "));
-    co.src.slice(-3).forEach((u, i) => { if (i) src.append(" · "); src.append(el("a", { href: u, text: "원문 " + (i + 1), target: "_blank", rel: "noopener" })); });
+    if (co.id === "TEL") { src.append("출처: Tokyo Electron IR 원문(결산 설명회 자료, 연결재무제표). *표시는 분기 영업현금흐름의 합. "); co.src.slice(0, 3).forEach((u, i) => { if (i) src.append(" · "); src.append(el("a", { href: u, text: "원문 " + (i + 1), target: "_blank", rel: "noopener" })); }); }
+    else { src.append("출처: SEC EDGAR 원문 XBRL(회계연도를 처음 보고한 " + (co.id === "ASML" ? "20-F" : "10-K") + "). 지역·서비스·사업 구성은 Fiscal.ai 표준화 세그먼트. 제출 원문: ");
+      co.years.filter((y) => y.accn).slice(-3).forEach((y, i) => { if (i) src.append(" · "); src.append(el("a", { href: "https://www.sec.gov/Archives/edgar/data/" + co.cik + "/" + y.accn.replace(/-/g, "") + "/", text: "FY" + y.fy, target: "_blank", rel: "noopener" })); });
+      if (co.years.some((y) => y.prelim)) src.append(" · 잠정 연도는 실적 발표(8-K) 기준"); }
   }
+
+  /* ---------- 출처 대조 ---------- */
+  (function () {
+    const aud = D.cos.filter((co) => co.audit), n = aud.reduce((p, co) => p + co.audit.compared, 0), diffs = [];
+    aud.forEach((co) => co.audit.diffs.forEach((d) => diffs.push(Object.assign({ co: co.name, cur: co.cur }, d))));
+    const KN = { rev: "매출", gp: "매출총이익", rd: "연구개발비", op: "영업이익", ni: "순이익", ocf: "영업현금흐름", capex: "설비투자", buyback: "자사주 매입", div: "배당" };
+    const why = (d) => (d.k === "buyback" ? (d.co === "KLA" && d.fy === 2022 ? "정의 차이: 원천징수 납부(84.4)와 가속 자사주 매입(ASR) 선도계약(900.0)까지 더한 값. 순수 매입 3,967.8 + 84.4 + 900.0 = 4,952.2" : "정의 차이: 표준화 데이터는 주식 보상 지급 때 세금 몫으로 회수한 주식(원천징수 납부)까지 더함. SEC 원문의 자사주 매입 항목만 씀") : d.k === "ocf" ? "표준화 데이터 오류: SEC 원문은 이 회계연도 이후 세 차례 연차보고서에서 모두 같은 값을 보고" : "확인 중");
+    const sum = $("aud-sum"); sum.textContent = "";
+    sum.append(el("b", { text: "대조 " + n + "개 값 중 " + diffs.length + "개에서 0.1% 넘는 차이" }), " · " + diffs.filter((d) => d.k === "buyback").length + "개는 자사주 매입의 정의 차이, " + diffs.filter((d) => d.k !== "buyback").length + "개는 표준화 데이터 쪽 오류였습니다. 나머지 값은 원문과 일치했습니다." + (aud.some((co) => co.audit.prelim.length) ? " Applied Materials FY" + aud.find((co) => co.id === "AMAT").audit.prelim.join("·") + "는 10-K 제출 전이라 실적 발표(8-K) 기준 표준화 값을 '잠정'으로 썼습니다." : ""));
+    const tb = $("aud-tb"); tb.appendChild(el("thead", null, [el("tr", null, ["회사", "회계연도", "항목", "표준화 데이터", "SEC 원문", "원인"].map((h) => el("th", { text: h, scope: "col" })))]));
+    const body = el("tbody");
+    diffs.forEach((d) => { const tr = el("tr"); tr.appendChild(el("th", { text: d.co, scope: "row" })); ["FY" + d.fy, KN[d.k], fmt(d.fiscal, 1), fmt(d.sec, 1), why(d)].forEach((v) => tr.appendChild(el("td", { text: v }))); body.appendChild(tr); });
+    tb.appendChild(body);
+  })();
 
   /* ---------- 읽는 법·한계 ---------- */
   li($("use-list"), [
@@ -157,7 +173,7 @@
   ]);
   li($("lim-list"), [
     ["회계연도와 회계기준이 다릅니다.", " ASML 12월(US GAAP 20-F), Applied Materials 10월 말, Lam Research·KLA 6월 말(US GAAP 10-K), Tokyo Electron 3월(일본 기준)입니다. 같은 '최근 회계연도'라도 기간이 최대 9개월 어긋납니다."],
-    ["표준화 숫자를 썼습니다.", " 미국 상장 4곳은 Fiscal.ai가 SEC 제출 원문을 같은 항목 체계로 옮긴 값입니다(값마다 원문 쪽수 연결). 회사가 발표하는 조정(Non-GAAP) 이익률과는 다를 수 있습니다."],
+    ["원문 숫자와 표준화 숫자를 함께 썼습니다.", " 미국 상장 4곳의 손익·현금흐름은 SEC EDGAR XBRL 원문 값이고, 세그먼트(지역·서비스·사업 구성)는 Fiscal.ai 표준화 값입니다. 회사가 발표하는 조정(Non-GAAP) 이익률과는 다를 수 있습니다. 자사주 매입은 원천징수 납부를 뺀 순수 매입입니다."],
     ["Tokyo Electron은 일부 항목을 다른 문서에서 옮겼습니다.", " 2021·2022 회계연도 영업현금흐름은 결산 설명회 자료의 분기 값을 더했고, 설비투자는 회사가 발표한 설비투자액(다른 4곳은 현금흐름표의 유형자산 취득)입니다. 2021 회계연도 매출총이익은 매출에 공시된 매출총이익률을 곱해 구했습니다."],
     ["달러 환산은 근사입니다.", " 미 연준 G.5A 연평균 환율(2025년 1유로 1.1306달러, 1달러 149.57엔)을 썼고, 3월 결산인 Tokyo Electron은 회계연도 대부분이 걸친 앞 해의 환율로 근사했습니다. 비율 지표는 환산과 무관합니다."],
     ["전망은 담지 않았습니다.", " 각사의 다음 해 가이던스와 시장 전망은 바뀌기 쉬워 넣지 않았습니다. 공시 숫자는 정정될 수 있으므로 중요한 판단 전에 원문을 다시 확인해야 합니다."]

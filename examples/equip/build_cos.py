@@ -6,7 +6,12 @@
 - Tokyo Electron: Fiscal.ai에 손익·현금흐름이 없어 회사 IR 원문(결산 설명회 자료, 연결재무제표)에서 옮겼다. TEL 아래 표 참고.
 - 환율: 미 연준 G.5A 연평균(2026.1.5 발표). 2025년 EUR 1.1306 USD, JPY 149.5686/USD.
 
-실행: python3 examples/equip/build_cos.py <Fiscal.ai 응답에서 뽑은 extracted.json>
+- 미국 상장 4곳의 손익·현금흐름은 SEC EDGAR 무료 API(fetch_sec.py → cache/sec/sec_annual.json)를 기준으로 쓰고,
+  Fiscal.ai 값은 대조용으로만 쓴다. 대조 결과(차이 0.1% 넘는 항목)를 audit에 남긴다.
+  SEC에 아직 없는 연도(예: 10-K 제출 전인 회계연도)는 Fiscal.ai의 실적 발표 기준 값을 쓰고 '잠정'으로 표시한다.
+- 세그먼트(지역·서비스·사업 구성)는 SEC 요약 API에 없어 Fiscal.ai 값을 쓴다.
+
+실행: python3 examples/equip/build_cos.py <Fiscal.ai 응답에서 뽑은 extracted.json> <sec_annual.json>
 """
 import json, os, sys
 
@@ -39,6 +44,7 @@ GEO = {  # 세그먼트 이름 → 공통 지역
     "KLAC": {"China Revenue": "China", "Korea Revenue": "Korea", "Taiwan Revenue": "Taiwan", "Japan Revenue": "Japan", "North America Revenue": "US", "Europe and Israel Revenue": "Europe", "Rest of Asia Revenue": "Other"},
     "ASML": {"China Revenue": "China", "South Korea Revenue": "Korea", "Taiwan Revenue": "Taiwan", "Japan Revenue": "Japan", "United States Revenue": "US", "Total EMEA (Incl. Netherlands) Revenue": "Europe", "Singapore Revenue": "Other", "Rest of Asia Revenue": "Other"},
 }
+SEC = None
 SVC = {"AMAT": "Applied Global Services Revenue", "LRCX": "Customer Support & Other Revenue", "KLAC": "Services Revenue", "ASML": "Service and Field Option Revenue"}
 MIX = {  # 제품·사업 구성(최근 3년)
     "AMAT": [("Semiconductor Systems Revenue", "반도체 장비"), ("Applied Global Services Revenue", "서비스(AGS)"), ("Display Revenue", "디스플레이"), ("Corporate and Other Revenue", "기타(FY2026부터 디스플레이 포함)")],
@@ -58,7 +64,9 @@ META = {
 }
 
 
-def main(path):
+def main(path, sec_path=None):
+    global SEC
+    SEC = json.load(open(sec_path)) if sec_path else None
     X = json.load(open(path)); cos = []
     for co in ["ASML", "AMAT", "LRCX", "TEL", "KLAC"]:
         m = dict(META[co]); m["id"] = co; m["years"] = []; m["geo"] = {}; m["svc"] = {}; m["mix"] = {}; m["end"] = {}; m["src"] = []
@@ -98,8 +106,25 @@ def main(path):
             if co in END: m["endBase"] = "장비 매출 기준"
             m["svcName"] = {"AMAT": "Applied Global Services(부품·서비스·업그레이드)", "LRCX": "Customer Support Business Group(부품·서비스·업그레이드)", "KLAC": "서비스", "ASML": "설치 기반 관리(서비스·필드 옵션)"}[co]
             m["src"] = sorted(set(m["src"]))
+            if SEC and co in SEC:
+                sy = {y["end"]: y for y in SEC[co]["years"]}; aud = {"compared": 0, "diffs": [], "prelim": []}
+                for row in m["years"]:
+                    sv = sy.get(row["end"])
+                    if not sv:
+                        row["prelim"] = True; aud["prelim"].append(row["fy"]); continue
+                    for k in ["rev", "gp", "rd", "op", "ni", "ocf", "capex", "buyback", "div"]:
+                        a_, b_ = row.get(k), sv.get(k)
+                        if b_ is None:
+                            continue
+                        if a_ is not None:
+                            aud["compared"] += 1
+                            if abs(a_ - b_) / max(1, abs(b_)) > 0.001:
+                                aud["diffs"].append({"fy": row["fy"], "k": k, "fiscal": a_, "sec": round(b_, 1)})
+                        row[k] = round(b_, 1)
+                    row["accn"] = sv.get("accn"); row["form"] = sv.get("form")
+                m["audit"] = aud; m["cik"] = SEC[co]["cik"]
         cos.append(m)
-    data = {"asof": "2026-11-23", "fx": FX, "cos": cos, "note": "금액 단위: 각 회사 보고 통화 백만(엔화는 백만 엔)"}
+    data = {"asof": "2026-11-23", "fx": FX, "cos": cos, "srcNote": "미국 상장 4곳 손익·현금흐름: SEC EDGAR XBRL(companyfacts, 처음 보고한 10-K·20-F 값). 세그먼트: Fiscal.ai. TEL: 회사 IR 원문", "note": "금액 단위: 각 회사 보고 통화 백만(엔화는 백만 엔)"}
     with open(os.path.join(ROOT, "assets", "data", "equip-cos.js"), "w") as f:
         f.write("/* 해외 장비사 5곳 연간 재무·세그먼트. examples/equip/build_cos.py로 만듦(Fiscal.ai·SEC 원문, TEL IR 원문). 손으로 고치지 않는다. */\n")
         f.write("(function (root) { const D = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")
@@ -109,4 +134,4 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

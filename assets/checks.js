@@ -764,6 +764,8 @@
       const six = D2.cos.every((co) => co.years.length === 6 && co.years.every((y, i) => i === 0 || y.fy === co.years[i - 1].fy + 1));
       add(G, "공시 숫자 정합: 5곳 모두 연속 6개 회계연도, 최근 회계연도 지역별 매출 합 = 총매출(오차 0.2% 이내)", six && geoOk, D2.cos.map((co) => co.id + " FY" + co.years[co.years.length - 1].fy).join(" · "));
       const k = A2.find((a) => a.id === "KLAC"), ky = D2.cos.find((co) => co.id === "KLAC").years, asml = D2.cos.find((co) => co.id === "ASML"), tel = D2.cos.find((co) => co.id === "TEL");
+      const au = D2.cos.filter((co) => co.audit), comp = au.reduce((p, co) => p + co.audit.compared, 0), dif = [].concat.apply([], au.map((co) => co.audit.diffs));
+      add(G, "출처 대조: 미국 상장 4곳 손익·현금흐름은 SEC 원문 값, 표준화 데이터와 대조한 값 150개 이상, 0.1% 넘는 차이는 모두 원인이 분류된 항목(자사주 매입 정의·영업현금흐름 오류)뿐, SEC에 없는 연도는 잠정 표시", au.length === 4 && comp >= 150 && dif.every((d) => d.k === "buyback" || d.k === "ocf") && au.every((co) => co.years.every((y) => y.prelim || y.accn)), comp + "개 대조 · 차이 " + dif.length + "개");
       add(G, "비율·환산 손계산 일치: 영업이익률 = 영업이익 ÷ 매출, 연평균 성장률 = (마지막/처음)^(1/5) − 1, 유로는 같은 해·엔(3월 결산)은 앞 해 연준 연평균 환율", near(k.last.opm, ky[5].op / ky[5].rev * 100, 1e-9) && near(k.cagr, (Math.pow(ky[5].rev / ky[0].rev, 1 / 5) - 1) * 100, 1e-9) && E2.usdRate(asml, D2.fx) === D2.fx.EUR[2025] && near(E2.usdRate(tel, D2.fx), 1 / D2.fx.JPY[2025], 1e-15) && E2.usdRate(D2.cos[1], D2.fx) === 1, "KLA 영업이익률 " + k.last.opm.toFixed(1) + "%");
     }
 
