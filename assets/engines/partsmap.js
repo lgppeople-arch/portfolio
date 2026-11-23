@@ -130,5 +130,64 @@
   }
   /* 세그먼트별로 가장 가까운 역량 유형(인접성 3이 하나도 없으면 '별도 역량 필요') */
   function owners(id) { return BASES.filter((b) => b.v[id] === 3).map((b) => b.id); }
-  return { PROCS, GROUPS, SEGS, TECHS, TECH_ORDER, TECH_LABEL, TIERS, RING_MATS, RINGS, PLAYERS, BASES, PROFIT_KEYS, PROFIT_NAMES, W0, profit, scal, score, reach, owners };
+  /* ---------- 한 장 지도: 공정 → 부품 → 제조기술 → 가공 등급 → 플레이어 유형 ----------
+     부품 세그먼트를 가운데 축으로 두고, 나머지 네 기둥은 모두 부품과 이어진다. 선 굵기 1 일부, 2 주력 */
+  const MAP_TECH = [
+    { id: "t_hp", name: "핫프레스" }, { id: "t_ps", name: "상압 소결" }, { id: "t_gps", name: "가스압 소결" }, { id: "t_hip", name: "열간 등방 가압" },
+    { id: "t_cvd", name: "CVD 증착" }, { id: "t_xtal", name: "단결정 성장" }, { id: "t_fuse", name: "용융(쿼츠)" }, { id: "t_spray", name: "용사·코팅" },
+    { id: "t_bond", name: "금속 접합·RF 설계" }, { id: "t_synth", name: "파우더 합성" }
+  ];
+  const SEG_TECH = {
+    heater: { t_hp: 2 }, esc_dep: { t_hp: 2 }, esc_etch: { t_hp: 2, t_ps: 1, t_bond: 2 }, bond: { t_hp: 2, t_gps: 1, t_ps: 1 },
+    ring_si: { t_xtal: 2 }, ring_sic: { t_cvd: 2 }, ring_cer: { t_ps: 2, t_hip: 1 }, y2o3: { t_ps: 2, t_hip: 2 }, coat: { t_spray: 2 },
+    shower: { t_hp: 1, t_xtal: 1, t_cvd: 1, t_ps: 1 }, quartz: { t_fuse: 2 }, struct: { t_ps: 2 }, powder: { t_synth: 2 }
+  };
+  const MAP_TIER = [{ id: "g1", name: "가공 1 일반" }, { id: "g2", name: "가공 2 정밀" }, { id: "g3", name: "가공 3 초정밀" }, { id: "g4", name: "가공 4 극초정밀" }, { id: "g0", name: "가공 해당 없음" }];
+  /* 가공 등급 문자열("2~3", "4", "–") → 등급 노드. 범위의 위쪽 끝을 주력(2), 아래쪽을 일부(1)로 본다 */
+  function segTiers(s) {
+    if (!/\d/.test(s.tier)) return { g0: 2 };
+    const n = s.tier.split("~").map(Number), out = {};
+    for (let t = n[0]; t <= n[n.length - 1]; t++) out["g" + t] = t === n[n.length - 1] ? 2 : 1;
+    return out;
+  }
+  const COLS = [{ id: "proc", name: "공정" }, { id: "seg", name: "부품" }, { id: "tech", name: "제조기술" }, { id: "tier", name: "가공 등급" }, { id: "player", name: "플레이어 유형" }];
+  function graph() {
+    const nodes = [], links = [];
+    PROCS.forEach((p) => nodes.push({ id: "p_" + p.id, col: "proc", name: p.name }));
+    nodes.push({ id: "p_raw", col: "proc", name: "원료(공정 앞단)" });
+    SEGS.forEach((s) => nodes.push({ id: "s_" + s.id, col: "seg", name: s.name, seg: s.id, grp: s.grp }));
+    MAP_TECH.forEach((t) => nodes.push({ id: t.id, col: "tech", name: t.name }));
+    MAP_TIER.forEach((t) => nodes.push({ id: t.id, col: "tier", name: t.name }));
+    PLAYERS.forEach((p) => nodes.push({ id: "pl_" + p.id, col: "player", name: p.name }));
+    SEGS.forEach((s) => {
+      const pr = Object.keys(s.procs);
+      if (pr.length) pr.forEach((k) => links.push({ a: "p_" + k, b: "s_" + s.id, seg: s.id, w: s.procs[k] }));
+      else links.push({ a: "p_raw", b: "s_" + s.id, seg: s.id, w: 2 });
+      /* 부품마다 한 줄기: 부품 → 제조기술 → 가공 등급 → 플레이어. 이웃 기둥끼리만 잇고, 굵기는 두 끝 중 약한 쪽 */
+      const te = SEG_TECH[s.id], tr = segTiers(s);
+      Object.keys(te).forEach((k) => links.push({ a: "s_" + s.id, b: k, seg: s.id, w: te[k] }));
+      Object.keys(te).forEach((k) => Object.keys(tr).forEach((g) => links.push({ a: k, b: g, seg: s.id, w: Math.min(te[k], tr[g]) })));
+      Object.keys(tr).forEach((g) => PLAYERS.forEach((p) => { if (p.v[s.id]) links.push({ a: g, b: "pl_" + p.id, seg: s.id, w: Math.min(tr[g], p.v[s.id]) }); }));
+    });
+    return { cols: COLS, nodes: nodes, links: links };
+  }
+  /* 노드 하나를 고르면 그 노드를 지나는 부품 줄기들을 찾고, 그 줄기의 선을 모두 켠다.
+     단, 고른 노드가 있는 기둥에서는 고른 노드를 지나는 선만 남긴다(같은 기둥의 다른 칸까지 켜면 무엇을 골랐는지 흐려진다) */
+  function select(G, nodeId) {
+    const n = G.nodes.find((q) => q.id === nodeId);
+    if (!n) return null;
+    const col = {}; G.nodes.forEach((q) => { col[q.id] = q.col; });
+    const segs = n.col === "seg" ? [n.seg] : Array.from(new Set(G.links.filter((l) => l.a === nodeId || l.b === nodeId).map((l) => l.seg)));
+    const keep = (end) => n.col === "seg" || col[end] !== n.col || end === nodeId;
+    const links = G.links.filter((l) => segs.indexOf(l.seg) >= 0 && keep(l.a) && keep(l.b));
+    const on = new Set([nodeId]); links.forEach((l) => { on.add(l.a); on.add(l.b); });
+    return { node: n, segs: segs, links: links, nodes: on };
+  }
+  /* 같은 두 노드를 잇는 줄기를 하나로 합친다(그리기용): 굵기 합, 지나는 부품 목록 */
+  function bundle(links) {
+    const m = {};
+    links.forEach((l) => { const k = l.a + ">" + l.b; const q = m[k] || (m[k] = { a: l.a, b: l.b, w: 0, segs: [] }); q.w += l.w; if (q.segs.indexOf(l.seg) < 0) q.segs.push(l.seg); });
+    return Object.keys(m).map((k) => m[k]);
+  }
+  return { PROCS, GROUPS, SEGS, TECHS, TECH_ORDER, TECH_LABEL, TIERS, RING_MATS, RINGS, PLAYERS, BASES, PROFIT_KEYS, PROFIT_NAMES, W0, profit, scal, score, reach, owners, MAP_TECH, SEG_TECH, MAP_TIER, COLS, segTiers, graph, select, bundle };
 });

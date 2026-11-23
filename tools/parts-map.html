@@ -21,6 +21,10 @@
   .lgd { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 18px 0; font-size: 12px; color: var(--ink-2); }
   .lgd i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
   #eval-tb { min-width: 1120px; } #eval-tb thead th, #eval-tb td:not(:last-child) { white-space: nowrap; } #eval-tb tbody th { white-space: normal; min-width: 150px; }
+  .flowwrap { overflow-x: auto; padding: 4px 0 6px; }
+  #f-flow { min-width: 920px; }
+  #f-flow .nd { cursor: pointer; }
+  #f-flow .nd:hover rect { stroke-width: 2; }
   .facts { margin: 12px 0 6px; display: grid; gap: 8px; padding: 0; list-style: none; max-width: 82ch; }
   .facts li { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 10px 14px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
   .facts li b { color: var(--ink); }
@@ -150,6 +154,22 @@
           <h2>요약</h2>
           <p>장비 부품 시장을 '세라믹 부품', '쿼츠 부품'처럼 소재 이름으로만 나누면, 서로 경쟁하지 않는 사업을 한 칸에 넣고 실제로 자리를 다투는 사업은 다른 칸에 넣게 됩니다. 이 지도는 <b>어느 공정의 어느 자리에 들어가는지(수요)</b>와 <b>어떤 설비와 손기술로 만드는지(공급)</b>를 겹쳐 세그먼트를 다시 나눕니다.</p>
           <div class="takeaways" id="tk"></div>
+        </section>
+
+        <section id="s-flow" data-toc="한 장으로 보기" data-group="지도">
+          <h2>한 장으로 보기: 공정에서 플레이어까지</h2>
+          <p>다섯 기둥을 왼쪽부터 <b>공정 → 부품 → 제조기술 → 가공 등급 → 플레이어 유형</b> 순서로 세우고, 부품마다 한 줄기로 이었습니다. 굵은 줄기일수록 그 관계가 주력이거나 여러 부품이 함께 지나갑니다. 아무 칸이나 누르면 그 칸을 지나는 줄기만 남아, 예를 들어 '식각 CCP'에 어떤 부품이 들어가고 그것을 어떤 기술·정밀도로 누가 만드는지가 한 번에 보입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>공정 → 부품 → 제조기술 → 가공 등급 → 플레이어 유형</h4><span class="muted" style="font-size: 12px">칸을 누르면 그 경로만 남음</span></div>
+            <div class="ctl">
+              <label><span class="lbl">칸 고르기(키보드용)</span><select id="flow-sel" aria-label="지도에서 볼 칸 고르기"></select></label>
+              <label><span class="lbl">줄기 색</span><select id="flow-col" aria-label="줄기 색 기준"><option value="grp">기능 묶음</option><option value="profit">수익성 점수</option></select></label>
+            </div>
+            <div class="readout" id="flow-out" aria-live="polite"></div>
+            <div class="lgd" id="flow-lgd"></div>
+            <div class="flowwrap" role="region" aria-label="다섯 기둥 연결 지도, 가로로 밀어 보기" tabindex="0"><div class="plotbox" id="f-flow"></div></div>
+            <div class="fig-s" id="flow-note"></div>
+          </div>
         </section>
 
         <section id="s-proc" data-toc="공정 × 부품" data-group="지도">

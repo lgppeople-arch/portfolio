@@ -726,6 +726,12 @@
       const sg = P.SEGS[0], avg = (sg.b + sg.r + sg.p + sg.raw) / 4, R = P.score(), inRange = R.rows.every((q) => q.profit >= 1 && q.profit <= 5 && q.scal >= 1 && q.scal <= 5);
       add(G, "수익성 점수 = 가중 평균: 같은 가중치면 단순 평균, 가중치를 모두 같은 배수로 키워도 같음, 모두 0이면 단순 평균, 한 요인만 두면 그 요인 점수", near(P.profit(sg, { b: 1, r: 1, p: 1, raw: 1 }), avg, 1e-12) && near(P.profit(sg, { b: 70, r: 60, p: 40, raw: 30 }), P.profit(sg, P.W0), 1e-12) && near(P.profit(sg, { b: 0, r: 0, p: 0, raw: 0 }), avg, 1e-12) && P.profit(sg, { b: 0, r: 100, p: 0, raw: 0 }) === sg.r && inRange, "기본 가중치 1위 " + R.order[0].name);
       const rc = P.reach("A"), sorted = rc.every((q, i) => i === 0 || rc[i - 1].adj >= q.adj), ranks = R.order.map((q) => q.rank).join() === ids.map((_, i) => i + 1).join();
+      const GR = P.graph(), colOf = {}; GR.nodes.forEach((n) => { colOf[n.id] = n.col; });
+      const chain = P.SEGS.every((sg) => ["proc", "seg", "tech", "tier", "player"].every((cc) => GR.links.some((l) => l.seg === sg.id && (colOf[l.a] === cc || colOf[l.b] === cc))));
+      const adj = GR.links.every((l) => { const i = GR.cols.findIndex((cc) => cc.id === colOf[l.a]), j = GR.cols.findIndex((cc) => cc.id === colOf[l.b]); return j === i + 1; });
+      const one = P.select(GR, "s_heater"), ccp = P.select(GR, "p_ccp"), ccpSegs = P.SEGS.filter((sg) => sg.procs.ccp).map((sg) => sg.id).sort().join();
+      const bw = P.bundle(GR.links).reduce((a, b) => a + b.w, 0) === GR.links.reduce((a, l) => a + l.w, 0);
+      add(G, "한 장 지도: 모든 부품 줄기가 다섯 기둥을 다 지나고 선은 이웃 기둥끼리만, 부품을 고르면 그 부품 줄기만, 공정을 고르면 그 공정에 쓰이는 부품만, 묶어 그려도 굵기 합은 같음", chain && adj && one.segs.join() === "heater" && one.links.every((l) => l.seg === "heater") && ccp.segs.slice().sort().join() === ccpSegs && ccp.links.every((l) => colOf[l.a] !== "proc" || l.a === "p_ccp") && bw, GR.nodes.length + "칸 · 줄기 " + GR.links.length + "개");
       add(G, "인접성 목록은 인접성 높은 순, '거의 그대로' 유형 = 인접성 3인 유형, 순위는 1부터 빠짐없이", sorted && P.SEGS.every((s) => P.owners(s.id).every((b) => P.BASES.find((x) => x.id === b).v[s.id] === 3)) && ranks, "");
     }
 
