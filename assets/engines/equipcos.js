@@ -40,5 +40,16 @@
       };
     });
   }
-  return { ratios, cagr, usdRate, share, analyze };
+  /* 국내 장비사(자료 단위 억원): 최근 해 성장률, 연평균, 영업이익률 범위, 2022→2023 하강기 변화, 부채비율, 재무제표 기준 변경 여부 */
+  function krAnalyze(K) {
+    return K.cos.map((co) => {
+      const ys = co.years, last = ys[ys.length - 1], prev = ys[ys.length - 2], first = ys[0], opm = ys.map((y) => (y.op === null ? null : y.op / y.revenue * 100)).filter((v) => v !== null);
+      const y22 = ys.find((y) => y.fy === 2022), y23 = ys.find((y) => y.fy === 2023);
+      return { name: co.name, market: co.market, focus: co.focus, fy: last.fy, rev: last.revenue, growth: (last.revenue / prev.revenue - 1) * 100, cagr: cagr(first.revenue, last.revenue, ys.length - 1),
+        opm: last.op / last.revenue * 100, opmRange: [Math.min.apply(null, opm), Math.max.apply(null, opm)], down23: y22 && y23 ? (y23.revenue / y22.revenue - 1) * 100 : null,
+        debt: last.equity ? last.liab / last.equity * 100 : null, fsChange: ys.some((y) => y.fs !== last.fs) };
+    });
+  }
+  function median(a) { const s = a.filter((v) => v !== null && isFinite(v)).sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; }
+  return { ratios, cagr, usdRate, share, analyze, krAnalyze, median };
 });

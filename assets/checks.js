@@ -27,6 +27,7 @@
     EquipMap: require("./engines/equipmap.js"),
     EquipCosEngine: require("./engines/equipcos.js"),
     EquipCos: require("./data/equip-cos.js"),
+    EquipKr: require("./data/equip-kr.js"),
     CapexPanelData: require("./data/capex-panel.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
@@ -88,7 +89,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -766,6 +767,8 @@
       const k = A2.find((a) => a.id === "KLAC"), ky = D2.cos.find((co) => co.id === "KLAC").years, asml = D2.cos.find((co) => co.id === "ASML"), tel = D2.cos.find((co) => co.id === "TEL");
       const au = D2.cos.filter((co) => co.audit), comp = au.reduce((p, co) => p + co.audit.compared, 0), dif = [].concat.apply([], au.map((co) => co.audit.diffs));
       add(G, "출처 대조: 미국 상장 4곳 손익·현금흐름은 SEC 원문 값, 표준화 데이터와 대조한 값 150개 이상, 0.1% 넘는 차이는 모두 원인이 분류된 항목(자사주 매입 정의·영업현금흐름 오류)뿐, SEC에 없는 연도는 잠정 표시", au.length === 4 && comp >= 150 && dif.every((d) => d.k === "buyback" || d.k === "ocf") && au.every((co) => co.years.every((y) => y.prelim || y.accn)), comp + "개 대조 · 차이 " + dif.length + "개");
+      if (EquipKr) { const KA = E2.krAnalyze(EquipKr), wy = EquipKr.cos[0].years;
+        add(G, "국내 장비사: 9곳 모두 2025년 매출 3,000억 원 이상·연속 5년, 부품·부대설비로 뺀 회사는 대상에 없음, 영업이익률 = 영업이익 ÷ 매출, 2023 변화 = 2023 ÷ 2022 − 1, 중앙값 손계산", EquipKr.cos.every((co) => co.years.length === 5 && co.years[4].fy === 2025 && co.years[4].revenue >= 3000) && EquipKr.cos.every((co) => !EquipKr.excluded.some((x) => x.name === co.name)) && near(KA[0].opm, wy[4].op / wy[4].revenue * 100, 1e-9) && near(KA[0].down23, (wy[2].revenue / wy[1].revenue - 1) * 100, 1e-9) && E2.median([3, 1, 2]) === 2 && E2.median([4, 1, 3, 2]) === 2.5, EquipKr.cos.length + "곳"); }
       add(G, "비율·환산 손계산 일치: 영업이익률 = 영업이익 ÷ 매출, 연평균 성장률 = (마지막/처음)^(1/5) − 1, 유로는 같은 해·엔(3월 결산)은 앞 해 연준 연평균 환율", near(k.last.opm, ky[5].op / ky[5].rev * 100, 1e-9) && near(k.cagr, (Math.pow(ky[5].rev / ky[0].rev, 1 / 5) - 1) * 100, 1e-9) && E2.usdRate(asml, D2.fx) === D2.fx.EUR[2025] && near(E2.usdRate(tel, D2.fx), 1 / D2.fx.JPY[2025], 1e-15) && E2.usdRate(D2.cos[1], D2.fx) === 1, "KLA 영업이익률 " + k.last.opm.toFixed(1) + "%");
     }
 

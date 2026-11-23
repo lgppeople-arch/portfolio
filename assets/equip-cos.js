@@ -150,6 +150,36 @@
       if (co.years.some((y) => y.prelim)) src.append(" · 잠정 연도는 실적 발표(8-K) 기준"); }
   }
 
+  /* ---------- 국내 상장 장비사 ---------- */
+  const K = window.EquipKr, KA = K ? E.krAnalyze(K) : [];
+  if (K) {
+    $("kr-rule").textContent = "대상: " + K.rule + ". 부품·부대설비가 주력인 회사(" + K.excluded.map((q) => q.name + " " + q.why).join(", ") + ")는 뺐고, 작성자와 이해관계가 있을 수 있는 회사도 기준을 넘더라도 넣지 않았습니다(이름 생략). 자료는 OpenDART 다중회사 주요계정이라 연구개발비·현금흐름·지역별 매출은 없습니다.";
+    const mG = E.median(A.map((a) => a.last.opm)), mK = E.median(KA.map((a) => a.opm)), dK = E.median(KA.map((a) => a.down23));
+    const sum = $("kr-sum"); sum.textContent = "";
+    sum.append(el("b", { text: "최근 영업이익률 중앙값: 해외 5곳 " + pc(mG) + ", 국내 9곳 " + pc(mK) }), " · 국내 9곳의 2023년 매출 변화 중앙값 " + sg(dK) + " (메모리 투자 축소기) · 매출 규모는 가장 큰 원익IPS도 해외 5곳 중 가장 작은 KLA의 약 " + fmt(KA[0].rev * 1e8 / (A.find((a) => a.id === "KLAC").revUsd * 1e6 * 1450) * 100, 0) + "%입니다(1달러 1,450원 가정).");
+    const tb = $("kr-tb"); tb.appendChild(el("thead", null, [el("tr", null, ["회사", "시장", "주력", "2025 매출(억원)", "전년 대비", "연평균(2021~25)", "2025 영업이익률", "5년 이익률 범위", "2023 매출 변화", "부채비율"].map((h) => el("th", { text: h, scope: "col" })))]));
+    const body = el("tbody");
+    KA.forEach((a) => { const tr = el("tr"); tr.appendChild(el("th", { text: a.name + (a.fsChange ? " *" : ""), scope: "row" }));
+      [a.market, a.focus, fmt(a.rev, 0), sg(a.growth), pc(a.cagr), pc(a.opm), fmt(a.opmRange[0], 1) + " ~ " + fmt(a.opmRange[1], 1) + "%", sg(a.down23), pc(a.debt, 0)].forEach((v) => tr.appendChild(el("td", { text: v }))); body.appendChild(tr); });
+    tb.appendChild(body);
+  }
+  function drawKr() {
+    if (!K) return;
+    const host = $("f-kr"); host.textContent = "";
+    const rowsAll = A.map((a) => ({ name: a.name, lo: a.opmRange[0], hi: a.opmRange[1], v: a.last.opm, g: "g", col: c(COL[a.id]) })).concat(KA.map((a) => ({ name: a.name, lo: a.opmRange[0], hi: a.opmRange[1], v: a.opm, g: "k", col: c("--pos") })));
+    const W = Math.max(300, Math.round(host.clientWidth || 680)), rowH = 26, l = 128, r2 = W - 16, H = rowsAll.length * rowH + 50;
+    const s = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "해외 5곳과 국내 9곳의 영업이익률 범위와 최근 값" }, host);
+    const lo = Math.min(-10, Math.floor(Math.min.apply(null, rowsAll.map((r) => r.lo)) / 10) * 10), hi = Math.max(50, Math.ceil(Math.max.apply(null, rowsAll.map((r) => r.hi)) / 10) * 10), x = lin(lo, hi, l, r2);
+    for (let t = lo; t <= hi; t += 10) { sv("line", { x1: x(t), x2: x(t), y1: 8, y2: H - 26, stroke: t === 0 ? c("--ink-2") : c("--rule-soft") }, s); tx(s, x(t), H - 10, t + "%", { "text-anchor": "middle", "font-size": 10, fill: c("--muted"), class: "n" }); }
+    rowsAll.forEach((r, i) => { const yy = 18 + i * rowH + (r.g === "k" ? 14 : 0);
+      tx(s, l - 8, yy + 4, r.name, { "text-anchor": "end", "font-size": 11, fill: c("--ink"), "font-weight": r.g === "g" ? 700 : 500 });
+      sv("line", { x1: x(r.lo), x2: x(r.hi), y1: yy, y2: yy, stroke: r.col, "stroke-width": 6, opacity: 0.35, "stroke-linecap": "round" }, s);
+      sv("circle", { cx: x(r.v), cy: yy, r: 5, fill: r.col }, s); });
+    tx(s, l - 8, 18 + A.length * rowH + 4, "─ 국내 ─", { "text-anchor": "end", "font-size": 10, fill: c("--muted") });
+    const neg = KA.filter((a) => a.opmRange[0] < 0).map((a) => a.name);
+    $("kr-note").textContent = "해외 5곳은 6년, 국내 9곳은 5년(2021~2025) 범위입니다. 국내 장비사는 이익률 수준이 낮고 해마다 흔들리는 폭이 큽니다. " + (neg.length ? neg.join("·") + "는 기간 중 영업손실을 낸 해가 있습니다. " : "") + "소수 고객의 투자 일정과 한두 개 장비에 매출이 몰린 구조라, 고객 투자 일정이 그대로 실적에 실립니다. 한미반도체처럼 HBM용 본더라는 특정 수요를 잡은 회사는 이 범위를 벗어나 높은 이익률을 보였습니다. * 표시는 기간 중 연결·별도 재무제표 기준이 바뀐 회사입니다(케이씨텍은 2025년부터 연결).";
+  }
+
   /* ---------- 출처 대조 ---------- */
   (function () {
     const aud = D.cos.filter((co) => co.audit), n = aud.reduce((p, co) => p + co.audit.compared, 0), diffs = [];
@@ -179,7 +209,7 @@
     ["전망은 담지 않았습니다.", " 각사의 다음 해 가이던스와 시장 전망은 바뀌기 쉬워 넣지 않았습니다. 공시 숫자는 정정될 수 있으므로 중요한 판단 전에 원문을 다시 확인해야 합니다."]
   ]);
 
-  function all() { drawTr(); drawCyc(); drawGeo(); drawCo(); }
+  function all() { drawTr(); drawCyc(); drawGeo(); drawKr(); drawCo(); }
   all(); F.onRedraw(all);
   if (window.Report) {
     Report.flows($("hero-art"), { area: { span: 0.42, max: 580, min: 1000, within: ".rpt-hero .wrap" },

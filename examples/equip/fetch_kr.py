@@ -5,6 +5,7 @@
   python3 examples/equip/fetch_kr.py list     # 코스피·코스닥 사업보고서 제출사의 업종 → 반도체 제조용 기계(KSIC 29271)
   python3 examples/equip/fetch_kr.py fin      # 그 회사들의 2021~2025 주요 계정(다중회사 조회)
   python3 examples/equip/fetch_kr.py rank     # 2025년 매출 순위(cache/kr_rank.json)
+  python3 examples/equip/fetch_kr.py build    # 화면용 자료 assets/data/equip-kr.js (다른 업종 코드로 등록된 장비사는 cache/kr_extra.json·multi_kr/extra_*.json)
 
 - 수집·캐시 함수는 examples/dart/fetch_dart.py를 그대로 쓴다(인증키는 요청 주소에만, 캐시는 저장소 밖).
 - 업종 정의: 회사 개황의 표준산업분류 코드가 29271(반도체 제조용 기계 제조업)인 회사. 검사·계측 장비를 만들어도
@@ -82,6 +83,54 @@ def run_rank(y0=2021, y1=2025):
         print(i + 1, q["name"], q["stock"], q["cls"], round(q["years"][y1]["revenue"] / 1e8), "억원", q["years"][y1]["fs"])
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and (len(sys.argv) < 2 or sys.argv[1] != "build"):
     cmd = sys.argv[1] if len(sys.argv) > 1 else "list"
     {"list": run_list, "fin": run_fin, "rank": run_rank}[cmd]()
+
+
+# ---------- 화면용 자료: 국내 상장 장비사(매출 규모 기준) ----------
+# 업종 코드가 29271이 아닌 주요 반도체 장비사(회사 개황상 292·29229·272·27212 등). 모집단에 더한다.
+EXTRA = ["원익IPS", "주성엔지니어링", "케이씨텍", "파크시스템스", "오로스테크놀로지", "디아이", "넥스틴"]
+# 완성 장비가 주력인 회사만 남긴다. 부품·모듈·부대설비·서비스가 주력인 회사는 유형을 밝혀 뺀다.
+NOT_EQUIP = {"뉴파워프라즈마": "RF 전원(부품·모듈)", "GST": "스크러버·칠러(부대설비)", "에스티아이": "약액 공급 장치(부대설비)", "유니셈": "스크러버·칠러(부대설비)",
+             "엘오티베큠": "진공 펌프(부품)", "고영": "주력이 전자기판(SMT) 검사"}
+FOCUS = {"원익IPS": "증착(CVD·ALD), 열처리", "한미반도체": "후공정(TC 본더, 절단·검사)", "디아이": "테스트(번인·메모리 테스터)", "제우스": "세정, 이송 로봇", "케이씨텍": "CMP, 세정",
+         "이오테크닉스": "레이저(마킹·어닐링·절단)", "테스": "증착(PECVD), 가스 식각", "유진테크": "증착(LPCVD·ALD), 열처리", "주성엔지니어링": "증착(ALD·CVD)"}
+MIN_REV = 3000e8   # 2025년 매출 3,000억 원 이상
+
+
+def run_build(y0=2021, y1=2025):
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    base = json.load(open(os.path.join(F.CACHE, "kr_rank.json")))
+    extra = json.load(open(os.path.join(F.CACHE, "kr_extra.json")))
+    rows = {}
+    for y in range(y0, y1 + 1):
+        p = os.path.join(F.CACHE, "multi_kr", "extra_%d.json" % y)
+        got = {}
+        for it in json.load(open(p)).get("list", []):
+            got.setdefault(it["corp_code"], {}).setdefault(it["fs_div"], {})[it["account_nm"]] = F.num(it.get("thstrm_amount"))
+        for cc, g in got.items():
+            fs = "CFS" if "CFS" in g else "OFS"
+            rows.setdefault(cc, {})[str(y)] = {"fs": fs, **{k: g[fs].get(v) for k, v in F.ACC.items()}}
+    pool = base + [{**c, "induty": F.info(c).get("induty_code"), "years": rows.get(c["corp_code"], {})} for c in extra]
+    out = []
+    for c in pool:
+        ys = {str(k): v for k, v in c["years"].items()}
+        rev = (ys.get(str(y1)) or {}).get("revenue") or 0
+        if c["name"] in FOCUS and rev >= MIN_REV:
+            out.append({"name": c["name"], "stock": c["stock"], "market": "코스피" if c["cls"] == "Y" else "코스닥", "ksic": c.get("induty"), "focus": FOCUS[c["name"]],
+                        "years": [{"fy": y, "fs": ys[str(y)]["fs"], **{k: (round(ys[str(y)][k] / 1e8, 1) if ys[str(y)].get(k) is not None else None) for k in F.ACC}} for y in range(y0, y1 + 1) if str(y) in ys]})
+    out.sort(key=lambda q: -q["years"][-1]["revenue"])
+    excluded = [{"name": n, "why": w} for n, w in NOT_EQUIP.items()]
+    data = {"asof": "2026-11-23", "unit": "억원", "rule": "표준산업분류 반도체 제조용 기계(29271) 상장사와 다른 코드로 등록된 주요 반도체 장비사 중, 완성 장비가 주력이고 2025년 매출 3,000억 원 이상인 회사",
+            "cos": out, "excluded": excluded}
+    with open(os.path.join(root, "assets", "data", "equip-kr.js"), "w") as f:
+        f.write("/* 국내 상장 반도체 장비사(2025년 매출 3,000억 원 이상) 2021~2025 주요 계정. examples/equip/fetch_kr.py build로 만듦(OpenDART 다중회사 주요계정). 손으로 고치지 않는다. */\n")
+        f.write("(function (root) { const D = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")
+        f.write("  if (typeof module === \"object\" && module.exports) module.exports = D; else root.EquipKr = D; })(typeof self !== \"undefined\" ? self : this);\n")
+    for q in out:
+        print(q["name"], q["years"][-1]["revenue"], [y["fy"] for y in q["years"]])
+
+
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "build":
+    run_build()
