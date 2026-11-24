@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>이기표 포트폴리오 안내</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { width: 210mm; height: 297mm; overflow: hidden; font-family: "IBM Plex Sans KR", sans-serif; color: #1C252E; background: #F6F6F2; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "IBM Plex Mono", monospace; }
+  /* 상단 */
+  .top { background: #0E1620; color: #E9ECEF; padding: 13mm 16mm 10mm; position: relative; overflow: hidden; }
+  .top::after { content: ""; position: absolute; right: -40mm; top: -30mm; width: 120mm; height: 120mm; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #AEB6BE; }
+  .brand .lg { background: #F6F6F2; color: #0E1620; font-weight: 700; font-size: 11px; padding: 4px 7px; border-radius: 5px; }
+  .hero { display: grid; grid-template-columns: 1fr 40mm; gap: 10mm; align-items: end; margin-top: 7mm; }
+  .kick { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.12em; color: #E08A57; text-transform: uppercase; }
+  h1 { font-family: "Gothic A1", sans-serif; font-weight: 800; font-size: 34px; line-height: 1.22; letter-spacing: -0.02em; margin: 4mm 0 5mm; color: #fff; }
+  .intro { font-size: 12.5px; line-height: 1.75; color: #C9CFD5; margin: 0; max-width: 118mm; }
+  .qrbox { background: #F6F6F2; border-radius: 6px; padding: 4mm; text-align: center; color: #0E1620; position: relative; z-index: 1; }
+  .qrbox img { width: 100%; display: block; }
+  .qrbox span { display: block; margin-top: 2.5mm; font-size: 9.5px; font-weight: 600; letter-spacing: 0.02em; }
+  .url { margin-top: 6mm; display: flex; align-items: center; gap: 4mm; position: relative; z-index: 1; }
+  .url a { font-family: "IBM Plex Mono", monospace; font-size: 15px; font-weight: 500; color: #fff; border-bottom: 1.5px solid #E08A57; padding-bottom: 1px; }
+  .url .hint { font-size: 10.5px; color: #8F99A3; }
+  .avatar { position: absolute; right: 16mm; top: 13mm; width: 15mm; height: 15mm; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.25); z-index: 1; }
+  /* 본문 */
+  .body { padding: 7mm 16mm 0; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid #D9DCD6; border-radius: 6px; background: #fff; }
+  .stats div { padding: 4mm 3mm; text-align: center; border-left: 1px solid #E6E8E3; }
+  .stats div:first-child { border-left: 0; }
+  .stats b { display: block; font-family: "Gothic A1", sans-serif; font-size: 22px; font-weight: 800; color: #0E1620; line-height: 1.1; }
+  .stats span { font-size: 10px; color: #5C666F; }
+  h2 { font-size: 13px; font-weight: 700; margin: 6.5mm 0 2.5mm; color: #0E1620; display: flex; align-items: baseline; gap: 8px; }
+  h2 small { font-size: 10px; font-weight: 500; color: #7A848D; }
+  h2::before { content: ""; width: 3px; height: 12px; background: #A6491B; display: inline-block; align-self: center; }
+  .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; }
+  .case { background: #fff; border: 1px solid #D9DCD6; border-top: 2.5px solid #1D4FC4; border-radius: 5px; padding: 3.5mm 4mm; }
+  .case .no { font-family: "IBM Plex Mono", monospace; font-size: 9px; color: #1D4FC4; letter-spacing: 0.08em; }
+  .case h3 { font-size: 12px; margin: 1.5mm 0 1.5mm; color: #0E1620; line-height: 1.4; }
+  .case p { font-size: 10px; line-height: 1.6; color: #36414B; margin: 0; }
+  .case .num { margin-top: 2mm; font-size: 10px; color: #A6491B; font-weight: 600; }
+  .picks { display: grid; grid-template-columns: 1fr 1fr; gap: 0 6mm; }
+  .pick { display: grid; grid-template-columns: 7mm 1fr auto; gap: 2mm; align-items: baseline; padding: 2.4mm 0; border-bottom: 1px solid #E1E3DE; }
+  .pick .i { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: #A6491B; font-weight: 500; padding-top: 1px; }
+  .pick b { display: block; font-size: 11.5px; color: #0E1620; }
+  .pick p { margin: 0.6mm 0 0; font-size: 9.8px; color: #4A5560; line-height: 1.45; }
+  .pick a.go { font-family: "IBM Plex Mono", monospace; font-size: 9px; color: #1D4FC4; white-space: nowrap; }
+  .pick a.t { color: #0E1620; }
+  .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 1mm; }
+  .how div { font-size: 10px; line-height: 1.6; color: #36414B; }
+  .how b { display: block; font-size: 10.5px; color: #0E1620; margin-bottom: 0.8mm; }
+  /* 하단 */
+  .foot { position: absolute; left: 0; right: 0; bottom: 0; padding: 5mm 16mm 7mm; display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px; color: #5C666F; border-top: 1px solid #D9DCD6; background: #F6F6F2; }
+  .foot .ct b { color: #0E1620; font-size: 11px; }
+  .foot .ct a { color: #1D4FC4; }
+  .foot .note { text-align: right; max-width: 92mm; line-height: 1.55; }
+</style>
+</head>
+<body>
+  <section class="top">
+    <div class="brand"><span class="lg">LGP</span><span>이기표 · 재무기획 · 전략기획 포트폴리오</span></div>
+    <img class="avatar" src="../assets/img/avatar.webp" alt="">
+    <div class="hero">
+      <div>
+        <div class="kick">Portfolio · <span id="asof">2026.11</span></div>
+        <h1>숫자를 원문까지 따라가고,<br>판단 근거를 도구로 남깁니다</h1>
+        <p class="intro">재무기획·경영관리 경력 <span id="tenure">6년 5개월</span>. 사업계획·손익관리·투자 검토·M&amp;A 실무를 해 왔고, 그 과정에서 쓰는 계산 틀을 누구나 브라우저에서 돌려 볼 수 있는 도구와 리포트로 정리했습니다. 공시 숫자는 원문과 대조하고, 계산은 자동 검산으로 확인합니다.</p>
+      </div>
+      <a class="qrbox" href="https://lgppeople-arch.github.io/portfolio/"><img src="../assets/img/qr-portfolio.svg" alt="포트폴리오 사이트 QR 코드"><span>휴대폰으로 열기</span></a>
+    </div>
+    <div class="url"><a href="https://lgppeople-arch.github.io/portfolio/">lgppeople-arch.github.io/portfolio</a><span class="hint">PDF에서 누르면 바로 열립니다</span></div>
+  </section>
+
+  <section class="body">
+    <div class="stats">
+      <div><b id="n-tools">18</b><span>실무 도구</span></div>
+      <div><b id="n-reports">11</b><span>분석 리포트</span></div>
+      <div><b id="n-notes">6</b><span>분석·보고 노트</span></div>
+      <div><b>2</b><span>데이터 프로젝트</span></div>
+      <div><b id="n-checks">230</b><span>자동 검산 항목</span></div>
+    </div>
+
+    <h2>대표 사례 <small>상황 → 내 역할 → 숫자 → 결과로 사이트 첫 화면에 정리</small></h2>
+    <div class="cases">
+      <div class="case"><span class="no">CASE 1</span><h3>구미 생산부지·건물 인수</h3><p>투자 근거 자료와 금융기관 차입용 투자·회수 현금흐름 계획을 공동 작성했습니다.</p><div class="num">약 1,500억원 · 연간 최대 자산투자</div></div>
+      <div class="case"><span class="no">CASE 2</span><h3>주력사업 구조 전환안 검토</h3><p>두 안의 부문별 손익을 재추정하고 수익성 밖 고려사항 6가지를 정리했습니다. 전환안은 기각됐습니다.</p><div class="num">대상 사업 매출 약 1조원</div></div>
+      <div class="case"><span class="no">CASE 3</span><h3>경쟁사 공시 리서치 체계</h3><p>해외 상장 경쟁사 공시를 원문으로 읽고 다섯 관점으로 정리해 분기마다 경영진에 보고합니다.</p><div class="num">약 50쪽 책자 · 분기 갱신</div></div>
+    </div>
+
+    <h2>먼저 볼 페이지 <small>제목이나 ‘열기’를 누르면 해당 화면이 열립니다</small></h2>
+    <div class="picks" id="picks"></div>
+
+    <h2>만드는 방식</h2>
+    <div class="how">
+      <div><b>계산 기준을 먼저 공개</b>할인 시점·세금·잔존가치 같은 가정을 도구 아래에 적고, 같은 입력이면 같은 답이 나오게 만듭니다.</div>
+      <div><b>원문과 대조</b>공시 숫자는 DART·SEC 원문에서 받아 쪽수·제출번호를 달고, 표준화 데이터와 어긋나면 원인을 적습니다.</div>
+      <div><b>설치 없이 브라우저에서</b>현업 누구나 링크만으로 열 수 있게 만들고, 입력한 값은 기기 밖으로 나가지 않습니다.</div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <div class="ct">연락 <a href="mailto:lgp3327@gmail.com"><b>lgp3327@gmail.com</b></a><br>경력 요약 PDF <a href="https://lgppeople-arch.github.io/portfolio/assets/docs/lee-gipyo-profile.pdf">사이트에서 내려받기</a></div>
+    <div class="note">회사 내부 수치와 사업장 정보는 담지 않았습니다. 도구의 예시 수치는 가상이며, 기업 분석은 공시 원문 숫자만 씁니다. <span id="made">2026년 11월 작성</span></div>
+  </div>
+
+<script>
+  const BASE = "https://lgppeople-arch.github.io/portfolio/";
+  const PICKS = [
+    ["tools/capex-kit.html", "설비투자 분석 키트", "NPV·IRR·민감도, NPV 분포와 단계 투자 옵션"],
+    ["tools/samsung.html", "삼성전자, 메모리 호황의 재무", "공시 원문 쪽수와 함께 검산한 기업 분석"],
+    ["tools/equip-cos.html", "장비사 심층 분석", "해외 5곳·국내 9곳, SEC·DART 원문 대조"],
+    ["tools/parts-map.html", "반도체 장비 부품 세그먼트 지도", "공정·제조기술·플레이어를 잇는 탐색 지도"],
+    ["tools/capex-panel.html", "데이터 분석: 투자를 늘린 제조업체는 더 벌까", "코스피 제조업 446곳 공시 패널 검증"],
+    ["tools/", "도구·리포트 전체 모음", "분야별로 고르고 읽는 경로 다섯 가지"]
+  ];
+  const host = document.getElementById("picks");
+  PICKS.forEach((p, i) => { const d = document.createElement("div"); d.className = "pick";
+    d.innerHTML = '<span class="i">0' + (i + 1) + '</span><div><a class="t"><b></b></a><p></p></div><a class="go">열기 ↗</a>';
+    d.querySelector("b").textContent = p[1]; d.querySelector("p").textContent = p[2];
+    d.querySelectorAll("a").forEach((a) => { a.href = BASE + p[0]; });
+    host.appendChild(d); });
+</script>
+</body>
+</html>

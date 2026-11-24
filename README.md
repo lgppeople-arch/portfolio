@@ -63,6 +63,7 @@
 | `assets/site.css`, `assets/theme.js` | 공용 스타일, 밝은 화면 기본과 테마 전환 |
 | `assets/og/` | 페이지별 링크 미리보기 이미지(1200×630). `node scripts/make-og.js`가 각 페이지 제목·설명으로 다시 만들고 메타 태그를 바꿈(`scripts/og.html` 틀) |
 | `assets/docs/lee-gipyo-profile.pdf` | 경력 요약 PDF(A4 2쪽). `node scripts/make-profile.js`가 `scripts/profile.html`에서 만들고 경력 기간·작성 월을 실행일로 채움 |
+| `assets/docs/lee-gipyo-portfolio.pdf` | 포트폴리오 안내 PDF(A4 1쪽): 사이트 주소·QR 코드, 숫자 띠(도구·리포트·노트·검산 수 자동 반영), 대표 사례 3개, 먼저 볼 페이지 6개(누르면 열림). `node scripts/make-intro.js`가 `scripts/intro.html`에서 만듦 |
 | `assets/report.css`, `assets/report.js` | 분석 리포트 템플릿: 캔버스 표지 그림(흐름·웨이퍼), 목차 강조, 스크롤 진입 애니메이션 |
 | `scripts/export-pdf.js`, `scripts/merge-pdf.py` | 모든 화면을 기본값 그대로 A4 가로 PDF로 내보내기(화면별 PDF + 표지·목차·책갈피가 붙은 합본) |
 | `scripts/site-map.json`, `scripts/build-site.py` | 사이트 지도 한 곳에서 상단 메뉴, 도구·리포트 모음(카드·개수·읽는 경로 다섯 가지), 각 페이지 하단 '이어서 볼 것'(경로의 이전·다음, 제 경력과의 연결, 만든 사람), 404 제안 목록을 다시 만듦. 새 페이지는 지도에 한 줄을 더하고 스크립트를 돌림 |
@@ -82,7 +83,7 @@ python3 scripts/stamp-dates.py   # 바닥글 페이지 수정일(데이터 기�
 
 - 계산 검산은 숫자가 맞는지, 사이트 점검은 페이지들이 서로 맞는지, 화면 점검은 실제 브라우저에서 깨지지 않는지를 봅니다.
 - 접근성 자동 검사 기준은 WCAG 2.1 A·AA와 모범 사례 규칙이고, 35개 페이지를 밝은·어두운 화면으로 검사해 위반 0건을 유지합니다. 자동 검사가 모든 접근성 문제를 잡는 것은 아닙니다.
-- 링크 미리보기 이미지와 경력 요약 PDF는 내용이 바뀔 때만 `node scripts/make-og.js`, `node scripts/make-profile.js`로 다시 만듭니다.
+- 링크 미리보기 이미지와 경력 요약 PDF는 내용이 바뀔 때만 `node scripts/make-og.js`, `node scripts/make-profile.js`, `node scripts/make-intro.js`로 다시 만듭니다.
 
 ## PDF 내보내기
 
