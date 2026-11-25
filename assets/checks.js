@@ -783,6 +783,18 @@
       const t = X.IDEAS[0], pr = X.priority(t);
       add(G, "아이디어 자료 완결성: 설명 칸 8개는 모두 글(점수와 이름이 겹쳐 덮어쓰지 않음), 점수 4개는 1~5 정수, 묶음마다 8개·고유 번호, 첫 2주 3단계 이상, 이어 볼 링크가 실제 페이지", ok && uniq && per && linksOk, X.IDEAS.length + "개");
       add(G, "우선순위 점수 = 효과 × 용이성 × √AI ÷ 위험, 순위는 점수 내림차순", Math.abs(pr - t.impact * t.ease * Math.sqrt(t.ai) / t.risk) < 1e-12 && X.rank("bold").every((q, i, a) => i === 0 || a[i - 1].p >= q.p), "");
+      /* 비용 */
+      const P = X.PRICES, cOk = X.IDEAS.every((x) => { const c = X.COST[x.id]; return c && c.u >= 1 && c.prem >= 0 && c.prem <= c.u && P.api[c.model] && c.tin >= 0 && c.tout >= 0 && c.dev > 0 && c.ops > 0 && (c.tier === "-" || X.TIERS[c.tier]) && X.SENS[c.sens] && typeof c.use === "string" && c.use.length > 4; }) && Object.keys(X.COST).length === X.IDEAS.length;
+      add(G, "비용 자료 완결성: 아이디어마다 좌석(고급 ≤ 전체)·API 등급·월 토큰·개발 주·유지보수 시간·서버 등급·데이터 민감도가 있고, 남는 항목이 없음", cOk, Object.keys(X.COST).length + "개");
+      const c0 = X.COST["close-bot"], a0 = X.costA(c0), wk = P.finYear / P.weeks;
+      const seat0 = ((c0.u - c0.prem) * P.seatStd + c0.prem * P.seatPrem) * 12 * P.fx, api0 = (c0.tin * P.api[c0.model][0] + c0.tout * P.api[c0.model][1]) * 12 * P.fx;
+      const runA = seat0 + api0 + c0.ops * 12 * wk / 40;
+      const t0 = X.TIERS.S, b0 = X.costB(c0), runB = t0.kw * 8760 * P.util * P.pue * P.elec + t0.hw * P.fx * P.hwMaint + t0.fte * P.engYear + c0.ops * 12 * wk / 40;
+      add(G, "비용 손계산(월마감 봇): 외부 AI 초기 = 개발 4주 인건비, 연간 = 좌석 + API + 유지보수, 사내 구축 초기 = 서버 + 구축 + 개발 × 배수, 3년 = 초기 + 연간 × 3", near(a0.init, 4 * wk, 1e-6) && near(a0.run, runA, 1e-6) && near(a0.tco3, a0.init + 3 * runA, 1e-6) && near(b0.init, t0.hw * P.fx + t0.setupWk * P.engYear / P.weeks + 4 * P.devMul * wk, 1e-6) && near(b0.run, runB, 1e-6), Math.round(a0.tco3 / 1e4) + "만원 / " + Math.round(b0.tco3 / 1e4) + "만원");
+      const all = X.IDEAS.map((x) => x.id), Bd = X.bundle(all), sumA = all.reduce((s, id) => s + X.costA(X.COST[id]).tco3, 0), sumB = all.reduce((s, id) => s + X.costB(X.COST[id]).tco3, 0);
+      const k2 = X.bundle(all, { apiMul: Bd.breakeven });
+      add(G, "함께 할 때: 좌석·서버를 나눠 써서 개별 합보다 작고, 서버는 가장 높은 등급 1대, API 사용량을 손익분기 배수로 키우면 두 방식의 3년 비용이 같아짐", Bd.A.tco3 < sumA && Bd.B.tco3 < sumB && Bd.B.tier === "L" && near(k2.A.tco3, k2.B.tco3, 1), "분기 배수 " + Bd.breakeven.toFixed(1));
+      add(G, "권고 규칙: 대외비·개인정보 아이디어는 모두 사내 구축, API 사용량을 늘리면 외부 AI 비용만 늘고 사내 구축은 그대로", X.IDEAS.every((x) => X.COST[x.id].sens < 3 || X.advise(X.COST[x.id]).pick === "B") && X.costA(c0, { apiMul: 10 }).api > a0.api && near(X.costB(c0, { apiMul: 10 }).tco3, b0.tco3, 1e-9), "");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */

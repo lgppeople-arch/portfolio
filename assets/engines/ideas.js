@@ -260,6 +260,110 @@
       impact: 4, ease: 3, ai: 3, risk: 2, links: [["capex-kit.html", "설비투자 분석 키트"], ["asset-kit.html", "자산 손상"]] })
   ];
   const SCORES = { impact: "효과", ease: "실행 용이성", ai: "AI 기여", risk: "위험" };
+
+  /* ---------- 비용: 외부 AI(구독·API) vs 오픈소스 모델 사내 구축 ----------
+     범위: AI로 도구·분석을 만들고 돌리는 비용만. 인수 대금·자사주 매입액·자문 수수료 같은 실행 자체의 돈은 넣지 않는다.
+     단가 기준일 2026.11.25. 출처는 페이지 하단(PRICE_SRC). 사용량은 작성자의 가정이며 회사마다 다르다. */
+  const PRICES = {
+    fx: 1350,                                  // 원/달러(2026년 11월 1,330~1,360원대)
+    seatStd: 20, seatPrem: 100,                // 달러/좌석/월, 연간 결제. Claude Team·ChatGPT Business 모두 표준 $20(월 결제 $25), 고급 $100($125)
+    api: { opus: [4, 20], sonnet: [2, 10], haiku: [0.1, 0.5] },   // 달러/100만 토큰 [입력, 출력], Claude API 기준
+    apiName: { opus: "최상위급", sonnet: "중간급", haiku: "경량급" },
+    finYear: 8000e4,                           // 재무 담당자 연 인건비(4대 보험 등 포함, 가정)
+    engYear: 12000e4,                          // 인프라 엔지니어 연 인건비(가정)
+    weeks: 50,
+    elec: 182,                                 // 원/kWh, 2025년 산업용 평균 판매단가 181.9원
+    pue: 1.4, util: 0.4,                       // 냉방 포함 전력 배수, 연평균 GPU 가동률
+    hwMaint: 0.08,                             // 하드웨어 유지보수·부품 연 비율
+    life: 4,                                   // 감가상각 연수
+    devMul: 1.5,                               // 공개 모델로 개발할 때 개발·검증 기간 배수(코딩 보조·응답 품질 차이, 가정)
+    reviewWk: 2,                               // 외부 AI 도입 시 보안·계약 검토(회사 전체 1회), 엔지니어 주 수
+    apiMul: 1                                  // API 사용량 배수(민감도 확인용). 사내 구축 쪽 서버 등급은 그대로 둔다
+  };
+  /* 사내 구축 서버 등급. 가격은 2026년 시장 가격 범위의 중간값(달러) */
+  const TIERS = {
+    S: { name: "S급", hw: 20000, kw: 1.0, setupWk: 2, fte: 0.1, desc: "GPU 1장(96GB) 워크스테이션: 30~120B급 공개 모델 양자화 실행, 동시 사용자 몇 명" },
+    M: { name: "M급", hw: 80000, kw: 3.5, setupWk: 4, fte: 0.25, desc: "GPU 4장(96GB×4) 서버: 큰 공개 모델 또는 수십 명 동시 사용" },
+    L: { name: "L급", hw: 340000, kw: 10, setupWk: 8, fte: 0.5, desc: "H200 8장 서버: 가장 큰 공개 모델, 긴 문서 대량 처리, 미세조정" }
+  };
+  const SENS = { 1: "공개 자료", 2: "사내 일반", 3: "대외비·개인정보" };
+  /* 아이디어별 사용 규모. u 좌석(그중 prem 고급), model API 등급, tin/tout 월 토큰(백만), dev 개발 주(재무 담당자 기준),
+     ops 월 유지보수 시간, tier 사내 구축 시 실행에 필요한 서버("-"는 실행에 언어 모델이 필요 없고 코드 작성에만 AI를 씀), sens 데이터 민감도 */
+  const C = (u, prem, model, tin, tout, dev, ops, tier, sens, use) => ({ u, prem, model, tin, tout, dev, ops, tier, sens, use });
+  const COST = {
+    "close-bot": C(3, 1, "sonnet", 2, 0.3, 4, 6, "S", 2, "월마감 때 계정 50여 개의 차이 설명 초안"),
+    "filing-watch": C(4, 1, "sonnet", 8, 0.8, 3, 4, "S", 1, "관심 회사 30곳 공시 요약, 분기 몰림"),
+    "capex-app": C(5, 1, "sonnet", 1, 0.2, 6, 6, "S", 2, "앱은 일반 코드, AI는 개발과 심의 요약에만"),
+    "budget-intake": C(4, 1, "haiku", 2, 0.2, 4, 4, "S", 2, "요청서 분류·요약은 경량 모델로 충분"),
+    "rule-qa": C(2, 1, "sonnet", 60, 1, 4, 8, "M", 2, "임직원 500명 × 월 4문의, 규정 본문을 함께 넣음"),
+    "cash-roll": C(2, 1, "haiku", 0.5, 0.05, 3, 4, "S", 2, "계산은 코드, AI는 파일 형식 정리에만"),
+    "deck-gen": C(6, 1, "opus", 5, 1, 4, 6, "M", 3, "경영회의 자료 초안, 문장 품질이 중요"),
+    "dd-review": C(4, 2, "opus", 40, 4, 6, 8, "L", 3, "딜 1건 실사 문서 수백 개를 월평균으로 환산"),
+    "bayes-demand": C(2, 1, "sonnet", 0.5, 0.1, 4, 4, "-", 2, "모형은 통계 코드, AI는 코드 작성·해설에만"),
+    "survival": C(2, 1, "sonnet", 0.3, 0.05, 4, 3, "-", 2, "모형은 통계 코드"),
+    "changepoint": C(2, 1, "sonnet", 0.3, 0.05, 3, 3, "-", 1, "공개 통계 시계열, 모형은 통계 코드"),
+    "causal": C(2, 1, "sonnet", 0.3, 0.05, 5, 3, "-", 2, "모형은 통계 코드, 설계 검토가 길다"),
+    "anomaly": C(3, 1, "sonnet", 1, 0.1, 6, 6, "-", 3, "전표 전체(거래처·개인 포함)를 다룸"),
+    "shrink": C(2, 1, "sonnet", 0.2, 0.05, 3, 2, "-", 3, "인사 평가 자료"),
+    "copula": C(2, 1, "sonnet", 0.3, 0.05, 4, 3, "-", 2, "몬테카를로는 코드"),
+    "text-signal": C(2, 1, "sonnet", 15, 1.5, 4, 4, "S", 1, "실적발표·공시 문장 채점, 분기 몰림"),
+    "countercyclical": C(3, 1, "sonnet", 3, 0.3, 4, 4, "-", 2, "현금 완충·사이클 지표 모형"),
+    "carveout": C(3, 1, "sonnet", 20, 1.5, 4, 6, "S", 2, "뉴스·공시 상시 스크리닝(대상 목록은 사내 비밀)"),
+    "minority": C(3, 1, "sonnet", 6, 0.6, 3, 4, "S", 2, "공급망 업체 공시·특허 정리"),
+    "tender": C(3, 1, "opus", 10, 1, 4, 4, "S", 3, "미공개 중요정보가 들어가는 검토"),
+    "buyback": C(2, 1, "sonnet", 1, 0.1, 3, 2, "-", 3, "내재가치 추정, 결정 전까지 미공개 정보"),
+    "vertical": C(2, 1, "sonnet", 8, 0.8, 4, 4, "S", 1, "무역 통계·수출통제 공고 모니터링"),
+    "acquihire": C(2, 1, "sonnet", 10, 1, 3, 3, "S", 2, "특허·논문에서 기술 보유 팀 찾기"),
+    "co-invest": C(2, 1, "sonnet", 0.5, 0.1, 3, 2, "-", 3, "고객 계약 조건이 들어가는 계산")
+  };
+  const P = (o) => Object.assign({}, PRICES, o || {});
+  const tierOf = (c) => (c.tier === "-" ? "S" : c.tier);   // 실행에 모델이 필요 없어도 코드 작성 보조용 S급은 있어야 한다
+  /* 외부 AI: 초기 = 개발 인건비. 연간 = 좌석 구독 + API 사용료 + 유지보수 인건비 */
+  function costA(c, o) {
+    const p = P(o), wk = p.finYear / p.weeks, hr = wk / 40, a = p.api[c.model];
+    const seats = ((c.u - c.prem) * p.seatStd + c.prem * p.seatPrem) * 12 * p.fx;
+    const api = (c.tin * a[0] + c.tout * a[1]) * p.apiMul * 12 * p.fx;
+    const labor = c.ops * 12 * hr, init = c.dev * wk;
+    return { init: init, seats: seats, api: api, labor: labor, run: seats + api + labor, tco3: init + 3 * (seats + api + labor) };
+  }
+  /* 사내 구축: 초기 = 서버 + 구축 인건비 + 개발 인건비(배수 적용). 연간 = 전력 + 하드웨어 유지보수 + 운영 인력 일부 + 유지보수 인건비 */
+  function costB(c, o, tierKey) {
+    const p = P(o), t = TIERS[tierKey || tierOf(c)], wk = p.finYear / p.weeks, hr = wk / 40;
+    const hw = t.hw * p.fx, setup = t.setupWk * p.engYear / p.weeks, dev = c.dev * p.devMul * wk;
+    const power = t.kw * 8760 * p.util * p.pue * p.elec, maint = hw * p.hwMaint, staff = t.fte * p.engYear, labor = c.ops * 12 * hr;
+    const run = power + maint + staff + labor, init = hw + setup + dev;
+    return { tier: tierKey || tierOf(c), hw: hw, setup: setup, dev: dev, init: init, power: power, maint: maint, staff: staff, labor: labor, run: run, dep: hw / p.life, tco3: init + 3 * run };
+  }
+  /* 권고: 대외비·개인정보는 사내 구축(또는 데이터 보관 조건을 계약으로 정한 기업용 플랜), 나머지는 3년 비용이 싼 쪽 */
+  function advise(c, o) {
+    const a = costA(c, o), b = costB(c, o);
+    if (c.sens >= 3) return { pick: "B", why: "실데이터가 대외비·개인정보라서 비용보다 반출 통제가 먼저입니다. 사내 구축, 또는 학습 제외·보존 기간을 계약으로 정한 기업용 플랜에서만 실데이터를 씁니다." };
+    return a.tco3 <= b.tco3 ? { pick: "A", why: "사용량이 작아 서버를 사는 것보다 구독·API가 쌉니다. 사내 구축의 3년 비용이 외부 AI의 " + Math.round(b.tco3 / a.tco3 * 10) / 10 + "배입니다." }
+      : { pick: "B", why: "사용량이 커서 3년 기준 사내 구축이 더 쌉니다." };
+  }
+  /* 여러 아이디어를 함께 할 때: 같은 팀이 쓰므로 좌석은 가장 큰 아이디어 기준, 서버는 가장 높은 등급 한 대를 나눠 쓴다. 보안·계약 검토는 1회 */
+  function bundle(ids, o) {
+    const p = P(o), cs = ids.map((id) => COST[id]);
+    const u = Math.max.apply(null, cs.map((c) => c.u)), prem = Math.max.apply(null, cs.map((c) => c.prem));
+    const sumA = (k) => cs.reduce((s, c) => s + costA(c, o)[k], 0), sumB = (k) => cs.reduce((s, c) => s + costB(c, o)[k], 0);
+    const seats = ((u - prem) * p.seatStd + prem * p.seatPrem) * 12 * p.fx, review = p.reviewWk * p.engYear / p.weeks;
+    const A = { dev: sumA("init"), review: review, seats: seats, api: sumA("api"), labor: sumA("labor") };
+    A.init = A.dev + A.review; A.run = A.seats + A.api + A.labor; A.tco3 = A.init + 3 * A.run;
+    const order = ["S", "M", "L"], top = order[Math.max.apply(null, cs.map((c) => order.indexOf(tierOf(c))))], t0 = costB({ dev: 0, ops: 0 }, o, top);
+    const B = { tier: top, hw: t0.hw, setup: t0.setup, dev: sumB("dev"), power: t0.power, maint: t0.maint, staff: t0.staff, labor: sumB("labor") };
+    B.init = B.hw + B.setup + B.dev; B.run = B.power + B.maint + B.staff + B.labor; B.tco3 = B.init + 3 * B.run; B.dep = B.hw / p.life;
+    /* API 사용량이 지금의 몇 배가 되면 3년 비용이 같아지나 */
+    const k = A.api > 0 ? (B.tco3 - (A.tco3 - 3 * A.api)) / (3 * A.api) : Infinity;
+    return { A: A, B: B, n: ids.length, seatsU: u, seatsPrem: prem, breakeven: k };
+  }
+  const PRICE_SRC = [
+    ["Claude Team 요금(표준 $20·고급 $100, 연간 결제)", "https://claude.com/blog/claude-team-updates"],
+    ["ChatGPT Business 요금(표준 $20·고급 $100, 연간 결제)", "https://help.openai.com/en/articles/8792828-what-is-chatgpt-business"],
+    ["Claude API 토큰 요금", "https://www.anthropic.com/pricing"],
+    ["RTX PRO 6000(96GB) 가격 $13,250~16,000", "https://www.tweaktown.com/news/105053/nvidias-new-rtx-pro-6000-blackwell-gpu-with-96gb-gddr7-listed-costs-over-11-000/index.html"],
+    ["HGX H200 8장 서버 $30만~42만", "https://intuitionlabs.ai/articles/data-center-gpu-prices"],
+    ["산업용 전기 판매단가 181.9원/kWh(2025년)", "https://www.mt.co.kr/economy/2026/04/14/2026041415281687111"]
+  ];
   /* 우선순위 점수 = 효과 × 용이성 × (AI 기여 보정) ÷ 위험 보정. 가중치를 바꿀 수 있게 지수로 둔다 */
   function priority(x, w) {
     w = w || { impact: 1, ease: 1, ai: 0.5, risk: 1 };
@@ -267,5 +371,5 @@
   }
   function rank(cat, w) { return IDEAS.filter((x) => !cat || x.cat === cat).map((x) => ({ x: x, p: priority(x, w) })).sort((a, b) => b.p - a.p || a.x.id.localeCompare(b.x.id)); }
   function byCat(cat) { return IDEAS.filter((x) => x.cat === cat); }
-  return { CATS, IDEAS, SCORES, priority, rank, byCat };
+  return { CATS, IDEAS, SCORES, priority, rank, byCat, PRICES, TIERS, SENS, COST, costA, costB, advise, bundle, tierOf, PRICE_SRC };
 });

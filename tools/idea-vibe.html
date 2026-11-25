@@ -51,6 +51,13 @@
   .irow .ik { font-size: 12px; font-weight: 700; color: var(--muted); padding-top: 2px; }
   .irow p, .irow ol { margin: 0; color: var(--ink-2); }
   .irow ol { padding-left: 18px; }
+  .cuse, .cadv { margin: 6px 0 0 !important; font-size: 12.5px; }
+  .cadv { color: var(--ink) !important; }
+  table.pick.cost td.n, table.mini td.n { text-align: right; font-family: var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.pick.cost tr.tot th, table.pick.cost tr.tot td { border-top: 1.5px solid var(--rule); background: var(--tab); }
+  .lgd#cost-lgd i { border-radius: 2px; }
+  .csrc { padding: 4px 18px 10px; font-size: 13px; line-height: 1.7; color: var(--ink-2); }
+  .csrc a { overflow-wrap: anywhere; }
 </style>
 <title>아이디어: AI로 만드는 사내 도구 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
@@ -164,7 +171,7 @@
       <div class="rpt-tag">Idea notes · 01</div>
       <h1>개발 요청 대신<br>직접 만들어 본다</h1>
       <p class="dek">바이브코딩(AI와 함께 코드를 짜는 방식)으로 재무·기획 담당자가 직접 만들 수 있게 된 사내 도구 아이디어 8가지입니다. 이 포트폴리오의 도구 18개를 같은 방식으로 만들며 얻은 감각을 바탕으로, 회사 업무에 옮길 때의 효과·난이도·통제 장치를 함께 적었습니다.</p>
-      <div class="rpt-meta"><span>성격<b>실행 전 제안 · 정성 점수</b></span><span>틀<b>문제 · AI · 통제 · 첫 2주</b></span><span>기준일<b>2026.11</b></span><span>작성<b>이기표</b></span></div>
+      <div class="rpt-meta"><span>성격<b>실행 전 제안 · 정성 점수</b></span><span>틀<b>문제 · AI · 통제 · 비용 · 첫 2주</b></span><span>기준일<b>2026.11</b></span><span>작성<b>이기표</b></span></div>
     </div>
   </section>
 
@@ -175,7 +182,7 @@
 
         <section id="s-how" data-toc="읽는 법" data-group="안내">
           <h2>읽는 법</h2>
-          <p>아이디어마다 <b>문제 → 아이디어 → AI가 바꾸는 점 → 회사에서 어려운 이유 → 통제·법규 → 첫 2주 → 성공 지표</b>를 같은 순서로 적었습니다. 공통 원칙은 세 가지입니다. 실제 회사 데이터는 회사가 승인한 AI 환경에서만 쓰고, AI가 만든 숫자는 원천 자료와 자동 대조하며, 최종 승인은 사람이 합니다.</p>
+          <p>아이디어마다 <b>문제 → 아이디어 → AI가 바꾸는 점 → 회사에서 어려운 이유 → 통제·법규 → 첫 2주 → 성공 지표 → 비용</b>을 같은 순서로 적었습니다. 비용은 외부 AI를 쓸 때와 오픈소스 모델을 사내에 구축할 때로 나눴습니다. 공통 원칙은 세 가지입니다. 실제 회사 데이터는 회사가 승인한 AI 환경에서만 쓰고, AI가 만든 숫자는 원천 자료와 자동 대조하며, 최종 승인은 사람이 합니다.</p>
           <nav class="cat-nav" id="cat-nav" aria-label="아이디어 묶음"></nav>
         </section>
 
@@ -189,6 +196,22 @@
             <div class="fig-b plotbox" id="f-mx"></div>
             <div class="fig-s">초록은 위험 1~2, 주황은 3, 빨강은 4~5입니다. 우선순위 점수는 효과 × 용이성 × √AI 기여 ÷ 위험으로 계산합니다. 점수는 작성자의 판단이며 회사마다 달라집니다.</div>
           </div>
+        </section>
+
+        <section id="s-cost" data-toc="비용: 외부 AI vs 사내 구축" data-group="비용">
+          <h2>비용: 외부 AI를 쓸 때와 사내에 구축할 때</h2>
+          <p>아이디어마다 초기 비용과 연간 운영 비용을 두 경우로 나눠 추정했습니다. <b>외부 AI</b>는 Claude·ChatGPT 같은 상용 서비스의 팀 좌석을 구독하고 API 사용료를 내는 방식이고, <b>사내 구축</b>은 공개 가중치(오픈소스) 모델을 회사 GPU 서버에 올려 데이터가 회사 밖으로 나가지 않게 하는 방식입니다. 범위는 AI로 도구·분석을 만들고 돌리는 데까지이며, 인수 대금·자사주 매입액·자문 수수료처럼 전략 실행 자체에 드는 돈은 넣지 않았습니다. 개발 인건비는 기존 담당자의 시간을 돈으로 환산한 값입니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>이 묶음을 함께 할 때 3년 비용 구성</h4><span class="muted" style="font-size: 12px">원 · 단가 기준일 2026.11.25</span></div>
+            <div class="ctl" id="cost-ctl"></div>
+            <div class="readout" id="cost-out" aria-live="polite"></div>
+            <div class="lgd" id="cost-lgd"></div>
+            <div class="fig-b plotbox" id="f-cost"></div>
+            <div class="fig-s" id="cost-note"></div>
+          </div>
+          <div class="tw" role="region" aria-label="아이디어별 비용 비교" tabindex="0"><table class="pick cost" id="cost-tb"></table></div>
+          <p class="muted" style="font-size:13px">읽는 법: 사용량이 작은 사내 도구는 대부분 외부 AI가 3년 기준 몇 배 쌉니다. 서버값보다 서버를 돌보는 사람의 시간이 더 크기 때문입니다. 그래도 사내 구축을 고르는 이유는 비용이 아니라 데이터입니다. 대외비·개인정보를 다루는 아이디어는 사내 구축, 또는 학습 제외·보존 기간을 계약으로 정한 기업용 플랜에서만 실데이터를 쓰도록 권고했습니다.</p>
+          <details class="dt"><summary>계산식, 빠진 비용, 단가 출처</summary><div id="cost-src" class="csrc"></div></details>
         </section>
 
         <section id="s-list" data-toc="아이디어 카드">
