@@ -48,15 +48,24 @@
     if (c.treR > 0.03) s.push(["up", "자기주식 " + pct(c.treR) + ". 개정 상법상 원칙적으로 소각 대상이라 우호 세력에 넘겨 방어에 쓰기 어려워졌습니다."]);
     if ((c.ta || 0) >= 2e12) s.push(["up", "자산 2조 원 이상: 집중투표 의무화(2026.9.10 시행) 대상이라 소수 지분으로도 이사 선임에 영향을 줄 수 있습니다."]);
     if (c.netcash > 0.3) s.push(["up", "순현금이 시가총액의 " + pct(c.netcash) + ". 인수 뒤 대상 회사 현금으로 인수 비용 일부를 회수할 수 있습니다(배당·감자, 채권자·소수주주 보호 절차 필요)."]);
+    if (c.dd52 != null && c.dd52 <= -0.35) s.push(["down", "주가가 52주 고점보다 " + pct(-c.dd52) + " 낮습니다. 고점에 산 주주가 많으면 프리미엄을 얹은 공개매수가(고점의 " + pct(d.px / c.hi52) + ")에도 응모를 망설일 수 있습니다."]);
+    else if (c.hi52 && d.px > c.hi52) s.push(["up", "공개매수 가격이 52주 고점보다 높아 응모 유인이 큽니다."]);
+    const ad = accumulate(c);
+    if (ad != null && ad > 60) s.push(["down", "거래가 적어 하루 거래대금의 10%씩 사도 5%를 모으는 데 " + ad + "거래일이 걸립니다. 장내 매집보다 공개매수·블록딜이 현실적입니다."]);
     if (c.netcash > 0.5) s.push(["down", "현금이 시가총액의 절반을 넘습니다. 고객 예치금·선수금처럼 회사가 마음대로 쓸 수 없는 현금이 섞였는지 원문으로 확인해야 EV가 맞습니다."]);
-    if (c.sharesAdj) s.push(["down", "2025년 말 주식 수가 지금 시가총액과 맞지 않아(분할·병합·증자 추정) 주식 수를 시가총액 ÷ 주가로 보정했습니다."]);
+    if (c.sharesAdj) s.push(["down", "2025년 말 주식 수와 지금 상장주식수가 크게 달라(분할·병합·증자 추정) 금융위원회 시세 자료의 지금 상장주식수를 썼습니다."]);
     if (c.netcash < -0.5) s.push(["down", "순차입이 시가총액의 " + pct(-c.netcash) + ". 인수 금융을 더 얹기 어렵습니다."]);
     if (c.fcfy != null && c.fcfy < 0) s.push(["down", "2025년 잉여현금흐름이 음수(설비투자가 영업현금흐름보다 큼)라 인수 뒤 현금 회수가 늦습니다."]);
     return s;
+  }
+  /* 장내 매집 속도: 하루 거래대금의 share만큼씩 사서 지분 pct를 모으는 데 걸리는 거래일 */
+  function accumulate(c, pct, share) {
+    pct = pct == null ? 0.05 : pct; share = share == null ? 0.1 : share;
+    return c.adv60 > 0 ? Math.ceil(pct * c.mcap / (share * c.adv60)) : null;
   }
   function pct(v) { return (Math.round(v * 1000) / 10).toFixed(1) + "%"; }
   /* 업종별 볼트온 표: groups[g].top의 회사들을 점수 순서대로 */
   function bolt(D, g) { const G = D.groups[g]; return G ? G.top.map((k) => Object.assign({ id: k }, D.cos[k])) : []; }
   function candidates(D, n) { return D.A.slice(0, n || 20).map((k) => Object.assign({ id: k }, D.cos[k])); }
-  return { voting, groupStake, targetStake, deal, funding, signals, bolt, candidates, pct };
+  return { voting, groupStake, targetStake, deal, funding, signals, bolt, candidates, accumulate, pct };
 });

@@ -816,6 +816,8 @@
       const f = M.funding(c0, d, 3), ebitda = c0.op + (c0.da || 0), cap = Math.max(0, ebitda * 3 - Math.max(0, c0.debt - c0.cash)) * d.stake, fcf = (c0.ocf - c0.capex) * d.stake;
       const f0 = M.funding(c0, d, 0);
       add(G, "자금 조달 손계산: 차입 = min(비용, (EBITDA × 배수 − 기존 순차입) × 지분), 차입 + 자기자본 = 비용, 회수 기간 = 비용 ÷ 지분만큼의 FCF, 배수 0이면 전액 자기자본", near(f.debt, Math.min(d.cost, cap), 1e-9) && near(f.debt + f.equity, d.cost, 1e-9) && (fcf > 0 ? near(f.payback, d.cost / fcf, 1e-9) : f.payback === null) && f0.debt === 0 && near(f0.equity, d.cost, 1e-9), f.payback ? f.payback.toFixed(1) + "년" : "");
+      const H = A.filter((x) => x.spark), okH = H.length >= A.length - 2 && H.every((x) => x.dd52 <= 1e-9 && x.hi52 >= x.price * 0.999 && x.adv60 > 0 && x.spark[x.spark.length - 1] === 100);
+      add(G, "주가 이력(금융위원회 시세): 52주 고점 대비 ≤ 0, 52주 고점 ≥ 현재가, 거래대금 > 0, 이력 마지막 = 100. 5% 매집 일수 = 5% × 시가총액 ÷ (거래대금 × 10%) 올림", okH && M.accumulate(c0) === Math.ceil(0.05 * c0.mcap / (0.1 * c0.adv60)), H.length + "곳");
       const big = { issued: 1000, tre: 0, price: 1, grp: 0.6, vote: 0.6, debt: 0, cash: 0, op: 1 }, small = Object.assign({}, big, { grp: 0.2, vote: 0.2 });
       add(G, "가능성 판정: 최대주주 측이 60%면 과반 공개매수는 대주주 동의 없이 불가능, 20%면 가능. 신호에 불리 표시가 붙는다", !M.deal(big, { mode: "majority" }).feasible && M.deal(small, { mode: "majority" }).feasible && M.signals(big, M.deal(big)).some((q) => q[0] === "down"), "");
     }

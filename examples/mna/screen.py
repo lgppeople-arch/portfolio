@@ -63,8 +63,24 @@ def load_multi():
     return out
 
 
+SNAP_DAY = "20261124"
+
+
+def official(U):
+    """금융위원회 주식시세정보의 그날 종가·상장주식수·시가총액으로 바꾼다(없으면 네이버 장중 값 유지)."""
+    p = os.path.join(CACHE, "snap_%s.json" % SNAP_DAY)
+    if not os.path.exists(p):
+        return U
+    S = json.load(open(p))
+    for c in U:
+        x = S.get(c["code"])
+        if x:
+            c.update(price=x["close"], mcap=x["mcap"], shares=x["shares"], src="official")
+    return U
+
+
 def stage1():
-    U = universe(); M = load_multi(); rows = []
+    U = official(universe()); M = load_multi(); rows = []
     for c in U:
         if c["code"] in EXCLUDE:
             continue
@@ -80,7 +96,7 @@ def stage1():
         a = f[2025]; b = f.get(2024, {}); z = f.get(2023, {})
         rev, op, ni, te = a["rev"], a.get("op") or 0, a.get("ni") or 0, a["te"]
         cagr = (rev / z["rev"]) ** 0.5 - 1 if z.get("rev") and z["rev"] > 0 and rev > 0 else None
-        rows.append({"code": c["code"], "corp": c["corp"], "name": c["name"], "mkt": c["mkt"], "mcap": c["mcap"], "price": c["price"],
+        rows.append({"code": c["code"], "corp": c["corp"], "name": c["name"], "mkt": c["mkt"], "mcap": c["mcap"], "price": c["price"], "shares": c.get("shares"),
                      "ind": ind, "group": group_of(ind), "fs": fs, "est": info.get("est_dt", ""), "ceo": info.get("ceo_nm", ""),
                      "rev": rev, "op": op, "ni": ni, "te": te, "ta": a.get("ta"), "tl": a.get("tl"),
                      "op24": b.get("op"), "op23": z.get("op"), "rev24": b.get("rev"), "rev23": z.get("rev"), "cagr": cagr,
@@ -181,13 +197,22 @@ def build():
         capex = abs(pick(L, "CF", r"^유형자산의취득$|^무형자산의취득$", None))
         da = pick(L, "CF", r"^감가상각비$|^무형자산상각비$|^사용권자산상각비$|^감가상각비및무형자산상각비$", None)
         o = own(r["corp"])
-        implied = r["mcap"] / r["price"]   # 지금 시가총액이 전제하는 주식 수
+        implied = r.get("shares") or r["mcap"] / r["price"]   # 지금 상장주식수(공식) 또는 시가총액 ÷ 주가
         if not o["issued"]:   # 주식 총수 자료가 없으면 시가총액 ÷ 주가로 대신한다
             o["issued"] = round(implied); o["tre"] = o["tre"] or 0
         elif not 0.8 <= o["issued"] / implied <= 1.25:   # 2025년 말 이후 분할·병합·증자나 단위 오류: 지금 주식 수로 바꾸고 자기주식 비율은 유지
             o["issued"] = round(implied); o["tre"] = round(o["treR"] * implied); o["sharesAdj"] = 1
         ev = r["mcap"] + debt - cash
-        x = dict(r, cash=cash, debt=debt, ocf=ocf, capex=capex, da=da, ev=ev, fcf=(ocf - capex) if ocf is not None else None,
+        hp = os.path.join(CACHE, "hist", r["code"] + ".json"); H = json.load(open(hp)) if os.path.exists(hp) else []
+        px = {}
+        if len(H) > 250:
+            cl = [h[1] for h in H]; last = cl[-1]; y1 = cl[-250:]
+            import statistics
+            lr = [math.log(y1[i] / y1[i - 1]) for i in range(1, len(y1)) if y1[i - 1] > 0 and y1[i] > 0]
+            px = {"ret1y": last / cl[-250] - 1, "ret3y": last / cl[0] - 1, "dd52": last / max(y1) - 1, "hi52": max(y1),
+                  "adv60": sum(h[2] for h in H[-60:]) / len(H[-60:]), "vol": statistics.pstdev(lr) * math.sqrt(250) if lr else None,
+                  "spark": [round(cl[i] / last * 100) for i in range(0, len(cl), 5)] + [100], "spark0": H[0][0]}
+        x = dict(r, **px, cash=cash, debt=debt, ocf=ocf, capex=capex, da=da, ev=ev, fcf=(ocf - capex) if ocf is not None else None,
                  evebit=ev / r["op"] if r["op"] > 0 and ev > 0 else None, ebitda=r["op"] + da,
                  fcfy=(ocf - capex) / r["mcap"] if ocf is not None else None, netcash=(cash - debt) / r["mcap"], fsDeep=fs, **o)
         out.append(x)
@@ -219,7 +244,7 @@ def build():
         big = sorted([y for y in S1 if y["group"] == g and not conflict(y)], key=lambda y: -y["mcap"])[:3]
         groups[g] = {"n": len(G), "top": [x["corp"] for x in G[:6]], "acq": [{"name": y["name"], "mcap": y["mcap"]} for y in big]}
     keep = {x["corp"] for x in A[:40]} | {c for g in groups.values() for c in g["top"]}
-    F = ["name", "mkt", "group", "ind", "mcap", "price", "rev", "rev23", "op", "op24", "op23", "ni", "te", "ta", "cash", "debt", "ocf", "capex", "da", "ev", "evebit", "fcfy", "pbr", "opm", "cagr", "netcash", "grp", "vote", "top", "topRel", "issued", "tre", "treR", "others", "fsDeep", "est", "sharesAdj"]
+    F = ["name", "mkt", "group", "ind", "mcap", "price", "rev", "rev23", "op", "op24", "op23", "ni", "te", "ta", "cash", "debt", "ocf", "capex", "da", "ev", "evebit", "fcfy", "pbr", "opm", "cagr", "netcash", "grp", "vote", "top", "topRel", "issued", "tre", "treR", "others", "fsDeep", "est", "sharesAdj", "ret1y", "ret3y", "dd52", "hi52", "adv60", "vol", "spark", "spark0"]
     rnd = lambda v: round(v, 4) if isinstance(v, float) and abs(v) < 100 else (round(v) if isinstance(v, float) else v)
     cos = {x["corp"]: {k: rnd(x.get(k)) for k in F} for x in out if x["corp"] in keep}
     for x in out:
@@ -228,7 +253,7 @@ def build():
             if "sB" in x: cos[x["corp"]]["sB"] = {k: round(v, 3) for k, v in x["sB"].items()}
     # 시장 지도용: 정밀 자료가 있는 회사 전체의 점(이름 없이 업종·지분·EV/EBIT만)
     dots = [[x["group"], rnd(x["grp"]), rnd(x["evebit"]), rnd(x["mcap"] / 1e8), 1 if x["corp"] in {y["corp"] for y in A[:20]} else 0] for x in out if x["grp"] is not None and x["evebit"] and not conflict(x)]
-    meta = {"asof": "2026-11-25", "price": "네이버 증권 시가총액 목록(2026.11.25 장중)", "fin": "OpenDART 2025 사업보고서(연결 우선)", "listed": len(universe()), "universe": len(S1), "deep": len(out), "nA": len(A), "nB": len(B)}
+    meta = {"asof": "2026-11-24", "price": "금융위원회 주식시세정보 2026.11.24 종가(일부 네이버 2026.11.25 장중)", "fin": "OpenDART 2025 사업보고서(연결 우선)", "listed": len(universe()), "universe": len(S1), "deep": len(out), "nA": len(A), "nB": len(B)}
     data = {"meta": meta, "A": [x["corp"] for x in A[:40]], "groups": groups, "cos": cos, "dots": dots}
     js = "/* 경영권 거래 후보 스크리닝 자료. examples/mna/screen.py build 로 만든다. 공시 숫자(원)와 시가총액만 담는다 */\n(function (root) { const D = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n  if (typeof module === \"object\" && module.exports) module.exports = D; else root.MNA_DATA = D; })(typeof self !== \"undefined\" ? self : this);\n"
     open(os.path.join(ROOT, "assets", "data", "mna-screen.js"), "w").write(js)

@@ -44,8 +44,8 @@
 
   /* ---------- 후보 표 ---------- */
   (function () {
-    let h = "<thead><tr><th scope='col'>#</th><th scope='col'>회사</th><th scope='col'>업종</th><th scope='col'>시가총액</th><th scope='col'>EV/EBIT</th><th scope='col'>FCF 수익률</th><th scope='col'>PBR</th><th scope='col'>매출 성장(2년)</th><th scope='col'>영업이익률</th><th scope='col'>최대주주 등</th><th scope='col'>순현금/시총</th><th scope='col'>점수</th></tr></thead><tbody>";
-    A.forEach((x, i) => { h += "<tr><td class='n'>" + (i + 1) + "</td><th scope='row'><a href='#s-plan' data-co='" + x.id + "'>" + x.name + "</a> <small class='muted'>" + x.mkt + "</small></th><td>" + x.group + "</td><td class='n'>" + eok(x.mcap) + "</td><td class='n'>" + xx(x.evebit) + "</td><td class='n'>" + pc(x.fcfy) + "</td><td class='n'>" + (x.pbr || 0).toFixed(2) + "</td><td class='n'>" + pc(x.cagr) + "</td><td class='n'>" + pc(x.opm) + "</td><td class='n'>" + pc(x.grp) + "</td><td class='n'>" + pc(x.netcash, 0) + "</td><td class='n'><b>" + Math.round(x.sA.total * 100) + "</b></td></tr>"; });
+    let h = "<thead><tr><th scope='col'>#</th><th scope='col'>회사</th><th scope='col'>업종</th><th scope='col'>시가총액</th><th scope='col'>EV/EBIT</th><th scope='col'>FCF 수익률</th><th scope='col'>PBR</th><th scope='col'>52주 고점 대비</th><th scope='col'>매출 성장(2년)</th><th scope='col'>영업이익률</th><th scope='col'>최대주주 등</th><th scope='col'>순현금/시총</th><th scope='col'>점수</th></tr></thead><tbody>";
+    A.forEach((x, i) => { h += "<tr><td class='n'>" + (i + 1) + "</td><th scope='row'><a href='#s-plan' data-co='" + x.id + "'>" + x.name + "</a> <small class='muted'>" + x.mkt + "</small></th><td>" + x.group + "</td><td class='n'>" + eok(x.mcap) + "</td><td class='n'>" + xx(x.evebit) + "</td><td class='n'>" + pc(x.fcfy) + "</td><td class='n'>" + (x.pbr || 0).toFixed(2) + "</td><td class='n'>" + pc(x.dd52, 0) + "</td><td class='n'>" + pc(x.cagr) + "</td><td class='n'>" + pc(x.opm) + "</td><td class='n'>" + pc(x.grp) + "</td><td class='n'>" + pc(x.netcash, 0) + "</td><td class='n'><b>" + Math.round(x.sA.total * 100) + "</b></td></tr>"; });
     $("a-tb").innerHTML = h + "</tbody>";
     $("a-tb").addEventListener("click", (e) => { const a = e.target.closest("a[data-co]"); if (a) { sel = a.getAttribute("data-co"); $("p-co").value = sel; drawPlan(); } });
   })();
@@ -71,9 +71,26 @@
     sv("line", { x1: x(d.stake), x2: x(d.stake), y1: 12, y2: 60, stroke: c("--ink"), "stroke-width": 2 }, s);
     tx(s, Math.min(r2 - 4, Math.max(l + 4, x(d.stake))), 10, "목표 " + pc(d.stake), { "text-anchor": d.stake > 0.85 ? "end" : "middle", "font-size": 11, "font-weight": 700, fill: c("--ink") });
     let lx = l; parts.forEach((p) => { sv("rect", { x: lx, y: 72, width: 10, height: 10, fill: p[2], opacity: 0.75 }, s); const t = tx(s, lx + 14, 81, p[0], { "font-size": 11 }); lx += 14 + (t.getComputedTextLength ? t.getComputedTextLength() : p[0].length * 10) + 16; });
-    const K = [["지분 확보 비용", eok(d.cost) + "원"], ["인수가 기준 EV/EBIT", xx(d.evebitAtPrem)], ["차입 가능(" + lev.toFixed(1) + "배)", eok(f.debt) + "원 · " + pc(f.debtShare, 0)], ["자기자본 필요", eok(f.equity) + "원"], ["지분만큼 FCF로 회수", f.payback ? f.payback.toFixed(1) + "년" : "회수 불가(FCF 음수)"]];
+    drawPx(co, d);
+    const ad = M.accumulate(co);
+    const K = [["지분 확보 비용", eok(d.cost) + "원"], ["인수가 기준 EV/EBIT", xx(d.evebitAtPrem)], ["차입 " + lev.toFixed(1) + "배 / 자기자본", eok(f.debt) + " / " + eok(f.equity)], ["지분만큼 FCF로 회수", f.payback ? f.payback.toFixed(1) + "년" : "회수 불가"], ["5% 장내 매집", ad ? ad + "거래일" : "–"]];
     const kp = $("p-kpi"); kp.textContent = ""; K.forEach((q) => { const k = el("div", { class: "kpi" }); k.appendChild(el("div", { class: "kl", text: q[0] })); k.appendChild(el("div", { class: "v", text: q[1] })); kp.appendChild(k); });
     const sg = $("p-sig"); sg.textContent = ""; M.signals(co, d).forEach((q) => { const li = el("li", { class: q[0] }); li.appendChild(el("span", { class: "dot", text: q[0] === "up" ? "+" : "−" })); li.appendChild(el("span", { text: q[1] })); sg.appendChild(li); });
+  }
+
+  /* 3년 주가(마지막 = 100)와 공개매수 가격·52주 고점 */
+  function drawPx(co, d) {
+    const host = $("f-px"); if (!host) return; host.textContent = "";
+    if (!co.spark || co.spark.length < 10) { host.appendChild(el("p", { class: "muted", text: "주가 이력이 없습니다." })); return; }
+    const W = Math.max(300, Math.round(host.clientWidth || 680)), H = 170, l = 44, r2 = W - 70, top = 14, bot = H - 26, P = co.spark;
+    const tp = d.px / co.price * 100, hi = co.hi52 / co.price * 100, mx = Math.max.apply(null, P.concat([tp, hi])) * 1.05, mn = Math.min.apply(null, P) * 0.9;
+    const x = lin(0, P.length - 1, l, r2), y = lin(mn, mx, bot, top);
+    const s = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": co.name + " 3년 주가와 공개매수 가격(현재가의 " + Math.round(tp) + "%), 52주 고점(" + Math.round(hi) + "%)" }, host);
+    F.niceTicks(mn, mx, 4).ticks.forEach((v) => { if (v < mn || v > mx) return; sv("line", { x1: l, x2: r2, y1: y(v), y2: y(v), stroke: c("--rule-soft") }, s); tx(s, l - 6, y(v) + 4, String(Math.round(v)), { "text-anchor": "end", "font-size": 10, fill: c("--muted"), class: "n" }); });
+    sv("polyline", { points: P.map((v, i) => x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" "), fill: "none", stroke: c("--input"), "stroke-width": 1.6 }, s);
+    [[tp, "공개매수가", c("--accent")], [hi, "52주 고점", c("--muted")]].forEach((q) => { sv("line", { x1: l, x2: r2, y1: y(q[0]), y2: y(q[0]), stroke: q[2], "stroke-dasharray": "4 3", "stroke-width": 1.4 }, s); tx(s, r2 + 4, y(q[0]) + 4, q[1], { "font-size": 10.5, fill: q[2], "font-weight": 600 }); });
+    tx(s, l, H - 6, (co.spark0 || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1.$2"), { "font-size": 10, fill: c("--muted"), class: "n" });
+    tx(s, r2, H - 6, "2026.11.24 = 100", { "text-anchor": "end", "font-size": 10, fill: c("--muted"), class: "n" });
   }
 
   /* ---------- 볼트온 ---------- */
