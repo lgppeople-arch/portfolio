@@ -3,19 +3,73 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}  .hm { border-collapse: collapse; font-size: 12.5px; min-width: 760px; width: 100%; }
+  .hm th, .hm td { border: 1px solid var(--rule-soft); padding: 7px 8px; text-align: center; vertical-align: middle; }
+  .hm thead th { font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  .hm tbody th { text-align: left; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .hm td.l { text-align: left; color: var(--ink-2); }
+  .hm td.c0 { color: var(--muted); }
+  .hm td.c1 { background: color-mix(in srgb, var(--input) 14%, transparent); color: var(--ink); }
+  .hm td.c2 { background: color-mix(in srgb, var(--input) 34%, transparent); color: var(--ink); font-weight: 700; }
+  .hm td.c3 { background: color-mix(in srgb, var(--input) 58%, transparent); color: var(--ink); font-weight: 700; }
+  .hm .gh { font-size: 11px; color: var(--muted); font-weight: 500; display: block; }
+  .hm tr.on th, .hm tr.on td { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .wts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 18px; padding: 12px 18px 0; }
+  @media (max-width: 760px) { .wts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .wts label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+  .wts b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .lgd { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 18px 0; font-size: 12px; color: var(--ink-2); }
+  .lgd i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  .facts { margin: 12px 0 6px; display: grid; gap: 8px; padding: 0; list-style: none; max-width: 82ch; }
+  .facts li { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 10px 14px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
+  .facts li b { color: var(--ink); }
+  .facts li small { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; }
+  .asof { margin: 18px 0 0; padding: 12px 16px; border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); background: var(--surface); font-size: 13px; line-height: 1.7; color: var(--ink-2); }
+  .asof p { margin: 0; }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+  .presets button { font: inherit; display: grid; gap: 1px; text-align: left; padding: 8px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .presets button small { font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  .presets button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 16px; }
+  .board .card { display: grid; gap: 3px; padding: 14px 16px; border: 1px solid var(--rule); border-top: 3px solid var(--pos); border-radius: var(--radius); background: var(--surface); }
+  .board .card.down { border-top-color: var(--neg); }
+  .board .nm { font-size: 12px; font-weight: 700; color: var(--muted); }
+  .board .v { font-family: var(--f-display); font-size: 26px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .board .vs { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+  .board .mx { font-size: 12px; color: var(--muted); }
+  .board .code { grid-column: 1 / -1; margin: 0; font-size: 12.5px; color: var(--muted); font-family: var(--f-num); }
+  @media (max-width: 560px) { .board { grid-template-columns: minmax(0, 1fr); } }
+  .vars { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px; }
+  @media (max-width: 420px) { .vars { grid-template-columns: minmax(0, 1fr); } }
+  .var { padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); min-width: 0; }
+  .var .vh { display: grid; gap: 2px; margin-bottom: 8px; } .var .vh b { font-size: 14px; } .var .vh span { font-size: 12px; line-height: 1.5; }
+  .var .lv { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+  .var .lv button { font: inherit; font-size: 11.5px; line-height: 1.3; padding: 6px 3px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); color: var(--ink-2); cursor: pointer; display: grid; gap: 1px; justify-items: center; text-align: center; min-width: 0; overflow-wrap: anywhere; }
+  .var .lv button .n { font-family: var(--f-num); font-size: 10.5px; color: var(--muted); }
+  .var .lv button[aria-pressed="true"] { border-color: var(--input); background: color-mix(in srgb, var(--input) 10%, var(--surface)); color: var(--ink); font-weight: 700; }
+  .var .vnote { margin: 8px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-2); }
+  .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; }
+  .seg button { font: inherit; font-size: 12.5px; padding: 5px 14px; border: 0; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); font-weight: 700; }
+  label.chk { font-size: 13px; color: var(--ink-2); display: inline-flex; gap: 6px; align-items: center; }
+  #start-tb, #sd-tb, #mc-tb, #imp-tb { min-width: 720px; } #pl-tb { min-width: 640px; }
+  table.pick td.n { text-align: right; font-family: var(--f-num); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.pick td.n small { color: var(--muted); font-size: 11px; }
+  ul.src { font-size: 13px; line-height: 1.7; color: var(--ink-2); padding-left: 18px; } ul.src a { overflow-wrap: anywhere; }
+  #pl-tb th[scope=row], #pl-tb thead th:first-child, #start-tb th[scope=row] { white-space: nowrap; min-width: 150px; } #pl-tb { min-width: 900px; }
+</style>
 <title>메모리 사이클 시나리오 가치평가 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="업황·금리·환율·무역분쟁·중국 증설·AI 수요 충격·장기공급계약·밸류업 8개 변수를 1~5단계로 골라 삼성전자·SK하이닉스의 수급·가격, 2027~29년 손익과 적정주가를 보는 시나리오 도구(390,625개 조합)">
+<meta name="description" content="SK하이닉스·삼성전자의 2027~2029년 손익과 적정주가를 변수 9개(AI 투자, 범용 수요, 업계 증설, 중국 증설, HBM 경쟁, 장기공급계약, 환율, 무역, 할인율)로 계산. 범용 D램·HBM·낸드 수급과 HBM 웨이퍼 잠식, 상관을 넣은 몬테카를로, 주가 역산. 2026년 3분기 실적·2026.11.24 종가 기준">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="이기표 재무기획 포트폴리오">
 <meta property="og:title" content="메모리 사이클 시나리오 가치평가 · 이기표">
-<meta property="og:description" content="업황·금리·환율·무역분쟁·중국 증설·AI 수요 충격·장기공급계약·밸류업 8개 변수를 1~5단계로 골라 삼성전자·SK하이닉스의 수급·가격, 2027~29년 손익과 적정주가를 보는 시나리오 도구(390,625개 조합)">
+<meta property="og:description" content="SK하이닉스·삼성전자의 2027~2029년 손익과 적정주가를 변수 9개(AI 투자, 범용 수요, 업계 증설, 중국 증설, HBM 경쟁, 장기공급계약, 환율, 무역, 할인율)로 계산. 범용 D램·HBM·낸드 수급과 HBM 웨이퍼 잠식, 상관을 넣은 몬테카를로, 주가 역산. 2026년 3분기 실적·2026.11.24 종가 기준">
 <meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/mem-scenario.html">
 <meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/mem-scenario.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="메모리 사이클 시나리오 가치평가">
+<meta property="og:image:alt" content="HBM이 웨이퍼를 삼키는 동안, 메모리 값은 어디까지 가나">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/mem-scenario.png">
@@ -26,58 +80,68 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
 <style>
-  .vars { display: grid; gap: 4px; }
-  .var { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); display: grid; gap: 7px; }
-  .var:last-child { border-bottom: 0; }
-  .var .vh { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; }
-  .var .vh b { font-size: var(--s-2); font-weight: 600; }
-  .var .vh span { font-size: 12px; color: var(--muted); }
-  .var .subtabs button { padding: 4px 10px; font-size: 12px; }
-  .var .subtabs button .n { font-family: var(--f-num); opacity: 0.7; margin-right: 4px; }
-  .var .vnote { font-size: 12px; color: var(--ink-2); line-height: 1.5; min-height: 18px; }
-  .combo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; font-size: var(--s-1); color: var(--ink-2); }
-  .combo b { font-family: var(--f-num); font-size: var(--s-3); color: var(--input); letter-spacing: 0.08em; }
-  .cotabs { margin-bottom: 4px; }
-  table.mt { border-collapse: collapse; width: 100%; font-size: var(--s-1); }
-  table.mt th, table.mt td { padding: 7px 8px; border-bottom: 1px solid var(--rule-soft); text-align: right; white-space: nowrap; }
-  table.mt th:first-child, table.mt td:first-child { text-align: left; }
-  table.mt thead th { color: var(--muted); font-weight: 500; font-size: 12px; border-bottom: 1px solid var(--rule); }
-  table.mt td { font-family: var(--f-num); }
-  table.mt td:first-child { font-family: var(--f-body); color: var(--ink-2); }
-  table.mt tr.em td { font-weight: 600; color: var(--ink); }
-  table.mt td.neg { color: var(--neg-ink); }
-  table.mt .ref { color: var(--muted); }
-  .sec { margin-top: 44px; }
-  .sec > .sec-h { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; border-top: 2px solid var(--ink); padding-top: 12px; margin-bottom: 16px; }
-  .sec > .sec-h h2 { font-family: var(--f-display); font-weight: 800; font-size: var(--s-4); letter-spacing: -0.01em; }
-  .sec > .sec-h p { color: var(--ink-2); font-size: var(--s-1); max-width: 70ch; }
-  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
-  @media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr); } }
-  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 14px; min-width: 0; align-content: start; }
-  .card h3 { font-size: var(--s-2); font-weight: 600; }
-  .probs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-  .probs label { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
-  .probs input { width: 100%; font-family: var(--f-num); font-size: var(--s-1); text-align: right; padding: 6px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); color: var(--input); }
-  .progress { height: 4px; background: var(--rule-soft); border-radius: 2px; overflow: hidden; }
-  .progress i { display: block; height: 100%; width: 0; background: var(--input); transition: width 0.1s; }
-  .deftable td:first-child { white-space: normal; min-width: 110px; }
-  .deftable td { white-space: normal !important; text-align: left !important; font-family: var(--f-body) !important; vertical-align: top; }
-  .deftable td b { font-weight: 600; color: var(--ink); }
-  .formula { font-family: var(--f-num); font-size: var(--s-1); background: var(--ledger); border-radius: var(--radius); padding: 12px 14px; line-height: 1.8; overflow-x: auto; white-space: pre; }
-  ul.src { display: grid; gap: 6px; font-size: var(--s-1); color: var(--ink-2); padding-left: 18px; }
-  svg.plot text.lab { fill: var(--ink-2); font-size: 11px; }
-  svg.plot text.val { fill: var(--ink); font-family: var(--f-num); font-size: 11px; }
-  .kpi .v.up { color: var(--pos); }
-  .kpi .v.down { color: var(--neg-ink); }
-  .asof { margin-top: 18px; border: 1px solid color-mix(in srgb, var(--neg) 35%, var(--rule)); border-left: 4px solid var(--neg); border-radius: var(--radius); background: var(--surface); padding: 14px 18px; display: grid; gap: 12px; max-width: 1100px; }
-  .asof-k { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 20px; }
-  @media (max-width: 860px) { .asof-k { grid-template-columns: minmax(0, 1fr); } }
-  .asof-k dt { font-size: 12px; font-weight: 700; color: var(--neg-ink); }
-  .asof-k dd { margin: 2px 0 0; font-size: var(--s-2); font-weight: 700; color: var(--ink); }
-  .asof-k dd small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
-  .asof-w { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
-  .asof-w b { color: var(--ink); }
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .evid { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); background: color-mix(in srgb, var(--pos) 6%, var(--surface)); display: grid; gap: 6px; max-width: 80ch; }
+  .evid .evk { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  .evid p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink); }
+  .evid a { font-size: 12.5px; font-weight: 600; justify-self: start; }
+  .ver { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.6; white-space: nowrap; vertical-align: 1px; }
+  .ver.ok { color: color-mix(in srgb, var(--pos) 75%, var(--ink)); background: color-mix(in srgb, var(--pos) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); }
+  .ver.mid { color: var(--neg-ink); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  td .ver { margin-left: 0; }
+  .ctl select { font: inherit; font-size: 13px; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); max-width: 100%; }
+  ol.flow5 { list-style: none; margin: 16px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: f5; }
+  @media (max-width: 960px) { ol.flow5 { grid-template-columns: minmax(0, 1fr); } }
+  ol.flow5 li { counter-increment: f5; position: relative; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--input); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 3px; align-content: start; min-width: 0; }
+  ol.flow5 li::before { content: counter(f5); position: absolute; right: 10px; top: 8px; font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  ol.flow5 .fk { font-size: 11px; font-weight: 600; color: var(--muted); padding-right: 14px; }
+  ol.flow5 b { font-size: var(--s-2); color: var(--ink); }
+  ol.flow5 p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+  .formula { font-family: var(--f-num); font-size: var(--s-1); background: var(--ledger); border-radius: var(--radius); padding: 12px 14px; line-height: 1.8; overflow-x: auto; white-space: pre; margin: 12px 0; }
 </style>
 </head>
 <body>
@@ -98,185 +162,134 @@
 </header>
 
 <main>
-  <div class="tool-hero">
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
     <div class="wrap wide">
-      <div class="crumb"><a href="../index.html">홈</a> / 도구 / 메모리 사이클 시나리오 가치평가</div>
-      <h1>메모리 사이클 시나리오 가치평가</h1>
-      <p>삼성전자와 SK하이닉스의 2027~2029년 손익과 적정주가를, 결과를 움직이는 변수 8개의 조합으로 봅니다. 변수마다 1(가장 우호적)부터 5(가장 비우호적)까지 고르면 5<sup>8</sup> = 390,625개 조합 가운데 하나가 수급 갭 → 가격 → 장기공급계약 → 매출·이익 → 적정주가로 바로 계산됩니다. 가격 민감도는 Micron 10-K의 과거 D램 가격으로 보정했고, 출발점과 가정은 2026년 11월 공시·보도 기준입니다. 교육용 모형이며 투자 권유가 아닙니다.</p>
-      <div class="legend-inputs"><span><i style="color: var(--input)">123</i> 고를 수 있는 단계·입력값</span><span><i>123</i> 계산값</span><span>금액 조원 · 주당 원 · 가격·물량은 2026년 4분기 = 1.00</span><span><a class="guide-link" href="#method">계산 방법과 출처 보기 →</a></span></div>
-      <div class="asof" role="note" aria-label="분석 기준과 유의사항">
-        <dl class="asof-k">
-          <div><dt>분석 기준일</dt><dd>2026년 11월 20일</dd></div>
-          <div><dt>기준주가</dt><dd>SK하이닉스 1,112,000원 · 삼성전자 187,500원<small>2026.11.20 장중 가격(종가 아님)</small></dd></div>
-          <div><dt>실적 출발점</dt><dd>2026년 3분기 실적 발표<small>BPS·2027 컨센서스는 증권사 추정(2026.11.6 등)</small></dd></div>
-        </dl>
-        <ul class="asof-w">
-          <li><b>투자 권유가 아닙니다.</b> 특정 종목의 매수·매도를 권하거나 목표주가를 제시하려는 것이 아니라, 변수가 가치에 어떻게 이어지는지 보여 주는 교육용 시나리오 계산입니다.</li>
-          <li><b>공개 정보만 썼습니다.</b> 공시·실적 발표·언론 보도·증권사 공개 자료만 사용했고, 어떤 회사의 내부 정보도 들어 있지 않습니다. 작성자 소속 회사의 견해와 무관한 개인 학습 자료입니다.</li>
-          <li><b>숫자는 가정에 따라 크게 달라집니다.</b> '적정주가'는 고른 단계와 가정이 맞을 때의 계산값일 뿐 예측이 아닙니다. 단계별 수치 상당수는 보도를 근거로 정한 가정입니다.</li>
-          <li><b>기준일 이후의 정보는 반영되지 않았습니다.</b> 주가·실적·정책이 바뀌면 결과도 달라지며, 기준주가는 아래 '기준주가 바꾸기'에서 바꿔 볼 수 있습니다.</li>
-        </ul>
-      </div>
+      <div class="crumb"><a href="../index.html">홈</a> / 실무 도구 / 메모리 사이클 시나리오 가치평가</div>
+      <div class="rpt-tag">Scenario valuation · v2 · 2026.11</div>
+      <h1>HBM이 웨이퍼를 삼키는 동안,<br>메모리 값은 어디까지 가나</h1>
+      <p class="dek">삼성전자와 SK하이닉스의 2027~2029년 손익과 적정주가를 변수 9개의 조합으로 계산합니다. 범용 D램·HBM·낸드의 수요와 공급을 따로 세우고, HBM이 웨이퍼를 더 쓰면서 범용 D램 공급이 줄어드는 구조, 장기공급계약, 중국 증설, 환율, 할인율을 거쳐 잔여이익모델로 값을 냅니다. 변수끼리 함께 움직이는 관계를 넣은 몬테카를로로 분포를 보고, 지금 주가가 어떤 가격 수준을 전제하는지 거꾸로 풉니다.</p>
+      <div class="rpt-meta"><span>대상<b>SK하이닉스 · 삼성전자</b></span><span>기준주가<b>2026.11.24 종가</b></span><span>실적 출발점<b>2026년 3분기 실적</b></span><span>작성<b>이기표</b></span></div>
     </div>
-  </div>
+  </section>
 
   <div class="wrap wide">
-    <div class="workbench" style="margin-top: 28px">
-      <section aria-labelledby="vars-h">
-        <div class="board-head"><h2 id="vars-h">변수 8개 고르기</h2><span class="pill" id="combo-pill"></span></div>
-        <div class="combo" style="margin: 8px 0 10px"><span>조합 코드</span><b id="combo-code"></b><span id="combo-no"></span></div>
-        <div class="btn-row" style="margin-bottom: 6px">
-          <button type="button" class="btn sm" id="pre-central">중심 조합</button>
-          <button type="button" class="btn sm" id="pre-best">모두 1 (가장 우호)</button>
-          <button type="button" class="btn sm" id="pre-mid">모두 3</button>
-          <button type="button" class="btn sm" id="pre-worst">모두 5 (가장 비우호)</button>
-          <button type="button" class="btn sm" id="pre-link">이 조합 주소 복사</button>
-        </div>
-        <div class="vars" id="vars"></div>
-        <details class="fs" style="margin-top: 10px">
-          <summary>기준주가 바꾸기</summary>
-          <div class="inputs2" style="margin-top: 10px">
-            <div class="field"><label for="px-skh">SK하이닉스 기준주가<small>원, 기본 1,112,000원(2026.11.20 장중)</small></label><input id="px-skh" type="number" inputmode="decimal" step="1000" min="1"></div>
-            <div class="field"><label for="px-sec">삼성전자 기준주가<small>원, 기본 187,500원(2026.11.20 장중)</small></label><input id="px-sec" type="number" inputmode="decimal" step="100" min="1"></div>
-          </div>
-        </details>
-      </section>
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
 
-      <aside class="board" aria-labelledby="board-h">
-        <div class="board-head"><h2 id="board-h">이 조합의 적정주가</h2><span class="pill" id="verdict"></span></div>
-        <div class="kpis k4">
-          <div class="kpi"><div class="label">SK하이닉스 적정가</div><div class="v num" id="k-skh"></div><div class="sub" id="k-skh-sub"></div></div>
-          <div class="kpi"><div class="label">기준주가 대비</div><div class="v num" id="k-skh-up"></div><div class="sub" id="k-skh-up-sub"></div></div>
-          <div class="kpi"><div class="label">삼성전자 적정가</div><div class="v num" id="k-sec"></div><div class="sub" id="k-sec-sub"></div></div>
-          <div class="kpi"><div class="label">기준주가 대비</div><div class="v num" id="k-sec-up"></div><div class="sub" id="k-sec-up-sub"></div></div>
-        </div>
-        <div class="chart" id="op-chart">
-          <div class="chart-head"><h4>연도별 영업이익 <span class="muted">(조원)</span></h4>
-            <div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>SK하이닉스</span><span><i class="key-bar" style="background: var(--accent)"></i>삼성전자</span></div>
+        <section id="s-q" data-toc="요약" data-group="요약">
+          <h2>요약</h2>
+          <div class="takeaways" id="tk"></div>
+          <div class="asof" role="note" aria-label="분석 기준과 유의사항">
+            <p><b>투자 권유가 아닙니다.</b> 매수·매도를 권하거나 목표주가를 제시하려는 것이 아니라, 변수가 가치로 이어지는 경로를 보여 주는 교육용 모형입니다. 공시·실적 발표·언론 보도·증권사 공개 자료만 썼고 어떤 회사의 내부 정보도 들어 있지 않습니다. '적정주가'는 고른 가정이 맞을 때의 계산값이며, 단계별 수치 상당수는 보도에 근거한 가정입니다. 기준주가는 <b id="asof-px"></b>(금융위원회 주식시세정보 2026.11.24 종가)입니다.</p>
           </div>
-          <div class="plot-host"></div>
-        </div>
-        <div class="memo"><span class="label">보고 문장</span><p id="memo"></p></div>
-        <div class="selfcheck" id="selfcheck"></div>
-      </aside>
+        </section>
+
+        <section id="s-start" data-toc="출발점" data-group="출발점">
+          <h2>출발점: 2026년 3분기 실적과 4분기 연환산</h2>
+          <p>모든 지수는 2026년 4분기를 1.00으로 둡니다. 4분기 제품별 매출은 3분기 실적에 회사 가이던스(하이닉스 D램 출하 +20%대 중반, 낸드 +한 자릿수 중반)와 TrendForce 4분기 계약가 전망(범용 D램 +10~15%, 낸드 +15~20%)을 얹은 추정입니다. HBM은 연 단위 계약이라 4분기 가격을 고정으로 봤습니다.</p>
+          <div class="tw" role="region" aria-label="회사별 출발점" tabindex="0"><table class="pick" id="start-tb"></table></div>
+        </section>
+
+        <section id="s-pick" data-toc="시나리오 고르기" data-group="시나리오">
+          <h2>시나리오 고르기</h2>
+          <p>대표 시나리오를 고르거나, 변수마다 1(대체로 유리)~5(불리) 단계를 고릅니다. 5<sup>9</sup> = 1,953,125개 조합이 있습니다. HBM 경쟁 구도만은 하이닉스에 유리한 쪽이 삼성에 불리합니다. 고른 조합은 주소(#lv=…)에 남아 그대로 공유할 수 있습니다.</p>
+          <div class="presets" id="presets" role="group" aria-label="대표 시나리오"></div>
+          <div class="board" id="board" aria-live="polite"></div>
+          <div class="vars" id="vars"></div>
+        </section>
+
+        <section id="s-supply" data-toc="수급과 가격">
+          <h2>수급과 가격: 제품별로 따로</h2>
+          <p>수급 갭은 누적 (1 + 공급 증가)/(1 + 수요 증가) − 1이고, 2026년 말에는 세 제품 모두 부족(음수)에서 출발합니다. 범용 D램 공급은 업계 증설에 HBM 웨이퍼 비중 변화를 곱해 줄어듭니다. HBM은 같은 비트를 만드는 데 웨이퍼를 약 3배 쓰기 때문에, 비중이 23%에서 29%로 오르면 범용 D램에 남는 웨이퍼가 그만큼 줄어듭니다.</p>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>가격 지수(4Q26 = 1.00): 지금 조합(실선)과 중심 시나리오(점선)</h4><span class="muted" style="font-size: 12px">연평균</span></div>
+            <div class="fig-b plotbox" id="f-px"></div>
+            <div class="tw" role="region" aria-label="연도별 수요·공급·갭" tabindex="0" style="margin: 6px 18px 14px"><table class="pick" id="sd-tb"></table></div>
+          </div>
+        </section>
+
+        <section id="s-pl" data-toc="연도별 손익">
+          <h2>연도별 손익과 적정주가</h2>
+          <div class="fig" data-rv>
+            <div class="ctl"><div class="seg" id="pl-co" role="group" aria-label="회사"></div></div>
+            <div class="tw" role="region" aria-label="연도별 손익" tabindex="0" style="margin: 10px 18px 14px"><table class="pick" id="pl-tb"></table></div>
+            <div class="fig-s" id="pl-note"></div>
+          </div>
+        </section>
+
+        <section id="s-tor" data-toc="민감도">
+          <h2>어떤 변수가 가장 크게 움직이나</h2>
+          <div class="fig" data-rv>
+            <div class="ctl"><div class="seg" id="tor-co" role="group" aria-label="회사"></div></div>
+            <div class="fig-b plotbox" id="f-tor"></div>
+            <div class="fig-s">지금 고른 조합에서 변수 하나만 1~5단계로 바꿨을 때 적정주가의 범위입니다. 굵은 점은 지금 단계, 세로선은 기준주가입니다.</div>
+          </div>
+        </section>
+
+        <section id="s-mc" data-toc="몬테카를로" data-group="분포">
+          <h2>함께 움직이는 변수로 본 분포</h2>
+          <p>v1은 39만 개 조합을 같은 무게로 셌습니다. 그러면 'AI 급랭인데 증설도 과잉이고 원화도 강세' 같은 잘 일어나지 않는 조합이 과대 대표됩니다. 여기서는 변수마다 단계 확률을 두고, 변수 사이 상관을 가우스 코퓰러로 넣어 2만 개 시나리오를 뽑습니다. 예를 들어 AI 투자가 꺾이면 범용 수요가 약해지고 할인율이 오르며, 증설은 줄고 원화는 약해지는 경향이 같이 옵니다.</p>
+          <div class="fig" data-rv>
+            <div class="ctl">
+              <div class="seg" id="mc-co" role="group" aria-label="회사"></div>
+              <label class="chk"><input type="checkbox" id="mc-corr" checked> 변수 사이 상관 넣기</label>
+            </div>
+            <div class="readout" id="mc-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="f-mc"></div>
+            <div class="tw" role="region" aria-label="몬테카를로 요약" tabindex="0" style="margin: 6px 18px 14px"><table class="pick" id="mc-tb"></table></div>
+            <div class="fig-s" id="mc-note"></div>
+          </div>
+        </section>
+
+        <section id="s-imp" data-toc="주가가 전제하는 것">
+          <h2>지금 주가가 전제하는 가격 수준</h2>
+          <p>지금 고른 조합의 수급 경로는 그대로 두고, 범용 D램·HBM·낸드 가격을 모두 같은 비율로 바꿔 적정주가가 기준주가와 같아지는 비율을 찾았습니다. 1보다 작으면 시장이 이 조합보다 낮은 메모리 가격을 전제하고 있다는 뜻입니다.</p>
+          <div class="readout" id="imp-out" aria-live="polite"></div>
+          <div class="tw" role="region" aria-label="대표 시나리오별 역산" tabindex="0"><table class="pick" id="imp-tb"></table></div>
+        </section>
+
+        <section id="s-method" data-toc="방법·가정·출처" data-group="방법">
+          <h2>계산 방법, 가정, 출처</h2>
+          <ol class="traps">
+            <li><b>수요</b> HBM = AI 투자 단계의 HBM 비트 수요. 범용 D램 = 0.5 × 서버(AI 단계) + 0.5 × PC·모바일(범용 수요 단계). 낸드 = 0.45 × 기업용 SSD + 0.55 × (범용 + 기기당 용량 5%).</li>
+            <li><b>공급</b> HBM = (w<sub>t</sub>/w<sub>t−1</sub>) × (1 + 업계 D램 증설) − 1. 범용 D램 = ((1 − w<sub>t</sub>)/(1 − w<sub>t−1</sub>)) × (1 + 증설) − 1 + 중국 가산 + 무역. 중심 단계에서 2027년 HBM 공급 +49%는 TrendForce 전망(+50~60%)과 맞물립니다.</li>
+            <li><b>가격</b> 범용 D램·낸드 = exp(−k × 갭 변화)를 상·하한(범용 D램 1.8배·0.3배, 낸드 1.6배·0.3배)에 부드럽게 눌렀습니다. k는 v1과 같은 Micron 10-K 보정(과잉 7.39, 부족 8.54), 낸드 6.0, HBM 3.0(가정). HBM은 2027년 세대 교체 인상(AI 단계 −10%~+40%) 뒤 같은 세대 연 8% 인하.</li>
+            <li><b>장기공급계약</b> 범용 D램·낸드의 계약 물량은 계약가를 받습니다. 하락기 계약가 = φ × max(계단가, 하한) + (1 − φ) × 계단가, 계단가 = max(시장가, 전년 계약가 × 0.66). 이행률은 가격 하락 폭에 따라 낮아집니다(30% 하락 70%, 50% 하락 40%, 중심 단계).</li>
+            <li><b>손익</b> 매출 = 4Q26 연환산 제품별 매출 × 가격 × 물량 × 환율/1,335 × 관세계수. 물량 = 업계 공급 누적 ÷ 4분기 출하 수준(범용 1.08, 낸드 1.05, HBM 1.20) × HBM 점유율 변화. 원가 = 4Q26 원가율 × 물량 × 비트당 원가 연 −12%(HBM −8%) + 증설 감가상각. 영업이익 = (매출 − 원가) × (1 − 성과급 10%) + 메모리 외(삼성).</li>
+            <li><b>가치</b> 잔여이익모델: 2026E BPS + 2027~29 잔여이익(EPS − 자기자본비용 × 기초 BPS) 현재가치 + 잔존가치(지속계수 0.6). 자기자본비용 하이닉스 11%·삼성 10% ± 할인율 단계.</li>
+            <li><b>몬테카를로</b> 변수 9개의 잠재 정규변수에 상관을 걸고(촐레스키 분해) 단계 확률의 누적값으로 단계를 정합니다. 시드 고정 2만 회라 같은 조건이면 같은 결과가 나옵니다.</li>
+          </ol>
+          <h3>v1과 달라진 점</h3>
+          <ul class="src">
+            <li>'메모리 업황' 한 변수에 가격·물량 경로를 표로 정해 두던 방식을 없애고, 수요(AI 투자, 범용 수요)와 공급(업계 증설, 중국)을 따로 골라 가격이 계산되게 했습니다.</li>
+            <li>범용 D램·HBM·낸드를 나누고 HBM 웨이퍼 잠식, HBM 점유율 경쟁을 넣었습니다. 금리·밸류업은 할인율 한 변수로 합쳤습니다.</li>
+            <li>같은 무게 전수 분포 대신 상관을 넣은 몬테카를로, 대표 시나리오, 주가 역산을 넣었습니다. 기준주가를 2026.11.20 장중 값에서 2026.11.24 종가로 바꿨습니다.</li>
+          </ul>
+          <h3>한계</h3>
+          <ul class="src">
+            <li>단계별 수치(수요·증설률, HBM 인상, 이행률, 할인율 가감)는 보도·증권사 공개 자료에 기댄 가정입니다. 4분기 제품별 매출과 원가율도 추정입니다.</li>
+            <li>재고 순환(고객의 재고 축적·소진)은 수요 단계 안에 뭉뚱그렸습니다. 실제 하강은 재고 소진 때문에 이 모형보다 빠르고 깊을 수 있습니다.</li>
+            <li>상관 계수와 단계 확률은 작성자의 판단입니다. 화면에서 상관을 끄고 결과가 얼마나 바뀌는지 확인할 수 있습니다.</li>
+            <li>우선주는 보통주와 같은 값으로 셌고, 메모리 외 사업은 단순화했습니다.</li>
+          </ul>
+          <h3>출처</h3>
+          <ul class="src" id="src-list">
+            <li>실적: <a href="https://www.theguru.co.kr/news/article.html?no=108956" rel="noopener">SK하이닉스 3분기 실적(더구루)</a>, <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-2026%eb%85%84-3%eb%b6%84%ea%b8%b0-%ec%8b%a4%ec%a0%81-%eb%b0%9c%ed%91%9c" rel="noopener">삼성전자 2026년 3분기 실적 발표</a>, <a href="https://www.ajunews.com/view/20261028105814775" rel="noopener">하이닉스 컨퍼런스콜(아주경제)</a></li>
+            <li>가격 전망: <a href="https://www.trendforce.com/presscenter/news/20260930-13258.html" rel="noopener">TrendForce 4Q26 계약가</a>, <a href="https://www.trendforce.com/presscenter/news/20261111-13303.html" rel="noopener">TrendForce PC 제조사 2027 조달 조정</a>, <a href="https://www.techtimes.com/articles/331031/20261118/hbm4-memory-price-forecast-trendforce-sees-3-550-per-gigabit-next-year-205-now.htm" rel="noopener">HBM4 가격 전망</a></li>
+            <li>수급: <a href="https://www.trendforce.com/news/2026/09/29/news-samsung-sees-hbm-taking-nearly-30-of-industry-dram-capacity-in-2027-up-from-20-currently/" rel="noopener">HBM 웨이퍼 비중 30%(TrendForce)</a>, <a href="https://456xresearch.substack.com/p/global-memory-strong-in-2027-cautious" rel="noopener">골드만삭스 HBM 공급 부족 추정 요약</a>, <a href="https://www.mt.co.kr/en/stock/2026/11/10/2026111015285893769" rel="noopener">모건스탠리 목표가 하향(머니투데이)</a></li>
+            <li>AI 투자: <a href="https://fourweekmba.com/ai-morgan-stanley-pegs-google-2027-capex-at-375b-in-1-6t-call/" rel="noopener">모건스탠리 2027 하이퍼스케일러 설비투자 1.6조 달러</a></li>
+            <li>컨센서스: <a href="https://www.rocketpunch.com/discover/33460" rel="noopener">KB증권 2027 영업이익 전망</a>, 주주환원: <a href="https://www.ddaily.co.kr/page/view/2026081915532359212" rel="noopener">하이닉스 40조 원 자사주 취득·소각</a></li>
+            <li>주가·상장주식수: 금융위원회 주식시세정보(공공데이터포털), 2026.11.24 종가. BPS: 메리츠증권(2026.11.6)</li>
+          </ul>
+          <p class="rpt-end">교육용 모형이며 투자 권유가 아닙니다. 공개 정보만 썼고 작성자가 속한 회사의 내부 정보나 전망이 들어 있지 않습니다. 가격 기준일 2026.11.24, 자료 확인 2026.11.25. 설계 기록은 저장소의 docs/mem-scenario-model.md에 있습니다.</p>
+        </section>
+      </div>
     </div>
-
-    <section class="sec" id="supply" aria-labelledby="supply-h">
-      <div class="sec-h"><h2 id="supply-h">수요·공급과 가격</h2><p>유효 수급 갭은 공급 − 수요를 2026년 4분기 대비 누적 %p로 본 값입니다(양수 = 공급과잉). 가격 = exp(−k × 갭)이고, 장기공급계약이 보호하는 물량은 계약가격, 나머지는 시장가격을 받습니다.</p></div>
-      <div class="subtabs cotabs" role="radiogroup" aria-label="회사 고르기" id="co-tabs">
-        <button type="button" role="radio" aria-checked="true" data-co="skh">SK하이닉스</button>
-        <button type="button" role="radio" aria-checked="false" data-co="sec">삼성전자</button>
-      </div>
-      <div class="two" style="margin-top: 12px">
-        <div class="card">
-          <div class="scroll" style="border: 0"><table class="mt" id="sd-table"></table></div>
-          <p class="hint" id="sd-hint"></p>
-        </div>
-        <div class="card">
-          <div class="chart" id="gap-chart">
-            <div class="chart-head"><h4>유효 수급 갭 <span class="muted">(%p, 4Q26 대비 누적)</span></h4>
-              <div class="legend"><span><i class="key-bar" style="background: var(--neg)"></i>공급과잉</span><span><i class="key-bar" style="background: var(--pos)"></i>공급부족</span></div>
-            </div>
-            <div class="plot-host"></div>
-          </div>
-          <div class="chart" id="px-chart">
-            <div class="chart-head"><h4>가격 지수 <span class="muted">(4Q26 = 1.00)</span></h4>
-              <div class="legend"><span><i class="key-line" style="background: var(--mark-muted)"></i>시장가격</span><span><i class="key-line" style="background: var(--input)"></i>실현가격(계약 반영)</span></div>
-            </div>
-            <div class="plot-host"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="sec" id="pl" aria-labelledby="pl-h">
-      <div class="sec-h"><h2 id="pl-h">연도별 손익과 적정주가</h2><p>적정주가는 잔여이익모델입니다: 2026년 말 BPS + 2027~29년 잔여이익(EPS − 자기자본비용 × 기초 BPS)의 현재가치 + 이후 감쇠하는 잔존가치. 결과 칸의 PER·PBR은 2029E 기준입니다. 2027년은 이 모형에서 이익이 가장 큰 해라 그해 배수는 실제보다 싸 보이므로, 정상화에 가까운 마지막 해를 기본으로 두고 연도별 배수를 아래 표에 함께 적었습니다.</p></div>
-      <div class="two">
-        <div class="card"><h3>SK하이닉스</h3><div class="scroll" style="border: 0"><table class="mt" id="pl-skh"></table></div><div class="scroll" style="border: 0"><table class="mt" id="val-skh"></table></div></div>
-        <div class="card"><h3>삼성전자</h3><div class="scroll" style="border: 0"><table class="mt" id="pl-sec"></table></div><div class="scroll" style="border: 0"><table class="mt" id="val-sec"></table></div></div>
-      </div>
-    </section>
-
-    <section class="sec" id="tornado" aria-labelledby="tor-h">
-      <div class="sec-h"><h2 id="tor-h">어떤 변수가 가장 크게 움직이나</h2><p>지금 고른 조합에서 변수 하나만 1단계부터 5단계까지 바꿨을 때 적정주가의 범위입니다. 막대 안의 점은 단계 1~5, 굵은 점은 지금 고른 단계, 세로선은 기준주가입니다.</p></div>
-      <div class="two">
-        <div class="card"><div class="chart" id="tor-skh"><div class="chart-head"><h4>SK하이닉스 <span class="muted">(만원)</span></h4></div><div class="plot-host"></div></div></div>
-        <div class="card"><div class="chart" id="tor-sec"><div class="chart-head"><h4>삼성전자 <span class="muted">(만원)</span></h4></div><div class="plot-host"></div></div></div>
-      </div>
-    </section>
-
-    <section class="sec" id="weighted" aria-labelledby="w-h">
-      <div class="sec-h"><h2 id="w-h">업황 확률로 가중한 적정주가</h2><p>업황(변수 1)은 미래를 하나로 정할 수 없으니 단계별 확률로 가중합니다. 나머지 7개 변수는 위에서 고른 단계를 그대로 씁니다.</p></div>
-      <div class="two">
-        <div class="card">
-          <div class="subtabs" role="radiogroup" aria-label="확률 프리셋" id="prob-tabs"></div>
-          <div class="probs" id="probs"></div>
-          <p class="hint" id="prob-hint"></p>
-        </div>
-        <div class="card">
-          <div class="scroll" style="border: 0"><table class="mt" id="w-table"></table></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="sec" id="all" aria-labelledby="all-h">
-      <div class="sec-h"><h2 id="all-h">390,625개 조합 전체 분포</h2><p>모든 조합의 적정주가를 계산해 분포로 봅니다. 기본은 조합마다 같은 무게이고, 업황 확률 가중을 고르면 업황 단계에 위 확률을 곱합니다(나머지 변수는 같은 무게).</p></div>
-      <div class="card">
-        <div class="btn-row">
-          <div class="subtabs" role="radiogroup" aria-label="분포 회사" id="dist-co"><button type="button" role="radio" aria-checked="true" data-co="skh">SK하이닉스</button><button type="button" role="radio" aria-checked="false" data-co="sec">삼성전자</button></div>
-          <div class="subtabs" role="radiogroup" aria-label="무게" id="dist-w"><button type="button" role="radio" aria-checked="true" data-w="eq">같은 무게</button><button type="button" role="radio" aria-checked="false" data-w="p">업황 확률 가중</button></div>
-          <button type="button" class="btn sm primary" id="dist-run">전체 조합 계산</button>
-        </div>
-        <div class="progress" aria-hidden="true"><i id="dist-bar"></i></div>
-        <div class="kpis k4" id="dist-kpis" hidden>
-          <div class="kpi"><div class="label" id="d-mean-l">평균</div><div class="v num" id="d-mean"></div><div class="sub" id="d-mean-sub"></div></div>
-          <div class="kpi"><div class="label">기준주가 이상인 비율</div><div class="v num" id="d-above"></div><div class="sub">조합 비중 기준</div></div>
-          <div class="kpi"><div class="label">최저</div><div class="v num" id="d-min"></div><div class="sub" id="d-min-sub"></div></div>
-          <div class="kpi"><div class="label">최고</div><div class="v num" id="d-max"></div><div class="sub" id="d-max-sub"></div></div>
-        </div>
-        <div class="chart" id="dist-chart" hidden><div class="chart-head"><h4 id="dist-title"></h4><div class="legend"><span><i class="key-bar" style="background: var(--input)"></i>기준주가 이상</span><span><i class="key-bar" style="background: var(--mark-muted)"></i>기준주가 미만</span></div></div><div class="plot-host"></div></div>
-        <p class="hint" id="dist-hint">계산은 이 브라우저 안에서만 돕니다(1~2초).</p>
-      </div>
-    </section>
-
-    <section class="sec" id="method" aria-labelledby="m-h">
-      <div class="sec-h"><h2 id="m-h">계산 방법, 가정, 출처</h2><p>모든 숫자는 계산 엔진(assets/engines/memscen.js)에서 나오고, 같은 엔진을 검산 페이지가 항등식으로 확인합니다.</p></div>
-      <div class="two">
-        <div class="card">
-          <h3>계산 순서</h3>
-<div class="formula" tabindex="0" role="region" aria-label="계산 순서 수식">① 갭  G = −ln(P_업황) ÷ k + 수요손실 × 노출도 × (1 − 백로그 흡수)
-         + 중국 공급 + 무역(공급 차질)
-② 시장가격  P_m = exp(−k × G_시장)      k = 7.39(과잉) / 8.54(부족)
-   G_시장 = G − L × 0.5 × max(G,0) + 0.6 × 전년 흡수분
-③ 계약가격  상승: 시장가(하이닉스) / min(시장가, 1.10)(삼성)
-            하락: φ × max(계단가, 하한) + (1 − φ) × 계단가
-            계단가 = max(P_m, 전년 계약가 × 0.66)
-④ 실현가격  P = L × 계약가 + (1 − L) × P_m,  L = 커버리지 × 이행률
-⑤ 매출 = 4Q26 연환산 × P × 물량 × 환율 ÷ 1,335 × 관세
-   영업이익 = (매출 − 원가 + 몰수 선급금) × (1 − 성과급 10%) + 메모리 외
-⑥ 적정가 = BPS₀ + Σ (EPS − COE × BPS)/(1+COE)^t + 잔존가치(지속계수 0.6)</div>
-          <div class="scroll" style="border: 0"><table class="mt" id="param-table"></table></div>
-        </div>
-        <div class="card">
-          <h3>변수와 단계 정의</h3>
-          <div class="scroll" style="border: 0"><table class="mt deftable" id="def-table"></table></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top: 24px">
-        <h3>출처와 한계</h3>
-        <ul class="src">
-          <li>출발점: SK하이닉스 2026년 3분기 경영실적(매출 104.6조원, 영업이익 83.3조원), 삼성전자 2026년 3분기 실적(DS 매출 147.1조원, 영업이익 106.5조원). 4분기 연환산 값은 추정.</li>
-          <li>BPS: 메리츠증권 리서치(2026.11.6) 2026E. 기준주가: 2026.11.20 장중. 2027년 컨센서스: 에프엔가이드(하이닉스 영업이익 약 404조원, 삼성 약 545조원)와 2단계를 맞춤.</li>
-          <li>가격 민감도 k: Micron 10-K의 회계연도 D램 평균판매가격 변화(FY2019 약 −30%, FY2023 40%대 후반 하락)와 TrendForce 수급 갭으로 보정. 2006~2026년 백테스트에서 연간 가격 예측력은 낮았음(방향 적중 3/7). 이 식은 갭이 주어졌을 때의 환산기로만 씀.</li>
-          <li>장기공급계약: 하이닉스 14개 고객·2027~28년 생산능력 50% 이상, 삼성 생산능력 60~70%·롤링 5년, 일부 계약 하한 당시 현물가의 80%, 선급금 10~30%, Micron 10-K의 테이크오어페이 구조(2026년 7~11월 보도·공시).</li>
-          <li>거시·정책: 연준·한은 금리 전망, 232조 반도체 관세, 미중 휴전(2027.1.10 만료), 중국 공장 연간 장비 허가, CXMT 생산능력(2028년 월 60만 장 전망), 2026.11.19 시행 원격접속·동남아 수출 규제.</li>
-          <li>한계: 단계별 수치(하한, 이행률, 수요 손실, 할인율 가감 등)는 보도를 근거로 정한 가정입니다. 우선주는 보통주와 같은 값으로 셌고, 메모리 외 사업은 단순화했습니다. 투자 판단의 책임은 읽는 사람에게 있습니다.</li>
-        </ul>
-      </div>
-    </section>
   </div>
 </main>
-
 <!-- build:flow -->
 <section class="trail" aria-label="이어서 볼 것">
   <div class="wrap wide">
@@ -294,348 +307,12 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.25</span><span>분석 기준일 2026.11.20, 기준주가는 같은 날 장중 가격입니다. 교육용 시나리오 모형이며 투자 권유가 아닙니다. 공개 정보만 사용했고, 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.25</span><span>교육용 시나리오 모형입니다. 공개 정보만 썼으며 투자 권유가 아닙니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>
 <script src="../assets/engines/memscen.js"></script>
-<script>
-(function () {
-  "use strict";
-  const F = window.Fin, M = window.MemScen, $ = F.$;
-  const COS = ["skh", "sec"];
-  const state = { lv: M.CENTRAL.slice(), co: "skh", probKey: "central", probs: M.PROBS.central.p.slice(), price: { skh: M.CO.skh.price, sec: M.CO.sec.price }, distCo: "skh", distW: "eq" };
-  const won = (x) => F.num(x, 0) + "원";
-  const man = (x) => F.num(x / 10000, 1) + "만";
-  const jo = (x, d) => F.money(x, d === undefined ? 0 : d);
-  const color = { skh: () => F.css("--input"), sec: () => F.css("--accent") };
-
-  /* ---------- 주소(#c=33322333)로 조합 공유 ---------- */
-  function readHash() {
-    const m = /c=([1-5]{8})/.exec(location.hash);
-    if (m) state.lv = m[1].split("").map((d) => Number(d) - 1);
-  }
-  function writeHash() { history.replaceState(null, "", "#c=" + M.code(state.lv)); }
-
-  /* ---------- 변수 선택 ---------- */
-  function radio(group, onPick) {
-    const btns = Array.from(group.querySelectorAll("button"));
-    btns.forEach((b, i) => {
-      b.addEventListener("click", () => onPick(i, b));
-      b.addEventListener("keydown", (e) => {
-        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-        e.preventDefault();
-        const j = (i + (e.key === "ArrowRight" ? 1 : btns.length - 1)) % btns.length;
-        btns[j].focus(); onPick(j, btns[j]);
-      });
-    });
-    return btns;
-  }
-  function setChecked(btns, i) { btns.forEach((b, j) => { b.setAttribute("aria-checked", j === i ? "true" : "false"); b.tabIndex = j === i ? 0 : -1; }); }
-
-  const varBtns = [];
-  function buildVars() {
-    const host = $("vars");
-    M.VARS.forEach((v, i) => {
-      const g = F.el("div", { class: "subtabs", role: "radiogroup", "aria-label": v.name });
-      v.levels.forEach((L, k) => {
-        const b = F.el("button", { type: "button", role: "radio" });
-        b.appendChild(F.el("span", { class: "n", text: String(k + 1) }));
-        b.appendChild(document.createTextNode(L.tag));
-        g.appendChild(b);
-      });
-      const note = F.el("div", { class: "vnote", id: "note-" + v.id });
-      host.appendChild(F.el("div", { class: "var" }, [
-        F.el("div", { class: "vh" }, [F.el("b", { text: (i + 1) + ". " + v.name }), F.el("span", { text: v.what })]), g, note
-      ]));
-      varBtns[i] = radio(g, (k) => { state.lv[i] = k; render(); });
-    });
-  }
-
-  /* ---------- 상단 결과 ---------- */
-  function kpiValue(id, text, cls) { const n = $(id); n.textContent = text; n.className = "v num" + (cls ? " " + cls : ""); }
-  function renderBoard(R) {
-    COS.forEach((co) => {
-      const r = R[co];
-      kpiValue("k-" + co, man(r.value) + "원");
-      $("k-" + co + "-sub").textContent = "2029E " + (r.per29 === null ? "적자" : "PER " + F.num(r.per29, 1) + "배") + " · PBR " + F.num(r.pbr29, 2) + "배";
-      kpiValue("k-" + co + "-up", F.pctSigned(r.upside, 0), r.upside >= 0 ? "up" : "down");
-      $("k-" + co + "-up-sub").textContent = "기준주가 " + man(r.price) + "원 · COE " + F.pct(r.coe, 1);
-    });
-    const both = R.skh.upside >= 0 && R.sec.upside >= 0, none = R.skh.upside < 0 && R.sec.upside < 0;
-    const v = $("verdict"); v.className = "pill " + (both ? "ok" : none ? "bad" : "warn");
-    v.textContent = both ? "두 종목 모두 기준주가 위" : none ? "두 종목 모두 기준주가 아래" : "한 종목만 기준주가 위";
-    /* 보고 문장 */
-    const lv = state.lv, tag = (i) => M.VARS[i].levels[lv[i]].tag;
-    const memo = $("memo"); memo.textContent = "";
-    memo.append("업황 '" + tag(0) + "', AI 수요 충격 '" + tag(5) + "', 장기공급계약 '" + tag(6) + "' 조합에서 2027~29년 영업이익은 SK하이닉스 " + R.skh.years.map((y) => jo(y.op)).join(" → ") + "조원, 삼성전자 " + R.sec.years.map((y) => jo(y.op)).join(" → ") + "조원입니다. ");
-    memo.append("적정주가는 ", F.el("b", { text: "SK하이닉스 " + man(R.skh.value) + "원(" + F.pctSigned(R.skh.upside, 0) + ")" }), ", ", F.el("b", { text: "삼성전자 " + man(R.sec.value) + "원(" + F.pctSigned(R.sec.upside, 0) + ")" }), "입니다. ");
-    const t = M.tornado("skh", lv, { price: state.price.skh })[0];
-    memo.append("지금 조합에서 SK하이닉스 적정가를 가장 크게 움직이는 변수는 '" + t.name + "'(" + man(t.lo) + "~" + man(t.hi) + "원)입니다.");
-    opChart(R);
-  }
-
-  function opChart(R) {
-    const host = $("op-chart"), fr = F.plotFrame(host, 190, "연도별 영업이익"), svg = fr.svg, W = fr.W, H = fr.H;
-    const padL = 44, padR = 8, padT = 10, padB = 24;
-    const vals = [].concat(R.skh.years.map((y) => y.op), R.sec.years.map((y) => y.op), [R.skh.years[0].op * 0, M.CO.skh.op26, M.CO.sec.op26]);
-    const t = F.niceTicks(Math.min(0, Math.min.apply(null, vals)), Math.max.apply(null, vals), 4);
-    const Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
-    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
-    const labels = ["2026E", "2027", "2028", "2029"], gw = (W - padL - padR) / 4, bw = Math.min(26, gw / 3.2);
-    const tip = F.makeTip(host);
-    labels.forEach((lab, i) => {
-      const cx = padL + gw * (i + 0.5);
-      F.svgText(svg, cx, H - 6, lab, { "text-anchor": "middle" });
-      COS.forEach((co, j) => {
-        const v = i === 0 ? M.CO[co].op26 : R[co].years[i - 1].op, x = cx + (j === 0 ? -bw - 1 : 1);
-        F.svgEl("path", { d: F.barPath(x, bw, Y(0), Y(v), 3), fill: color[co](), opacity: i === 0 ? 0.45 : 1 }, svg);
-      });
-      const hit = F.svgEl("rect", { class: "hit", x: cx - gw / 2, y: padT, width: gw, height: H - padT - padB }, svg);
-      F.wireHit(hit, host, tip, () => ({ title: lab + " 영업이익", rows: COS.map((co) => [M.CO[co].name, jo(i === 0 ? M.CO[co].op26 : R[co].years[i - 1].op) + "조원", color[co]()]) }));
-    });
-  }
-
-  /* ---------- 수요·공급 ---------- */
-  function renderSupply(R) {
-    const r = R[state.co], tb = $("sd-table"); tb.textContent = "";
-    const hr = F.el("tr", null, [F.el("th", { text: "" })].concat(M.YEARS.map((y) => F.el("th", { text: String(y) }))));
-    tb.appendChild(F.el("thead", null, [hr]));
-    const body = F.el("tbody");
-    const row = (lab, f, em) => body.appendChild(F.el("tr", { class: em ? "em" : null }, [F.el("td", { text: lab })].concat(r.years.map((y) => { const s = f(y); return F.el("td", { class: s.neg ? "neg" : null, text: s.t }); }))));
-    row("수급 갭(시나리오 합계)", (y) => ({ t: F.signed(y.gap * 100, 1) + "%p", neg: y.gap > 0 }));
-    row("시장이 보는 갭(계약 흡수 반영)", (y) => ({ t: F.signed(y.gapMkt * 100, 1) + "%p", neg: y.gapMkt > 0 }));
-    row("시장 가격지수", (y) => ({ t: F.num(y.pm, 2) }));
-    row("계약 가격지수", (y) => ({ t: y.pc === null ? "–" : F.num(y.pc, 2) }));
-    row("실현 가격지수", (y) => ({ t: F.num(y.peff, 2) }), true);
-    row("출하 물량지수", (y) => ({ t: F.num(y.q, 2) }));
-    row("계약 보호 물량", (y) => ({ t: F.pct(y.lta, 0) }));
-    tb.appendChild(body);
-    const g = r.years.map((y) => y.gapMkt * 100), worst = Math.max.apply(null, g);
-    $("sd-hint").textContent = worst > 0
-      ? "시장이 보는 갭이 가장 큰 해는 " + M.YEARS[g.indexOf(worst)] + "년 " + F.num(worst, 1) + "%p입니다. 과거 2년 누적 갭은 금융위기 19.6%p, 2011~12년 14.8%p, 2019~20년 10.7%p, 2022~23년 8.5%p였습니다."
-      : "세 해 모두 공급부족(갭 음수)입니다. 가격은 4Q26보다 높게 유지됩니다.";
-    gapChart(r); pxChart(r);
-  }
-  function smallBars(hostId, H, vals, fmt, colorOf, label) {
-    const host = $(hostId), fr = F.plotFrame(host, H, label), svg = fr.svg, W = fr.W;
-    const padL = 40, padR = 8, padT = 12, padB = 22;
-    const t = F.niceTicks(Math.min(0, Math.min.apply(null, vals)), Math.max(0, Math.max.apply(null, vals)), 4);
-    const Y = (v) => padT + (t.hi - v) / (t.hi - t.lo || 1) * (H - padT - padB);
-    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 0), { "text-anchor": "end" }); });
-    const gw = (W - padL - padR) / vals.length, bw = Math.min(46, gw * 0.5);
-    vals.forEach((v, i) => {
-      const cx = padL + gw * (i + 0.5);
-      F.svgEl("path", { d: F.barPath(cx - bw / 2, bw, Y(0), Y(v), 3), fill: colorOf(v) }, svg);
-      F.svgText(svg, cx, v >= 0 ? Y(v) - 4 : Y(v) + 12, fmt(v), { "text-anchor": "middle", class: "val" });
-      F.svgText(svg, cx, H - 5, String(M.YEARS[i]), { "text-anchor": "middle" });
-    });
-  }
-  function gapChart(r) { smallBars("gap-chart", 150, r.years.map((y) => y.gapMkt * 100), (v) => F.signed(v, 1), (v) => (v > 0 ? F.css("--neg") : F.css("--pos")), "유효 수급 갭"); }
-  function pxChart(r) {
-    const host = $("px-chart"), fr = F.plotFrame(host, 170, "가격 지수"), svg = fr.svg, W = fr.W, H = fr.H;
-    const padL = 40, padR = 10, padT = 10, padB = 22;
-    const pts = [1].concat(r.years.map((y) => y.pm)), eff = [1].concat(r.years.map((y) => y.peff));
-    const t = F.niceTicks(0, Math.max(1.2, Math.max.apply(null, pts.concat(eff))), 4);
-    const X = (i) => padL + i * (W - padL - padR) / 3, Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
-    t.ticks.forEach((tv) => { F.svgEl("line", { class: "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.num(tv, 1), { "text-anchor": "end" }); });
-    ["4Q26", "2027", "2028", "2029"].forEach((l, i) => F.svgText(svg, X(i), H - 5, l, { "text-anchor": "middle" }));
-    [[pts, F.css("--mark-muted")], [eff, F.css("--input")]].forEach((s) => {
-      F.svgEl("path", { d: "M" + s[0].map((v, i) => X(i) + "," + Y(v)).join("L"), fill: "none", stroke: s[1], "stroke-width": 2, "stroke-linejoin": "round" }, svg);
-      s[0].forEach((v, i) => F.svgEl("circle", { cx: X(i), cy: Y(v), r: 3.5, fill: s[1], stroke: F.css("--surface"), "stroke-width": 1.5 }, svg));
-    });
-    const tip = F.makeTip(host);
-    [0, 1, 2, 3].forEach((i) => {
-      const hit = F.svgEl("rect", { class: "hit", x: X(i) - (W - padL - padR) / 6, y: padT, width: (W - padL - padR) / 3, height: H - padT - padB }, svg);
-      F.wireHit(hit, host, tip, () => ({ title: i === 0 ? "4Q26" : String(M.YEARS[i - 1]), rows: [["시장가격", F.num(pts[i], 2), F.css("--mark-muted")], ["실현가격", F.num(eff[i], 2), F.css("--input")]] }));
-    });
-  }
-
-  /* ---------- 손익표 ---------- */
-  function renderPL(R) {
-    COS.forEach((co) => {
-      const r = R[co], tb = $("pl-" + co); tb.textContent = "";
-      tb.appendChild(F.el("thead", null, [F.el("tr", null, [F.el("th", { text: "조원 · 원" }), F.el("th", { text: "2026E" })].concat(M.YEARS.map((y) => F.el("th", { text: String(y) }))))]));
-      const body = F.el("tbody");
-      const row = (lab, ref, f, em) => body.appendChild(F.el("tr", { class: em ? "em" : null }, [F.el("td", { text: lab }), F.el("td", { class: "ref", text: ref })].concat(r.years.map((y) => { const v = f(y); return F.el("td", { class: v.neg ? "neg" : null, text: v.t }); }))));
-      row("매출(메모리)", "–", (y) => ({ t: jo(y.rev) }));
-      row("영업이익", jo(M.CO[co].op26), (y) => ({ t: jo(y.op), neg: y.op < 0 }), true);
-      row("순이익", "–", (y) => ({ t: jo(y.ni), neg: y.ni < 0 }));
-      row("EPS", "–", (y) => ({ t: F.num(y.eps, 0), neg: y.eps < 0 }));
-      row("기말 BPS", F.num(M.CO[co].bps0, 0), (y) => ({ t: F.num(y.bps, 0) }));
-      row("ROE", "–", (y) => ({ t: F.pct(y.roe, 0), neg: y.roe < 0 }));
-      row("잔여이익(주당)", "–", (y) => ({ t: F.num(y.ri, 0), neg: y.ri < 0 }));
-      row("PER(적정주가 ÷ EPS)", "–", (y) => ({ t: y.eps > 0 ? F.num(r.value / y.eps, 1) + "배" : "적자" }));
-      row("PBR(적정주가 ÷ 기말 BPS)", "–", (y) => ({ t: F.num(r.value / y.bps, 2) + "배" }));
-      tb.appendChild(body);
-      const vt = $("val-" + co); vt.textContent = "";
-      const pvRi = r.years.reduce((s, y, t) => s + y.ri / Math.pow(1 + r.coe, t + 1), 0);
-      const vb = F.el("tbody");
-      [["2026년 말 BPS", M.CO[co].bps0], ["+ 3년 잔여이익 현재가치", pvRi], ["+ 잔존가치(감쇠)", r.tv], ["= 적정주가", r.value]].forEach((x, i) => vb.appendChild(F.el("tr", { class: i === 3 ? "em" : null }, [F.el("td", { text: x[0] }), F.el("td", { class: x[1] < 0 ? "neg" : null, text: won(x[1]) })])));
-      vb.appendChild(F.el("tr", null, [F.el("td", { text: "자기자본비용 · 기준주가 대비" }), F.el("td", { text: F.pct(r.coe, 1) + " · " + F.pctSigned(r.upside, 0) })]));
-      vt.appendChild(vb);
-    });
-  }
-
-  /* ---------- 토네이도 ---------- */
-  function renderTornado() {
-    COS.forEach((co) => {
-      const rows = M.tornado(co, state.lv, { price: state.price[co] }), host = $("tor-" + co);
-      const H = 40 + rows.length * 30, fr = F.plotFrame(host, H, M.CO[co].name + " 변수별 범위"), svg = fr.svg, W = fr.W;
-      const padL = 112, padR = 12, padT = 8, padB = 22;
-      const all = [].concat.apply([state.price[co]], rows.map((r) => r.vals));
-      const t = F.niceTicks(Math.min.apply(null, all), Math.max.apply(null, all), 5);
-      const X = (v) => padL + (v - t.lo) / (t.hi - t.lo) * (W - padL - padR);
-      t.ticks.forEach((tv) => { F.svgEl("line", { class: "grid", x1: X(tv), x2: X(tv), y1: padT, y2: H - padB }, svg); F.svgText(svg, X(tv), H - 6, F.num(tv / 10000, 0), { "text-anchor": "middle" }); });
-      F.svgEl("line", { x1: X(state.price[co]), x2: X(state.price[co]), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-width": 1, "stroke-dasharray": "3 3" }, svg);
-      const tip = F.makeTip(host), idx = (id) => M.VARS.findIndex((v) => v.id === id);
-      rows.forEach((r, i) => {
-        const y = padT + 14 + i * 30, vi = idx(r.id);
-        F.svgText(svg, padL - 8, y + 4, r.name, { "text-anchor": "end", class: "lab" });
-        F.svgEl("rect", { x: X(r.lo), y: y - 5, width: Math.max(1, X(r.hi) - X(r.lo)), height: 10, rx: 3, fill: F.css("--rule") }, svg);
-        r.vals.forEach((v, k) => F.svgEl("circle", { cx: X(v), cy: y, r: k === state.lv[vi] ? 5 : 2.6, fill: k === state.lv[vi] ? color[co]() : F.css("--muted") }, svg));
-        const hit = F.svgEl("rect", { class: "hit", x: padL, y: y - 13, width: W - padL - padR, height: 26 }, svg);
-        F.wireHit(hit, host, tip, () => ({ title: r.name + " 1~5단계", rows: r.vals.map((v, k) => [(k + 1) + ". " + M.VARS[vi].levels[k].tag + (k === state.lv[vi] ? " (선택)" : ""), man(v) + "원"]) }));
-      });
-    });
-  }
-
-  /* ---------- 확률 가중 ---------- */
-  const probInputs = [];
-  function buildProbs() {
-    const tabs = $("prob-tabs");
-    Object.keys(M.PROBS).forEach((k) => tabs.appendChild(F.el("button", { type: "button", role: "radio", "data-k": k, text: M.PROBS[k].name })));
-    const btns = radio(tabs, (i, b) => { state.probKey = b.getAttribute("data-k"); state.probs = M.PROBS[state.probKey].p.slice(); fillProbs(); setChecked(btns, i); renderWeighted(); });
-    setChecked(btns, 0);
-    const host = $("probs");
-    M.VARS[0].levels.forEach((L, i) => {
-      const inp = F.el("input", { type: "number", inputmode: "decimal", step: "1", min: "0", max: "100", "aria-label": (i + 1) + "단계 " + L.tag + " 확률" });
-      inp.addEventListener("input", () => { state.probs[i] = F.readNum(inp, 0) / 100; setChecked(btns, -1); renderWeighted(); });
-      probInputs.push(inp);
-      host.appendChild(F.el("label", null, [document.createTextNode((i + 1) + ". " + L.tag + " %"), inp]));
-    });
-    fillProbs();
-  }
-  function fillProbs() { probInputs.forEach((inp, i) => { inp.value = Math.round(state.probs[i] * 100); }); }
-  function renderWeighted() {
-    const sum = state.probs.reduce((a, b) => a + b, 0), p = state.probs.map((x) => (sum > 0 ? x / sum : 0.2));
-    $("prob-hint").textContent = "합계 " + F.num(sum * 100, 0) + "%" + (Math.abs(sum - 1) > 1e-9 ? " → 100%로 맞춰 계산했습니다." : ". 역사적 기저율은 2006~2026년 실제 가격으로 역산한 하락기 빈도입니다.");
-    const tb = $("w-table"); tb.textContent = "";
-    tb.appendChild(F.el("thead", null, [F.el("tr", null, [F.el("th", { text: "업황 단계" }), F.el("th", { text: "확률" }), F.el("th", { text: "SK하이닉스" }), F.el("th", { text: "삼성전자" })])]));
-    const W = { skh: M.weighted("skh", state.lv, p, { price: state.price.skh }), sec: M.weighted("sec", state.lv, p, { price: state.price.sec }) };
-    const body = F.el("tbody");
-    M.VARS[0].levels.forEach((L, i) => body.appendChild(F.el("tr", { class: i === state.lv[0] ? "em" : null }, [F.el("td", { text: (i + 1) + ". " + L.tag }), F.el("td", { text: F.pct(p[i], 0) }), F.el("td", { text: man(W.skh.byStage[i]) + "원" }), F.el("td", { text: man(W.sec.byStage[i]) + "원" })])));
-    body.appendChild(F.el("tr", { class: "em" }, [F.el("td", { text: "확률 가중" }), F.el("td", { text: "100%" }), F.el("td", { text: man(W.skh.value) + "원 (" + F.pctSigned(W.skh.value / state.price.skh - 1, 0) + ")" }), F.el("td", { text: man(W.sec.value) + "원 (" + F.pctSigned(W.sec.value / state.price.sec - 1, 0) + ")" })]));
-    tb.appendChild(body);
-  }
-
-  /* ---------- 전체 조합 분포 ---------- */
-  let distJob = 0;
-  function runDist() {
-    const job = ++distJob, co = state.distCo, price = state.price[co];
-    const sum = state.probs.reduce((a, b) => a + b, 0), w = state.distW === "p" ? state.probs.map((x) => x / (sum || 1)) : null;
-    const lo = 0, hi = co === "skh" ? 3.2e6 : 5e5, bins = new Array(64).fill(0);
-    let acc = { above: 0, total: 0, sum: 0, min: Infinity, max: -Infinity, minN: 0, maxN: 0 }, n = 0;
-    const chunk = 20000, bar = $("dist-bar");
-    $("dist-run").disabled = true;
-    (function step() {
-      if (job !== distJob) return;
-      const to = Math.min(M.TOTAL, n + chunk), s = M.scan(co, n, to, bins, lo, hi, w, { price: price });
-      acc.above += s.above; acc.total += s.total; acc.sum += s.sum;
-      if (s.min < acc.min) acc.min = s.min; if (s.max > acc.max) acc.max = s.max;
-      n = to; bar.style.width = (n / M.TOTAL * 100) + "%";
-      if (n < M.TOTAL) { setTimeout(step, 0); return; }
-      $("dist-run").disabled = false;
-      showDist(co, bins, lo, hi, acc, price);
-    })();
-  }
-  function showDist(co, bins, lo, hi, acc, price) {
-    $("dist-kpis").hidden = false; $("dist-chart").hidden = false;
-    const mean = acc.sum / acc.total;
-    $("d-mean-l").textContent = state.distW === "p" ? "업황 확률 가중 평균" : "평균(같은 무게)"; $("d-mean").textContent = man(mean) + "원"; $("d-mean-sub").textContent = "기준주가 대비 " + F.pctSigned(mean / price - 1, 0);
-    $("d-above").textContent = F.pct(acc.above / acc.total, 0);
-    $("d-min").textContent = man(acc.min) + "원"; $("d-min-sub").textContent = "모든 변수 5단계 근처";
-    $("d-max").textContent = man(acc.max) + "원"; $("d-max-sub").textContent = "모든 변수 1단계 근처";
-    $("dist-title").textContent = M.CO[co].name + " 적정주가 분포 (" + (state.distW === "p" ? "업황 확률 가중" : "같은 무게") + ", 만원)";
-    const host = $("dist-chart"), fr = F.plotFrame(host, 220, "적정주가 분포"), svg = fr.svg, W = fr.W, H = fr.H;
-    const padL = 44, padR = 10, padT = 24, padB = 24, nb = bins.length, step = (hi - lo) / nb;
-    const share = bins.map((b) => b / acc.total), t = F.niceTicks(0, Math.max.apply(null, share), 4);
-    const X = (v) => padL + (v - lo) / (hi - lo) * (W - padL - padR), Y = (v) => padT + (t.hi - v) / (t.hi - t.lo) * (H - padT - padB);
-    t.ticks.forEach((tv) => { F.svgEl("line", { class: tv === 0 ? "base" : "grid", x1: padL, x2: W - padR, y1: Y(tv), y2: Y(tv) }, svg); F.svgText(svg, padL - 6, Y(tv) + 4, F.pct(tv, 0), { "text-anchor": "end" }); });
-    const xt = F.niceTicks(lo, hi, 6);
-    xt.ticks.filter((tv) => tv >= lo && tv <= hi).forEach((tv) => F.svgText(svg, X(tv), H - 6, F.num(tv / 10000, 0), { "text-anchor": "middle" }));
-    const bw = (W - padL - padR) / nb, tip = F.makeTip(host);
-    share.forEach((s, i) => {
-      const x0 = lo + i * step, up = x0 + step / 2 >= price;
-      F.svgEl("rect", { x: X(x0) + 1, y: Y(s), width: Math.max(1, bw - 2), height: Math.max(0, Y(0) - Y(s)), fill: up ? F.css("--input") : F.css("--mark-muted") }, svg);
-      const hit = F.svgEl("rect", { class: "hit", x: X(x0), y: padT, width: bw, height: H - padT - padB }, svg);
-      F.wireHit(hit, host, tip, () => ({ title: man(x0) + "~" + man(x0 + step) + "원", rows: [["비중", F.pct(s, 1)]] }));
-    });
-    F.svgEl("line", { x1: X(price), x2: X(price), y1: padT, y2: H - padB, stroke: F.css("--ink"), "stroke-width": 1, "stroke-dasharray": "3 3" }, svg);
-    F.svgText(svg, X(price), padT - 8, "기준주가 " + man(price), { class: "lab", "text-anchor": "middle" });
-    $("dist-hint").textContent = "390,625개 조합 계산 완료. 기준주가 이상인 조합의 비중은 " + F.pct(acc.above / acc.total, 0) + "입니다. 같은 무게는 '모든 변수의 모든 단계가 똑같이 가능하다'는 뜻이라 극단 조합이 과대 대표됩니다.";
-  }
-
-  /* ---------- 표: 정의·가정 ---------- */
-  function buildDefs() {
-    const tb = $("def-table"), body = F.el("tbody");
-    M.VARS.forEach((v, i) => body.appendChild(F.el("tr", null, [F.el("td", null, [F.el("b", { text: (i + 1) + ". " + v.name })]), F.el("td", null, v.levels.map((L, k) => F.el("div", { text: (k + 1) + " " + L.tag + ": " + L.note })))])));
-    tb.appendChild(body);
-    const pt = $("param-table");
-    pt.appendChild(F.el("thead", null, [F.el("tr", null, [F.el("th", { text: "출발점·가정" }), F.el("th", { text: "SK하이닉스" }), F.el("th", { text: "삼성전자" })])]));
-    const pb = F.el("tbody"), a = M.CO.skh, b = M.CO.sec;
-    [["4Q26 연환산 매출(메모리)", jo(a.exit) + "조", jo(b.exit) + "조"], ["2026E 영업이익", jo(a.op26) + "조", jo(b.op26) + "조"], ["2026E BPS", F.num(a.bps0, 0), F.num(b.bps0, 0)], ["주식 수(십억 주)", F.num(a.shares, 3), F.num(b.shares, 2)], ["기본 자기자본비용", F.pct(a.coe, 0), F.pct(b.coe, 0)], ["가격 하락 민감도", F.num(a.betaP, 2) + "배", F.num(b.betaP, 2) + "배"], ["AI 수요 충격 노출도", F.num(a.expo, 2) + "배", F.num(b.expo, 2) + "배"], ["LTA 커버리지(27/28/29)", a.lta.cov.map((x) => F.pct(x, 0)).join("/"), b.lta.cov.map((x) => F.pct(x, 0)).join("/")], ["계약가격 상한", "없음", "4Q26의 " + F.num(b.lta.cap, 2) + "배(가정)"], ["배당·환원 성향", F.pct(a.payout, 0), F.pct(b.payout, 0)]].forEach((r) => pb.appendChild(F.el("tr", null, r.map((x) => F.el("td", { text: x })))));
-    pt.appendChild(pb);
-  }
-
-  /* ---------- 자체 점검 ---------- */
-  function selfcheck(R) {
-    const host = $("selfcheck"); host.textContent = "";
-    const lv = state.lv, off = lv.slice(); off[6] = 4;
-    const r0 = M.evaluate("skh", off), same = r0.years.every((y) => Math.abs(y.peff - y.pm) < 1e-12);
-    const worse = M.VARS.every((v, i) => { const a = lv.slice(), b = lv.slice(); a[i] = 0; b[i] = 4; return M.evaluate("skh", a).value >= M.evaluate("skh", b).value - 1e-6; });
-    const id = Math.abs(R.skh.value - (M.CO.skh.bps0 + R.skh.years.reduce((s, y, t) => s + y.ri / Math.pow(1 + R.skh.coe, t + 1), 0) + R.skh.tv)) < 1e-6;
-    [["LTA 무력화면 실현가 = 시장가", same], ["변수마다 1단계 ≥ 5단계 적정가", worse], ["적정가 = BPS + 잔여이익 + 잔존가치", id]].forEach((c) => host.appendChild(F.el("span", { class: c[1] ? null : "fail", text: c[0] })));
-  }
-
-  /* ---------- 전체 그리기 ---------- */
-  function render() {
-    state.lv.forEach((k, i) => { setChecked(varBtns[i], k); $("note-" + M.VARS[i].id).textContent = M.VARS[i].levels[k].note; });
-    $("combo-code").textContent = M.code(state.lv);
-    $("combo-no").textContent = "390,625개 중 " + F.num(M.encode(state.lv) + 1, 0) + "번째";
-    const central = M.code(state.lv) === M.code(M.CENTRAL), pill = $("combo-pill");
-    pill.className = "pill " + (central ? "ok" : "warn"); pill.textContent = central ? "중심 조합" : "사용자 조합";
-    const R = { skh: M.evaluate("skh", state.lv, { price: state.price.skh }), sec: M.evaluate("sec", state.lv, { price: state.price.sec }) };
-    renderBoard(R); renderSupply(R); renderPL(R); renderTornado(); renderWeighted(); selfcheck(R);
-    writeHash();
-  }
-
-  /* ---------- 연결 ---------- */
-  buildVars(); buildProbs(); buildDefs(); readHash();
-  const setAll = (k) => { state.lv = k === null ? M.CENTRAL.slice() : new Array(M.NV).fill(k); render(); };
-  $("pre-central").addEventListener("click", () => setAll(null));
-  $("pre-best").addEventListener("click", () => setAll(0));
-  $("pre-mid").addEventListener("click", () => setAll(2));
-  $("pre-worst").addEventListener("click", () => setAll(4));
-  $("pre-link").addEventListener("click", () => {
-    const url = location.href.split("#")[0] + "#c=" + M.code(state.lv), b = $("pre-link");
-    const done = () => { b.textContent = "복사했습니다"; setTimeout(() => { b.textContent = "이 조합 주소 복사"; }, 1600); };
-    if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, done); else done();
-  });
-  COS.forEach((co) => {
-    const inp = $("px-" + co); inp.value = state.price[co];
-    inp.addEventListener("input", () => { state.price[co] = F.readNum(inp, M.CO[co].price); render(); });
-  });
-  const coBtns = radio($("co-tabs"), (i, b) => { state.co = b.getAttribute("data-co"); setChecked(coBtns, i); render(); });
-  setChecked(coBtns, 0);
-  const dcBtns = radio($("dist-co"), (i, b) => { state.distCo = b.getAttribute("data-co"); setChecked(dcBtns, i); });
-  const dwBtns = radio($("dist-w"), (i, b) => { state.distW = b.getAttribute("data-w"); setChecked(dwBtns, i); });
-  setChecked(dcBtns, 0); setChecked(dwBtns, 0);
-  $("dist-run").addEventListener("click", runDist);
-  window.addEventListener("hashchange", () => { readHash(); render(); });
-  render();
-  F.onRedraw(render);
-})();
-</script>
+<script src="../assets/report.js"></script>
+<script src="../assets/mem-scenario.js"></script>
 </body>
 </html>

@@ -1,11 +1,20 @@
-/* 메모리 사이클 시나리오 엔진: 삼성전자·SK하이닉스의 2027~2029년 손익과 적정주가.
-   변수 8개를 각각 1(가장 우호적)~5(가장 비우호적) 단계로 고르면, 5^8 = 390,625개 조합 하나하나가
-   수급 갭 → 가격 → 장기공급계약(LTA) → 물량·매출 → 영업이익·순이익 → 잔여이익모델 적정가로 이어진다.
+/* 메모리 사이클 시나리오 엔진 v2: 삼성전자·SK하이닉스의 2027~2029년 손익과 적정주가.
 
-   단위: 금액 조원, 주당 금액 원, 가격·물량은 2026년 4분기(연환산)를 1.00으로 둔 지수.
-   유효 수급 갭 G는 '공급 − 수요'를 4Q26 대비 누적 %p로 본 값(양수 = 공급과잉).
-   가격 = exp(−k·G), k는 Micron 10-K의 D램 가격과 업계 수급 갭으로 보정(과잉 7.39, 부족 8.54).
-   교육용 모형이다. 모든 가정은 PARAMS에 모아 두었고, 출처는 화면 하단과 docs/mem-scenario-model.md에 적었다. */
+   구조(위에서 아래로 계산한다)
+   1) 업계 수급: 제품 3개(범용 D램, HBM, 낸드)마다 비트 수요 증가율과 공급 증가율을 따로 둔다.
+      - 수요: AI 투자(HBM·서버 D램·기업용 SSD)와 범용 수요(PC·모바일)를 나눠 합친다.
+      - 공급: 업계 D램 웨이퍼 기준 비트 증설률 × HBM 웨이퍼 비중의 변화. HBM은 같은 비트에 웨이퍼를 약 3배 쓰므로
+        HBM 비중이 오르면 범용 D램 공급이 그만큼 준다(범용 공급 = (1 − w_t)/(1 − w_{t−1}) × (1 + 증설률) − 1).
+      - 수급 갭 = 누적 (1 + 공급)/(1 + 수요) − 1. 2026년 말은 부족(음수)에서 출발한다.
+   2) 가격: 범용 D램·낸드는 갭 변화로 가격 지수 = exp(−k × (갭 − 2026 갭)), k는 Micron 10-K 가격과 업계 갭으로 보정.
+      HBM은 연 단위 계약이라 2027년 세대 교체(HBM4) 인상분 + 이후 갭 변화와 같은 세대 연 8% 인하.
+      장기공급계약(LTA)은 범용 D램·낸드의 계약 물량에 가격 하한과 연간 인하 폭 제한을 건다.
+   3) 회사: 4분기 연환산 제품별 매출 × 가격 × 물량(업계 공급 증가 × HBM 점유율 변화) × 환율.
+      원가는 제품별 원가율에서 비트당 원가 절감을 반영하고, 증설 감가상각을 더한다. 성과급, 메모리 외 사업(삼성), 법인세.
+   4) 가치: 잔여이익모델(2026년 말 BPS + 2027~29 잔여이익 현재가치 + 감쇠하는 잔존가치).
+   5) 불확실성: 변수 9개의 단계 확률과 변수 사이 상관(가우스 코퓰러)으로 몬테카를로, 현재 주가가 전제하는 가격 수준 역산.
+
+   단위: 금액 조원, 주당 금액 원, 가격·물량 지수는 2026년 4분기(연환산) = 1.00. 교육용 모형이며 투자 권유가 아니다. */
 (function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -14,211 +23,269 @@
   "use strict";
 
   const YEARS = [2027, 2028, 2029];
+  const ASOF = "2026-11-24";
+  const PRODUCTS = ["conv", "hbm", "nand"];
+  const PNAME = { conv: "범용 D램", hbm: "HBM", nand: "낸드" };
 
-  /* 가격 민감도: 과거 사이클(2019·2023 공급과잉, 2026 공급부족)로 보정한 기울기 */
-  const K = { over: 7.392870403684871, short: 8.539558969747095 };
-  const priceOfGap = (g) => Math.exp(-(g > 0 ? K.over : K.short) * g);          /* g: 소수(0.05 = 5%p) */
+  /* 가격 민감도: v1과 같은 Micron 10-K 보정(과잉 7.39, 부족 8.54). 낸드는 재고 조정이 빨라 조금 낮게, HBM은 연 계약이라 더 낮게 둔다(가정) */
+  const K = { over: 7.392870403684871, short: 8.539558969747095, nand: 6.0, hbm: 3.0 };
+  const kOf = (p, dg) => (p === "nand" ? K.nand : p === "hbm" ? K.hbm : dg > 0 ? K.over : K.short);
+  /* 가격 반응의 상·하한: 갭이 커져도 수요 파괴(위)와 감산(아래) 때문에 가격이 끝없이 가지 않는다.
+     log 가격을 A·tanh(log 가격 / A)로 눌러 4Q26 대비 상한·하한에 부드럽게 붙인다. 하한은 과거 고점 대비 최대 하락(약 −70%) */
+  const BOUND = { conv: [1.8, 0.3], nand: [1.6, 0.3], hbm: [2.2, 0.35] };
+  function bounded(p, lp) { const A = lp > 0 ? Math.log(BOUND[p][0]) : -Math.log(BOUND[p][1]); return Math.exp(A * Math.tanh(lp / A)); }
+  const priceOfGap = (g) => Math.exp(-(g > 0 ? K.over : K.short) * g);
   const gapOfPrice = (p) => -Math.log(p) / (p < 1 ? K.over : K.short);
 
-  /* 회사별 출발점(4Q26 연환산)과 재무 가정 */
+  /* 2026년 말 업계 상태 */
+  const START = {
+    gap: { conv: -0.08, hbm: -0.07, nand: -0.04 },   /* 공급/수요 − 1. HBM −7%는 골드만삭스 추정 공급 부족, 범용은 그보다 깊다고 가정 */
+    w: 0.23,                                         /* HBM의 D램 웨이퍼 비중(TrendForce, 2026) */
+    runRate: { conv: 1.08, nand: 1.05, hbm: 1.20 }   /* 4분기 출하가 2026년 평균보다 높은 정도(HBM4 4분기 급증): 2027년 물량 지수 = (1 + 공급 증가)/이 값 */
+  };
+
+  /* 회사별 출발점: 2026년 4분기 연환산 제품별 매출(추정), 원가율, 재무 가정 */
   const CO = {
     skh: {
       name: "SK하이닉스", short: "하이닉스",
-      exit: 472,            /* 4Q26 매출 118조 × 4 (추정) */
-      base: 47.8,           /* 2026년 원가(성과급 제외, 조원) */
-      dda: [8, 15, 20],     /* 증설에 따른 감가상각비 추가분 */
-      betaP: 1.0,           /* 가격 하락 민감도(범용·낸드 비중) */
-      nonmem: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-      shares: 0.695,        /* 십억 주 */
+      exit: { hbm: 120, conv: 270, nand: 120 },        /* 4Q26E 분기 약 128조 × 4. 3Q26 D램 78.2·낸드 26.0 + 가이던스(D램 출하 +20%대 중반) */
+      costR: { hbm: 0.30, conv: 0.15, nand: 0.32 },   /* 제품별 원가율(4Q26E, 성과급 전) */
+      hbmShare0: 0.55,
+      dda: [[3, 6, 8], [5, 9, 12], [7, 12, 16], [9, 16, 22], [11, 20, 28]],   /* 업계 증설 단계별 감가상각 추가분 */
+      nonmem: (pConv) => 0,
+      fin: 3, tax: 0.24, bonus: 0.10,
+      shares: 0.665,        /* 십억 주: 상장 7.07억 주에서 2026년 40조 원 자사주 매입분 소각 후 추정 */
       bps0: 488978,         /* 2026E BPS, 메리츠증권(2026.11.6) */
-      coe: 0.11,
-      ni: (op) => (op + 3) * 0.75,   /* 순현금 이자 + 법인세 */
-      payout: 0.5,
-      expo: 1.15,           /* AI 수요 충격 노출도(엔비디아·네오클라우드 비중) */
-      price: 1112000,       /* 2026.11.20 장중 */
-      op26: 276,
+      coe: 0.11, payout: 0.5,
+      price: 1158000,       /* 2026.11.24 종가(금융위원회 주식시세정보) */
+      q3: { rev: 104.6, op: 83.3, dram: 78.2, nand: 26.0 },
       lta: { cov: [0.55, 0.55, 0.50], floor: 0.65, phi: 0.7, cap: null }
     },
     sec: {
       name: "삼성전자", short: "삼성",
-      exit: 620,            /* 메모리 4Q26 매출 155조 × 4 (추정) */
-      base: 65.5,
-      dda: [10, 18, 24],
-      betaP: 1.15,
-      /* 메모리 외 손익(DX·파운드리·디스플레이): 메모리 가격과 반대로 움직임 */
-      nonmem: [[-5, -5, -3], [2, 0, 3], [8, 10, 10], [14, 16, 14], [16, 12, 12]],
-      shares: 6.52,         /* 보통주 + 우선주 */
+      exit: { hbm: 80, conv: 370, nand: 170 },         /* 메모리 4Q26E 분기 약 155조 × 4. 3Q26 DS 147.1(메모리 약 135) */
+      costR: { hbm: 0.42, conv: 0.18, nand: 0.36 },
+      hbmShare0: 0.28,
+      dda: [[4, 7, 10], [6, 11, 15], [8, 15, 20], [11, 20, 27], [13, 24, 34]],
+      /* 메모리 외(모바일·가전, 파운드리·시스템LSI, 디스플레이, 하만): 3Q26 DX −0.8·디스플레이 1.1·하만 0.6.
+         메모리 값이 내리면 완제품 원가가 줄어 이익이 는다 */
+      nonmem: (pConv, t) => [4, 6, 8][t] + 14 * (1 - Math.min(pConv, 1.2)),
+      fin: 8, tax: 0.23, bonus: 0.10,
+      shares: 6.649,        /* 보통주 58.46억 + 우선주 8.02억 주(2026.11.24 상장주식수). 우선주도 같은 값으로 셈 */
       bps0: 106052,
-      coe: 0.10,
-      ni: (op) => (op + 8) * 0.77,
-      payout: 0.5,
-      expo: 1.0,
-      price: 187500,
-      op26: 372,
+      coe: 0.10, payout: 0.45,
+      price: 189400,
+      q3: { rev: 147.1, op: 106.5, dram: null, nand: null },
       lta: { cov: [0.60, 0.65, 0.65], floor: 0.80, phi: 0.5, cap: 1.10 }
     }
   };
 
-  /* 공통 가정 */
   const PARAMS = {
-    bonus: 0.10,            /* 성과급 = 성과급 전 영업이익의 10% */
-    costDown: 0.88,         /* 비트당 원가 연 −12% */
-    bitAdj: 1.10,           /* 4Q26 출하 대비 2026년 평균 비트 */
-    omega: 0.6,             /* 초과이익 지속계수(잔존가치 감쇠) */
-    stair: 0.66,            /* 계약가격 연간 최대 하락(분기 −10% 캡) */
-    absorbShare: 0.5,       /* 수요 감소분 중 계약 고객이 재고로 떠안는 몫(테이크오어페이) */
-    leak: 0.6,              /* 그 재고가 이듬해 시장으로 나오는 비율 */
-    prepay: 0.20,           /* 선급금(위약 시 몰수) */
-    fxBase: 1335            /* 기준 원/달러 */
+    costDown: { conv: 0.88, nand: 0.88, hbm: 0.92 },   /* 비트당 원가 연간 변화 */
+    hbmLike: 0.92,         /* 같은 세대 HBM 가격 연 −8% */
+    omega: 0.6,            /* 초과이익 지속계수 */
+    stair: 0.66,           /* 계약가격 연간 최대 하락 */
+    fxBase: 1335,
+    nandContent: 0.05      /* 낸드는 기기당 용량 증가가 수요에 더해진다 */
   };
 
-  /* 1) 메모리 업황: 4Q26 대비 가격·물량 경로(연평균). 단계가 곧 시장 국면이다 */
-  const MARKET = {
-    P: [[1.15, 1.25, 1.10], [1.03, 0.95, 0.75], [0.92, 0.65, 0.50], [0.72, 0.40, 0.35], [0.55, 0.17, 0.22]],
-    Q: [[1.10, 1.25, 1.45], [1.06, 1.20, 1.38], [1.04, 1.15, 1.30], [1.00, 1.05, 1.20], [0.95, 1.00, 1.10]],
-    absorb: [0.9, 0.7, 0.4, 0.1, 0.0]   /* 미충족 수요(백로그)가 수요 손실을 흡수하는 비율 */
-  };
-
-  /* 변수 정의: 단계마다 화면 문구와 모형 입력 */
+  /* 변수 9개. 1단계가 대체로 유리하고 5단계가 불리하다(HBM 구도만 회사마다 방향이 반대) */
   const VARS = [
-    { id: "mkt", name: "메모리 업황", what: "D램·낸드 가격과 출하의 2027~29년 경로",
+    { id: "ai", name: "AI 투자", what: "하이퍼스케일러 설비투자 → HBM·서버 D램·기업용 SSD 수요",
+      hbm: [[0.75, 0.55, 0.40], [0.62, 0.45, 0.32], [0.50, 0.35, 0.25], [0.30, 0.15, 0.12], [0.10, -0.05, 0.05]],
+      srv: [[0.30, 0.22, 0.18], [0.24, 0.18, 0.15], [0.18, 0.14, 0.12], [0.10, 0.06, 0.08], [0.02, -0.02, 0.05]],
+      ssd: [[0.45, 0.30, 0.25], [0.36, 0.25, 0.20], [0.28, 0.20, 0.16], [0.15, 0.08, 0.10], [0.03, -0.03, 0.06]],
+      w: [[0.31, 0.36, 0.40], [0.30, 0.34, 0.37], [0.29, 0.32, 0.34], [0.27, 0.28, 0.29], [0.25, 0.24, 0.24]],
+      uplift: [0.40, 0.25, 0.12, 0.0, -0.10],   /* 2027년 HBM 가격(HBM4 전환 포함, 4Q26 대비) */
       levels: [
-        { tag: "초호황", note: "공급부족이 2029년 이후까지. 가격 2027 +15%, 2028 +25%(4Q26 대비)" },
-        { tag: "호황", note: "2027 강보합, 2029년부터 하락. 증권가 컨센서스 수준" },
-        { tag: "정점·둔화", note: "2027 상반기 고점, 증설 물량이 2028년 도착. 2019년·2022~23년과 비슷한 갭" },
-        { tag: "하강", note: "AI 투자 축소. 2011~12년·2019~20년 수준의 큰 다운턴" },
-        { tag: "침체", note: "2025년 하반기 가격 아래로 회귀. 금융위기(누적 갭 19.6%p)보다 깊음" }
+        { tag: "가속", note: "2027 설비투자 1.6조 달러(모건스탠리 수준) 이상. HBM 비트 수요 +75%" },
+        { tag: "강세", note: "HBM 수요 +62%, HBM 웨이퍼 비중 30%" },
+        { tag: "중심", note: "HBM 수요 +50%(TrendForce 공급 +50~60%와 맞물림), 웨이퍼 비중 29%" },
+        { tag: "둔화", note: "설비투자 증가율 반토막. HBM 수요 +30%, 2028 +15%" },
+        { tag: "급랭", note: "AI 투자 삭감·신용 사건. 2028 HBM 수요 감소" }
       ] },
-    { id: "rate", name: "금리", what: "연준·한은 금리 경로 → 자기자본비용",
-      dr: [-0.005, 0, 0.005, 0.010, 0.015],
+    { id: "cons", name: "범용 수요", what: "PC·스마트폰 출하와 기기당 용량(가격 급등에 따른 수요 파괴 포함)",
+      g: [[0.10, 0.10, 0.08], [0.06, 0.07, 0.07], [0.02, 0.05, 0.06], [-0.03, 0.02, 0.05], [-0.08, 0.00, 0.04]],
       levels: [
-        { tag: "인하 전환", note: "자기자본비용 −0.5%p" },
-        { tag: "동결", note: "변화 없음" },
-        { tag: "점진 인상", note: "+0.5%p. 연준 12월·한은 11월 인상 전망(2026.11 기준)" },
-        { tag: "인상 가속", note: "+1.0%p" },
-        { tag: "긴축 충격", note: "+1.5%p" }
+        { tag: "회복", note: "교체 수요 + AI PC: 비트 +10%" },
+        { tag: "양호", note: "+6%" },
+        { tag: "중심", note: "+2%. PC 제조사 완제품 재고로 2027 구매 조정(TrendForce 2026.11)" },
+        { tag: "수요 파괴", note: "−3%: 메모리 값 급등으로 사양 축소" },
+        { tag: "침체", note: "−8%: 소비 경기 하강" }
       ] },
-    { id: "fx", name: "원/달러 환율", what: "달러 매출의 원화 환산",
+    { id: "capex", name: "업계 증설", what: "삼성·하이닉스·마이크론의 D램·낸드 웨이퍼 증설(비트 기준)",
+      dram: [[0.12, 0.14, 0.14], [0.15, 0.17, 0.16], [0.18, 0.20, 0.17], [0.21, 0.25, 0.21], [0.24, 0.30, 0.25]],
+      nand: [[0.10, 0.12, 0.12], [0.13, 0.15, 0.14], [0.16, 0.18, 0.16], [0.19, 0.23, 0.20], [0.22, 0.28, 0.24]],
+      levels: [
+        { tag: "규율", note: "D램 비트 공급 +12~14%: 신규 팹 지연" },
+        { tag: "절제", note: "+15~17%" },
+        { tag: "중심", note: "+18~20%: 2027 업계 D램 공급 +18~23%(KB·골드만삭스 추정)" },
+        { tag: "확대", note: "2028 +25%: 2027년 말 신규 팹 가동(모건스탠리 우려)" },
+        { tag: "과잉", note: "2028 +30%: 호황기 증설이 한꺼번에" }
+      ] },
+    { id: "cxmt", name: "중국 증설", what: "CXMT·YMTC 등 예상 밖 중국 공급(범용 D램 갭 가산)",
+      gap: [-0.005, 0, 0.012, 0.025, 0.045],
+      levels: [
+        { tag: "제재·지연", note: "범용 D램 공급 −0.5%p/년" },
+        { tag: "예상 범위", note: "업계 전망에 이미 반영" },
+        { tag: "일부 초과", note: "+1.2%p/년(2027은 40%만)" },
+        { tag: "공격적", note: "+2.5%p/년. HBM 진입 가속" },
+        { tag: "물량 공세", note: "+4.5%p/년. 범용 D램 저가 공급" }
+      ] },
+    { id: "hbm", name: "HBM 경쟁 구도", what: "HBM4 점유율. 하이닉스에 유리하면 삼성에 불리하다",
+      skh: [[0.60, 0.60, 0.58], [0.57, 0.56, 0.55], [0.53, 0.50, 0.48], [0.48, 0.45, 0.42], [0.44, 0.40, 0.36]],
+      sec: [[0.25, 0.24, 0.24], [0.27, 0.27, 0.27], [0.30, 0.31, 0.32], [0.34, 0.36, 0.37], [0.37, 0.39, 0.41]],
+      levels: [
+        { tag: "하이닉스 독주", note: "하이닉스 60%, 삼성 25%" },
+        { tag: "하이닉스 우위", note: "하이닉스 57%, 삼성 27%" },
+        { tag: "중심", note: "하이닉스 50%대 초반, 삼성 30%(HBM4 공급 확대)" },
+        { tag: "삼성 추격", note: "하이닉스 45%, 삼성 36%" },
+        { tag: "삼성·마이크론 역전", note: "하이닉스 40% 아래" }
+      ] },
+    { id: "lta", name: "장기공급계약", what: "계약 물량·가격 하한이 하락기에 실제로 지켜지는 정도(범용 D램·낸드)",
+      on: [true, true, true, true, false], covAdd: [0.10, 0, 0, 0, 0],
+      floor: { skh: [0.80, 0.65, 0.65, 0.50, 0], sec: [0.85, 0.80, 0.80, 0.50, 0] },
+      phi: { skh: [0.9, 0.7, 0.7, 0.7, 0], sec: [0.7, 0.5, 0.5, 0.5, 0] },
+      enf: [[1, 1, 1, 1, 1], [1, 1, 1, 0.85, 0.6], [1, 1, 0.95, 0.7, 0.4], [1, 1, 0.9, 0.5, 0.2], [0, 0, 0, 0, 0]],
+      levels: [
+        { tag: "강함", note: "계약 물량 +10%p, 하락기에도 100% 이행" },
+        { tag: "계약대로", note: "가격 30% 하락 시 85%, 50% 하락 시 60% 이행" },
+        { tag: "중심", note: "70%·40% 이행. 하이닉스 2029년까지 D램·HBM 사실상 완판(2026.10 실적발표)" },
+        { tag: "약함", note: "하한 50%, 이행 50%·20%" },
+        { tag: "무력화", note: "과거 사이클처럼 계약이 가격을 지키지 못함" }
+      ] },
+    { id: "fx", name: "원/달러", what: "달러 매출의 원화 환산",
       rate: [1450, 1400, 1335, 1290, 1250],
-      levels: [
-        { tag: "1,450원", note: "원화 약세. 매출 +8.6%" },
-        { tag: "1,400원", note: "매출 +4.9%" },
-        { tag: "1,335원", note: "기준(2026.11 중순 수준)" },
-        { tag: "1,290원", note: "매출 −3.4%" },
-        { tag: "1,250원", note: "원화 강세. 매출 −6.4%" }
-      ] },
-    { id: "trade", name: "무역분쟁·관세", what: "232조 관세, 중국 공장 장비 허가, 미중 휴전",
+      levels: [{ tag: "1,450원", note: "매출 +8.6%" }, { tag: "1,400원", note: "+4.9%" }, { tag: "1,335원", note: "기준(2026.11 1,330~1,360원)" }, { tag: "1,290원", note: "−3.4%" }, { tag: "1,250원", note: "−6.4%" }] },
+    { id: "trade", name: "무역·관세", what: "232조 관세, 중국 공장 장비 허가, 미중 휴전",
       revf: [1, 1, 0.98, 0.98, 0.98],
       qmul: [[1, 1.02, 1.02], [1, 1, 1], [1, 1, 1], [1, 0.94, 0.94], [0.95, 0.893, 0.94]],
       gap: [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, -0.004, -0.004], [-0.007, -0.011, -0.004]],
       dAdd: [0, 0, 0, 0, 0.02],
       levels: [
-        { tag: "완화", note: "관세 면제 확대, 중국 공장 허가 확대. 2028~29 자사 출하 +2%" },
-        { tag: "현행", note: "고성능 반도체만 25% 관세, 한미 최혜국 대우 유지" },
-        { tag: "메모리 관세", note: "232조 25%를 메모리로 확대(미국향 20%, 40% 흡수) → 매출 −2%" },
-        { tag: "+중국 공장 불허", note: "연간 장비 허가 불허: 2028~29 자사 출하 −6%, 업계 공급 감소로 가격 +3%" },
-        { tag: "+휴전 붕괴", note: "2027.1.10 휴전 만료 후 희토류·장비 차질: 출하 −5%, 가격 +5%, AI 투자 지연(수요 −2%)" }
+        { tag: "완화", note: "관세 면제 확대, 중국 공장 허가 확대" },
+        { tag: "현행", note: "고성능 반도체만 25% 관세" },
+        { tag: "메모리 관세", note: "232조 25%를 메모리로 확대: 매출 −2%" },
+        { tag: "+중국 공장 불허", note: "2028~29 자사 출하 −6%, 업계 공급 감소로 가격 소폭 상승" },
+        { tag: "+휴전 붕괴", note: "희토류·장비 차질: 출하 −5%, AI 투자 지연(수요 −2%)" }
       ] },
-    { id: "cxmt", name: "중국 CXMT 증설", what: "예상 밖 중국 D램 공급(업계 수급 갭 가산)",
-      gap: [-0.005, 0, 0.011, 0.022, 0.040],
+    { id: "disc", name: "할인율", what: "금리 경로와 밸류업·외국인 수급 → 자기자본비용",
+      dr: [-0.015, -0.0075, 0, 0.0075, 0.015],
       levels: [
-        { tag: "제재·지연", note: "갭 −0.5%p: 2028~29 가격 +4%" },
-        { tag: "예상 범위", note: "업계 공급 전망에 이미 반영된 수준" },
-        { tag: "일부 초과", note: "갭 +1.1%p: 2028~29 가격 −8%" },
-        { tag: "공격적 증설", note: "갭 +2.2%p: 가격 −15%. 월 60만 장(2028) 시나리오" },
-        { tag: "물량 공세", note: "갭 +4.0%p: 가격 −26%. 범용 D램 저가 공급 확대" }
-      ] },
-    { id: "ai", name: "AI 수요 충격", what: "젠슨 황 사태·원격접속 규제·네오클라우드 자금경색·오픈소스 규제",
-      d: [0, 0.02, 0.05, 0.10, 0.15], coeSkh: [0, 0, 0.003, 0.003, 0.005],
-      levels: [
-        { tag: "충격 없음", note: "수요 손실 0%" },
-        { tag: "완화", note: "수요 손실 2%: 동남아 물량이 일본·유럽·중동으로 재배치" },
-        { tag: "중심", note: "수요 손실 5%, 하이닉스 고객 집중 할증 +0.3%p" },
-        { tag: "스트레스", note: "수요 손실 10%: 수출통제 입법 + 네오클라우드 신용 사건" },
-        { tag: "심각", note: "수요 손실 15%, 하이닉스 할증 +0.5%p" }
-      ] },
-    { id: "lta", name: "장기공급계약(LTA)", what: "계약 물량·가격 하한·선급금이 실제로 지켜지는 정도",
-      on: [true, true, true, true, false],
-      covAdd: [0.10, 0, 0, 0, 0],
-      floor: { skh: [0.80, 0.65, 0.65, 0.50, 0], sec: [0.85, 0.80, 0.80, 0.50, 0] },
-      phi: { skh: [0.9, 0.7, 0.7, 0.7, 0], sec: [0.7, 0.5, 0.5, 0.5, 0] },
-      enf: [[1, 1, 1, 1, 1], [1, 1, 1, 0.85, 0.6], [1, 1, 0.95, 0.7, 0.4], [1, 1, 0.9, 0.5, 0.2], [0, 0, 0, 0, 0]],
-      levels: [
-        { tag: "강함", note: "커버리지 +10%p, 하한 상향, 다운턴에도 100% 이행" },
-        { tag: "계약대로", note: "하강기 85%, 침체기 60% 이행" },
-        { tag: "중심", note: "하강기 70%, 침체기 40% 이행. 삼성 일부 계약 하한 80%" },
-        { tag: "약함", note: "하한 50%, 하강기 50%·침체기 20% 이행" },
-        { tag: "무력화", note: "과거 사이클처럼 계약이 가격을 지키지 못함" }
-      ] },
-    { id: "val", name: "밸류업·수급", what: "주주환원 제도, MSCI, 외국인·AI IPO 수급 → 할인율",
-      dr: [-0.010, -0.005, 0, 0.005, 0.010],
-      levels: [
-        { tag: "재평가", note: "MSCI 선진지수 편입 확정·밸류업 완성: −1.0%p" },
-        { tag: "개선", note: "자사주 소각 의무화·배당 분리과세 효과: −0.5%p" },
-        { tag: "현행", note: "변화 없음" },
-        { tag: "수급 악화", note: "AI 대형 IPO 흡수, 외국인 이탈: +0.5%p" },
-        { tag: "디스카운트 확대", note: "+1.0%p" }
+        { tag: "재평가", note: "금리 인하 + MSCI 선진지수 편입: −1.5%p" },
+        { tag: "완화", note: "−0.75%p" },
+        { tag: "현행", note: "하이닉스 11%, 삼성 10%" },
+        { tag: "긴축", note: "+0.75%p" },
+        { tag: "디스카운트 확대", note: "+1.5%p: 미국 중간선거 뒤 위험 회피(2026.11) 장기화" }
       ] }
   ];
   const NV = VARS.length, NL = 5, TOTAL = Math.pow(NL, NV);
-  const CENTRAL = [2, 2, 2, 1, 1, 2, 2, 2];  /* 0부터 센 단계: 업황 3, 금리 3, 환율 3, 무역 2, CXMT 2, AI 3, LTA 3, 밸류업 3 */
-  const PROBS = {
-    central: { name: "중심(거시·젠슨 황 반영)", p: [0.09, 0.28, 0.34, 0.21, 0.08] },
-    base: { name: "역사적 기저율", p: [0.07, 0.24, 0.31, 0.28, 0.10] },
-    first: { name: "1차 추정", p: [0.15, 0.35, 0.30, 0.15, 0.05] }
-  };
+  const IDX = {}; VARS.forEach((v, i) => { IDX[v.id] = i; });
+  const CENTRAL = [2, 2, 2, 1, 2, 2, 2, 1, 2];
 
-  /* 단계 배열(0~4) 하나로 한 회사의 3년 손익과 적정가를 계산 */
+  /* 함께 움직이는 변수를 묶은 대표 시나리오 */
+  const PRESETS = [
+    { id: "bull", name: "AI 슈퍼사이클 연장", lv: [0, 1, 1, 1, 2, 1, 1, 1, 1], note: "AI 투자 가속, 증설 절제, 금리 완화" },
+    { id: "central", name: "중심", lv: CENTRAL.slice(), note: "각 변수 중심 단계" },
+    { id: "glut", name: "2028 공급 과잉", lv: [2, 2, 4, 2, 2, 2, 2, 1, 3], note: "모건스탠리형: 2027년 말 증설이 2028년에 몰림" },
+    { id: "bust", name: "AI 투자 급랭", lv: [4, 3, 3, 2, 2, 3, 0, 2, 4], note: "AI 삭감 + 위험 회피(원화 약세가 일부 상쇄)" },
+    { id: "china", name: "중국 물량 + 관세", lv: [2, 3, 2, 4, 2, 3, 2, 4, 3], note: "CXMT 물량 공세와 휴전 붕괴가 겹침" }
+  ];
+
+  /* 몬테카를로용 단계 확률(변수마다 1~5단계)과 잠재 변수 상관(양수 = 같이 불리해짐) */
+  const PROB = [
+    [0.10, 0.25, 0.35, 0.20, 0.10],   /* AI 투자 */
+    [0.08, 0.20, 0.40, 0.22, 0.10],
+    [0.08, 0.20, 0.37, 0.23, 0.12],   /* 증설: 호황 끝 증설 쏠림이 역사적으로 잦다 */
+    [0.05, 0.40, 0.30, 0.17, 0.08],
+    [0.10, 0.25, 0.35, 0.20, 0.10],
+    [0.10, 0.25, 0.35, 0.20, 0.10],
+    [0.15, 0.25, 0.30, 0.20, 0.10],
+    [0.10, 0.45, 0.25, 0.12, 0.08],
+    [0.10, 0.20, 0.40, 0.20, 0.10]
+  ];
+  /* 상관(가정): AI 급랭은 범용 수요 약세·할인율 상승과 같이 오고, 증설은 줄이며, 원화는 약세(유리)가 된다 */
+  const CORR = (function () {
+    const C = []; for (let i = 0; i < NV; i++) { C.push([]); for (let j = 0; j < NV; j++) C[i].push(i === j ? 1 : 0); }
+    const set = (a, b, r) => { C[IDX[a]][IDX[b]] = r; C[IDX[b]][IDX[a]] = r; };
+    set("ai", "cons", 0.4); set("ai", "disc", 0.4); set("ai", "capex", -0.4); set("ai", "fx", -0.3);
+    set("cons", "disc", 0.2); set("trade", "ai", 0.2); set("trade", "cxmt", -0.2); set("cons", "fx", -0.2);
+    return C;
+  })();
+
+  /* ---------- 1) 업계 수급과 시장 가격 ---------- */
+  function industry(lv) {
+    const vA = VARS[IDX.ai], vC = VARS[IDX.cons], vK = VARS[IDX.capex], vX = VARS[IDX.cxmt], vT = VARS[IDX.trade];
+    const a = lv[IDX.ai], cs = lv[IDX.cons], k = lv[IDX.capex], x = lv[IDX.cxmt], tr = lv[IDX.trade];
+    const gap = Object.assign({}, START.gap), out = [];
+    let w0 = START.w, ph = 1;
+    for (let t = 0; t < 3; t++) {
+      const dAdd = vT.dAdd[tr];
+      const d = {
+        hbm: vA.hbm[a][t] - dAdd,
+        conv: 0.5 * (vA.srv[a][t] - dAdd) + 0.5 * vC.g[cs][t],
+        nand: 0.45 * (vA.ssd[a][t] - dAdd) + 0.55 * (vC.g[cs][t] + PARAMS.nandContent)
+      };
+      const w1 = vA.w[a][t], cap = vK.dram[k][t];
+      const s = {
+        hbm: (w1 / w0) * (1 + cap) - 1,
+        conv: ((1 - w1) / (1 - w0)) * (1 + cap) - 1 + vX.gap[x] * (t === 0 ? 0.4 : 1) + vT.gap[tr][t],
+        nand: vK.nand[k][t]
+      };
+      const prev = Object.assign({}, gap), price = {};
+      PRODUCTS.forEach((p) => { gap[p] = (1 + gap[p]) * (1 + s[p]) / (1 + d[p]) - 1; });
+      ["conv", "nand"].forEach((p) => { const dg = gap[p] - START.gap[p]; price[p] = bounded(p, -kOf(p, dg) * dg); });
+      ph = t === 0 ? (1 + vA.uplift[a]) * Math.exp(-K.hbm * (gap.hbm - START.gap.hbm)) : ph * PARAMS.hbmLike * Math.exp(-K.hbm * (gap.hbm - prev.hbm));
+      price.hbm = bounded("hbm", Math.log(ph));
+      out.push({ year: YEARS[t], d: d, s: s, w: w1, gap: Object.assign({}, gap), price: price });
+      w0 = w1;
+    }
+    return out;
+  }
+
+  /* ---------- 2) 회사 손익과 가치 ---------- */
+  function ltaStage(pm) { return pm >= 0.9 ? 1 : pm >= 0.7 ? 2 : pm >= 0.5 ? 3 : 4; }
+
   function evaluate(coKey, lv, opt) {
     opt = opt || {};
-    const c = CO[coKey], P_ = Object.assign({}, PARAMS, opt.params || {});
-    const s = lv[0];
-    const V = (id) => VARS.find((v) => v.id === id);
-    const vt = V("trade"), vc = V("cxmt"), va = V("ai"), vl = V("lta"), vf = V("fx");
-    const L = lv[3], X = lv[4], A = lv[5], T = lv[6];
-    const coe = c.coe + V("rate").dr[lv[1]] + V("val").dr[lv[7]] + (coKey === "skh" ? va.coeSkh[A] : 0);
-    const revf = vf.rate[lv[2]] / P_.fxBase * vt.revf[L];
-    const D = va.d[A] + vt.dAdd[L];
-    const ltaOn = vl.on[T], enf = vl.enf[T][s];
-    const price = opt.price || c.price;
+    const c = CO[coKey], P = PARAMS, mult = opt.priceMult || 1;
+    const vL = VARS[IDX.lta], vT = VARS[IDX.trade], vF = VARS[IDX.fx], vH = VARS[IDX.hbm];
+    const T = lv[IDX.lta], tr = lv[IDX.trade];
+    const coe = c.coe + VARS[IDX.disc].dr[lv[IDX.disc]];
+    const fxf = vF.rate[lv[IDX.fx]] / P.fxBase * vT.revf[tr];
+    const ind = opt.ind || industry(lv);
+    const share = vH[coKey][lv[IDX.hbm]];
     const years = [];
-    let pcPrev = 1, aPrev = 0;
+    const pcPrev = { conv: 1, nand: 1 }, vol = { conv: 1 / START.runRate.conv, nand: 1 / START.runRate.nand, hbm: 1 / START.runRate.hbm };
     for (let t = 0; t < 3; t++) {
-      let p = MARKET.P[s][t];
-      if (p < 1) p = 1 - (1 - p) * c.betaP;
-      const ex = D * c.expo * (1 - MARKET.absorb[s]);
-      const cxGap = vc.gap[X] * (t === 0 ? 0.25 : 1);
-      const G = gapOfPrice(p) + ex + cxGap + vt.gap[L][t];           /* 시나리오 갭 + 수요 손실 + 중국 공급 + 무역 */
-      const qPlan = MARKET.Q[s][t] * vt.qmul[L][t];
-      let Gm = G, pm, pc = null, peff, q, pen = 0, Lk = 0;
-      if (ltaOn) {
-        const cov = Math.min(0.95, c.lta.cov[t] + vl.covAdd[T]);
-        Lk = cov * enf;
-        const a = Lk * P_.absorbShare * Math.max(G, 0);
-        Gm = G - a + P_.leak * aPrev; aPrev = a;
-        pm = priceOfGap(Gm);
-        const cap = coKey === "sec" ? c.lta.cap : null;
-        if (pm >= 1) pc = cap ? Math.min(pm, cap) : pm;
-        else {
-          const step = Math.max(pm, pcPrev * P_.stair), fl = vl.floor[coKey][T], phi = vl.phi[coKey][T];
-          pc = phi * Math.max(step, fl) + (1 - phi) * step;
+      const I = ind[t], qm = vT.qmul[tr][t], row = { year: YEARS[t], prod: {} };
+      let rev = 0, cost = 0;
+      PRODUCTS.forEach((p) => {
+        vol[p] *= 1 + I.s[p];
+        let q = vol[p] * qm, pm = I.price[p] * mult, pr = pm, Lk = 0, pc = null;
+        if (p === "hbm") q *= share[t] / c.hbmShare0;
+        else if (vL.on[T]) {
+          /* 계약 물량은 계약가, 나머지는 시장가. 하락기 계약가 = φ·max(계단가, 하한) + (1 − φ)·계단가 */
+          const cov = Math.min(0.95, c.lta.cov[t] + vL.covAdd[T]), enf = vL.enf[T][ltaStage(pm)];
+          Lk = cov * enf;
+          if (pm >= 1) pc = c.lta.cap ? Math.min(pm, c.lta.cap) : pm;
+          else { const step = Math.max(pm, pcPrev[p] * P.stair), fl = vL.floor[coKey][T], phi = vL.phi[coKey][T]; pc = phi * Math.max(step, fl) + (1 - phi) * step; }
+          pcPrev[p] = pc;
+          pr = Lk * pc + (1 - Lk) * pm;
         }
-        pcPrev = pc;
-        peff = Lk * pc + (1 - Lk) * pm;
-        const qs = qPlan * (1 - ex), qc = Math.max(MARKET.Q[1][t], MARKET.Q[s][t]) * vt.qmul[L][t];
-        q = Lk * qc + (1 - Lk) * qs;
-        pen = cov * (1 - enf) * P_.prepay * pc * c.exit * MARKET.Q[s][t] * 0.5;
-      } else {
-        pm = priceOfGap(G); peff = pm; q = qPlan * (1 - ex);
-      }
-      const rev = c.exit * peff * q * revf;
-      const cost = c.base * q * P_.bitAdj * Math.pow(P_.costDown, t + 1) + c.dda[t];
-      const pre = rev - cost + pen;
-      const op = pre - Math.max(pre, 0) * P_.bonus + c.nonmem[s][t];
-      const ni = c.ni(op);
-      years.push({ year: YEARS[t], gap: G, gapMkt: Gm, pm: pm, pc: pc, peff: peff, q: q, lta: Lk, rev: rev, pen: pen, op: op, ni: ni, eps: ni / c.shares * 1e3 });
+        const r = c.exit[p] * pr * q * fxf;
+        const k = c.exit[p] * c.costR[p] * q * Math.pow(P.costDown[p], t + 1);
+        row.prod[p] = { pm: pm, pc: pc, pr: pr, q: q, lta: Lk, rev: r, cost: k };
+        rev += r; cost += k;
+      });
+      cost += c.dda[lv[IDX.capex]][t];
+      const pre = rev - cost;
+      const nm = c.nonmem(row.prod.conv.pm, t);
+      const op = pre - Math.max(pre, 0) * c.bonus + nm;
+      const ni = (op + c.fin) * (1 - c.tax);
+      Object.assign(row, { rev: rev, cost: cost, nonmem: nm, op: op, ni: ni, eps: ni / c.shares * 1e3, ind: I });
+      years.push(row);
     }
-    /* 잔여이익모델: 가치 = BPS0 + Σ (EPS − COE × BPS) 할인 + 감쇠하는 잔존가치 */
     let B = c.bps0, V0 = B, ri = 0;
     years.forEach((y, t) => {
       y.bpsBeg = B; y.roe = y.eps / B;
@@ -226,51 +293,72 @@
       V0 += ri / Math.pow(1 + coe, t + 1);
       B += y.eps * (1 - c.payout); y.bps = B;
     });
-    const tv = ri * P_.omega / (1 + coe - P_.omega) / Math.pow(1 + coe, 3);
-    const value = V0 + tv;
-    return {
-      co: coKey, coe: coe, years: years, tv: tv, value: value, price: price,
-      upside: value / price - 1, per27: value / years[0].eps, pbr27: value / years[0].bps,
-      /* 화면 기본 배수는 2029E: 2027년은 이익 정점이라 배수가 실제보다 싸 보인다. EPS가 0 이하이면 PER은 null */
-      per29: years[2].eps > 0 ? value / years[2].eps : null, pbr29: value / years[2].bps
-    };
+    const tv = ri * P.omega / (1 + coe - P.omega) / Math.pow(1 + coe, 3);
+    const value = V0 + tv, price = opt.price || c.price;
+    return { co: coKey, coe: coe, years: years, tv: tv, value: value, price: price, upside: value / price - 1,
+      per29: years[2].eps > 0 ? value / years[2].eps : null, pbr29: value / years[2].bps };
   }
 
-  /* 업황 단계 확률로 가중(나머지 변수는 고정) */
-  function weighted(coKey, lv, probs, opt) {
-    const rows = [0, 1, 2, 3, 4].map((s) => { const l = lv.slice(); l[0] = s; return evaluate(coKey, l, opt).value; });
-    const ev = rows.reduce((acc, v, i) => acc + v * probs[i], 0);
-    return { byStage: rows, value: ev };
-  }
-
-  /* 토네이도: 지금 선택에서 변수 하나만 1단계·5단계로 바꿨을 때 */
-  function tornado(coKey, lv, opt) {
-    const base = evaluate(coKey, lv, opt).value;
+  /* 토네이도: 지금 선택에서 변수 하나만 1~5단계로 바꿨을 때 */
+  function tornado(coKey, lv) {
+    const base = evaluate(coKey, lv).value;
     return VARS.map((v, i) => {
-      const vals = [0, 1, 2, 3, 4].map((k) => { const l = lv.slice(); l[i] = k; return evaluate(coKey, l, opt).value; });
+      const vals = [0, 1, 2, 3, 4].map((k) => { const l = lv.slice(); l[i] = k; return evaluate(coKey, l).value; });
       return { id: v.id, name: v.name, vals: vals, lo: Math.min.apply(null, vals), hi: Math.max.apply(null, vals), span: Math.max.apply(null, vals) - Math.min.apply(null, vals), base: base };
     }).sort((a, b) => b.span - a.span);
   }
 
-  /* 조합 번호 ↔ 단계 배열 (첫 변수가 가장 높은 자리) */
+  /* 역산: 지금 조합에서 범용 D램·낸드·HBM 가격을 모두 m배 했을 때 적정가 = 주가가 되는 m */
+  function implied(coKey, lv) {
+    const ind = industry(lv), f = (m) => evaluate(coKey, lv, { priceMult: m, ind: ind }).value - CO[coKey].price;
+    let lo = 0.05, hi = 3;
+    if (f(lo) > 0) return lo; if (f(hi) < 0) return hi;
+    for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m) > 0) hi = m; else lo = m; }
+    return (lo + hi) / 2;
+  }
+
+  /* ---------- 3) 몬테카를로(가우스 코퓰러) ---------- */
+  function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return (s + 0.5) / 4294967296; }; }
+  function chol(A) {
+    const n = A.length, L = A.map(() => new Array(n).fill(0));
+    for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {
+      let s = A[i][j]; for (let k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+      L[i][j] = i === j ? Math.sqrt(Math.max(s, 1e-12)) : s / L[j][j];
+    }
+    return L;
+  }
+  function ncdf(x) { /* 표준정규 누적분포(Abramowitz–Stegun 7.1.26) */
+    const t = 1 / (1 + 0.3275911 * Math.abs(x) / Math.SQRT2), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x / 2);
+    return x >= 0 ? (1 + y) / 2 : (1 - y) / 2;
+  }
+  function levelOf(u, p) { let c = 0; for (let k = 0; k < p.length; k++) { c += p[k]; if (u < c) return k; } return p.length - 1; }
+  function draws(n, seed, useCorr) {
+    const L = chol(useCorr === false ? CORR.map((r, i) => r.map((_, j) => (i === j ? 1 : 0))) : CORR), r = rng(seed || 7), out = [];
+    const gauss = () => { const u = r(), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+    for (let k = 0; k < n; k++) {
+      const z = []; for (let i = 0; i < NV; i++) z.push(gauss());
+      const lv = [];
+      for (let i = 0; i < NV; i++) { let s = 0; for (let j = 0; j <= i; j++) s += L[i][j] * z[j]; lv.push(levelOf(ncdf(s), PROB[i])); }
+      out.push(lv);
+    }
+    return out;
+  }
+  function simulate(n, seed, useCorr) {
+    const D = draws(n, seed, useCorr), res = { skh: [], sec: [] }, cache = {};
+    D.forEach((lv) => {
+      const key = lv.join(""); let hit = cache[key];
+      if (!hit) { const ind = industry(lv); hit = cache[key] = { skh: evaluate("skh", lv, { ind: ind }).value, sec: evaluate("sec", lv, { ind: ind }).value }; }
+      res.skh.push(hit.skh); res.sec.push(hit.sec);
+    });
+    const stat = (a, co) => { const s = a.slice().sort((x, y) => x - y), q = (p) => s[Math.min(s.length - 1, Math.floor(p * s.length))], pr = CO[co].price;
+      return { mean: s.reduce((x, y) => x + y, 0) / s.length, p10: q(0.1), p25: q(0.25), p50: q(0.5), p75: q(0.75), p90: q(0.9), above: s.filter((v) => v >= pr).length / s.length, sorted: s }; };
+    return { n: n, draws: D, skh: stat(res.skh, "skh"), sec: stat(res.sec, "sec"), raw: res };
+  }
+
   function decode(n) { const lv = new Array(NV); for (let i = NV - 1; i >= 0; i--) { lv[i] = n % NL; n = Math.floor(n / NL); } return lv; }
   function encode(lv) { return lv.reduce((n, k) => n * NL + k, 0); }
   const code = (lv) => lv.map((k) => k + 1).join("");
 
-  /* 전체 조합 분포: from~to 구간을 계산해 히스토그램 칸에 더한다(화면은 나눠서 부른다) */
-  function scan(coKey, from, to, bins, lo, hi, w, opt) {
-    const nb = bins.length, step = (hi - lo) / nb;
-    let above = 0, total = 0, sum = 0, min = Infinity, max = -Infinity;
-    const price = (opt && opt.price) || CO[coKey].price;
-    for (let n = from; n < to; n++) {
-      const lv = decode(n), v = evaluate(coKey, lv, opt).value, wt = w ? w[lv[0]] : 1;
-      const b = Math.min(nb - 1, Math.max(0, Math.floor((v - lo) / step)));
-      bins[b] += wt; total += wt; sum += v * wt;
-      if (v >= price) above += wt;
-      if (v < min) min = v; if (v > max) max = v;
-    }
-    return { above: above, total: total, sum: sum, min: min, max: max };
-  }
-
-  return { YEARS, K, CO, PARAMS, MARKET, VARS, NV, NL, TOTAL, CENTRAL, PROBS, priceOfGap, gapOfPrice, evaluate, weighted, tornado, decode, encode, code, scan };
+  return { YEARS, ASOF, PRODUCTS, PNAME, K, BOUND, bounded, START, CO, PARAMS, VARS, NV, NL, TOTAL, IDX, CENTRAL, PRESETS, PROB, CORR,
+    priceOfGap, gapOfPrice, industry, evaluate, tornado, implied, chol, ncdf, draws, simulate, decode, encode, code };
 });

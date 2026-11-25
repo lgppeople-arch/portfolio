@@ -869,29 +869,33 @@
     /* ---------- 메모리 사이클 시나리오 ---------- */
     if (MemScen) {
       const M = MemScen, G = "메모리 시나리오", C = M.CENTRAL;
-      const ok1 = [0, 1, 77, 12345, 200000, M.TOTAL - 1].every((n) => M.encode(M.decode(n)) === n);
-      add(G, "조합 수 = 5^8 = 390,625, 조합 번호 ↔ 단계 배열이 서로 되돌아온다", M.TOTAL === 390625 && M.NV === 8 && ok1 && M.code(M.decode(0)) === "11111111", M.TOTAL + "개");
-      const rv = M.evaluate("skh", C), y3 = rv.years[2], worst = M.evaluate("skh", M.decode(M.TOTAL - 1));
-      add(G, "화면 배수는 2029E: PER = 적정주가 ÷ 2029 EPS, PBR = 적정주가 ÷ 2029 기말 BPS, 적자면 PER 없음", near(rv.per29, rv.value / y3.eps, 1e-12) && near(rv.pbr29, rv.value / y3.bps, 1e-12) && (worst.years[2].eps > 0 ? near(worst.per29, worst.value / worst.years[2].eps, 1e-12) : worst.per29 === null), "PER " + rv.per29.toFixed(1) + "배 · PBR " + rv.pbr29.toFixed(2) + "배");
-      const ps = [0.17, 0.4, 0.75, 1, 1.15, 1.25];
-      add(G, "가격식 왕복: 가격 → 갭 → 가격이 같고, 갭 0이면 가격 1, 갭이 커지면 가격이 내린다", ps.every((p) => near(M.priceOfGap(M.gapOfPrice(p)), p, 1e-12)) && M.priceOfGap(0) === 1 && M.priceOfGap(0.05) < M.priceOfGap(0.02), "k " + M.K.over.toFixed(2) + " / " + M.K.short.toFixed(2));
-      const vi = ["skh", "sec"].every((co) => { const r = M.evaluate(co, C); let pv = 0; r.years.forEach((y, t) => { pv += (y.eps - r.coe * y.bpsBeg) / Math.pow(1 + r.coe, t + 1); }); return near(r.value, M.CO[co].bps0 + pv + r.tv, 1e-12) && near(r.years[2].bps, M.CO[co].bps0 + Fin.sum(r.years.map((y) => y.eps)) * (1 - M.CO[co].payout), 1e-9); });
-      add(G, "적정가 = 2026년 말 BPS + 잔여이익 현재가치 + 잔존가치, 기말 BPS = 기초 + 이익 × (1 − 환원율)", vi, "");
-      const off = C.slice(); off[6] = 4;
-      const noL = ["skh", "sec"].every((co) => M.evaluate(co, off).years.every((y) => y.peff === y.pm && y.lta === 0 && y.pen === 0 && y.pc === null));
-      add(G, "장기공급계약 무력화(5단계)면 실현가격 = 시장가격, 보호 물량·몰수 선급금 0", noL, "");
-      const mono = ["skh", "sec"].every((co) => { const v = [0, 1, 2, 3, 4].map((s) => { const l = C.slice(); l[0] = s; return M.evaluate(co, l).value; }); return v.every((x, i) => i === 0 || x < v[i - 1]); });
-      const each = ["skh", "sec"].every((co) => M.VARS.every((x, i) => { const a = C.slice(), b = C.slice(); a[i] = 0; b[i] = 4; return M.evaluate(co, a).value >= M.evaluate(co, b).value; }));
-      add(G, "업황이 나빠질수록 적정가 하락, 변수마다 1단계 적정가 ≥ 5단계", mono && each, "");
-      const neu = C.slice(); neu[0] = 1; neu[5] = 0;
-      const s1 = M.evaluate("skh", neu).years[0].op, s2 = M.evaluate("sec", neu).years[0].op;
-      add(G, "2단계(호황)·수요 충격 없음의 2027 영업이익이 컨센서스(하이닉스 약 404조, 삼성 약 545조)의 ±10% 안", Math.abs(s1 / 404 - 1) < 0.1 && Math.abs(s2 / 545 - 1) < 0.1, s1.toFixed(0) + " / " + s2.toFixed(0) + "조원");
-      const fa = off.slice(), fb = off.slice(); fa[2] = 0; fb[2] = 2;
+      const ok1 = [0, 1, 77, 12345, 999999, M.TOTAL - 1].every((n) => M.encode(M.decode(n)) === n);
+      add(G, "조합 수 = 5^9 = 1,953,125, 조합 번호 ↔ 단계 배열이 서로 되돌아온다", M.TOTAL === 1953125 && M.NV === 9 && ok1 && M.code(M.decode(0)) === "111111111", M.TOTAL + "개");
+      const I = M.industry(C), y0 = I[0], cap = M.VARS[M.IDX.capex].dram[C[M.IDX.capex]][0], w1 = M.VARS[M.IDX.ai].w[C[M.IDX.ai]][0];
+      const sH = (w1 / M.START.w) * (1 + cap) - 1, sC = ((1 - w1) / (1 - M.START.w)) * (1 + cap) - 1 + M.VARS[M.IDX.cxmt].gap[C[M.IDX.cxmt]] * 0.4;
+      const gC = (1 + M.START.gap.conv) * (1 + y0.s.conv) / (1 + y0.d.conv) - 1;
+      add(G, "HBM 웨이퍼 잠식: HBM 공급 = (w₁/w₀)(1+증설) − 1, 범용 D램 공급 = ((1−w₁)/(1−w₀))(1+증설) − 1 + 중국, 갭 = 누적 (1+공급)/(1+수요) − 1. 중심 2027 HBM 공급이 TrendForce +50~60%의 ±5%p 안", near(y0.s.hbm, sH, 1e-12) && near(y0.s.conv, sC, 1e-12) && near(y0.gap.conv, gC, 1e-12) && y0.s.hbm > 0.45 && y0.s.hbm < 0.65, (y0.s.hbm * 100).toFixed(0) + "%");
+      const ps = [0.17, 0.4, 0.75, 1, 1.15, 1.25], bnd = [-3, -1, -0.2, 0, 0.2, 1, 3].every((lp) => { const v = M.bounded("conv", lp); return v <= M.BOUND.conv[0] + 1e-12 && v >= M.BOUND.conv[1] - 1e-12 && (lp > 0 ? v > 1 : lp < 0 ? v < 1 : v === 1); });
+      add(G, "가격식: 갭 → 가격 → 갭 왕복, 갭 0이면 1, 상·하한(범용 D램 1.8배·0.3배) 안에서 단조", ps.every((p) => near(M.priceOfGap(M.gapOfPrice(p)), p, 1e-12)) && M.priceOfGap(0) === 1 && bnd, "");
+      const vi = ["skh", "sec"].every((co) => { const r = M.evaluate(co, C); let pv = 0; r.years.forEach((y, t) => { pv += (y.eps - r.coe * y.bpsBeg) / Math.pow(1 + r.coe, t + 1); }); const rv = r.years.reduce((a, y) => a + M.PRODUCTS.reduce((b, p) => b + y.prod[p].rev, 0), 0) - r.years.reduce((a, y) => a + y.rev, 0);
+        return near(r.value, M.CO[co].bps0 + pv + r.tv, 1e-12) && Math.abs(rv) < 1e-9 && r.years.every((y) => near(y.bps, y.bpsBeg + y.eps * (1 - M.CO[co].payout), 1e-12)); });
+      add(G, "적정가 = 2026E BPS + 잔여이익 현재가치 + 잔존가치, 메모리 매출 = 제품 매출 합, 기말 BPS = 기초 + 이익 × (1 − 환원율)", vi, "");
+      const off = C.slice(); off[M.IDX.lta] = 4;
+      add(G, "장기공급계약 무력화(5단계)면 범용 D램·낸드 실현가격 = 시장가격, 계약 비중 0", ["skh", "sec"].every((co) => M.evaluate(co, off).years.every((y) => ["conv", "nand"].every((p) => y.prod[p].pr === y.prod[p].pm && y.prod[p].lta === 0))), "");
+      const mono = ["ai", "cons", "capex", "cxmt", "disc"].every((id) => ["skh", "sec"].every((co) => { const v = [0, 1, 2, 3, 4].map((k) => { const l = C.slice(); l[M.IDX[id]] = k; return M.evaluate(co, l).value; }); return v.every((x, i) => i === 0 || x <= v[i - 1] + 1e-9); }));
+      const hb = [0, 1, 2, 3, 4].map((k) => { const l = C.slice(); l[M.IDX.hbm] = k; return [M.evaluate("skh", l).value, M.evaluate("sec", l).value]; });
+      add(G, "AI 투자·범용 수요·증설·중국·할인율이 나빠질수록 두 회사 적정가 하락, HBM 구도는 하이닉스와 삼성에 반대로 작용", mono && hb.every((v, i) => i === 0 || (v[0] < hb[i - 1][0] && v[1] > hb[i - 1][1])), "");
+      const a = M.evaluate("skh", C).years[0].op, b = M.evaluate("sec", C).years[0].op;
+      add(G, "중심 시나리오 2027 영업이익이 증권가 추정 범위 안(하이닉스 340~470조: KB 389·v1 기준 404, 삼성 350~600조: 키움 352~KB 575)", a > 340 && a < 470 && b > 350 && b < 600, a.toFixed(0) + " / " + b.toFixed(0) + "조");
+      const fa = off.slice(), fb = off.slice(); fa[M.IDX.fx] = 0; fb[M.IDX.fx] = 2;
       const ra = M.evaluate("skh", fa).years, rb = M.evaluate("skh", fb).years;
-      add(G, "환율 단계를 바꾸면 매출이 환율 비율만큼 바뀐다(1,450 ÷ 1,335)", ra.every((y, t) => near(y.rev / rb[t].rev, 1450 / 1335, 1e-12)), (1450 / 1335).toFixed(4));
-      const w = M.weighted("sec", C, [0, 0, 1, 0, 0]), l2 = C.slice(); l2[0] = 2;
-      const bins = new Array(10).fill(0), sc = M.scan("skh", 0, 3125, bins, 0, 4e6, null);
-      add(G, "확률을 한 단계에 100% 주면 그 단계 값과 같고, 분포 칸의 합 = 계산한 조합 수", near(w.value, M.evaluate("sec", l2).value, 1e-12) && sc.total === 3125 && Fin.sum(bins) === 3125, "");
+      add(G, "환율 단계를 바꾸면 메모리 매출이 환율 비율만큼 바뀐다(1,450 ÷ 1,335)", ra.every((y, t) => near(y.rev / rb[t].rev, 1450 / 1335, 1e-12)), (1450 / 1335).toFixed(4));
+      const m = M.implied("skh", C), at = M.evaluate("skh", C, { priceMult: m }).value;
+      add(G, "주가 역산: 찾은 가격 비율로 다시 계산한 적정가 = 기준주가(±0.1%)", Math.abs(at / M.CO.skh.price - 1) < 1e-3, m.toFixed(3));
+      const Lc = M.chol(M.CORR), back = M.CORR.every((row, i) => row.every((v, j) => { let s2 = 0; for (let k = 0; k < M.NV; k++) s2 += Lc[i][k] * Lc[j][k]; return Math.abs(s2 - v) < 1e-9; }));
+      const S1 = M.simulate(3000, 11, true), S2 = M.simulate(3000, 11, true), pOk = M.PROB.every((p) => Math.abs(p.reduce((x, y) => x + y, 0) - 1) < 1e-9);
+      const freq = [0, 0, 0, 0, 0]; S1.draws.forEach((l) => freq[l[M.IDX.ai]]++);
+      add(G, "몬테카를로: 상관행렬 = L·Lᵀ(촐레스키), 단계 확률 합 1, 같은 시드면 같은 결과, 뽑힌 AI 단계 비율이 확률의 ±3%p", back && pOk && S1.skh.p50 === S2.skh.p50 && freq.every((f, k) => Math.abs(f / 3000 - M.PROB[M.IDX.ai][k]) < 0.03), "");
     }
 
     /* ---------- 제도 노트: 통합투자세액공제 ---------- */

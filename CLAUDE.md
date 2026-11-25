@@ -6,7 +6,7 @@
 
 ```
 python3 scripts/build-site.py   # 메뉴·모음·읽는 경로·하단 '이어서 볼 것'을 site-map.json에서 다시 만든다
-node assets/checks.js           # 계산 엔진 검산 (현재 216개)
+node assets/checks.js           # 계산 엔진 검산 (현재 243개)
 node scripts/check-site.js      # 사이트 구성 검사 (현재 26개)
 ```
 
@@ -17,16 +17,18 @@ node scripts/check-site.js      # 사이트 구성 검사 (현재 26개)
 3. 계산이 있으면 엔진은 `assets/engines/`에 UMD로 두고, `assets/checks.js`와 `tools/checks.html`에 검산을 단다.
 4. `README.md` 표와 `scripts/profile.html`의 개수 문구를 맞춘다.
 
-## 최근 변경: 메모리 사이클 시나리오 가치평가 (2026-11-20)
+## 최근 변경: 메모리 사이클 시나리오 가치평가 v2 (2026-11-25)
 
-- 다른 Claude 세션(claude.ai)에서 만들어 브랜치 `claude/mem-scenario`로 올린 변경입니다.
-- 새 파일:
-  - `tools/mem-scenario.html`: 화면
+- v1(2026-11-20, 변수 8개)을 v2로 다시 설계했습니다.
+- 파일:
+  - `tools/mem-scenario.html`: 화면(리포트 형식)
+  - `assets/mem-scenario.js`: 화면 스크립트
   - `assets/engines/memscen.js`: 계산 엔진
-  - `assets/og/mem-scenario.png`: 미리보기 이미지
   - `docs/mem-scenario-model.md`: 모형 설명
-- 내용: 변수 8개 × 5단계(390,625개 조합)로 삼성전자와 SK하이닉스의 수급 갭, 시장·계약·실현 가격, 2027~29년 손익, 잔여이익모델 적정주가를 계산합니다.
+- 내용:
+  - 변수 9개 × 5단계(1,953,125개 조합)를 고릅니다.
+  - 범용 D램·HBM·낸드의 수요·공급을 따로 세우고, HBM 웨이퍼 잠식을 넣었습니다.
+  - 이어서 LTA → 회사별 제품 손익 → 잔여이익모델 적정주가를 계산합니다.
+  - 대표 시나리오 5개, 상관을 넣은 몬테카를로(가우스 코퓰러), 주가 역산을 함께 보여 줍니다.
 - 모형을 고치기 전에 `docs/mem-scenario-model.md`를 먼저 읽습니다. 그 문서에 계산식, 변수 정의, 출처, 분기 갱신 순서, 한계가 있습니다.
-- 남은 개선 후보:
-  - 함께 움직이는 변수를 묶은 대표 조합 프리셋(예: 긴축+원화 강세, 무역분쟁+AI 수요 둔화)
-  - 분기 실적 발표 때 `CO.skh/sec`의 출발점(`exit`, `op26`, `bps0`, `price`) 갱신. 이때 `tools/mem-scenario.html` 상단의 분석 기준일·기준주가 상자와 하단 문구도 같은 날짜로 고친다
+- 분기 실적이 나오면 `CO.skh/sec`의 `exit`·`costR`·`q3`·`bps0`·`shares`·`price`를 갱신합니다. 이때 화면의 기준일 문구도 함께 고칩니다.
