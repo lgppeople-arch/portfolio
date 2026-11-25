@@ -182,8 +182,11 @@ def build():
         capex = abs(pick(L, "CF", r"^유형자산의취득$|^무형자산의취득$", None))
         da = pick(L, "CF", r"^감가상각비$|^무형자산상각비$|^사용권자산상각비$|^감가상각비및무형자산상각비$", None)
         o = own(r["corp"])
+        implied = r["mcap"] / r["price"]   # 지금 시가총액이 전제하는 주식 수
         if not o["issued"]:   # 주식 총수 자료가 없으면 시가총액 ÷ 주가로 대신한다
-            o["issued"] = round(r["mcap"] / r["price"]); o["tre"] = o["tre"] or 0
+            o["issued"] = round(implied); o["tre"] = o["tre"] or 0
+        elif not 0.8 <= o["issued"] / implied <= 1.25:   # 2025년 말 이후 분할·병합·증자나 단위 오류: 지금 주식 수로 바꾸고 자기주식 비율은 유지
+            o["issued"] = round(implied); o["tre"] = round(o["treR"] * implied); o["sharesAdj"] = 1
         ev = r["mcap"] + debt - cash
         x = dict(r, cash=cash, debt=debt, ocf=ocf, capex=capex, da=da, ev=ev, fcf=(ocf - capex) if ocf is not None else None,
                  evebit=ev / r["op"] if r["op"] > 0 and ev > 0 else None, ebitda=r["op"] + da,
@@ -217,7 +220,7 @@ def build():
         big = sorted([y for y in S1 if y["group"] == g and not conflict(y)], key=lambda y: -y["mcap"])[:3]
         groups[g] = {"n": len(G), "top": [x["corp"] for x in G[:6]], "acq": [{"name": y["name"], "mcap": y["mcap"]} for y in big]}
     keep = {x["corp"] for x in A[:40]} | {c for g in groups.values() for c in g["top"]}
-    F = ["name", "mkt", "group", "ind", "mcap", "price", "rev", "rev23", "op", "op24", "op23", "ni", "te", "ta", "cash", "debt", "ocf", "capex", "da", "ev", "evebit", "fcfy", "pbr", "opm", "cagr", "netcash", "grp", "vote", "top", "topRel", "issued", "tre", "treR", "others", "fsDeep", "est"]
+    F = ["name", "mkt", "group", "ind", "mcap", "price", "rev", "rev23", "op", "op24", "op23", "ni", "te", "ta", "cash", "debt", "ocf", "capex", "da", "ev", "evebit", "fcfy", "pbr", "opm", "cagr", "netcash", "grp", "vote", "top", "topRel", "issued", "tre", "treR", "others", "fsDeep", "est", "sharesAdj"]
     rnd = lambda v: round(v, 4) if isinstance(v, float) and abs(v) < 100 else (round(v) if isinstance(v, float) else v)
     cos = {x["corp"]: {k: rnd(x.get(k)) for k in F} for x in out if x["corp"] in keep}
     for x in out:
