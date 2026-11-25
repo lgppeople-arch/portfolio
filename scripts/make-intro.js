@@ -8,7 +8,7 @@ const path = require("path"), fs = require("fs"), { execFileSync } = require("ch
   const root = path.resolve(__dirname, "..");
   const out = path.join(root, "assets", "docs", "lee-gipyo-portfolio.pdf");
   const hub = fs.readFileSync(path.join(root, "tools", "index.html"), "utf8");
-  const cm = hub.match(/build:counts -->실무 도구 (\d+)개, 분석 리포트 (\d+)편, 분석·보고 노트 (\d+)편/);
+  const cm = hub.match(/build:counts -->실무 도구 (\d+)개, 분석 리포트 (\d+)편, 분석·보고 노트 (\d+)편, 아이디어 노트 (\d+)편/);
   const ck = execFileSync("node", [path.join(root, "assets", "checks.js")], { encoding: "utf8" }).match(/(\d+) \/ (\d+) 통과/);
   if (!cm || !ck || ck[1] !== ck[2]) throw new Error("개수를 읽지 못했거나 검산이 모두 통과하지 않았습니다");
   const b = await chromium.launch();
@@ -20,8 +20,8 @@ const path = require("path"), fs = require("fs"), { execFileSync } = require("ch
     document.getElementById("asof").textContent = now.getFullYear() + "." + String(now.getMonth() + 1).padStart(2, "0");
     document.getElementById("made").textContent = now.getFullYear() + "년 " + (now.getMonth() + 1) + "월 작성";
     document.getElementById("n-tools").textContent = v.t; document.getElementById("n-reports").textContent = v.r;
-    document.getElementById("n-notes").textContent = v.n; document.getElementById("n-checks").textContent = v.c;
-  }, { t: cm[1], r: cm[2], n: cm[3], c: ck[1] });
+    document.getElementById("n-notes").textContent = v.n; document.getElementById("n-checks").textContent = v.c; document.getElementById("n-ideas").textContent = v.i;
+  }, { t: cm[1], r: cm[2], n: cm[3], i: String(require(path.join(root, "assets", "engines", "ideas.js")).IDEAS.length), c: ck[1] });
   await p.evaluate(() => document.fonts.ready);
   const over = await p.evaluate(() => document.body.scrollHeight > document.body.clientHeight + 1);
   if (over) console.warn("주의: 내용이 한 장을 넘습니다");

@@ -66,7 +66,7 @@ const b = spawnSync("python3", [path.join(__dirname, "build-site.py"), "--check"
 add("목록 일치", "메뉴·모음·읽는 경로·하단 연결이 사이트 지도와 같다(build-site.py --check)", b.status === 0, (b.stdout || b.stderr || "").trim().slice(0, 160));
 const mapFiles = MAP.pages.map((x) => x.file), inPath = [].concat.apply([], MAP.paths.map((x) => x.steps.map((s) => s[0])));
 const noPath = MAP.pages.filter((x) => x.kind !== "참고" && !inPath.includes(x.file)).map((x) => x.file);
-add("목록 일치", "도구·리포트·노트는 모두 읽는 경로 하나에 들어 있다", noPath.length === 0 && new Set(inPath).size === inPath.length, noPath.join(", "));
+add("목록 일치", "도구·리포트·노트·아이디어는 모두 읽는 경로 하나에 들어 있다", noPath.length === 0 && new Set(inPath).size === inPath.length, noPath.join(", "));
 const og = read("scripts/make-og.js"), pdf = read("scripts/export-pdf.js");
 const noOgList = pages.filter((p) => p !== "404.html" && og.indexOf('["' + p + '"') < 0);
 add("목록 일치", "미리보기 이미지 생성 목록에 모든 페이지가 있다", noOgList.length === 0, noOgList.join(", "));
@@ -117,7 +117,7 @@ const pct = (v) => Math.round(v * 100);
   const st = src["tools/stats-notes.html"], tech = (st.match(/<p class="qline">/g) || []).length, figs = (st.match(/<div class="fig" data-rv/g) || []).length;
   add("홈 숫자", "통계 노트 표지의 기법 수 = 실제", st.indexOf("<b>" + tech + "가지</b>") >= 0, tech + "가지 · " + figs + "개");
   const k = (kind) => MAP.pages.filter((p) => p.kind === kind).length;
-  const line = "도구 " + k("도구") + "개, 리포트 " + k("리포트") + "편, 노트 " + k("노트") + "편";
+  const line = "도구 " + k("도구") + "개, 리포트 " + k("리포트") + "편, 노트 " + k("노트") + "편, 아이디어 " + k("아이디어") + "편";
   add("홈 숫자", "경력 요약 PDF 원본의 개수 문구 = 사이트 지도", read("scripts/profile.html").indexOf(line) >= 0, line);
   const so = src["tools/sources.html"], gi = so.indexOf("const G = {"), bi = so.indexOf("const BOOKS = ["), be = so.indexOf("];", bi);
   const rows = (so.slice(gi, bi).match(/^      \["/gm) || []).length, std = (so.slice(so.indexOf('"g-std": ['), bi).match(/^      \["/gm) || []).length, books = (so.slice(bi, be).match(/^    \["/gm) || []).length, ins = (so.match(/<article class="ins"/g) || []).length;

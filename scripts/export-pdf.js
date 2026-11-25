@@ -50,6 +50,9 @@ const PAGES = [
   ["tools/holdco-nav.html", "30_지주사_포트폴리오_가치", "지주사 포트폴리오 가치"],
   ["tools/fx-hedge.html", "31_환리스크_헤지", "환리스크 헤지"],
   ["tools/mem-scenario.html", "30a_메모리_사이클_시나리오_가치평가", "메모리 사이클 시나리오 가치평가"],
+  ["tools/idea-vibe.html", "31a_아이디어_AI로_만드는_사내_도구", "아이디어: AI로 만드는 사내 도구"],
+  ["tools/idea-stats.html", "31b_아이디어_통계로_다시_보는_경영_문제", "아이디어: 통계로 다시 보는 경영 문제"],
+  ["tools/idea-bold.html", "31c_아이디어_공격적_성장_전략", "아이디어: 공격적 성장 전략"],
   ["tools/checks.html", "32_계산_검산", "계산 검산"],
   ["tools/guide.html", "33_쉬운_가이드", "쉬운 가이드"],
   ["en.html", "34_English_summary", "English summary"]
@@ -560,7 +563,7 @@ async function frontMatter(ctx, out, results, pick) {
     r.pages = +((info.match(/Pages:\s+(\d+)/) || [])[1] || r.plan.pages);
     r.start = start; start += r.pages;
   }
-  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "07a", "07b", "07c", "08", "08a", "09", "10", "11", "12", "13", "14"].includes(n) ? "리포트" : ["32", "33", "34"].includes(n) ? "참고" : "도구");
+  const kind = (n) => (n === "01" ? "소개" : ["02", "03", "04", "05", "06", "07", "07a", "07b", "07c", "08", "08a", "09", "10", "11", "12", "13", "14"].includes(n) ? "리포트" : ["31a", "31b", "31c"].includes(n) ? "아이디어" : ["32", "33", "34"].includes(n) ? "참고" : "도구");
   const rows = results.map((r) => `<tr><td class="no">${r.name.slice(0, 2)}</td><td class="k">${kind(r.name.slice(0, 2))}</td><td class="t">${esc(r.title)}</td><td class="u">${esc(r.file)}</td><td class="p">${r.start}</td><td class="c">${r.pages}쪽</td></tr>`).join("");
   const today = new Date();
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>

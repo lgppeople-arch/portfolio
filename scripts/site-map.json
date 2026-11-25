@@ -664,6 +664,79 @@
       "fields": [],
       "career": "",
       "more": []
+    },
+    {
+      "file": "idea-vibe.html",
+      "title": "아이디어: AI로 만드는 사내 도구",
+      "nav": "AI로 만드는 사내 도구",
+      "kind": "아이디어",
+      "fields": [
+        "경영관리",
+        "보고·시각화"
+      ],
+      "career": "",
+      "more": [
+        [
+          "pl-report.html",
+          "월 손익 보고"
+        ],
+        [
+          "capex-kit.html",
+          "설비투자 분석 키트"
+        ],
+        [
+          "idea-stats.html",
+          "아이디어: 통계로 다시 보는 경영 문제"
+        ]
+      ]
+    },
+    {
+      "file": "idea-stats.html",
+      "title": "아이디어: 통계로 다시 보는 경영 문제",
+      "nav": "통계로 다시 보는 경영 문제",
+      "kind": "아이디어",
+      "fields": [
+        "통계·확률"
+      ],
+      "career": "",
+      "more": [
+        [
+          "stats-notes.html",
+          "통계 기법과 활용"
+        ],
+        [
+          "plan-risk.html",
+          "사업계획 달성 확률"
+        ],
+        [
+          "idea-bold.html",
+          "아이디어: 공격적 성장 전략"
+        ]
+      ]
+    },
+    {
+      "file": "idea-bold.html",
+      "title": "아이디어: 공격적 성장 전략",
+      "nav": "공격적 성장 전략",
+      "kind": "아이디어",
+      "fields": [
+        "투자·M&A"
+      ],
+      "career": "",
+      "more": [
+        [
+          "ma-process.html",
+          "M&A 절차 지도"
+        ],
+        [
+          "capital.html",
+          "적정 부채와 파산 위험"
+        ],
+        [
+          "idea-vibe.html",
+          "아이디어: AI로 만드는 사내 도구"
+        ]
+      ]
     }
   ],
   "menus": {
@@ -728,6 +801,16 @@
           "holdco-nav.html",
           "fx-hedge.html",
           "mem-scenario.html"
+        ]
+      ]
+    ],
+    "ideas": [
+      [
+        "아이디어 노트",
+        [
+          "idea-vibe.html",
+          "idea-stats.html",
+          "idea-bold.html"
         ]
       ]
     ]
@@ -905,6 +988,25 @@
         [
           "deck.html",
           "보고"
+        ]
+      ]
+    },
+    {
+      "id": "idea",
+      "name": "AI로 일하는 방식 바꾸기",
+      "why": "직접 도구를 만들고, 통계로 판단을 바꾸고, 회사가 잘 하지 않는 선택지까지 검토하기",
+      "steps": [
+        [
+          "idea-vibe.html",
+          "도구 만들기"
+        ],
+        [
+          "idea-stats.html",
+          "통계로 판단"
+        ],
+        [
+          "idea-bold.html",
+          "공격적 선택지"
         ]
       ]
     }

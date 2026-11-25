@@ -853,3 +853,9 @@ ul.nums li b { display: block; font-family: var(--f-display); font-size: var(--s
 .lm-chip.in { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border-color: var(--accent); }
 .lm-chip.out { border-color: var(--neg); color: var(--neg-ink, var(--neg)); border-style: dashed; }
 .lm-out { padding: 8px 18px 0; }
+/* 상단 메뉴가 세 묶음(리포트·도구·아이디어)이 된 뒤 휴대폰 폭에서 넘치지 않게 */
+@media (max-width: 480px) {
+  .brand b { display: none; }
+  .site-nav.grouped a, .nav-g > summary { padding: 6px 4px; font-size: 12px; }
+  .site-head .wrap { gap: 6px; }
+}

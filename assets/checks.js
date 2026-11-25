@@ -28,6 +28,7 @@
     EquipCosEngine: require("./engines/equipcos.js"),
     EquipCos: require("./data/equip-cos.js"),
     EquipKr: require("./data/equip-kr.js"),
+    Ideas: require("./engines/ideas.js"),
     CapexPanelData: require("./data/capex-panel.js"),
     Post: require("./engines/post.js"),
     MA: require("./engines/ma.js"),
@@ -89,7 +90,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Ideas, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -770,6 +771,18 @@
       if (EquipKr) { const KA = E2.krAnalyze(EquipKr), wy = EquipKr.cos[0].years;
         add(G, "국내 장비사: 9곳 모두 2025년 매출 3,000억 원 이상·연속 5년, 부품·부대설비로 뺀 회사는 대상에 없음, 영업이익률 = 영업이익 ÷ 매출, 2023 변화 = 2023 ÷ 2022 − 1, 중앙값 손계산", EquipKr.cos.every((co) => co.years.length === 5 && co.years[4].fy === 2025 && co.years[4].revenue >= 3000) && EquipKr.cos.every((co) => !EquipKr.excluded.some((x) => x.name === co.name)) && near(KA[0].opm, wy[4].op / wy[4].revenue * 100, 1e-9) && near(KA[0].down23, (wy[2].revenue / wy[1].revenue - 1) * 100, 1e-9) && E2.median([3, 1, 2]) === 2 && E2.median([4, 1, 3, 2]) === 2.5, EquipKr.cos.length + "곳"); }
       add(G, "비율·환산 손계산 일치: 영업이익률 = 영업이익 ÷ 매출, 연평균 성장률 = (마지막/처음)^(1/5) − 1, 유로는 같은 해·엔(3월 결산)은 앞 해 연준 연평균 환율", near(k.last.opm, ky[5].op / ky[5].rev * 100, 1e-9) && near(k.cagr, (Math.pow(ky[5].rev / ky[0].rev, 1 / 5) - 1) * 100, 1e-9) && E2.usdRate(asml, D2.fx) === D2.fx.EUR[2025] && near(E2.usdRate(tel, D2.fx), 1 / D2.fx.JPY[2025], 1e-15) && E2.usdRate(D2.cos[1], D2.fx) === 1, "KLA 영업이익률 " + k.last.opm.toFixed(1) + "%");
+    }
+
+    /* ---------- 아이디어 노트 ---------- */
+    if (Ideas) {
+      const X = Ideas, G = "아이디어", txt = ["title", "one", "why", "how", "aiHow", "barrier", "guard", "kpi"], sc = ["impact", "ease", "ai", "risk"];
+      const fs = typeof require === "function" ? require("fs") : null, pth = typeof require === "function" ? require("path") : null;
+      const ok = X.IDEAS.every((x) => txt.every((k) => typeof x[k] === "string" && x[k].length > 8) && sc.every((k) => Number.isInteger(x[k]) && x[k] >= 1 && x[k] <= 5) && X.CATS[x.cat] && x.first.length >= 3 && x.links.length >= 1 && x.tags.length >= 1);
+      const ids = X.IDEAS.map((x) => x.id), uniq = new Set(ids).size === ids.length, per = Object.keys(X.CATS).every((k) => X.byCat(k).length === 8);
+      const linksOk = !fs || X.IDEAS.every((x) => x.links.every((q) => fs.existsSync(pth.join(__dirname, "..", "tools", q[0].split("#")[0]))));
+      const t = X.IDEAS[0], pr = X.priority(t);
+      add(G, "아이디어 자료 완결성: 설명 칸 8개는 모두 글(점수와 이름이 겹쳐 덮어쓰지 않음), 점수 4개는 1~5 정수, 묶음마다 8개·고유 번호, 첫 2주 3단계 이상, 이어 볼 링크가 실제 페이지", ok && uniq && per && linksOk, X.IDEAS.length + "개");
+      add(G, "우선순위 점수 = 효과 × 용이성 × √AI ÷ 위험, 순위는 점수 내림차순", Math.abs(pr - t.impact * t.ease * Math.sqrt(t.ai) / t.risk) < 1e-12 && X.rank("bold").every((q, i, a) => i === 0 || a[i - 1].p >= q.p), "");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */

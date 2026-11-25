@@ -2,7 +2,7 @@
 실행: python3 scripts/build-site.py        (--check 를 붙이면 고치지 않고, 고칠 것이 있으면 1로 끝난다)
 
 만드는 것
-  1. tools/*.html 상단 메뉴(리포트·도구 드롭다운, 현재 페이지 표시)
+  1. tools/*.html 상단 메뉴(리포트·도구·아이디어 드롭다운, 현재 페이지 표시)
   2. tools/index.html 도구·리포트 모음: 카드, 개수 문구, 읽는 경로
   3. tools/*.html 하단 '이어서 볼 것': 읽는 경로의 이전·다음, 제 경력과의 연결, 함께 보면 좋은 것, 만든 사람
   4. 404.html 의 비슷한 주소 제안 목록
@@ -73,6 +73,7 @@ def nav(cur):
     return ('    <nav class="site-nav grouped" aria-label="사이트">\n' + a("../index.html", "홈")
             + menu("리포트", MAP["menus"]["reports"], cur)
             + menu('<span class="wide-only">실무 </span>도구', MAP["menus"]["tools"], cur, True)
+            + menu("아이디어", MAP["menus"]["ideas"], cur)
             + a("guide.html", '<span class="wide-only">쉬운 </span>가이드') + a("checks.html", "검산")
             + '      <a href="../en.html" lang="en">EN</a>\n    </nav>\n')
 
@@ -151,7 +152,7 @@ for f in on_disk:
     if f == "index.html":
         s = between(s, "cards", hub_cards(), f)
         s = between(s, "paths", hub_paths(), f)
-        s = between(s, "counts", "실무 도구 %d개, 분석 리포트 %d편, 분석·보고 노트 %d편" % (count("도구"), count("리포트"), count("노트")), f)
+        s = between(s, "counts", "실무 도구 %d개, 분석 리포트 %d편, 분석·보고 노트 %d편, 아이디어 노트 %d편" % (count("도구"), count("리포트"), count("노트"), count("아이디어")), f)
         s = between(s, "total", str(len(MAP["pages"])), f)
     else:
         a, b = "<!-- build:flow -->", "<!-- /build:flow -->"
