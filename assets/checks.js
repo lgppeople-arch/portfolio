@@ -43,7 +43,9 @@
     Sectors: require("./data/sectors.js"),
     Deal: require("./data/deal-hhi.js"),
     Doa: require("./engines/doa.js"),
-    MemScen: require("./engines/memscen.js")
+    MemScen: require("./engines/memscen.js"),
+    MnaEngine: require("./engines/mnascreen.js"),
+    MnaData: require("./data/mna-screen.js")
   } : null;
   const api = factory();
   if (node) {
@@ -90,7 +92,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Ideas, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Ideas, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen, MnaEngine, MnaData } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -795,6 +797,27 @@
       const k2 = X.bundle(all, { apiMul: Bd.breakeven });
       add(G, "함께 할 때: 좌석·서버를 나눠 써서 개별 합보다 작고, 서버는 가장 높은 등급 1대, API 사용량을 손익분기 배수로 키우면 두 방식의 3년 비용이 같아짐", Bd.A.tco3 < sumA && Bd.B.tco3 < sumB && Bd.B.tier === "L" && near(k2.A.tco3, k2.B.tco3, 1), "분기 배수 " + Bd.breakeven.toFixed(1));
       add(G, "권고 규칙: 대외비·개인정보 아이디어는 모두 사내 구축, API 사용량을 늘리면 외부 AI 비용만 늘고 사내 구축은 그대로", X.IDEAS.every((x) => X.COST[x.id].sens < 3 || X.advise(X.COST[x.id]).pick === "B") && X.costA(c0, { apiMul: 10 }).api > a0.api && near(X.costB(c0, { apiMul: 10 }).tco3, b0.tco3, 1e-9), "");
+    }
+
+    /* ---------- 경영권 거래 후보 스크리닝 ---------- */
+    if (MnaEngine && MnaData) {
+      const M = MnaEngine, D = MnaData, G = "경영권 스크리닝", A = M.candidates(D, 40), ban = ["반도체·전자부품", "지주·투자"];
+      const num = (v) => typeof v === "number" && isFinite(v);
+      const okA = A.length >= 20 && A.every((x) => x.name && num(x.mcap) && num(x.price) && num(x.issued) && num(x.op) && x.op > 0 && num(x.evebit) && num(x.grp) && x.grp < 0.35 && x.mcap >= 1e11 && x.mcap <= 3e12 && x.opm >= 0.05 && ban.indexOf(x.group) < 0);
+      const okB = Object.keys(D.groups).length >= 8 && Object.keys(D.groups).every((g) => ban.indexOf(g) < 0 && D.groups[g].top.every((k) => D.cos[k] && D.cos[k].group === g && D.cos[k].sB && D.cos[k].mcap <= 1e12));
+      add(G, "자료 완결성: 후보는 모두 흑자·시가총액 1,000억~3조·최대주주 등 35% 미만·영업이익률 5% 이상, 반도체·지주회사 업종 없음, 볼트온 후보는 자기 업종 표에만 있고 시가총액 1조 이하", okA && okB, A.length + "곳 · " + Object.keys(D.groups).length + "개 업종");
+      const sortedA = A.every((x, i) => i === 0 || A[i - 1].sA.total >= x.sA.total - 1e-9) && A.every((x) => Math.abs(x.sA.total - (0.4 * x.sA.value + 0.25 * x.sA.quality + 0.25 * x.sA.contest + 0.1 * x.sA.fund)) < 2e-3);
+      const sortedB = Object.keys(D.groups).every((g) => { const L = M.bolt(D, g); return L.every((x, i) => i === 0 || L[i - 1].sB.total >= x.sB.total - 1e-9) && L.every((x) => { const b = x.sB; return Math.abs(b.total - (0.3 * b.growth + 0.25 * b.margin + 0.2 * b.value + 0.15 * b.path + 0.1 * b.cash)) < 2e-3; }); });
+      add(G, "점수식: 후보 = 0.4 싼가 + 0.25 버는 힘 + 0.25 지배권 + 0.1 자금, 볼트온 = 0.3 성장 + 0.25 이익률 + 0.2 가격 + 0.15 거래 경로 + 0.1 현금, 모두 점수 내림차순", sortedA && sortedB, "");
+      const c0 = A[0], V = c0.issued - (c0.tre || 0), d = M.deal(c0, { prem: 0.3, mode: "majority" });
+      const need = Math.ceil(V * (0.5 + 1 / V)), cost = need * c0.price * 1.3;
+      const db = M.deal(c0, { prem: 0, mode: "beat" }), dfull = M.deal(c0, { prem: 0.2, mode: "full" });
+      add(G, "지분 확보 비용 손계산(1위 후보): 의결권 주식 = 발행 − 자기주식, 과반 = 50% + 1주, 비용 = 주식 수 × 현재가 × 1.3, 최대주주 + 5%p, 전량 = 의결권 시가총액 × 1.2", d.shares === need && near(d.cost, cost, 1e-9) && near(db.stake, M.groupStake(c0) + 0.05, 1e-12) && near(dfull.cost, V * c0.price * 1.2, 1e-9), Math.round(d.cost / 1e8) + "억원");
+      const f = M.funding(c0, d, 3), ebitda = c0.op + (c0.da || 0), cap = Math.max(0, ebitda * 3 - Math.max(0, c0.debt - c0.cash)) * d.stake, fcf = (c0.ocf - c0.capex) * d.stake;
+      const f0 = M.funding(c0, d, 0);
+      add(G, "자금 조달 손계산: 차입 = min(비용, (EBITDA × 배수 − 기존 순차입) × 지분), 차입 + 자기자본 = 비용, 회수 기간 = 비용 ÷ 지분만큼의 FCF, 배수 0이면 전액 자기자본", near(f.debt, Math.min(d.cost, cap), 1e-9) && near(f.debt + f.equity, d.cost, 1e-9) && (fcf > 0 ? near(f.payback, d.cost / fcf, 1e-9) : f.payback === null) && f0.debt === 0 && near(f0.equity, d.cost, 1e-9), f.payback ? f.payback.toFixed(1) + "년" : "");
+      const big = { issued: 1000, tre: 0, price: 1, grp: 0.6, vote: 0.6, debt: 0, cash: 0, op: 1 }, small = Object.assign({}, big, { grp: 0.2, vote: 0.2 });
+      add(G, "가능성 판정: 최대주주 측이 60%면 과반 공개매수는 대주주 동의 없이 불가능, 20%면 가능. 신호에 불리 표시가 붙는다", !M.deal(big, { mode: "majority" }).feasible && M.deal(small, { mode: "majority" }).feasible && M.signals(big, M.deal(big)).some((q) => q[0] === "down"), "");
     }
 
     /* ---------- 고급 차트의 배치 계산 ---------- */

@@ -37,6 +37,7 @@ const PAGES = [
   ["tools/parts-map.html", "parts-map", { label: "분석 리포트" }],
   ["tools/equip-map.html", "equip-map", { label: "분석 리포트" }],
   ["tools/equip-cos.html", "equip-cos", { label: "기업 분석" }],
+  ["tools/mna-screen.html", "mna-screen", { label: "개인 프로젝트" }],
   ["tools/idea-vibe.html", "idea-vibe", { label: "아이디어 노트" }],
   ["tools/idea-stats.html", "idea-stats", { label: "아이디어 노트" }],
   ["tools/idea-bold.html", "idea-bold", { label: "아이디어 노트" }],

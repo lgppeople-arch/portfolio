@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}  .hm { border-collapse: collapse; font-size: 12.5px; min-width: 760px; width: 100%; }
+  .hm th, .hm td { border: 1px solid var(--rule-soft); padding: 7px 8px; text-align: center; vertical-align: middle; }
+  .hm thead th { font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  .hm tbody th { text-align: left; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .hm td.l { text-align: left; color: var(--ink-2); }
+  .hm td.c0 { color: var(--muted); }
+  .hm td.c1 { background: color-mix(in srgb, var(--input) 14%, transparent); color: var(--ink); }
+  .hm td.c2 { background: color-mix(in srgb, var(--input) 34%, transparent); color: var(--ink); font-weight: 700; }
+  .hm td.c3 { background: color-mix(in srgb, var(--input) 58%, transparent); color: var(--ink); font-weight: 700; }
+  .hm .gh { font-size: 11px; color: var(--muted); font-weight: 500; display: block; }
+  .hm tr.on th, .hm tr.on td { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .wts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 18px; padding: 12px 18px 0; }
+  @media (max-width: 760px) { .wts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .wts label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+  .wts b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .lgd { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 18px 0; font-size: 12px; color: var(--ink-2); }
+  .lgd i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  .facts { margin: 12px 0 6px; display: grid; gap: 8px; padding: 0; list-style: none; max-width: 82ch; }
+  .facts li { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 10px 14px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); }
+  .facts li b { color: var(--ink); }
+  .facts li small { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; }
+  #a-tb { min-width: 1080px; } #a-tb td, #b-tb td { white-space: nowrap; } #a-tb td.n, #b-tb td.n { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--f-num); font-size: 12.5px; }
+  #b-tb { min-width: 900px; } #a-tb th small, #b-tb th small { font-weight: 400; font-size: 11px; }
+  #p-kpi { margin: 12px 18px; } .kpi .kl { font-size: 12px; color: var(--muted); }
+  .ctl label:not(.rg) select { min-width: 170px; }
+  ul.sig { list-style: none; margin: 4px 18px 16px; padding: 0; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); }
+  ul.sig li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; }
+  ul.sig .dot { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; font-weight: 700; font-size: 12px; margin-top: 2px; }
+  ul.sig li.up .dot { background: color-mix(in srgb, var(--pos) 16%, var(--surface)); color: var(--pos); }
+  ul.sig li.down .dot { background: color-mix(in srgb, var(--neg) 14%, var(--surface)); color: var(--neg-ink); }
+  ol.steps5 { counter-reset: st; list-style: none; padding: 0; margin: 14px 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  ol.steps5 li { counter-increment: st; background: var(--surface); border: 1px solid var(--rule); border-top: 2px solid var(--ink); border-radius: var(--radius); padding: 12px 14px; font-size: 12.5px; line-height: 1.6; color: var(--ink-2); }
+  ol.steps5 li::before { content: "0" counter(st); display: block; font-family: var(--f-num); font-size: 11px; color: var(--accent); margin-bottom: 4px; }
+  ol.steps5 li b { display: block; font-size: 13.5px; color: var(--ink); margin-bottom: 4px; }
+  @media (max-width: 960px) { ol.steps5 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  @media (max-width: 520px) { ol.steps5 { grid-template-columns: minmax(0, 1fr); } }
+  .sbars { display: inline-flex; gap: 4px; } .sbar { display: inline-block; width: 38px; height: 8px; background: var(--tab); border-radius: 2px; overflow: hidden; } .sbar i { display: block; height: 100%; background: var(--input); opacity: .75; }
+  ul.src { font-size: 13px; line-height: 1.7; color: var(--ink-2); padding-left: 18px; } ul.src a { overflow-wrap: anywhere; }
+  #w-tb { min-width: 720px; } #w-tb th[scope=row], #w-tb td:nth-child(2) { white-space: nowrap; }
+</style>
+<title>경영권 거래 후보 스크리닝 · 이기표</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="상장사 1,000여 곳의 OpenDART 2025 사업보고서와 시가총액으로 현금 창출력·성장성 대비 저평가되고 최대주주 지분이 얇은 경영권 거래 후보를 점수화하고, 공개매수 비용·인수 금융·회수 기간을 계산. 업종별 볼트온 후보 순위 포함. 개인 연구 초안">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이기표 재무기획 포트폴리오">
+<meta property="og:title" content="경영권 거래 후보 스크리닝 · 이기표">
+<meta property="og:description" content="상장사 1,000여 곳의 OpenDART 2025 사업보고서와 시가총액으로 현금 창출력·성장성 대비 저평가되고 최대주주 지분이 얇은 경영권 거래 후보를 점수화하고, 공개매수 비용·인수 금융·회수 기간을 계산. 업종별 볼트온 후보 순위 포함. 개인 연구 초안">
+<meta property="og:url" content="https://lgppeople-arch.github.io/portfolio/tools/mna-screen.html">
+<meta property="og:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/mna-screen.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="싸고, 현금을 벌고, 지배권이 약한 회사">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lgppeople-arch.github.io/portfolio/assets/og/mna-screen.png">
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<script src="../assets/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/report.css">
+<style>
+  .rpt-hero { min-height: 440px; }
+  .qline { margin: 4px 0 14px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); font-size: var(--s-3); font-weight: 700; line-height: 1.5; color: var(--ink); max-width: 72ch; }
+  .qline::before { content: "질문  "; white-space: pre; font-size: 12px; font-weight: 600; color: var(--accent); }
+  .use3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  @media (max-width: 960px) { .use3 { grid-template-columns: minmax(0, 1fr); } }
+  .use3 > div { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  .use3 h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }
+  .use3 ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .use3 code, .tw code { font-family: var(--f-num); font-size: 12px; background: color-mix(in srgb, var(--ink) 5%, transparent); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+  .site-use { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .site-use a { font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: end; padding: 12px 18px 0; font-size: var(--s-1); }
+  .ctl label.rg { display: grid; gap: 2px; flex: 1 1 170px; min-width: 150px; }
+  .ctl label.rg span { color: var(--muted); font-size: 12px; }
+  .ctl label.rg b { color: var(--ink); font-family: var(--f-num); font-weight: 600; }
+  .ctl .lbl { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .readout { padding: 8px 18px 0; font-size: 13px; line-height: 1.65; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .readout b { color: var(--ink); }
+  .plotbox { position: relative; min-height: 120px; }
+  .plotbox svg { display: block; width: 100%; height: auto; }
+  .plotbox svg text { font-family: var(--f-body); }
+  .plotbox svg text.n { font-family: var(--f-num); }
+  .duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+  details.dt { margin: 4px 18px 14px; }
+  details.dt summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  details.dt .tbx { overflow-x: auto; margin-top: 8px; }
+  details.dt table { width: auto; min-width: 60%; }
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); margin: 14px 0 6px; }
+  table.pick { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13px; line-height: 1.55; }
+  table.pick th, table.pick td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); }
+  table.pick thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tab); }
+  table.pick tbody th { font-weight: 600; color: var(--ink); }
+  table.pick td { color: var(--ink-2); }
+  table.pick td a { font-weight: 600; }
+  table.mini { border-collapse: collapse; font-size: 13px; margin: 6px 0 2px; }
+  table.mini th, table.mini td { padding: 6px 12px; border-bottom: 1px solid var(--rule-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  table.mini th:first-child, table.mini td:first-child { text-align: left; }
+  table.mini thead th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  ol.traps { margin: 12px 0 6px; padding-left: 22px; display: grid; gap: 8px; font-size: var(--s-2); line-height: 1.7; color: var(--ink-2); max-width: 78ch; }
+  ol.traps b { color: var(--ink); }
+  ul.refs { margin: 12px 0 6px; padding-left: 18px; display: grid; gap: 6px; font-size: var(--s-1); line-height: 1.65; color: var(--ink-2); max-width: 82ch; }
+  .btn.sm { padding: 6px 12px; font-size: var(--s-1); }
+  .evid { margin: 14px 0 4px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); background: color-mix(in srgb, var(--pos) 6%, var(--surface)); display: grid; gap: 6px; max-width: 80ch; }
+  .evid .evk { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: color-mix(in srgb, var(--pos) 72%, var(--ink)); }
+  .evid p { margin: 0; font-size: var(--s-1); line-height: 1.7; color: var(--ink); }
+  .evid a { font-size: 12.5px; font-weight: 600; justify-self: start; }
+  .ver { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 1.6; white-space: nowrap; vertical-align: 1px; }
+  .ver.ok { color: color-mix(in srgb, var(--pos) 75%, var(--ink)); background: color-mix(in srgb, var(--pos) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--pos) 35%, var(--rule)); }
+  .ver.mid { color: var(--neg-ink); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  td .ver { margin-left: 0; }
+  .ctl select { font: inherit; font-size: 13px; padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--input); max-width: 100%; }
+  ol.flow5 { list-style: none; margin: 16px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: f5; }
+  @media (max-width: 960px) { ol.flow5 { grid-template-columns: minmax(0, 1fr); } }
+  ol.flow5 li { counter-increment: f5; position: relative; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--input); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 3px; align-content: start; min-width: 0; }
+  ol.flow5 li::before { content: counter(f5); position: absolute; right: 10px; top: 8px; font-family: var(--f-num); font-size: 11px; color: var(--muted); }
+  ol.flow5 .fk { font-size: 11px; font-weight: 600; color: var(--muted); padding-right: 14px; }
+  ol.flow5 b { font-size: var(--s-2); color: var(--ink); }
+  ol.flow5 p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+  .formula { font-family: var(--f-num); font-size: var(--s-1); background: var(--ledger); border-radius: var(--radius); padding: 12px 14px; line-height: 1.8; overflow-x: auto; white-space: pre; margin: 12px 0; }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap wide">
+    <a class="brand" href="../index.html"><span class="mono">LGP</span><b>이기표</b><span>재무기획 · 전략기획</span></a>
+    <nav class="site-nav grouped" aria-label="사이트">
+      <a href="../index.html">홈</a>
+      <details class="nav-g cur"><summary>리포트</summary><div class="nav-m"><div><span class="nav-h">기업·업종 분석</span><a href="samsung.html">삼성전자 재무 분석</a><a href="equip-cos.html">장비사 심층 분석: 해외 5곳·국내 9곳</a><a href="mna-screen.html" aria-current="page">경영권 거래 후보 스크리닝(진행 중)</a><a href="sectors.html">업종별 재무제표 읽기</a><a href="ma-case.html">M&amp;A 사례: HD현대중공업·미포 합병</a></div><div><span class="nav-h">산업·분석 틀</span><a href="semi-cycle.html">반도체 사이클과 재무</a><a href="parts-map.html">반도체 장비 부품 세그먼트 지도</a><a href="equip-map.html">반도체 장비 세그먼트 지도</a><a href="trade-lead.html">장비 수출입으로 읽는 반도체 투자 사이클</a><a href="capex-panel.html">투자를 늘린 제조업체는 3년 뒤 더 벌까</a><a href="reading.html">AI 인프라 읽기 노트</a><a href="fsa.html">재무제표 분석 프레임워크</a></div><div><span class="nav-h">분석·보고 노트</span><a href="stats-notes.html">통계 기법과 활용</a><a href="pro-methods.html">추정과 가치의 기법</a><a href="rules-note.html">세액공제·내부회계·지속가능성 공시</a><a href="charts.html">차트 선택과 디자인</a><a href="deck.html">보고서·PPT 작성 원칙</a><a href="sources.html">정보 출처와 참고 자료</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary><span class="wide-only">실무 </span>도구</summary><div class="nav-m two"><div><span class="nav-h">경영관리</span><a href="kpi-tree.html">KPI 트리</a><a href="plan-risk.html">사업계획 달성 확률</a><a href="budget-opt.html">비용예산 증액 우선순위</a><a href="pl-report.html">월 손익 보고</a><a href="mgmt-kit.html">관리회계 키트</a><a href="cost-stats.html">원가 행태·불량 관리도</a><a href="mbo-kpi.html">성과평가 MBO·KPI</a><a href="cash-13w.html">13주 자금수지</a><a href="capital.html">적정 부채·파산 위험</a><a href="doa.html">위임전결 기준 점검</a></div><div><span class="nav-h">투자·M&amp;A</span><a href="capex-kit.html">설비투자 분석 키트</a><a href="post-review.html">투자 사후관리</a><a href="asset-kit.html">자산 손상·운전자본</a><a href="ma-process.html">M&amp;A 절차 지도</a><a href="ma-valuation.html">M&amp;A 가치평가</a><a href="holdco-nav.html">지주사 포트폴리오 가치</a><a href="fx-hedge.html">환리스크 헤지</a><a href="mem-scenario.html">메모리 시나리오 가치평가</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <details class="nav-g"><summary>아이디어</summary><div class="nav-m"><div><span class="nav-h">아이디어 노트</span><a href="idea-vibe.html">AI로 만드는 사내 도구</a><a href="idea-stats.html">통계로 다시 보는 경영 문제</a><a href="idea-bold.html">공격적 성장 전략</a></div><a class="nav-all" href="index.html">도구·리포트 전체 모음 →</a></div></details>
+      <a href="guide.html"><span class="wide-only">쉬운 </span>가이드</a>
+      <a href="checks.html">검산</a>
+      <a href="../en.html" lang="en">EN</a>
+    </nav>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="어두운 화면으로 바꾸기">어둡게</button>
+  </div>
+</header>
+
+<main>
+  <section class="rpt-hero" aria-label="표지">
+    <canvas id="hero-art" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="wrap wide">
+      <div class="crumb"><a href="../index.html">홈</a> / 리포트 / 경영권 거래 후보 스크리닝</div>
+      <div class="rpt-tag">Personal project · 진행 중 · 초안</div>
+      <h1>싸고, 현금을 벌고,<br>지배권이 약한 회사</h1>
+      <p class="dek">상장사 전체를 공시 숫자로 훑어 현금 창출력·성장성에 비해 기업가치가 낮고 최대주주 지분이 얇아 경영권 거래가 가능한 회사를 고르고, 지분 확보 비용과 자금 조달·회수 기간을 계산했습니다. 같은 자료로 업종별 볼트온(작은 회사를 사서 붙이는 인수) 후보 순위도 뽑았습니다. 공개 자료를 기계적으로 계산한 연습이며, 특정 회사에 대한 인수 제안이나 투자 권유가 아닙니다.</p>
+      <div class="rpt-meta"><span>대상<b id="m-univ">상장사</b></span><span>재무<b>OpenDART 2025 사업보고서</b></span><span>가격<b>2026.11.25 장중</b></span><span>작성<b>이기표</b></span></div>
+    </div>
+  </section>
+
+  <div class="wrap wide">
+    <div class="rpt-grid">
+      <nav class="rpt-toc" id="toc" aria-label="목차"></nav>
+      <div class="rpt-body">
+
+        <section id="s-q" data-toc="요약" data-group="요약">
+          <h2>요약</h2>
+          <div class="takeaways" id="tk"></div>
+        </section>
+
+        <section id="s-why" data-toc="왜 지금인가" data-group="배경">
+          <h2>왜 지금인가: 2026년에 바뀐 판</h2>
+          <p>한국에서 대주주 동의 없는 경영권 거래는 드물었습니다. 대주주 지분이 두껍고, 자기주식을 우호 세력에 넘기는 방어가 가능했기 때문입니다. 2026년에 이 조건 일부가 바뀌었습니다.</p>
+          <ol class="traps">
+            <li><b>자기주식 소각 의무(개정 상법, 2026.2.25 국회 통과, 공포 즉시 시행).</b> 취득한 자기주식은 원칙적으로 1년 안에 소각해야 하고, 주주총회 승인을 받은 보유·처분 계획이 있어야 예외가 됩니다. 경영권 분쟁 때 자기주식을 백기사에게 넘기는 방어가 어려워졌습니다.</li>
+            <li><b>집중투표 의무화(자산 2조 원 이상 상장사, 2026.9.10 시행).</b> 소수 지분으로도 이사 한두 명을 이사회에 넣을 수 있어, 과반 전에도 영향력을 가질 수 있습니다.</li>
+            <li><b>의무공개매수 도입 논의(자본시장법 개정안, 미확정).</b> 25% 이상 취득해 최대주주가 되면 50% + 1주까지 공개매수를 하도록 하는 안이 정무위·법사위를 통과했으나 2026.10.1 본회의 상정이 보류됐습니다. 통과되면 공포 1년 뒤 시행이며, 과반 인수 비용이 크게 올라갑니다. 그래서 아래 계산은 '과반 확보' 비용을 기본으로 보여 줍니다.</li>
+          </ol>
+          <p class="muted" style="font-size:13px">제도 내용은 2026.11.25에 법률 뉴스·로펌 해설로 확인했으며, 실행 전에는 법령 원문과 자문으로 다시 확인해야 합니다. 출처는 맨 아래에 있습니다.</p>
+        </section>
+
+        <section id="s-method" data-toc="방법과 점수" data-group="방법">
+          <h2>방법: 세 단계 거름망과 점수</h2>
+          <div class="readout" id="funnel"></div>
+          <div class="tw" role="region" aria-label="점수 구성" tabindex="0"><table class="pick" id="w-tb">
+            <thead><tr><th scope="col">축</th><th scope="col">비중</th><th scope="col">지표(같은 후보군 안의 백분위)</th><th scope="col">왜</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">싼가</th><td>40%</td><td>EV/EBIT(낮을수록) 50%, 잉여현금흐름 수익률 25%, PBR(낮을수록) 25%</td><td>번 돈과 남는 현금에 비해 값이 얼마나 낮은가. EV = 시가총액 + 차입금·사채·리스부채 − 현금·단기금융상품</td></tr>
+              <tr><th scope="row">버는 힘</th><td>25%</td><td>매출 2년 연평균 성장률 40%, 영업이익률 40%, 3년 연속 흑자 20%</td><td>싼 이유가 '사업이 망가져서'인 회사를 걸러낸다</td></tr>
+              <tr><th scope="row">지배권</th><td>25%</td><td>최대주주와 특수관계인 지분(낮을수록)</td><td>대주주 동의 없이 거래가 성립할 수 있는가</td></tr>
+              <tr><th scope="row">자금</th><td>10%</td><td>순현금 ÷ 시가총액</td><td>인수 뒤 대상 회사 현금으로 비용 일부를 회수할 수 있는가</td></tr>
+            </tbody></table></div>
+          <p class="muted" style="font-size:13px">거름망: 금융업 제외 → 2024·2025년 연속 영업이익 → 시가총액 1,000억~3조 원(한 회사가 감당할 수 있는 크기) → 최대주주 등 지분 35% 미만. 지주회사는 자회사 합산 가치로 따로 봐야 해서 뺐습니다(<a href="holdco-nav.html">지주사 포트폴리오 가치</a>). 작성자의 현 업무와 겹치는 반도체·반도체 장비 업종과, 작성자와 이해관계가 있을 수 있는 회사는 기준을 넘더라도 넣지 않았습니다(이름 생략).</p>
+        </section>
+
+        <section id="s-map" data-toc="시장 지도" data-group="후보">
+          <h2>시장 지도: 지분 구조 × 가격</h2>
+          <div class="fig" data-rv>
+            <div class="fig-h"><h4>최대주주 등 지분(가로)과 EV/EBIT(세로)</h4><span class="muted" style="font-size: 12px">점 하나 = 회사 하나, 크기 = 시가총액</span></div>
+            <div class="fig-b plotbox" id="f-map"></div>
+            <div class="fig-s" id="map-note"></div>
+          </div>
+        </section>
+
+        <section id="s-a" data-toc="후보 상위 20">
+          <h2>경영권 거래 후보 상위 20</h2>
+          <p>점수가 높다고 좋은 회사라는 뜻은 아닙니다. '싸고, 돈을 벌고, 대주주 지분이 얇다'는 세 조건이 함께 맞는 정도입니다. 이름을 누르면 아래 추진안 계산기로 넘어갑니다.</p>
+          <div class="tw" role="region" aria-label="경영권 거래 후보" tabindex="0"><table class="pick" id="a-tb"></table></div>
+        </section>
+
+        <section id="s-plan" data-toc="추진안 계산기" data-group="추진안">
+          <h2>추진안: 얼마에, 얼마나, 무엇으로 사나</h2>
+          <div class="fig" data-rv>
+            <div class="ctl">
+              <label><span class="lbl">대상</span><select id="p-co" aria-label="대상 회사"></select></label>
+              <label><span class="lbl">목표 지분</span><select id="p-mode" aria-label="목표 지분"><option value="majority">의결권 과반(50% + 1주)</option><option value="beat">최대주주 측 + 5%p</option><option value="full">전량(상장폐지 전제)</option></select></label>
+              <label class="rg"><span>공개매수 프리미엄 <b id="p-prem-v">30%</b></span><input type="range" id="p-prem" min="0" max="0.8" step="0.05" value="0.3" aria-label="공개매수 프리미엄"></label>
+              <label class="rg"><span>인수 금융 한도(EBITDA 배수) <b id="p-lev-v">3.0배</b></span><input type="range" id="p-lev" min="0" max="6" step="0.5" value="3" aria-label="인수 금융 한도"></label>
+            </div>
+            <div class="readout" id="p-out" aria-live="polite"></div>
+            <div class="fig-b plotbox" id="f-own"></div>
+            <div class="kpis" id="p-kpi"></div>
+            <ul class="sig" id="p-sig"></ul>
+          </div>
+          <h3>실행 순서(일반 절차)</h3>
+          <ol class="steps5" id="p-steps">
+            <li><b>사전 검토(4~8주)</b>법률·세무 자문, 공정거래 기업결합 신고 대상 여부, 대상 회사 정관의 경영권 방어 조항(이사 해임 요건, 시차임기제 등)과 주주 명부 확인. 미공개 중요정보를 다루므로 내부자 명단 관리.</li>
+            <li><b>지분 확보 방식 선택</b>대주주와 협상(블록딜)이 가능하면 우선. 어려우면 공개매수. 5% 이상 보유 시 5영업일 안에 대량보유 보고(보유 목적 '경영권 영향' 명시)를 해야 하므로 장내 매집은 시장에 바로 드러납니다.</li>
+            <li><b>공개매수(20~60일)</b>가격·수량·응모 하한 조건을 공시. 경쟁 공개매수나 백기사 등장 가능성에 대비해 가격 상한과 철회 조건을 미리 정합니다.</li>
+            <li><b>주주총회와 이사회</b>이사 선임·정관 변경. 자산 2조 원 이상이면 집중투표로 소수 지분도 이사회에 들어갈 수 있습니다.</li>
+            <li><b>인수 후 100일</b>현금 회수 계획(배당·자본 정책), 핵심 인력 유지, 소수주주와의 관계(합병·상장폐지 시 공정 가격 이슈) 관리.</li>
+          </ol>
+        </section>
+
+        <section id="s-b" data-toc="업종별 볼트온" data-group="볼트온">
+          <h2>업종별 볼트온 후보 순위</h2>
+          <p>볼트온은 이미 그 업종에 있는 회사가 작은 회사를 사서 붙이는 인수입니다. 적대적 인수와 반대로 <b>대주주 지분이 30~70%로 모여 있는 편이 낫습니다</b>. 한 번의 협상으로 거래가 끝나기 때문입니다. 업종 안에서 성장률 30%, 영업이익률 25%, EV/EBIT 20%, 거래 경로(대주주 지분) 15%, 잉여현금흐름 흑자 10%로 점수를 매겼고, 시가총액 1조 원 이하만 넣었습니다.</p>
+          <div class="fig" data-rv>
+            <div class="ctl"><label><span class="lbl">업종</span><select id="b-grp" aria-label="업종 고르기"></select></label></div>
+            <div class="readout" id="b-out"></div>
+            <div class="tw" role="region" aria-label="볼트온 후보 순위" tabindex="0" style="margin: 10px 18px 14px"><table class="pick" id="b-tb"></table></div>
+            <div class="fig-s" id="b-note"></div>
+          </div>
+        </section>
+
+        <section id="s-lim" data-toc="한계와 다음 단계" data-group="한계">
+          <h2>한계와 다음 단계</h2>
+          <ol class="traps">
+            <li><b>한 해 숫자.</b> 2025년 한 해의 영업이익·현금흐름으로 값을 매겼습니다. 일회성 이익이나 사이클 정점이면 싸 보입니다. 다음 단계에서 3년 평균과 2026년 분기 실적으로 바꿉니다.</li>
+            <li><b>계정 자동 추출.</b> 현금·차입금·설비투자는 전체 재무제표에서 계정 이름으로 뽑았습니다. 회사마다 이름이 달라 일부가 빠지거나 겹칠 수 있어, 상위 후보는 원문으로 다시 확인해야 합니다.</li>
+            <li><b>지분은 2025년 말 기준.</b> 최대주주 현황은 사업보고서 기준이고, 5% 보유자는 가장 최근 대량보유 보고입니다. 그 뒤의 변동, 우호 지분(거래처·임직원·재단), 주주 간 약정은 반영하지 못했습니다.</li>
+            <li><b>가격은 하루치.</b> 2026.11.25 장중 가격이라 시장이 크게 움직인 날이면 순위가 흔들립니다.</li>
+            <li><b>시너지 없음.</b> 인수자가 얻는 시너지와 통합 비용은 넣지 않았습니다. 볼트온은 인수자별로 따로 계산해야 합니다(<a href="ma-valuation.html">M&amp;A 가치평가</a>).</li>
+          </ol>
+          <h3>출처</h3>
+          <ul class="src" id="src-list">
+            <li>재무·지분: OpenDART 오픈API(다중회사 주요계정, 단일회사 전체 재무제표, 최대주주 현황, 주식의 총수 현황, 대량보유 상황보고), 2025 회계연도 사업보고서</li>
+            <li>시가총액·주가: 네이버 증권 시가총액 목록, 2026.11.25 11시 10~30분 장중 값</li>
+            <li>자기주식 소각 의무: <a href="https://www.lawtimes.co.kr/news/articleView.html?idxno=216873" rel="noopener">법률신문, 자사주 소각 의무화 상법 개정안 국회 본회의 통과</a></li>
+            <li>집중투표 의무화 시행일: <a href="https://www.lawtimes.co.kr/news/articleView.html?idxno=217140" rel="noopener">법률신문, 집중투표제·자사주 의무소각 시행 전 대응전략</a></li>
+            <li>의무공개매수: <a href="https://www.lawtimes.co.kr/news/articleView.html?idxno=226698" rel="noopener">법률신문, 의무공개매수제도 도입 자본시장법 개정안 주요 내용</a>, <a href="https://news.mtn.co.kr/news-detail/2026100113171855492" rel="noopener">머니투데이방송, 본회의 상정 무산</a></li>
+          </ul>
+          <p class="rpt-end">공개 공시와 시세를 정해진 식으로 계산한 개인 연구 초안입니다. 특정 회사에 대한 인수 제안, 투자 권유, 매매 추천이 아니며, 작성자가 속한 회사의 계획과 무관합니다. 상장사 주식 매매와 공개매수는 자본시장법(대량보유 보고, 미공개 정보 이용 금지 등)의 적용을 받습니다. 기준일 2026.11.25.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- build:flow -->
+<section class="trail" aria-label="이어서 볼 것">
+  <div class="wrap wide">
+    <div class="trail-top">
+      <div class="trail-path">
+        <span class="fk">읽는 경로 · <a href="index.html#path-deal">M&amp;A 거래</a> <b>3</b> / 5</span>
+        <ol class="fsteps"><li><a href="ma-process.html">절차</a></li><li><a href="ma-valuation.html">가격</a></li><li class="cur" aria-current="step"><span>후보 찾기</span></li><li><a href="ma-case.html">공개 사례</a></li><li><a href="holdco-nav.html">지주사 가치</a></li></ol>
+        <div class="fnav"><a class="fprev" href="ma-valuation.html"><small>← 이전 단계</small>M&amp;A 가치평가</a><a class="fnext" href="ma-case.html"><small>다음 단계 →</small>M&amp;A 사례: HD현대중공업·미포 합병</a></div>
+      </div>
+      <div class="trail-side"><div><span class="fk">함께 보면 좋은 것</span><ul><li><a href="ma-valuation.html">M&amp;A 가치평가</a></li><li><a href="ma-process.html">M&amp;A 절차 지도</a></li><li><a href="idea-bold.html">공격적 성장 전략 아이디어</a></li></ul></div></div>
+    </div>
+    <div class="trail-me"><span><b>이기표</b> 재무기획 · 전략기획 포트폴리오</span><span class="fl"><a href="../index.html#brief">3분 요약</a><a href="../assets/docs/lee-gipyo-profile.pdf" download="이기표_경력요약.pdf">경력 요약 PDF</a><a href="index.html#paths">읽는 경로</a><a href="../index.html#contact">연락</a></span></div>
+  </div>
+</section>
+<!-- /build:flow -->
+
+<footer class="site-foot">
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.25</span><span>공개 공시와 시세로 계산한 개인 연구 초안입니다. 인수 제안·투자 권유가 아니며 작성자가 속한 회사의 계획과 무관합니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+</footer>
+
+<script src="../assets/fin.js"></script>
+<script src="../assets/data/mna-screen.js"></script>
+<script src="../assets/engines/mnascreen.js"></script>
+<script src="../assets/report.js"></script>
+<script src="../assets/mna-screen.js"></script>
+</body>
+</html>

@@ -5,3 +5,4 @@ pdf/
 .env
 examples/dart/cache/
 __pycache__/
+examples/mna/cache/

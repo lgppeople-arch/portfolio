@@ -483,6 +483,31 @@
       ]
     },
     {
+      "file": "mna-screen.html",
+      "title": "경영권 거래 후보 스크리닝",
+      "nav": "경영권 거래 후보 스크리닝(진행 중)",
+      "kind": "리포트",
+      "fields": [
+        "투자·M&A",
+        "기업·산업 분석"
+      ],
+      "career": "",
+      "more": [
+        [
+          "ma-valuation.html",
+          "M&A 가치평가"
+        ],
+        [
+          "ma-process.html",
+          "M&A 절차 지도"
+        ],
+        [
+          "idea-bold.html",
+          "공격적 성장 전략 아이디어"
+        ]
+      ]
+    },
+    {
       "file": "trade-lead.html",
       "title": "장비 수출입으로 읽는 반도체 투자 사이클",
       "kind": "리포트",
@@ -746,6 +771,7 @@
         [
           "samsung.html",
           "equip-cos.html",
+          "mna-screen.html",
           "sectors.html",
           "ma-case.html"
         ]
@@ -906,6 +932,10 @@
         [
           "ma-valuation.html",
           "가격"
+        ],
+        [
+          "mna-screen.html",
+          "후보 찾기"
         ],
         [
           "ma-case.html",

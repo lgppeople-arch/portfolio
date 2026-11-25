@@ -859,3 +859,17 @@ ul.nums li b { display: block; font-family: var(--f-display); font-size: var(--s
   .site-nav.grouped a, .nav-g > summary { padding: 6px 4px; font-size: 12px; }
   .site-head .wrap { gap: 6px; }
 }
+
+/* 홈: 그 밖의 작업 카드 */
+.brief-cta { margin-bottom: 40px; }
+.more-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+.mcard { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 16px; border: 1px solid var(--rule); border-top: 2px solid var(--ink); border-radius: var(--radius); background: var(--surface); color: inherit; text-decoration: none; transition: border-color .2s, transform .2s; }
+.mcard:hover { border-color: var(--ink-2); transform: translateY(-2px); }
+.mcard:focus-visible { outline: 2px solid var(--input); outline-offset: 2px; }
+.mcard .mk { font-size: 11.5px; font-weight: 600; color: var(--accent); }
+.mcard b { font-size: 15px; line-height: 1.4; color: var(--ink); }
+.mcard .ml { font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+.mcard:first-child { border-top-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
+@media (max-width: 960px) { .more-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .more-grid { grid-template-columns: minmax(0, 1fr); } }
+@media print { .more-grid { grid-template-columns: repeat(2, 1fr); } .mcard { break-inside: avoid; } }

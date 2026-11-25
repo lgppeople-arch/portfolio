@@ -164,6 +164,12 @@ for f in on_disk:
             s = s.replace('<footer class="site-foot">', a + flow(f) + b + "\n\n" + '<footer class="site-foot">')
     write(path, s0, s)
 
+# '읽는 경로 N가지' 문구를 경로 수에 맞춘다(모음·홈·안내 PDF 원본)
+WORD = ["영", "한", "두", "세", "네", "다섯", "여섯", "일곱", "여덟", "아홉", "열"]
+for rel in ["tools/index.html", "index.html", "scripts/intro.html"]:
+    path = os.path.join(ROOT, rel); s0 = read(path)
+    write(path, s0, re.sub(r"읽는 경로 \S+ 가지", "읽는 경로 " + WORD[len(MAP["paths"])] + " 가지", s0))
+
 path = os.path.join(ROOT, "404.html")
 s0 = s = read(path)
 a, b = "/* build:pages */", "/* /build:pages */"
