@@ -39,7 +39,7 @@
     tx(s, r2, bot + 32, "최대주주와 특수관계인 지분 →", { "text-anchor": "end", "font-size": 10.5, fill: c("--muted") });
     D.dots.forEach((d) => { if (d[1] == null || d[2] == null) return; const px = x(Math.min(0.8, d[1])), py = y(Math.min(25, d[2])), r = Math.max(2.5, Math.min(9, Math.sqrt(d[3]) / 18));
       sv("circle", { cx: px, cy: py, r: r, fill: d[4] ? c("--accent") : c("--mark-muted"), opacity: d[4] ? 0.85 : 0.35 }, s); });
-    $("map-note").textContent = "정밀 조회한 " + D.dots.length + "곳(반도체·반도체 장비·지주회사 제외). 주황 점이 점수 상위 20곳입니다. EV/EBIT 25배 이상과 지분 80% 이상은 가장자리에 모아 그렸습니다. 대부분의 회사는 대주주 지분 30~60%에 몰려 있어, 왼쪽 아래 영역은 드뭅니다.";
+    $("map-note").textContent = "정밀 조회한 " + D.dots.length + "곳(지주회사 제외). 주황 점이 점수 상위 20곳입니다. EV/EBIT 25배 이상과 지분 80% 이상은 가장자리에 모아 그렸습니다. 대부분의 회사는 대주주 지분 30~60%에 몰려 있어, 왼쪽 아래 영역은 드뭅니다.";
   }
 
   /* ---------- 후보 표 ---------- */

@@ -801,11 +801,11 @@
 
     /* ---------- 경영권 거래 후보 스크리닝 ---------- */
     if (MnaEngine && MnaData) {
-      const M = MnaEngine, D = MnaData, G = "경영권 스크리닝", A = M.candidates(D, 40), ban = ["반도체·전자부품", "지주·투자"];
+      const M = MnaEngine, D = MnaData, G = "경영권 스크리닝", A = M.candidates(D, 40), ban = ["지주·투자"];
       const num = (v) => typeof v === "number" && isFinite(v);
       const okA = A.length >= 20 && A.every((x) => x.name && num(x.mcap) && num(x.price) && num(x.issued) && num(x.op) && x.op > 0 && num(x.evebit) && num(x.grp) && x.grp < 0.35 && x.mcap >= 1e11 && x.mcap <= 3e12 && x.opm >= 0.05 && ban.indexOf(x.group) < 0);
       const okB = Object.keys(D.groups).length >= 8 && Object.keys(D.groups).every((g) => ban.indexOf(g) < 0 && D.groups[g].top.every((k) => D.cos[k] && D.cos[k].group === g && D.cos[k].sB && D.cos[k].mcap <= 1e12));
-      add(G, "자료 완결성: 후보는 모두 흑자·시가총액 1,000억~3조·최대주주 등 35% 미만·영업이익률 5% 이상, 반도체·지주회사 업종 없음, 볼트온 후보는 자기 업종 표에만 있고 시가총액 1조 이하", okA && okB, A.length + "곳 · " + Object.keys(D.groups).length + "개 업종");
+      add(G, "자료 완결성: 후보는 모두 흑자·시가총액 1,000억~3조·최대주주 등 35% 미만·영업이익률 5% 이상, 지주회사 없음, 볼트온 후보는 자기 업종 표에만 있고 시가총액 1조 이하", okA && okB, A.length + "곳 · " + Object.keys(D.groups).length + "개 업종");
       const sortedA = A.every((x, i) => i === 0 || A[i - 1].sA.total >= x.sA.total - 1e-9) && A.every((x) => Math.abs(x.sA.total - (0.4 * x.sA.value + 0.25 * x.sA.quality + 0.25 * x.sA.contest + 0.1 * x.sA.fund)) < 2e-3);
       const sortedB = Object.keys(D.groups).every((g) => { const L = M.bolt(D, g); return L.every((x, i) => i === 0 || L[i - 1].sB.total >= x.sB.total - 1e-9) && L.every((x) => { const b = x.sB; return Math.abs(b.total - (0.3 * b.growth + 0.25 * b.margin + 0.2 * b.value + 0.15 * b.path + 0.1 * b.cash)) < 2e-3; }); });
       add(G, "점수식: 후보 = 0.4 싼가 + 0.25 버는 힘 + 0.25 지배권 + 0.1 자금, 볼트온 = 0.3 성장 + 0.25 이익률 + 0.2 가격 + 0.15 거래 경로 + 0.1 현금, 모두 점수 내림차순", sortedA && sortedB, "");

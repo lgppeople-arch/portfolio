@@ -103,7 +103,6 @@ def stage1():
     print(Counter(r["group"] for r in rows).most_common())
 
 import re
-CONFLICT_IND = ("261", "262", "29271")   # 작성자 현 업무와 겹치는 업종(반도체, 반도체 제조용 기계): 이해상충을 피하려고 순위에서 뺀다
 
 
 def amt(it):
@@ -192,7 +191,7 @@ def build():
                  evebit=ev / r["op"] if r["op"] > 0 and ev > 0 else None, ebitda=r["op"] + da,
                  fcfy=(ocf - capex) / r["mcap"] if ocf is not None else None, netcash=(cash - debt) / r["mcap"], fsDeep=fs, **o)
         out.append(x)
-    conflict = lambda x: x["ind"].startswith(CONFLICT_IND) or x["group"] in ("지주·투자", "반도체·전자부품") or any(k in x["name"] for k in EX["names"])   # 지주사는 자회사 합산 가치로 따로 봐야 해 뺀다
+    conflict = lambda x: x["group"] == "지주·투자" or any(k in x["name"] for k in EX["names"])   # 지주사는 자회사 합산 가치로 따로 본다   # 지주사는 자회사 합산 가치로 따로 봐야 해 뺀다
     # A. 경영권 거래 후보: 2년 연속 영업이익, 시가총액 1,000억~3조, 최대주주 등 지분 35% 미만, 지분 자료 있음
     A = [x for x in out if not conflict(x) and x["op"] > 0 and (x["op24"] or 0) > 0 and 1e11 <= x["mcap"] <= 3e12 and x["grp"] is not None and x["grp"] < 0.35 and x["evebit"] and x["opm"] >= 0.05 and x["netcash"] <= 0.7]   # 순현금이 시총의 70%를 넘으면 금융 자회사 현금이 섞였을 가능성이 커 뺀다
     V = lambda k: [y[k] for y in A]
