@@ -57,6 +57,7 @@
   table.pick td.n small { color: var(--muted); font-size: 11px; }
   ul.src { font-size: 13px; line-height: 1.7; color: var(--ink-2); padding-left: 18px; } ul.src a { overflow-wrap: anywhere; }
   #pl-tb th[scope=row], #pl-tb thead th:first-child, #start-tb th[scope=row] { white-space: nowrap; min-width: 150px; } #pl-tb { min-width: 900px; }
+  #ev-cal { min-width: 820px; } #ev-cal th[scope=row] { white-space: nowrap; } #ev-tb { min-width: 720px; } #ev-tb th[scope=row] { min-width: 220px; }
 </style>
 <title>메모리 사이클 시나리오 가치평가 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
@@ -167,9 +168,9 @@
     <div class="shade" aria-hidden="true"></div>
     <div class="wrap wide">
       <div class="crumb"><a href="../index.html">홈</a> / 실무 도구 / 메모리 사이클 시나리오 가치평가</div>
-      <div class="rpt-tag">Scenario valuation · v2 · 2026.11</div>
+      <div class="rpt-tag">Scenario valuation · v2.1 · 2026.11</div>
       <h1>HBM이 웨이퍼를 삼키는 동안,<br>메모리 값은 어디까지 가나</h1>
-      <p class="dek">삼성전자와 SK하이닉스의 2027~2029년 손익과 적정주가를 변수 9개의 조합으로 계산합니다. 범용 D램·HBM·낸드의 수요와 공급을 따로 세우고, HBM이 웨이퍼를 더 쓰면서 범용 D램 공급이 줄어드는 구조, 장기공급계약, 중국 증설, 환율, 할인율을 거쳐 잔여이익모델로 값을 냅니다. 변수끼리 함께 움직이는 관계를 넣은 몬테카를로로 분포를 보고, 지금 주가가 어떤 가격 수준을 전제하는지 거꾸로 풉니다.</p>
+      <p class="dek">삼성전자와 SK하이닉스의 2027~2029년 손익과 적정주가를 변수 9개의 조합으로 계산합니다. 범용 D램·HBM·낸드의 수요와 공급을 따로 세우고, HBM이 웨이퍼를 더 쓰면서 범용 D램 공급이 줄어드는 구조, 장기공급계약, 중국 증설, 환율, 할인율을 거쳐 잔여이익모델로 값을 냅니다. 변수끼리 함께 움직이는 관계를 넣은 몬테카를로로 분포를 보고, 지금 주가가 어떤 가격 수준을 전제하는지 거꾸로 풉니다. 적정가는 주가에 맞추지 않고 근거 있는 수급 숫자로 냅니다. 주가와의 괴리는 따로, 수급·심리 일정으로 정리했습니다.</p>
       <div class="rpt-meta"><span>대상<b>SK하이닉스 · 삼성전자</b></span><span>기준주가<b>2026.11.24 종가</b></span><span>실적 출발점<b>2026년 3분기 실적</b></span><span>작성<b>이기표</b></span></div>
     </div>
   </section>
@@ -203,7 +204,9 @@
 
         <section id="s-supply" data-toc="수급과 가격">
           <h2>수급과 가격: 제품별로 따로</h2>
-          <p>수급 갭은 누적 (1 + 공급 증가)/(1 + 수요 증가) − 1이고, 2026년 말에는 세 제품 모두 부족(음수)에서 출발합니다. 범용 D램 공급은 업계 증설에 HBM 웨이퍼 비중 변화를 곱해 줄어듭니다. HBM은 같은 비트를 만드는 데 웨이퍼를 약 3배 쓰기 때문에, 비중이 23%에서 29%로 오르면 범용 D램에 남는 웨이퍼가 그만큼 줄어듭니다.</p>
+          <p>수요는 서버 범용 D램(서버당 탑재량 × 출하), 서버 밖(PC·모바일), HBM을 따로 키웁니다. 공급은 업계 전체 D램 비트 공급 증가율에서 웨이퍼 증가율을 거꾸로 구한 뒤, HBM 웨이퍼 비중 변화로 범용과 HBM에 나눕니다. HBM은 같은 비트에 웨이퍼를 약 3배 쓰므로, 비중이 23%에서 28.5%로 오르면 웨이퍼가 29% 늘어도 범용 D램 비트는 19%만 늡니다.</p>
+          <p>가격은 2027년 중심 경로를 TrendForce 분기 계약가 전망에 고정했습니다(범용 D램 1.14, 낸드 0.96, 4Q26 = 1). 증권사 수급표의 부족률과 실제 가격은 일대일로 맞지 않기 때문입니다. 예를 들어 iM 표는 2026년을 균형(0%)으로 적었지만 계약가는 폭등했습니다. 다른 조합은 중심과의 갭 차이만큼, 2028년 이후는 중심 2027년 대비 갭 변화만큼 움직입니다.</p>
+          <div class="tw" role="region" aria-label="근거 대조" tabindex="0"><table class="pick" id="ev-tb"></table></div>
           <div class="fig" data-rv>
             <div class="fig-h"><h4>가격 지수(4Q26 = 1.00): 지금 조합(실선)과 중심 시나리오(점선)</h4><span class="muted" style="font-size: 12px">연평균</span></div>
             <div class="fig-b plotbox" id="f-px"></div>
@@ -244,21 +247,36 @@
           </div>
         </section>
 
-        <section id="s-imp" data-toc="주가가 전제하는 것">
-          <h2>지금 주가가 전제하는 가격 수준</h2>
-          <p>지금 고른 조합의 수급 경로는 그대로 두고, 범용 D램·HBM·낸드 가격을 모두 같은 비율로 바꿔 적정주가가 기준주가와 같아지는 비율을 찾았습니다. 1보다 작으면 시장이 이 조합보다 낮은 메모리 가격을 전제하고 있다는 뜻입니다.</p>
+        <section id="s-imp" data-toc="주가와의 괴리">
+          <h2>주가와의 괴리: 펀더멘털 밖의 요인</h2>
+          <p>적정가는 2027~29년 수급과 이익에서 나온 값이고, 지금 주가에 맞추지 않았습니다. 둘 사이의 차이는 먼저 숫자로 재고, 그 원인이 될 만한 수급·심리 일정을 날짜와 출처로 따로 적었습니다. 괴리 자체가 틀린 가정이라는 증거는 아니지만, 아래 일정이 지나가면서 어느 쪽으로 좁혀지는지가 모형을 고칠 근거가 됩니다.</p>
           <div class="readout" id="imp-out" aria-live="polite"></div>
-          <div class="tw" role="region" aria-label="대표 시나리오별 역산" tabindex="0"><table class="pick" id="imp-tb"></table></div>
+          <div class="tw" role="region" aria-label="대표 시나리오별 적정가와 주가 설명 가격 비율" tabindex="0"><table class="pick" id="imp-tb"></table></div>
+          <h3>최근 수급·심리 일정</h3>
+          <div class="tw" role="region" aria-label="수급·심리 일정" tabindex="0"><table class="pick" id="ev-cal">
+            <thead><tr><th scope="col">날짜</th><th scope="col">일</th><th scope="col">펀더멘털 영향</th><th scope="col">출처</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">11.5</th><td>미국 중간선거(민주당 승리) 뒤 데이터센터 규제·건설 지연 우려</td><td>간접: 2027년 이후 AI 투자 속도</td><td>SK증권 2026.11, 유안타 2026.11.24</td></tr>
+              <tr><th scope="row">11.12</th><td>엔비디아 CEO 사임(11일 만인 11.23 복귀 결의, 장중 +30%)</td><td>작음: 실적·가이던스는 상향(3Q FY27 매출 +103%, 4Q 가이던스 1,300억 달러)</td><td>유안타 2026.11.24, iM 2026.11.24</td></tr>
+              <tr><th scope="row">11.16~19</th><td>BIS 해외 데이터센터 원격 접근 통제 규정 발표·발효</td><td>작음: 중국 우회 수요는 서버 D램 비트의 약 1.9%(iM), 북미가 흡수 가능(유진)</td><td>유진 2026.11.26, iM</td></tr>
+              <tr><th scope="row">11.20</th><td>엔비디아 SEC 회계 관행 조사 보도, 장중 저점</td><td>불확실: 조사 결과 전까지 변동성</td><td>유안타</td></tr>
+              <tr><th scope="row">11.23</th><td>삼성 171,500원·하이닉스 1,044,000원 장중 저점(고점 대비 −54%·−65%)</td><td>과거 하락기 평균 낙폭 −41%·−51%를 이미 넘음</td><td>iM 2026.11.24</td></tr>
+              <tr><th scope="row">12월</th><td>미 국방수권법 최종안: AI OVERWATCH·Chip Security·MATCH Act 포함 여부</td><td>MATCH Act는 CXMT·YMTC 장비 유지보수까지 막아 메모리 공급에 우호적</td><td>유진 2026.11.26</td></tr>
+              <tr><th scope="row">12~1월</th><td>1Q27 계약가 협상: LPDDR +20% 이상, 범용 D램 +5~10%</td><td>직접: 2027년 가격 닻 확인</td><td>유안타, TrendForce</td></tr>
+              <tr><th scope="row">1.10 · 1.18</th><td>미중 휴전 조항 만료, BIS 규정 의견수렴 마감</td><td>무역·관세 변수 단계 조정 근거</td><td>유안타</td></tr>
+            </tbody></table></div>
+          <p class="muted" style="font-size:13px">증권사 리포트의 목표주가(예: 유안타 삼성 69만 원·하이닉스 370만 원)는 이 모형의 입력으로 쓰지 않았습니다. 증권사 투자의견은 매수 비율이 92~97%로 한쪽에 몰려 있고, 목표가는 주가가 50~65% 내리는 동안 그대로였습니다. 대신 그 리포트들의 수급 표와 가격 전망처럼 검증 가능한 숫자만 썼습니다.</p>
         </section>
 
         <section id="s-method" data-toc="방법·가정·출처" data-group="방법">
           <h2>계산 방법, 가정, 출처</h2>
           <ol class="traps">
-            <li><b>수요</b> HBM = AI 투자 단계의 HBM 비트 수요. 범용 D램 = 0.5 × 서버(AI 단계) + 0.5 × PC·모바일(범용 수요 단계). 낸드 = 0.45 × 기업용 SSD + 0.55 × (범용 + 기기당 용량 5%).</li>
-            <li><b>공급</b> HBM = (w<sub>t</sub>/w<sub>t−1</sub>) × (1 + 업계 D램 증설) − 1. 범용 D램 = ((1 − w<sub>t</sub>)/(1 − w<sub>t−1</sub>)) × (1 + 증설) − 1 + 중국 가산 + 무역. 중심 단계에서 2027년 HBM 공급 +49%는 TrendForce 전망(+50~60%)과 맞물립니다.</li>
-            <li><b>가격</b> 범용 D램·낸드 = exp(−k × 갭 변화)를 상·하한(범용 D램 1.8배·0.3배, 낸드 1.6배·0.3배)에 부드럽게 눌렀습니다. k는 v1과 같은 Micron 10-K 보정(과잉 7.39, 부족 8.54), 낸드 6.0, HBM 3.0(가정). HBM은 2027년 세대 교체 인상(AI 단계 −10%~+40%) 뒤 같은 세대 연 8% 인하.</li>
+            <li><b>수요</b> 서버 범용 D램·서버 밖·HBM 비트를 2026년 구성(9% · 38% · 53%, 가정)에서 따로 키웁니다. 중심: 서버 2027 +60%·2028 +45%, 서버 밖 +4.4%·+7.1%(iM증권 표), HBM +55%·+42%. 낸드 = 0.45 × 기업용 SSD + 0.55 × (서버 밖 + 기기당 용량 5%).</li>
+            <li><b>공급</b> 업계 D램 비트 공급 S(중심 2027 +23%·2028 +29%: 골드만삭스·iM)에서 웨이퍼 증가율 g = (1 + S) × m(w<sub>t−1</sub>)/m(w<sub>t</sub>) − 1, m(w) = (1 − w) + w/3. 범용 = (1 + g)(1 − w<sub>t</sub>)/(1 − w<sub>t−1</sub>) − 1 + 중국 + 무역, HBM = (1 + g)(w<sub>t</sub>/w<sub>t−1</sub>) − 1.</li>
+            <li><b>가격</b> log 가격 = log(2027 중심 닻) − k × (그해 갭 − 중심 2027 갭)을 상·하한(범용 D램 1.8·0.3배, 낸드 1.6·0.3배)에 부드럽게 붙임. 닻: 범용 D램 1.14, 낸드 0.96(TrendForce). k는 Micron 10-K 보정(과잉 7.39, 부족 8.54), 낸드 6.0, HBM 3.0(가정). HBM 2027 = 1 + 세대 교체 인상(중심 +25%) × 갭 보정, 이후 같은 세대 연 −8%.</li>
             <li><b>장기공급계약</b> 범용 D램·낸드의 계약 물량은 계약가를 받습니다. 하락기 계약가 = φ × max(계단가, 하한) + (1 − φ) × 계단가, 계단가 = max(시장가, 전년 계약가 × 0.66). 이행률은 가격 하락 폭에 따라 낮아집니다(30% 하락 70%, 50% 하락 40%, 중심 단계).</li>
             <li><b>손익</b> 매출 = 4Q26 연환산 제품별 매출 × 가격 × 물량 × 환율/1,335 × 관세계수. 물량 = 업계 공급 누적 ÷ 4분기 출하 수준(범용 1.08, 낸드 1.05, HBM 1.20) × HBM 점유율 변화. 원가 = 4Q26 원가율 × 물량 × 비트당 원가 연 −12%(HBM −8%) + 증설 감가상각. 영업이익 = (매출 − 원가) × (1 − 성과급 10%) + 메모리 외(삼성).</li>
+            <li><b>환원과 BPS</b> 배당·자사주 소각은 BPS를 줄이지만 기존 주주가 받는 현금과 지분이 같아 가치는 거의 같습니다. 그래서 환원하지 않고 쌓은 이익에 이자(세전 3%)를 붙였고, 환원율 20%↔80%의 가치 차이는 쌓아 둔 현금이 자기자본비용보다 덜 버는 만큼(약 5%)만 남습니다. 'PBR 1배' 같은 장부가치 기준 바닥은 환원 방식에 따라 숫자가 바뀌므로 쓰지 않습니다.</li>
             <li><b>가치</b> 잔여이익모델: 2026E BPS + 2027~29 잔여이익(EPS − 자기자본비용 × 기초 BPS) 현재가치 + 잔존가치(지속계수 0.6). 자기자본비용 하이닉스 11%·삼성 10% ± 할인율 단계.</li>
             <li><b>몬테카를로</b> 변수 9개의 잠재 정규변수에 상관을 걸고(촐레스키 분해) 단계 확률의 누적값으로 단계를 정합니다. 시드 고정 2만 회라 같은 조건이면 같은 결과가 나옵니다.</li>
           </ol>
@@ -281,6 +299,7 @@
             <li>가격 전망: <a href="https://www.trendforce.com/presscenter/news/20260930-13258.html" rel="noopener">TrendForce 4Q26 계약가</a>, <a href="https://www.trendforce.com/presscenter/news/20261111-13303.html" rel="noopener">TrendForce PC 제조사 2027 조달 조정</a>, <a href="https://www.techtimes.com/articles/331031/20261118/hbm4-memory-price-forecast-trendforce-sees-3-550-per-gigabit-next-year-205-now.htm" rel="noopener">HBM4 가격 전망</a></li>
             <li>수급: <a href="https://www.trendforce.com/news/2026/09/29/news-samsung-sees-hbm-taking-nearly-30-of-industry-dram-capacity-in-2027-up-from-20-currently/" rel="noopener">HBM 웨이퍼 비중 30%(TrendForce)</a>, <a href="https://456xresearch.substack.com/p/global-memory-strong-in-2027-cautious" rel="noopener">골드만삭스 HBM 공급 부족 추정 요약</a>, <a href="https://www.mt.co.kr/en/stock/2026/11/10/2026111015285893769" rel="noopener">모건스탠리 목표가 하향(머니투데이)</a></li>
             <li>AI 투자: <a href="https://fourweekmba.com/ai-morgan-stanley-pegs-google-2027-capex-at-375b-in-1-6t-call/" rel="noopener">모건스탠리 2027 하이퍼스케일러 설비투자 1.6조 달러</a></li>
+            <li>증권사 리포트: iM증권 「반등의 실마리」 2026.11.24(D램 수급 표, PBR 역산, 과거 낙폭), 유안타증권 반도체 업종 Update 2026.11.24(TrendForce 계약가, 일정), 유진투자증권 「중국 리스크 소화 기간」 2026.11.26(수출통제 입법), SK증권 2027 반도체 소부장 전망(웨이퍼 증설 타임라인), 한화투자증권 2026.11.20(신규 팹 일정)</li>
             <li>컨센서스: <a href="https://www.rocketpunch.com/discover/33460" rel="noopener">KB증권 2027 영업이익 전망</a>, 주주환원: <a href="https://www.ddaily.co.kr/page/view/2026081915532359212" rel="noopener">하이닉스 40조 원 자사주 취득·소각</a></li>
             <li>주가·상장주식수: 금융위원회 주식시세정보(공공데이터포털), 2026.11.24 종가. BPS: 메리츠증권(2026.11.6)</li>
           </ul>
@@ -307,7 +326,7 @@
 <!-- /build:flow -->
 
 <footer class="site-foot">
-  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.25</span><span>교육용 시나리오 모형입니다. 공개 정보만 썼으며 투자 권유가 아닙니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
+  <div class="wrap wide"><span class="upd">페이지 수정 2026.11.27</span><span>교육용 시나리오 모형입니다. 공개 정보만 썼으며 투자 권유가 아닙니다. 계산이 맞는지는 <a href="checks.html">검산 페이지</a>에서 확인할 수 있습니다.</span><a href="../index.html">← 홈으로</a></div>
 </footer>
 
 <script src="../assets/fin.js"></script>

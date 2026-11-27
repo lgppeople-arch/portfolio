@@ -33,7 +33,10 @@
   /* 가격 반응의 상·하한: 갭이 커져도 수요 파괴(위)와 감산(아래) 때문에 가격이 끝없이 가지 않는다.
      log 가격을 A·tanh(log 가격 / A)로 눌러 4Q26 대비 상한·하한에 부드럽게 붙인다. 하한은 과거 고점 대비 최대 하락(약 −70%) */
   const BOUND = { conv: [1.8, 0.3], nand: [1.6, 0.3], hbm: [2.2, 0.35] };
-  function bounded(p, lp) { const A = lp > 0 ? Math.log(BOUND[p][0]) : -Math.log(BOUND[p][1]); return Math.exp(A * Math.tanh(lp / A)); }
+  function bounded(p, lp) {   /* 한도의 절반까지는 그대로, 그 위는 tanh로 한도에 붙인다(중심 닻 근처의 가격을 바꾸지 않음) */
+    const A = lp > 0 ? Math.log(BOUND[p][0]) : -Math.log(BOUND[p][1]), h = A / 2, x = Math.abs(lp);
+    return Math.exp(Math.sign(lp) * (x <= h ? x : h + h * Math.tanh((x - h) / h)));
+  }
   const priceOfGap = (g) => Math.exp(-(g > 0 ? K.over : K.short) * g);
   const gapOfPrice = (p) => -Math.log(p) / (p < 1 ? K.over : K.short);
 
@@ -41,6 +44,8 @@
   const START = {
     gap: { conv: -0.08, hbm: -0.07, nand: -0.04 },   /* 공급/수요 − 1. HBM −7%는 골드만삭스 추정 공급 부족, 범용은 그보다 깊다고 가정 */
     w: 0.23,                                         /* HBM의 D램 웨이퍼 비중(TrendForce, 2026) */
+    bits: { hbm: 0.09, srv: 0.38, non: 0.53 },       /* 2026 D램 비트 구성(가정): iM 서버 비트 47%를 HBM 9%·서버 범용 38%로 나눔 */
+    trade: 3,                                        /* HBM은 같은 비트에 웨이퍼 약 3배 */
     runRate: { conv: 1.08, nand: 1.05, hbm: 1.20 }   /* 4분기 출하가 2026년 평균보다 높은 정도(HBM4 4분기 급증): 2027년 물량 지수 = (1 + 공급 증가)/이 값 */
   };
 
@@ -86,42 +91,45 @@
     omega: 0.6,            /* 초과이익 지속계수 */
     stair: 0.66,           /* 계약가격 연간 최대 하락 */
     fxBase: 1335,
-    nandContent: 0.05      /* 낸드는 기기당 용량 증가가 수요에 더해진다 */
+    nandContent: 0.05,     /* 낸드는 기기당 용량 증가가 수요에 더해진다 */
+    rCash: 0.03            /* 환원하지 않고 쌓아 둔 이익이 버는 세전 이자율. 환원율을 바꿔도 기존 주주 가치가 거의 같도록(남긴 현금의 이자를 이익에 더함) */
   };
 
   /* 변수 9개. 1단계가 대체로 유리하고 5단계가 불리하다(HBM 구도만 회사마다 방향이 반대) */
   const VARS = [
-    { id: "ai", name: "AI 투자", what: "하이퍼스케일러 설비투자 → HBM·서버 D램·기업용 SSD 수요",
-      hbm: [[0.75, 0.55, 0.40], [0.62, 0.45, 0.32], [0.50, 0.35, 0.25], [0.30, 0.15, 0.12], [0.10, -0.05, 0.05]],
-      srv: [[0.30, 0.22, 0.18], [0.24, 0.18, 0.15], [0.18, 0.14, 0.12], [0.10, 0.06, 0.08], [0.02, -0.02, 0.05]],
+    { id: "ai", name: "AI 투자", what: "하이퍼스케일러 설비투자 → HBM·서버 D램·기업용 SSD 비트 수요",
+      /* 중심(3단계) 근거: 서버 D램 비트 2027 +61%·2028 +45%(iM증권 2026.11.24: 서버당 탑재량 1,295→1,757→2,275GB × 출하 17.6→20.8→23.4백만 대),
+         HBM 수요는 TrendForce 공급 +50~60%가 수요에 못 미친다는 전망에 맞춤 */
+      hbm: [[0.80, 0.60, 0.40], [0.65, 0.50, 0.33], [0.55, 0.42, 0.28], [0.35, 0.20, 0.15], [0.12, -0.05, 0.05]],
+      srv: [[0.70, 0.52, 0.32], [0.65, 0.48, 0.28], [0.60, 0.45, 0.25], [0.40, 0.25, 0.15], [0.20, 0.05, 0.08]],
       ssd: [[0.45, 0.30, 0.25], [0.36, 0.25, 0.20], [0.28, 0.20, 0.16], [0.15, 0.08, 0.10], [0.03, -0.03, 0.06]],
-      w: [[0.31, 0.36, 0.40], [0.30, 0.34, 0.37], [0.29, 0.32, 0.34], [0.27, 0.28, 0.29], [0.25, 0.24, 0.24]],
-      uplift: [0.40, 0.25, 0.12, 0.0, -0.10],   /* 2027년 HBM 가격(HBM4 전환 포함, 4Q26 대비) */
+      w: [[0.30, 0.35, 0.39], [0.29, 0.33, 0.36], [0.285, 0.31, 0.33], [0.27, 0.28, 0.29], [0.25, 0.24, 0.24]],
+      uplift: [0.55, 0.40, 0.25, 0.08, -0.10],   /* 2027년 HBM 평균 가격(HBM4 비중 확대 포함, 4Q26 대비). TrendForce: HBM4 Gb당 $2.05 → $3~5.5 */
       levels: [
-        { tag: "가속", note: "2027 설비투자 1.6조 달러(모건스탠리 수준) 이상. HBM 비트 수요 +75%" },
-        { tag: "강세", note: "HBM 수요 +62%, HBM 웨이퍼 비중 30%" },
-        { tag: "중심", note: "HBM 수요 +50%(TrendForce 공급 +50~60%와 맞물림), 웨이퍼 비중 29%" },
-        { tag: "둔화", note: "설비투자 증가율 반토막. HBM 수요 +30%, 2028 +15%" },
-        { tag: "급랭", note: "AI 투자 삭감·신용 사건. 2028 HBM 수요 감소" }
+        { tag: "가속", note: "서버 D램 +70%, HBM +80%. 2027 하이퍼스케일러 설비투자 1.6조 달러(모건스탠리) 이상" },
+        { tag: "강세", note: "서버 D램 +65%, HBM +65%" },
+        { tag: "중심", note: "서버 D램 2027 +60%·2028 +45%(iM증권 표), HBM +55%, HBM 웨이퍼 비중 29%(TrendForce)" },
+        { tag: "둔화", note: "중국 우회 수요 소멸 + 데이터센터 12GW 이연(iM 최악 가정)과 비슷: 서버 +40%·+25%" },
+        { tag: "급랭", note: "AI 투자 삭감·네오클라우드 신용 사건. 2028 HBM 수요 감소" }
       ] },
-    { id: "cons", name: "범용 수요", what: "PC·스마트폰 출하와 기기당 용량(가격 급등에 따른 수요 파괴 포함)",
-      g: [[0.10, 0.10, 0.08], [0.06, 0.07, 0.07], [0.02, 0.05, 0.06], [-0.03, 0.02, 0.05], [-0.08, 0.00, 0.04]],
+    { id: "cons", name: "범용 수요", what: "서버 밖(PC·스마트폰·기타) D램 비트 수요, 가격 급등에 따른 사양 축소 포함",
+      g: [[0.12, 0.12, 0.09], [0.08, 0.10, 0.08], [0.044, 0.071, 0.06], [0.0, 0.04, 0.05], [-0.06, 0.0, 0.04]],
       levels: [
-        { tag: "회복", note: "교체 수요 + AI PC: 비트 +10%" },
-        { tag: "양호", note: "+6%" },
-        { tag: "중심", note: "+2%. PC 제조사 완제품 재고로 2027 구매 조정(TrendForce 2026.11)" },
-        { tag: "수요 파괴", note: "−3%: 메모리 값 급등으로 사양 축소" },
-        { tag: "침체", note: "−8%: 소비 경기 하강" }
+        { tag: "회복", note: "교체 수요 + AI PC: +12%" },
+        { tag: "양호", note: "+8%" },
+        { tag: "중심", note: "2027 +4.4%·2028 +7.1%(iM증권 표의 서버 밖 비트). PC 제조사 재고로 2027 구매 조정(TrendForce 2026.11), 중화권 안드로이드 부진(유진)" },
+        { tag: "수요 파괴", note: "0%: 메모리 값 급등으로 사양 축소" },
+        { tag: "침체", note: "−6%: 소비 경기 하강" }
       ] },
-    { id: "capex", name: "업계 증설", what: "삼성·하이닉스·마이크론의 D램·낸드 웨이퍼 증설(비트 기준)",
-      dram: [[0.12, 0.14, 0.14], [0.15, 0.17, 0.16], [0.18, 0.20, 0.17], [0.21, 0.25, 0.21], [0.24, 0.30, 0.25]],
+    { id: "capex", name: "업계 증설", what: "업계 D램 비트 공급 증가율(HBM 포함 전체). 웨이퍼 증설과 공정 전환을 합친 값",
+      dram: [[0.17, 0.20, 0.16], [0.20, 0.24, 0.19], [0.23, 0.29, 0.22], [0.26, 0.34, 0.27], [0.29, 0.39, 0.32]],
       nand: [[0.10, 0.12, 0.12], [0.13, 0.15, 0.14], [0.16, 0.18, 0.16], [0.19, 0.23, 0.20], [0.22, 0.28, 0.24]],
       levels: [
-        { tag: "규율", note: "D램 비트 공급 +12~14%: 신규 팹 지연" },
-        { tag: "절제", note: "+15~17%" },
-        { tag: "중심", note: "+18~20%: 2027 업계 D램 공급 +18~23%(KB·골드만삭스 추정)" },
-        { tag: "확대", note: "2028 +25%: 2027년 말 신규 팹 가동(모건스탠리 우려)" },
-        { tag: "과잉", note: "2028 +30%: 호황기 증설이 한꺼번에" }
+        { tag: "규율", note: "D램 비트 공급 2027 +17%·2028 +20%: 클린룸·장비 병목 지속" },
+        { tag: "절제", note: "+20%·+24%. 2027 KB증권 +18%" },
+        { tag: "중심", note: "+23%·+29%: 2027 골드만삭스 +23%·iM +24%, 2028 iM +29%" },
+        { tag: "확대", note: "+26%·+34%: 삼성 P5·하이닉스 Y1·마이크론 아이다호 동시 가동(SK증권 웨이퍼 증설 연 13~20만 장/사)" },
+        { tag: "과잉", note: "+29%·+39%: 테라팹 등 신규 수요자까지 증설 쏠림(모건스탠리 2028 우려)" }
       ] },
     { id: "cxmt", name: "중국 증설", what: "CXMT·YMTC 등 예상 밖 중국 공급(범용 D램 갭 가산)",
       gap: [-0.005, 0, 0.012, 0.025, 0.045],
@@ -214,32 +222,53 @@
   })();
 
   /* ---------- 1) 업계 수급과 시장 가격 ---------- */
-  function industry(lv) {
+  /* 2027년 중심 가격 닻(4Q26 = 1): TrendForce 분기 전망을 이어 붙인 연평균.
+     범용 D램 1Q27 +5~10%·2Q +3~8%·3Q·4Q +0~5%(2026.11.18) → 중간값 누적 평균 1.14.
+     낸드 1Q27 0~−5%, 이후 약보합(TrendForce, 유안타 2026.11.24) → 0.96 */
+  const ANCHOR = { conv: 1.14, nand: 0.96 };
+
+  function gaps(lv) {
     const vA = VARS[IDX.ai], vC = VARS[IDX.cons], vK = VARS[IDX.capex], vX = VARS[IDX.cxmt], vT = VARS[IDX.trade];
     const a = lv[IDX.ai], cs = lv[IDX.cons], k = lv[IDX.capex], x = lv[IDX.cxmt], tr = lv[IDX.trade];
-    const gap = Object.assign({}, START.gap), out = [];
-    let w0 = START.w, ph = 1;
+    const gap = Object.assign({}, START.gap), out = [], R = START.trade;
+    const mix = (w) => (1 - w) + w / R;                       /* 웨이퍼 1장이 내는 비트(범용 기준) */
+    let w0 = START.w, Bs = START.bits.srv, Bn = START.bits.non, Bh = START.bits.hbm;
     for (let t = 0; t < 3; t++) {
       const dAdd = vT.dAdd[tr];
-      const d = {
-        hbm: vA.hbm[a][t] - dAdd,
-        conv: 0.5 * (vA.srv[a][t] - dAdd) + 0.5 * vC.g[cs][t],
-        nand: 0.45 * (vA.ssd[a][t] - dAdd) + 0.55 * (vC.g[cs][t] + PARAMS.nandContent)
-      };
-      const w1 = vA.w[a][t], cap = vK.dram[k][t];
+      /* 수요: 서버 범용·서버 밖·HBM을 따로 키운 뒤 범용 D램 = 서버 범용 + 서버 밖 */
+      const ds = vA.srv[a][t] - dAdd, dn = vC.g[cs][t], dh = vA.hbm[a][t] - dAdd;
+      const conv0 = Bs + Bn, tot0 = conv0 + Bh;
+      Bs *= 1 + ds; Bn *= 1 + dn; Bh *= 1 + dh;
+      const d = { hbm: dh, conv: (Bs + Bn) / conv0 - 1, nand: 0.45 * (vA.ssd[a][t] - dAdd) + 0.55 * (dn + PARAMS.nandContent) };
+      d.dram = (Bs + Bn + Bh) / tot0 - 1;
+      /* 공급: 전체 D램 비트 증가율 S에서 웨이퍼 증가율을 거꾸로 구하고, HBM 비중 변화로 범용과 HBM에 나눈다 */
+      const w1 = vA.w[a][t], S = vK.dram[k][t], gW = (1 + S) * mix(w0) / mix(w1) - 1;
       const s = {
-        hbm: (w1 / w0) * (1 + cap) - 1,
-        conv: ((1 - w1) / (1 - w0)) * (1 + cap) - 1 + vX.gap[x] * (t === 0 ? 0.4 : 1) + vT.gap[tr][t],
-        nand: vK.nand[k][t]
+        hbm: (1 + gW) * (w1 / w0) - 1,
+        conv: (1 + gW) * (1 - w1) / (1 - w0) - 1 + vX.gap[x] * (t === 0 ? 0.4 : 1) + vT.gap[tr][t],
+        nand: vK.nand[k][t], dram: S, wafer: gW
       };
-      const prev = Object.assign({}, gap), price = {};
       PRODUCTS.forEach((p) => { gap[p] = (1 + gap[p]) * (1 + s[p]) / (1 + d[p]) - 1; });
-      ["conv", "nand"].forEach((p) => { const dg = gap[p] - START.gap[p]; price[p] = bounded(p, -kOf(p, dg) * dg); });
-      ph = t === 0 ? (1 + vA.uplift[a]) * Math.exp(-K.hbm * (gap.hbm - START.gap.hbm)) : ph * PARAMS.hbmLike * Math.exp(-K.hbm * (gap.hbm - prev.hbm));
-      price.hbm = bounded("hbm", Math.log(ph));
-      out.push({ year: YEARS[t], d: d, s: s, w: w1, gap: Object.assign({}, gap), price: price });
+      out.push({ year: YEARS[t], d: d, s: s, w: w1, gap: Object.assign({}, gap), suff: (1 + S) / (1 + d.dram) - 1 });
       w0 = w1;
     }
+    return out;
+  }
+  let GC = null;
+  /* 가격: log 가격 = log(2027 중심 닻) − k × (그해 갭 − 중심 2027 갭). 중심 2027은 닻과 같고,
+     다른 조합은 중심과의 갭 차이만큼, 2028년 이후는 중심 2027 대비 갭 변화만큼 움직인다 */
+  function industry(lv) {
+    const out = gaps(lv), vA = VARS[IDX.ai], a = lv[IDX.ai];
+    if (!GC) GC = gaps(CENTRAL);
+    const g27 = GC[0].gap;
+    let ph = 1;
+    out.forEach((y, t) => {
+      const price = {};
+      ["conv", "nand"].forEach((p) => { const dg = y.gap[p] - g27[p]; price[p] = bounded(p, Math.log(ANCHOR[p]) - kOf(p, dg) * dg); });
+      ph = t === 0 ? (1 + vA.uplift[a]) * Math.exp(-K.hbm * (y.gap.hbm - g27.hbm)) : ph * PARAMS.hbmLike * Math.exp(-K.hbm * (y.gap.hbm - out[t - 1].gap.hbm));
+      price.hbm = bounded("hbm", Math.log(ph));
+      y.price = price;
+    });
     return out;
   }
 
@@ -257,6 +286,7 @@
     const share = vH[coKey][lv[IDX.hbm]];
     const years = [];
     const pcPrev = { conv: 1, nand: 1 }, vol = { conv: 1 / START.runRate.conv, nand: 1 / START.runRate.nand, hbm: 1 / START.runRate.hbm };
+    let kept = 0;   /* 2027년부터 쌓인 미환원 이익(조원) */
     for (let t = 0; t < 3; t++) {
       const I = ind[t], qm = vT.qmul[tr][t], row = { year: YEARS[t], prod: {} };
       let rev = 0, cost = 0;
@@ -282,8 +312,9 @@
       const pre = rev - cost;
       const nm = c.nonmem(row.prod.conv.pm, t);
       const op = pre - Math.max(pre, 0) * c.bonus + nm;
-      const ni = (op + c.fin) * (1 - c.tax);
-      Object.assign(row, { rev: rev, cost: cost, nonmem: nm, op: op, ni: ni, eps: ni / c.shares * 1e3, ind: I });
+      const fin = c.fin + P.rCash * kept, ni = (op + fin) * (1 - c.tax);
+      kept += ni * (1 - (opt.payout == null ? c.payout : opt.payout));
+      Object.assign(row, { rev: rev, cost: cost, nonmem: nm, op: op, fin: fin, ni: ni, eps: ni / c.shares * 1e3, ind: I });
       years.push(row);
     }
     let B = c.bps0, V0 = B, ri = 0;
@@ -291,7 +322,7 @@
       y.bpsBeg = B; y.roe = y.eps / B;
       ri = y.eps - coe * B; y.ri = ri;
       V0 += ri / Math.pow(1 + coe, t + 1);
-      B += y.eps * (1 - c.payout); y.bps = B;
+      B += y.eps * (1 - (opt.payout == null ? c.payout : opt.payout)); y.bps = B;
     });
     const tv = ri * P.omega / (1 + coe - P.omega) / Math.pow(1 + coe, 3);
     const value = V0 + tv, price = opt.price || c.price;
@@ -359,6 +390,6 @@
   function encode(lv) { return lv.reduce((n, k) => n * NL + k, 0); }
   const code = (lv) => lv.map((k) => k + 1).join("");
 
-  return { YEARS, ASOF, PRODUCTS, PNAME, K, BOUND, bounded, START, CO, PARAMS, VARS, NV, NL, TOTAL, IDX, CENTRAL, PRESETS, PROB, CORR,
+  return { YEARS, ASOF, PRODUCTS, PNAME, K, BOUND, bounded, ANCHOR, gaps, START, CO, PARAMS, VARS, NV, NL, TOTAL, IDX, CENTRAL, PRESETS, PROB, CORR,
     priceOfGap, gapOfPrice, industry, evaluate, tornado, implied, chol, ncdf, draws, simulate, decode, encode, code };
 });

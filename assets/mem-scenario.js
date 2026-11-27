@@ -33,13 +33,27 @@
   function takeaways() {
     const a = M.evaluate("skh", M.CENTRAL), b = M.evaluate("sec", M.CENTRAL), S = mc || M.simulate(20000, 7, true);
     const ia = M.implied("skh", M.CENTRAL), ib = M.implied("sec", M.CENTRAL), I = M.industry(M.CENTRAL);
+    const g = M.PRESETS.find((p) => p.id === "glut"), ga = M.evaluate("skh", g.lv), gb = M.evaluate("sec", g.lv);
     const items = [
-      ["중심 시나리오 적정주가: 하이닉스 " + man(a.value) + "(" + pc(a.upside) + "), 삼성 " + man(b.value) + "(" + pc(b.upside) + ")", "2027년 영업이익 하이닉스 " + jo(a.years[0].op) + ", 삼성 " + jo(b.years[0].op) + "로 증권가 추정 범위 안입니다. 범용 D램 값은 2027년 " + I[0].price.conv.toFixed(2) + " → 2029년 " + I[2].price.conv.toFixed(2) + "(4Q26 = 1)로 내려오지만 HBM이 버팁니다."],
-      ["지금 주가는 메모리 값이 중심보다 " + Math.round((1 - ia) * 100) + "%(하이닉스)·" + Math.round((1 - ib) * 100) + "%(삼성) 낮은 경로를 전제", "시장은 2028년 공급 증가(신규 팹)와 AI 투자 둔화 위험을 이미 상당히 깎아 두었습니다. 그래서 '2028 공급 과잉' 시나리오에서도 하락 폭이 생각보다 작습니다."],
-      ["상관을 넣은 분포에서 주가 이상일 확률: 하이닉스 " + Math.round(S.skh.above * 100) + "%, 삼성 " + Math.round(S.sec.above * 100) + "%", "중앙값 하이닉스 " + man(S.skh.p50) + ", 삼성 " + man(S.sec.p50) + ". 가장 크게 흔드는 변수는 AI 투자와 업계 증설이고, 하이닉스는 HBM 점유 구도에도 민감합니다."]
+      ["중심 시나리오 적정주가: 하이닉스 " + man(a.value) + "(" + pc(a.upside) + "), 삼성 " + man(b.value) + "(" + pc(b.upside) + ")", "증권사 수급 표(2027 D램 수요 +" + Math.round(I[0].d.dram * 100) + "%·공급 +" + Math.round(I[0].s.dram * 100) + "%)와 TrendForce 계약가 경로를 그대로 넣은 값입니다. 2027년 영업이익 하이닉스 " + jo(a.years[0].op) + "·삼성 " + jo(b.years[0].op) + ", 범용 D램 값은 2027 " + I[0].price.conv.toFixed(2) + " → 2029 " + I[2].price.conv.toFixed(2) + "(4Q26 = 1)."],
+      ["지금 주가 ≈ '2028 공급 과잉' 시나리오(하이닉스 " + pc(ga.upside) + ", 삼성 " + pc(gb.upside) + ")", "주가를 설명하려면 메모리 값이 중심 경로의 " + Math.round(ia * 100) + "%(하이닉스)·" + Math.round(ib * 100) + "%(삼성)여야 합니다. 신규 팹 네 곳의 증설이 2028년에 한꺼번에 풀리는 경로와 같습니다. 남은 차이는 수급·심리(선거 뒤 위험 회피, 엔비디아 사태, 수출통제 입법)로 따로 봅니다."],
+      ["상관을 넣은 분포에서 주가 이상일 확률: 하이닉스 " + Math.round(S.skh.above * 100) + "%, 삼성 " + Math.round(S.sec.above * 100) + "%", "중앙값 하이닉스 " + man(S.skh.p50) + ", 삼성 " + man(S.sec.p50) + ", 하위 10% " + man(S.skh.p10) + "·" + man(S.sec.p10) + ". 증설 확대·과잉에 35% 확률을 둔 결과입니다. 가장 크게 흔드는 변수는 AI 투자와 업계 증설입니다."]
     ];
     const tk = $("tk"); tk.textContent = "";
     items.forEach((q) => { const d = el("div"); d.appendChild(el("b", { text: q[0] })); d.appendChild(el("p", { text: q[1] })); tk.appendChild(d); });
+    /* 근거 대조 */
+    const C2 = I, sa = M.evaluate("skh", M.CENTRAL), sb = M.evaluate("sec", M.CENTRAL);
+    const rows = [
+      ["2027 D램 비트 수요(전체)", pc(C2[0].d.dram), "KB +25% · 골드만삭스 +24% · iM +31%"],
+      ["2027 D램 비트 공급(전체)", pc(C2[0].s.dram), "KB +18% · 골드만삭스 +23% · iM +24%"],
+      ["2028 D램 비트 수요 / 공급", pc(C2[1].d.dram) + " / " + pc(C2[1].s.dram), "iM +29% / +29%. 모건스탠리는 공급이 더 크다고 봄"],
+      ["2027 HBM 비트 공급", pc(C2[0].s.hbm), "TrendForce +50~60%"],
+      ["2027 HBM 웨이퍼 비중", Math.round(C2[0].w * 1000) / 10 + "%", "TrendForce 23% → 약 30%, 삼성 '약 30%'"],
+      ["2027 범용 D램 평균 가격(4Q26 = 1)", C2[0].price.conv.toFixed(2), "TrendForce 1Q27 +5~10%, 2Q +3~8%, 3Q·4Q +0~5% 누적 평균 약 1.14(닻)"],
+      ["2027 영업이익 하이닉스 / 삼성", jo(sa.years[0].op) + " / " + jo(sb.years[0].op), "KB 389·575조, iM 약 446·635조(EPS 역산), 키움 삼성 352조"],
+      ["2028 EPS / 2027 EPS 하이닉스 / 삼성", pc(sa.years[1].eps / sa.years[0].eps - 1) + " / " + pc(sb.years[1].eps / sb.years[0].eps - 1), "iM +17% / +19%"]
+    ];
+    $("ev-tb").innerHTML = "<thead><tr><th scope='col'>항목(중심 시나리오)</th><th scope='col'>모형</th><th scope='col'>근거</th></tr></thead><tbody>" + rows.map((q) => "<tr><th scope='row'>" + q[0] + "</th><td class='n'>" + q[1] + "</td><td>" + q[2] + "</td></tr>").join("") + "</tbody>";
   }
 
   /* ---------- 시나리오 고르기 ---------- */
@@ -107,7 +121,8 @@
     h += row("영업이익(성과급 후)", (y) => "<b>" + jo(y.op) + "</b>") + row("순이익", (y) => jo(y.ni)) + row("EPS", (y) => won(y.eps)) + row("ROE(기초 BPS)", (y) => (y.roe * 100).toFixed(0) + "%")
       + row("기말 BPS", (y) => won(y.bps)) + row("잔여이익(EPS − 자기자본비용 × BPS)", (y) => won(y.ri)) + row("PER(적정가 ÷ EPS)", (y) => (y.eps > 0 ? (r.value / y.eps).toFixed(1) + "배" : "적자"));
     $("pl-tb").innerHTML = h + "</tbody>";
-    $("pl-note").textContent = "적정주가 " + won(r.value) + " = 2026E BPS " + won(M.CO[coPL].bps0) + " + 잔여이익 현재가치 " + won(r.value - M.CO[coPL].bps0 - r.tv) + " + 잔존가치 " + won(r.tv) + ". 자기자본비용 " + (r.coe * 100).toFixed(2) + "%.";
+    const lo = M.evaluate(coPL, lv, { payout: 0.2 }).value, hi = M.evaluate(coPL, lv, { payout: 0.8 }).value;
+    $("pl-note").textContent = "적정주가 " + won(r.value) + " = 2026E BPS " + won(M.CO[coPL].bps0) + " + 잔여이익 현재가치 " + won(r.value - M.CO[coPL].bps0 - r.tv) + " + 잔존가치 " + won(r.tv) + ". 자기자본비용 " + (r.coe * 100).toFixed(2) + "%. 환원율을 20%로 낮추면 " + won(lo) + ", 80%로 높이면 " + won(hi) + ": 환원은 BPS를 바꾸지만 기존 주주 가치는 거의 같고, 차이는 쌓아 둔 현금이 3%만 버는 데서 생깁니다.";
   }
 
   /* ---------- 토네이도 ---------- */
@@ -150,7 +165,7 @@
   /* ---------- 역산 ---------- */
   function drawImp() {
     const a = M.implied("skh", lv), b = M.implied("sec", lv);
-    $("imp-out").textContent = "지금 조합(" + M.code(lv) + ")에서 기준주가를 설명하는 메모리 가격 비율: 하이닉스 " + a.toFixed(2) + "배, 삼성 " + b.toFixed(2) + "배. " + (a < 1 ? "이 조합보다 메모리 값이 " + Math.round((1 - a) * 100) + "% 낮은 경로를 시장이 전제하고 있다는 뜻입니다(하이닉스 기준)." : "시장이 이 조합보다 높은 메모리 값을 전제하고 있다는 뜻입니다.");
+    $("imp-out").textContent = "지금 조합(" + M.code(lv) + ")의 적정가와 기준주가의 차이를 메모리 가격으로 바꾸면 하이닉스 " + a.toFixed(2) + "배, 삼성 " + b.toFixed(2) + "배입니다. " + (a < 1 ? "주가는 이 조합보다 메모리 값이 " + Math.round((1 - a) * 100) + "% 낮은 경로와 같습니다(하이닉스 기준). 이 차이가 펀더멘털 전망의 차이인지, 아래 일정에 따른 수급·심리인지는 계약가와 증설 발주가 확인되며 갈립니다." : "주가가 이 조합보다 높은 메모리 값을 전제하고 있습니다.");
     let h = "<thead><tr><th scope='col'>대표 시나리오</th><th scope='col'>하이닉스 적정주가</th><th scope='col'>주가 설명 가격 비율</th><th scope='col'>삼성 적정주가</th><th scope='col'>주가 설명 가격 비율</th></tr></thead><tbody>";
     M.PRESETS.forEach((p) => { const x = M.evaluate("skh", p.lv), y = M.evaluate("sec", p.lv); h += "<tr><th scope='row'>" + p.name + "</th><td class='n'>" + man(x.value) + " (" + pc(x.upside) + ")</td><td class='n'>" + M.implied("skh", p.lv).toFixed(2) + "</td><td class='n'>" + man(y.value) + " (" + pc(y.upside) + ")</td><td class='n'>" + M.implied("sec", p.lv).toFixed(2) + "</td></tr>"; });
     $("imp-tb").innerHTML = h + "</tbody>";
