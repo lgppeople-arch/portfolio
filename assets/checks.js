@@ -45,6 +45,7 @@
     Doa: require("./engines/doa.js"),
     MemScen: require("./engines/memscen.js"),
     MnaEngine: require("./engines/mnascreen.js"),
+    MemFlows: require("./data/mem-flows.js"),
     MnaData: require("./data/mna-screen.js")
   } : null;
   const api = factory();
@@ -92,7 +93,7 @@
   }
 
   function run(env) {
-    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Ideas, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen, MnaEngine, MnaData } = env;
+    const { Fin, Stats, Capital, PlanRisk, Budget, Costs, CapexMc, KpiTree, Bsc, StatLab, ProLab, Mgmt, Asset, Rules, OpSim, AdvViz, TradeLead, TradeSemi, CapexPanel, CapexPanelData, PartsMap, LinkMap, EquipMap, EquipCosEngine, EquipCos, EquipKr, Ideas, Post, MA, Holdco, Cash, Fx, Mbo, Pl, Three, Cycle, Samsung, Doa, Sectors, Deal, MemScen, MnaEngine, MnaData, MemFlows } = env;
     const out = [];
     const add = (group, name, ok, detail) => out.push({ group: group, name: name, ok: !!ok, detail: detail || "" });
     const near = (a, b, tol) => Math.abs(a - b) <= (tol || TOL) * Math.max(1, Math.abs(a), Math.abs(b));
@@ -899,6 +900,17 @@
       const S1 = M.simulate(3000, 11, true), S2 = M.simulate(3000, 11, true), pOk = M.PROB.every((p) => Math.abs(p.reduce((x, y) => x + y, 0) - 1) < 1e-9);
       const freq = [0, 0, 0, 0, 0]; S1.draws.forEach((l) => freq[l[M.IDX.ai]]++);
       add(G, "몬테카를로: 상관행렬 = L·Lᵀ(촐레스키), 단계 확률 합 1, 같은 시드면 같은 결과, 뽑힌 AI 단계 비율이 확률의 ±3%p", back && pOk && S1.skh.p50 === S2.skh.p50 && freq.every((f, k) => Math.abs(f / 3000 - M.PROB[M.IDX.ai][k]) < 0.03), "");
+    }
+
+    if (MemFlows) {
+      const G = "메모리 시나리오", ok = ["000660", "005930"].every((k) => {
+        const x = MemFlows[k], S = x.series, n = S.length, fx = S.map((q) => q[2]), ry = S.map((q) => q[1]);
+        const mx = Fin.sum(fx) / n, my = Fin.sum(ry) / n, sxx = Fin.sum(fx.map((v) => (v - mx) * (v - mx))), sxy = Fin.sum(fx.map((v, i) => (v - mx) * (ry[i] - my))), syy = Fin.sum(ry.map((v) => (v - my) * (v - my)));
+        const monthOk = x.month.every((m) => Math.abs(m[1] + m[2] + m[3] + m[4]) < 0.02);
+        const cumOk = Math.abs(Fin.sum(x.month.map((m) => m[1])) - x.cumF) < 0.5;
+        return Math.abs(sxy / sxx - x.beta) < 1e-3 && Math.abs(sxy * sxy / (sxx * syy) - x.r2) < 1e-3 && monthOk && cumOk;
+      });
+      add(G, "외국인 수급: 일별 수익률 ~ 외국인 순매수 회귀의 기울기·R²를 다시 계산해 일치, 월별 외국인 + 기관 + 개인 + 기타 = 0, 월별 외국인 합 ≈ 누적", ok, "R² " + MemFlows["000660"].r2.toFixed(2) + " · " + MemFlows["005930"].r2.toFixed(2));
     }
 
     /* ---------- 제도 노트: 통합투자세액공제 ---------- */

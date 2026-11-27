@@ -6,7 +6,7 @@
 
 ```
 python3 scripts/build-site.py   # 메뉴·모음·읽는 경로·하단 '이어서 볼 것'을 site-map.json에서 다시 만든다
-node assets/checks.js           # 계산 엔진 검산 (현재 245개)
+node assets/checks.js           # 계산 엔진 검산 (현재 246개)
 node scripts/check-site.js      # 사이트 구성 검사 (현재 26개)
 ```
 
@@ -17,9 +17,9 @@ node scripts/check-site.js      # 사이트 구성 검사 (현재 26개)
 3. 계산이 있으면 엔진은 `assets/engines/`에 UMD로 두고, `assets/checks.js`와 `tools/checks.html`에 검산을 단다.
 4. `README.md` 표와 `scripts/profile.html`의 개수 문구를 맞춘다.
 
-## 최근 변경: 메모리 사이클 시나리오 가치평가 v2.1 (2026-11-27)
+## 최근 변경: 메모리 사이클 시나리오 가치평가 v2.2 (2026-11-27)
 
-- v1(2026-11-20, 변수 8개)을 v2로 다시 설계했고, v2.1에서 수요·공급 중심값을 증권사 수급 표로, 2027 가격을 TrendForce 경로에 맞추고 환원 중립성을 넣었습니다(설계 문서 0절).
+- v1(2026-11-20, 변수 8개)을 v2로 다시 설계했고, v2.1에서 수요·공급 중심값을 증권사 수급 표로, 2027 가격을 TrendForce 경로에 맞추고 환원 중립성을 넣었습니다(설계 문서 0절). v2.2에서 기준주가 11.25 종가, CAPM 자기자본비용, 외국인 수급 분석(examples/memflow)을 더했습니다(0-1절).
 - 파일:
   - `tools/mem-scenario.html`: 화면(리포트 형식)
   - `assets/mem-scenario.js`: 화면 스크립트

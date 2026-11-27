@@ -23,10 +23,10 @@
         ["그중 HBM / 범용 D램 / 낸드", [r.skh.exit.hbm, r.skh.exit.conv, r.skh.exit.nand].map(jo).join(" / "), [r.sec.exit.hbm, r.sec.exit.conv, r.sec.exit.nand].map(jo).join(" / "), "제품 비중은 추정"],
         ["원가율(HBM / 범용 / 낸드)", [r.skh.costR.hbm, r.skh.costR.conv, r.skh.costR.nand].map((v) => Math.round(v * 100) + "%").join(" / "), [r.sec.costR.hbm, r.sec.costR.conv, r.sec.costR.nand].map((v) => Math.round(v * 100) + "%").join(" / "), "3Q26 영업이익률(하이닉스 80%)에 맞춤"],
         ["HBM 점유율(2026)", Math.round(r.skh.hbmShare0 * 100) + "%", Math.round(r.sec.hbmShare0 * 100) + "%", "추정"],
-        ["기준주가(2026.11.24 종가)", won(r.skh.price), won(r.sec.price), "금융위원회 주식시세정보"],
+        ["기준주가(2026.11.25 종가)", won(r.skh.price), won(r.sec.price), "금융위원회 주식시세정보"],
         ["주식 수(십억 주)", r.skh.shares.toFixed(3), r.sec.shares.toFixed(3), "하이닉스는 40조 원 자사주 소각 후 추정, 삼성은 보통주+우선주"],
         ["2026E BPS", won(r.skh.bps0), won(r.sec.bps0), "메리츠증권(2026.11.6)"],
-        ["자기자본비용(현행)", (r.skh.coe * 100).toFixed(1) + "%", (r.sec.coe * 100).toFixed(1) + "%", "할인율 단계로 ±1.5%p"]]
+        ["자기자본비용(현행)", (r.skh.coe * 100).toFixed(1) + "%", (r.sec.coe * 100).toFixed(1) + "%", "국고채 10년 4.2% + 베타(1.47·1.22) × 한국 ERP 4.87%(Damodaran). 할인율 단계로 ±1.5%p"]]
         .map((q) => "<tr><th scope='row'>" + q[0] + "</th><td class='n'>" + q[1] + "</td><td class='n'>" + q[2] + "</td><td>" + q[3] + "</td></tr>").join("") + "</tbody>";
     $("start-tb").innerHTML = h;
   })();
@@ -37,7 +37,7 @@
     const items = [
       ["중심 시나리오 적정주가: 하이닉스 " + man(a.value) + "(" + pc(a.upside) + "), 삼성 " + man(b.value) + "(" + pc(b.upside) + ")", "증권사 수급 표(2027 D램 수요 +" + Math.round(I[0].d.dram * 100) + "%·공급 +" + Math.round(I[0].s.dram * 100) + "%)와 TrendForce 계약가 경로를 그대로 넣은 값입니다. 2027년 영업이익 하이닉스 " + jo(a.years[0].op) + "·삼성 " + jo(b.years[0].op) + ", 범용 D램 값은 2027 " + I[0].price.conv.toFixed(2) + " → 2029 " + I[2].price.conv.toFixed(2) + "(4Q26 = 1)."],
       ["지금 주가 ≈ '2028 공급 과잉' 시나리오(하이닉스 " + pc(ga.upside) + ", 삼성 " + pc(gb.upside) + ")", "주가를 설명하려면 메모리 값이 중심 경로의 " + Math.round(ia * 100) + "%(하이닉스)·" + Math.round(ib * 100) + "%(삼성)여야 합니다. 신규 팹 네 곳의 증설이 2028년에 한꺼번에 풀리는 경로와 같습니다. 남은 차이는 수급·심리(선거 뒤 위험 회피, 엔비디아 사태, 수출통제 입법)로 따로 봅니다."],
-      ["상관을 넣은 분포에서 주가 이상일 확률: 하이닉스 " + Math.round(S.skh.above * 100) + "%, 삼성 " + Math.round(S.sec.above * 100) + "%", "중앙값 하이닉스 " + man(S.skh.p50) + ", 삼성 " + man(S.sec.p50) + ", 하위 10% " + man(S.skh.p10) + "·" + man(S.sec.p10) + ". 증설 확대·과잉에 35% 확률을 둔 결과입니다. 가장 크게 흔드는 변수는 AI 투자와 업계 증설입니다."]
+      ["단기 주가는 외국인 수급이 먼저 움직였다", (window.MEM_FLOWS ? "59거래일 외국인 순매도 하이닉스 " + Math.abs(window.MEM_FLOWS["000660"].cumF).toFixed(0) + "조·삼성 " + Math.abs(window.MEM_FLOWS["005930"].cumF).toFixed(0) + "조 원, 일별 수익률 변동의 약 " + Math.round(window.MEM_FLOWS["000660"].r2 * 100) + "%가 같은 날 외국인 매매와 함께 움직였습니다. 회사 자사주 매입이 받아 주던 9월에는 버텼고, 그 매수가 줄자 같은 매도에 크게 빠졌습니다. " : "") + "상관을 넣은 분포에서 주가 이상일 확률은 하이닉스 " + Math.round(S.skh.above * 100) + "%, 삼성 " + Math.round(S.sec.above * 100) + "%(증설 확대·과잉 45% 가정)."]
     ];
     const tk = $("tk"); tk.textContent = "";
     items.forEach((q) => { const d = el("div"); d.appendChild(el("b", { text: q[0] })); d.appendChild(el("p", { text: q[1] })); tk.appendChild(d); });
@@ -54,6 +54,45 @@
       ["2028 EPS / 2027 EPS 하이닉스 / 삼성", pc(sa.years[1].eps / sa.years[0].eps - 1) + " / " + pc(sb.years[1].eps / sb.years[0].eps - 1), "iM +17% / +19%"]
     ];
     $("ev-tb").innerHTML = "<thead><tr><th scope='col'>항목(중심 시나리오)</th><th scope='col'>모형</th><th scope='col'>근거</th></tr></thead><tbody>" + rows.map((q) => "<tr><th scope='row'>" + q[0] + "</th><td class='n'>" + q[1] + "</td><td>" + q[2] + "</td></tr>").join("") + "</tbody>";
+  }
+
+  /* ---------- 외국인 수급 ---------- */
+  function drawFlows() {
+    const FL = window.MEM_FLOWS; if (!FL || !$("f-flow")) return;
+    const K = [["000660", "skh"], ["005930", "sec"]];
+    $("fl-out").textContent = K.map((k) => { const x = FL[k[0]]; return x.name + ": 59거래일 주가 " + pc(x.move) + ", 외국인 누적 " + x.cumF.toFixed(1) + "조 원(보유율 " + x.holdFrom.toFixed(2) + "% → " + x.holdTo.toFixed(2) + "%). 일별 수익률의 " + Math.round(x.r2 * 100) + "%가 같은 날 외국인 순매수와 함께 움직였고(기관은 " + Math.round(x.r2Org * 100) + "%). 순매수 1조 원 차이가 같은 날 수익률 " + (x.beta * 100).toFixed(1) + "%p 차이와 함께 움직임"; }).join(". ") + ".";
+    const host = $("f-flow"); host.textContent = "";
+    const W = Math.max(300, Math.round(host.clientWidth || 680)), nar = W < 600, cw = nar ? W : W / 2, ch = 200, H = nar ? ch * 2 : ch;
+    const s = sv("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img", "aria-label": "두 회사의 외국인 누적 순매수와 주가 지수 59거래일" }, host);
+    K.forEach((k, j) => {
+      const x = FL[k[0]], S = x.series, ox = nar ? 0 : j * cw, oy = nar ? j * ch : 0, l = ox + 36, r2 = ox + cw - 34, top = oy + 24, bot = oy + ch - 22;
+      let c0 = 0, p = 100; const cum = S.map((q) => (c0 += q[2])), px = S.map((q) => (p *= 1 + q[1]));
+      const mnC = Math.min(0, Math.min.apply(null, cum)), xs = lin(0, S.length - 1, l, r2), yc = lin(mnC, 0, bot, top), yp = lin(Math.min.apply(null, px) * 0.95, Math.max(100, Math.max.apply(null, px)) * 1.03, bot, top);
+      tx(s, l - 30, oy + 13, x.name, { "font-size": 12, "font-weight": 700, fill: c("--ink") });
+      cum.forEach((v, i) => sv("rect", { x: xs(i) - 1.6, y: yc(0), width: 3.2, height: Math.max(0.5, yc(v) - yc(0)), fill: c("--neg"), opacity: 0.45 }, s));
+      sv("polyline", { points: px.map((v, i) => xs(i).toFixed(1) + "," + yp(v).toFixed(1)).join(" "), fill: "none", stroke: c("--input"), "stroke-width": 2 }, s);
+      tx(s, l - 4, yc(mnC) + 4, mnC.toFixed(0) + "조", { "text-anchor": "end", "font-size": 10, fill: c("--neg"), class: "n" });
+      tx(s, r2 + 4, yp(px[px.length - 1]) + 4, Math.round(px[px.length - 1]), { "font-size": 10, fill: c("--input"), "font-weight": 700, class: "n" });
+      [0, Math.floor(S.length / 2), S.length - 1].forEach((i) => tx(s, xs(i), bot + 15, S[i][0].slice(4, 6) + "." + S[i][0].slice(6), { "text-anchor": "middle", "font-size": 10, fill: c("--muted"), class: "n" }));
+    });
+    let h = "<thead><tr><th scope='col'>회사·월</th><th scope='col'>외국인</th><th scope='col'>기관</th><th scope='col'>개인</th><th scope='col'>기타(자사주 매입 등)</th><th scope='col'>주가</th></tr></thead><tbody>";
+    K.forEach((k) => FL[k[0]].month.forEach((m) => { h += "<tr><th scope='row'>" + FL[k[0]].name + " " + +m[0].slice(4) + "월</th>" + [m[1], m[2], m[3], m[4]].map((v) => "<td class='n'>" + (v >= 0 ? "+" : "") + v.toFixed(1) + "조</td>").join("") + "<td class='n'><b>" + pc(m[5], 1) + "</b></td></tr>"; }));
+    $("fl-tb").innerHTML = h + "</tbody>";
+    $("fl-note").textContent = "기타 = −(외국인 + 기관 + 개인)으로, 회사의 자사주 매입과 기타법인이 들어갑니다. 하이닉스는 9월 외국인이 11.6조 원을 팔았는데도 기타가 21.9조 원을 사들여 주가가 올랐고(8월 결의 40조 원 자사주 매입 집행 구간), 기타 매수가 9.7조·7.0조로 줄어든 10~11월에는 비슷한 외국인 매도에 −20%·−27%였습니다. 삼성도 기타 매수가 10.3조 → 1.3조 → 0조로 줄며 하락 폭이 커졌습니다. 외국인 지분율은 삼성 45.8%(2009년 이후 최저), 하이닉스 49%대입니다(11.17 하이닉스 보유율이 1.5%p 뛴 것은 자사주 소각으로 주식 수가 줄어든 효과로 보입니다).";
+  }
+  function drawCmp() {
+    if (!$("cmp-tb")) return;
+    const a = M.evaluate("skh", M.CENTRAL), b = M.evaluate("sec", M.CENTRAL), FL = window.MEM_FLOWS || {};
+    const sh = (k) => (FL[k] ? FL[k].cumF : null);
+    const rows = [
+      ["지금 주가 ÷ 중심 2027 EPS", (M.CO.skh.price / a.years[0].eps).toFixed(2) + "배", (M.CO.sec.price / b.years[0].eps).toFixed(2) + "배", "시장이 하이닉스 이익에 더 낮은 배수를 주고 있음"],
+      ["적정가 ÷ 중심 2027 EPS", (a.value / a.years[0].eps).toFixed(2) + "배", (b.value / b.years[0].eps).toFixed(2) + "배", "모형은 오히려 삼성에 더 높은 배수(낮은 할인율)를 줌"],
+      ["자기자본비용(베타)", (a.coe * 100).toFixed(1) + "% (1.47)", (b.coe * 100).toFixed(1) + "% (1.22)", "하이닉스 변동성 75% vs 삼성 60%(3년)"],
+      ["메모리 매출 중 HBM(4Q26E)", Math.round(M.CO.skh.exit.hbm / (M.CO.skh.exit.hbm + M.CO.skh.exit.conv + M.CO.skh.exit.nand) * 100) + "%", Math.round(M.CO.sec.exit.hbm / (M.CO.sec.exit.hbm + M.CO.sec.exit.conv + M.CO.sec.exit.nand) * 100) + "%", "HBM은 연 계약이라 2028년 범용 가격 하락에 덜 흔들림"],
+      ["메모리 외 사업", "없음", "모바일·가전·파운드리·디스플레이", "삼성은 메모리 호황의 몫이 희석되고, 하강기엔 완충"],
+      ["59거래일 외국인 순매도(시가총액 대비)", sh("000660") != null ? sh("000660").toFixed(1) + "조 (" + (sh("000660") * 1e12 / (M.CO.skh.price * 706.8e6) * 100).toFixed(1) + "%)" : "–", sh("005930") != null ? sh("005930").toFixed(1) + "조 (" + (sh("005930") * 1e12 / (M.CO.sec.price * 6649e6) * 100).toFixed(1) + "%)" : "–", "매도 압력이 하이닉스에 몰림"]
+    ];
+    $("cmp-tb").innerHTML = "<thead><tr><th scope='col'>항목</th><th scope='col'>SK하이닉스</th><th scope='col'>삼성전자</th><th scope='col'>뜻</th></tr></thead><tbody>" + rows.map((q) => "<tr><th scope='row'>" + q[0] + "</th><td class='n'>" + q[1] + "</td><td class='n'>" + q[2] + "</td><td>" + q[3] + "</td></tr>").join("") + "</tbody>";
   }
 
   /* ---------- 시나리오 고르기 ---------- */
@@ -176,8 +215,8 @@
     ["pl-co", "tor-co", "mc-co"].forEach((id, i) => { const cur = [coPL, coTor, coMC][i]; document.querySelectorAll("#" + id + " button").forEach((b) => b.setAttribute("aria-pressed", b.getAttribute("data-co") === cur ? "true" : "false")); });
     drawBoard(); drawSupply(); drawPL(); drawTor(); drawImp(); drawMC();
   }
-  update(); takeaways();
-  F.onRedraw(() => { drawSupply(); drawTor(); drawMC(); });
+  update(); takeaways(); drawFlows(); drawCmp();
+  F.onRedraw(() => { drawSupply(); drawTor(); drawMC(); drawFlows(); });
   if (window.Report) {
     Report.flows($("hero-art"), { area: { span: 0.42, max: 580, min: 1000, within: ".rpt-hero .wrap" },
       nodes: [{ x: 0.10, y: 0.50, label: "웨이퍼" }, { x: 0.90, y: 0.22, label: "HBM" }, { x: 0.90, y: 0.50, label: "범용 D램" }, { x: 0.90, y: 0.78, label: "낸드" }],
