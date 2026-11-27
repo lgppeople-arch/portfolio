@@ -22,7 +22,9 @@
         ["4Q26E 연환산 메모리 매출", jo(r.skh.exit.hbm + r.skh.exit.conv + r.skh.exit.nand), jo(r.sec.exit.hbm + r.sec.exit.conv + r.sec.exit.nand), "가이던스 + 계약가 전망으로 추정"],
         ["그중 HBM / 범용 D램 / 낸드", [r.skh.exit.hbm, r.skh.exit.conv, r.skh.exit.nand].map(jo).join(" / "), [r.sec.exit.hbm, r.sec.exit.conv, r.sec.exit.nand].map(jo).join(" / "), "제품 비중은 추정"],
         ["원가율(HBM / 범용 / 낸드)", [r.skh.costR.hbm, r.skh.costR.conv, r.skh.costR.nand].map((v) => Math.round(v * 100) + "%").join(" / "), [r.sec.costR.hbm, r.sec.costR.conv, r.sec.costR.nand].map((v) => Math.round(v * 100) + "%").join(" / "), "3Q26 영업이익률(하이닉스 80%)에 맞춤"],
-        ["HBM 점유율(2026)", Math.round(r.skh.hbmShare0 * 100) + "%", Math.round(r.sec.hbmShare0 * 100) + "%", "추정"],
+        ["HBM 비트 점유율(3Q26)", Math.round(r.skh.hbmShare0 * 100) + "%", Math.round(r.sec.hbmShare0 * 100) + "%", "추정: 삼성 'D램 점유율(2Q 38%)과 같은 HBM 점유율 달성'(3Q26 실적발표), 하이닉스 약 50%(서울경제)"],
+        ["HBM 중 엔비디아 몫", Math.round(r.skh.nv * 100) + "%", Math.round(r.sec.nv * 100) + "%", "하이닉스 2026 HBM 출하의 약 3분의 2(ZDNet), 삼성은 약 65%가 엔비디아 밖(KB증권 추정)"],
+        ["D램 웨이퍼 중 HBM", Math.round(r.skh.hbmW0 * 100) + "%", Math.round(r.sec.hbmW0 * 100) + "%", "업계 23%(TrendForce) × HBM 점유율 ÷ D램 점유율로 추정"],
         ["기준주가(2026.11.25 종가)", won(r.skh.price), won(r.sec.price), "금융위원회 주식시세정보"],
         ["주식 수(십억 주)", r.skh.shares.toFixed(3), r.sec.shares.toFixed(3), "하이닉스는 40조 원 자사주 소각 후 추정, 삼성은 보통주+우선주"],
         ["2026E BPS", won(r.skh.bps0), won(r.sec.bps0), "메리츠증권(2026.11.6)"],
@@ -37,7 +39,8 @@
     const items = [
       ["중심 시나리오 적정주가: 하이닉스 " + man(a.value) + "(" + pc(a.upside) + "), 삼성 " + man(b.value) + "(" + pc(b.upside) + ")", "증권사 수급 표(2027 D램 수요 +" + Math.round(I[0].d.dram * 100) + "%·공급 +" + Math.round(I[0].s.dram * 100) + "%)와 TrendForce 계약가 경로를 그대로 넣은 값입니다. 2027년 영업이익 하이닉스 " + jo(a.years[0].op) + "·삼성 " + jo(b.years[0].op) + ", 범용 D램 값은 2027 " + I[0].price.conv.toFixed(2) + " → 2029 " + I[2].price.conv.toFixed(2) + "(4Q26 = 1)."],
       ["지금 주가 ≈ '2028 공급 과잉' 시나리오(하이닉스 " + pc(ga.upside) + ", 삼성 " + pc(gb.upside) + ")", "주가를 설명하려면 메모리 값이 중심 경로의 " + Math.round(ia * 100) + "%(하이닉스)·" + Math.round(ib * 100) + "%(삼성)여야 합니다. 신규 팹 네 곳의 증설이 2028년에 한꺼번에 풀리는 경로와 같습니다. 남은 차이는 수급·심리(선거 뒤 위험 회피, 엔비디아 사태, 수출통제 입법)로 따로 봅니다."],
-      ["단기 주가는 외국인 수급이 먼저 움직였다", (window.MEM_FLOWS ? "59거래일 외국인 순매도 하이닉스 " + Math.abs(window.MEM_FLOWS["000660"].cumF).toFixed(0) + "조·삼성 " + Math.abs(window.MEM_FLOWS["005930"].cumF).toFixed(0) + "조 원, 일별 수익률 변동의 약 " + Math.round(window.MEM_FLOWS["000660"].r2 * 100) + "%가 같은 날 외국인 매매와 함께 움직였습니다. 회사 자사주 매입이 받아 주던 9월에는 버텼고, 그 매수가 줄자 같은 매도에 크게 빠졌습니다. " : "") + "상관을 넣은 분포에서 주가 이상일 확률은 하이닉스 " + Math.round(S.skh.above * 100) + "%, 삼성 " + Math.round(S.sec.above * 100) + "%(증설 확대·과잉 45% 가정)."]
+      ["단기 주가는 외국인 수급이 먼저 움직였다", (window.MEM_FLOWS ? "59거래일 외국인 순매도 하이닉스 " + Math.abs(window.MEM_FLOWS["000660"].cumF).toFixed(0) + "조·삼성 " + Math.abs(window.MEM_FLOWS["005930"].cumF).toFixed(0) + "조 원, 일별 수익률 변동의 약 " + Math.round(window.MEM_FLOWS["000660"].r2 * 100) + "%가 같은 날 외국인 매매와 함께 움직였습니다. 회사 자사주 매입이 받아 주던 9월에는 버텼고, 그 매수가 줄자 같은 매도에 크게 빠졌습니다. " : "") + "상관을 넣은 분포에서 주가 이상일 확률은 하이닉스 " + Math.round(S.skh.above * 100) + "%, 삼성 " + Math.round(S.sec.above * 100) + "%(증설 확대·과잉 45% 가정)."],
+      ["중심에 삼성 HBM 점유율 확대를 넣었다: 2027 하이닉스 " + Math.round(a.years[0].hbmShare * 100) + "%·삼성 " + Math.round(b.years[0].hbmShare * 100) + "%", "3Q26에 이미 하이닉스 약 50%·삼성 30% 후반이고, UBS는 2027 비트 기준 약 40:40, 번스타인은 삼성 46%·하이닉스 37%를 봅니다. 그래도 하이닉스 적정가는 거의 줄지 않습니다. 지금은 범용 D램이 웨이퍼당 더 벌기 때문에, HBM에 덜 쓰는 웨이퍼를 범용으로 돌리면 이익이 비슷하게 유지됩니다(UBS도 하이닉스가 범용에 생산능력을 더 배정했다고 봄). 네오클라우드 노출은 하이닉스 매출의 약 " + (M.CO.skh.exit.hbm / (M.CO.skh.exit.hbm + M.CO.skh.exit.conv + M.CO.skh.exit.nand) * M.CO.skh.nv * M.PARAMS.ncW * 100).toFixed(1) + "%로 작고, 더 큰 차이는 HBM 가격 민감도와 시장이 주는 할인(베타·외국인 매도)입니다."]
     ];
     const tk = $("tk"); tk.textContent = "";
     items.forEach((q) => { const d = el("div"); d.appendChild(el("b", { text: q[0] })); d.appendChild(el("p", { text: q[1] })); tk.appendChild(d); });
@@ -93,6 +96,30 @@
       ["59거래일 외국인 순매도(시가총액 대비)", sh("000660") != null ? sh("000660").toFixed(1) + "조 (" + (sh("000660") * 1e12 / (M.CO.skh.price * 706.8e6) * 100).toFixed(1) + "%)" : "–", sh("005930") != null ? sh("005930").toFixed(1) + "조 (" + (sh("005930") * 1e12 / (M.CO.sec.price * 6649e6) * 100).toFixed(1) + "%)" : "–", "매도 압력이 하이닉스에 몰림"]
     ];
     $("cmp-tb").innerHTML = "<thead><tr><th scope='col'>항목</th><th scope='col'>SK하이닉스</th><th scope='col'>삼성전자</th><th scope='col'>뜻</th></tr></thead><tbody>" + rows.map((q) => "<tr><th scope='row'>" + q[0] + "</th><td class='n'>" + q[1] + "</td><td class='n'>" + q[2] + "</td><td>" + q[3] + "</td></tr>").join("") + "</tbody>";
+  }
+
+  /* 엔비디아·네오클라우드 노출: 매출 구성, 고객 구성 보정, 가격 민감도 */
+  function drawExp() {
+    if (!$("exp-tb")) return;
+    const C = M.CENTRAL, P = M.PARAMS, bust = M.PRESETS.find((p) => p.id === "bust").lv, nv = M.PRESETS.find((p) => p.id === "nvda").lv;
+    const tot = (k) => M.CO[k].exit.hbm + M.CO[k].exit.conv + M.CO[k].exit.nand, hb = (k) => M.CO[k].exit.hbm / tot(k);
+    const scaled = (p, m) => M.industry(C).map((y) => Object.assign({}, y, { price: Object.assign({}, y.price, { [p]: y.price[p] * m }) }));
+    const sens = (k, p) => M.evaluate(k, C, { ind: scaled(p, 0.8) }).value / M.evaluate(k, C).value - 1;
+    const mixV = (k, L) => { const k0 = P.ncK; P.ncK = 1; const a = M.evaluate(k, L).value; P.ncK = k0; return M.evaluate(k, L).value / a - 1; };
+    const step = (k, rho) => { const r0 = P.realloc; P.realloc = rho; const l = C.slice(), b = M.evaluate(k, C).value; l[M.IDX.hbm] = 1; const v = M.evaluate(k, l).value / b - 1; P.realloc = r0; return v; };
+    const mx = M.custMix(bust)[1];
+    const pz = (v) => (Math.abs(v) < 0.0005 ? "0%" : pc(v, 1));
+    const rows = [
+      ["메모리 매출 중 HBM(4Q26E)", Math.round(hb("skh") * 100) + "%", Math.round(hb("sec") * 100) + "%", "출발점 표의 제품별 매출"],
+      ["→ 엔비디아용 HBM(매출 대비)", (hb("skh") * M.CO.skh.nv * 100).toFixed(1) + "%", (hb("sec") * M.CO.sec.nv * 100).toFixed(1) + "%", "하이닉스 최대 고객(엔비디아 추정) 1~9월 매출 비중 14.79%(3분기보고서)와 비슷"],
+      ["→ 그중 네오클라우드 몫", (hb("skh") * M.CO.skh.nv * P.ncW * 100).toFixed(1) + "%", (hb("sec") * M.CO.sec.nv * P.ncW * 100).toFixed(1) + "%", "엔비디아 수요의 " + Math.round(P.ncW * 100) + "%(네오클라우드 = AI 인프라의 약 8%, 삼성 김용관 사장 2026.11.18)"],
+      ["'AI 투자 급랭' 2028 HBM 점유율 보정", "×" + mx.skh.toFixed(3), "×" + mx.sec.toFixed(3), "업계 HBM 수요 " + pc(mx.D) + " 중 엔비디아 " + pc(mx.DN) + "·나머지 " + pc(mx.DO) + "(네오클라우드가 빅테크의 " + P.ncK + "배로 줄어든다고 가정)"],
+      ["이 보정이 적정가에 주는 영향(AI 급랭 / 엔비디아 충격)", pz(mixV("skh", bust)) + " / " + pz(mixV("skh", nv)), pz(mixV("sec", bust)) + " / " + pz(mixV("sec", nv)), "작음: 잃은 HBM 물량의 웨이퍼 일부가 범용 D램으로 가고, 수요 감소의 대부분은 두 회사 공통 가격 하락으로 옴"],
+      ["HBM 가격 −20%일 때 적정가", pc(sens("skh", "hbm"), 1), pc(sens("sec", "hbm"), 1), "엔비디아 사양 축소(루빈 대역폭 −13~26%, 8단 HBM4E 검토, TrendForce)가 HBM 값에 오면 하이닉스가 더 맞음"],
+      ["범용 D램 가격 −20%일 때 적정가", pc(sens("skh", "conv"), 1), pc(sens("sec", "conv"), 1), "두 회사 모두 범용 D램 값이 HBM보다 두 배 넘게 중요"],
+      ["HBM 점유율 1단계 하이닉스 쪽(웨이퍼 전환 0% / 50% / 100%)", [0, 0.5, 1].map((r) => pz(step("skh", r))).join(" / "), [0, 0.5, 1].map((r) => pz(step("sec", r))).join(" / "), "지금은 범용 D램이 웨이퍼당 더 벌어서, 전환이 되면 점유율의 값이 거의 사라짐"]
+    ];
+    $("exp-tb").innerHTML = "<thead><tr><th scope='col'>항목(중심 시나리오 기준)</th><th scope='col'>SK하이닉스</th><th scope='col'>삼성전자</th><th scope='col'>뜻</th></tr></thead><tbody>" + rows.map((q) => "<tr><th scope='row'>" + q[0] + "</th><td class='n'>" + q[1] + "</td><td class='n'>" + q[2] + "</td><td>" + q[3] + "</td></tr>").join("") + "</tbody>";
   }
 
   /* ---------- 시나리오 고르기 ---------- */
@@ -215,7 +242,7 @@
     ["pl-co", "tor-co", "mc-co"].forEach((id, i) => { const cur = [coPL, coTor, coMC][i]; document.querySelectorAll("#" + id + " button").forEach((b) => b.setAttribute("aria-pressed", b.getAttribute("data-co") === cur ? "true" : "false")); });
     drawBoard(); drawSupply(); drawPL(); drawTor(); drawImp(); drawMC();
   }
-  update(); takeaways(); drawFlows(); drawCmp();
+  update(); takeaways(); drawFlows(); drawCmp(); drawExp();
   F.onRedraw(() => { drawSupply(); drawTor(); drawMC(); drawFlows(); });
   if (window.Report) {
     Report.flows($("hero-art"), { area: { span: 0.42, max: 580, min: 1000, within: ".rpt-hero .wrap" },

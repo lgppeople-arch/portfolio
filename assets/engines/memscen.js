@@ -55,7 +55,9 @@
       name: "SK하이닉스", short: "하이닉스",
       exit: { hbm: 120, conv: 270, nand: 120 },        /* 4Q26E 분기 약 128조 × 4. 3Q26 D램 78.2·낸드 26.0 + 가이던스(D램 출하 +20%대 중반) */
       costR: { hbm: 0.30, conv: 0.15, nand: 0.32 },   /* 제품별 원가율(4Q26E, 성과급 전) */
-      hbmShare0: 0.55,
+      hbmShare0: 0.50,      /* 3Q26 HBM 비트 점유율(추정): 서울경제 2026.10.29 "하이닉스 약 50%" */
+      hbmW0: 0.35,          /* 자사 D램 웨이퍼 중 HBM 비중(추정) = 업계 23% × HBM 점유율 50% ÷ D램 점유율 약 33% */
+      nv: 0.65,             /* HBM 중 엔비디아 몫: 2026 HBM 출하 약 200억 Gb의 3분의 2(ZDNet 2026.3) */
       dda: [[3, 6, 8], [5, 9, 12], [7, 12, 16], [9, 16, 22], [11, 20, 28]],   /* 업계 증설 단계별 감가상각 추가분 */
       nonmem: (pConv) => 0,
       fin: 3, tax: 0.24, bonus: 0.10,
@@ -70,7 +72,9 @@
       name: "삼성전자", short: "삼성",
       exit: { hbm: 80, conv: 370, nand: 170 },         /* 메모리 4Q26E 분기 약 155조 × 4. 3Q26 DS 147.1(메모리 약 135) */
       costR: { hbm: 0.42, conv: 0.18, nand: 0.36 },
-      hbmShare0: 0.28,
+      hbmShare0: 0.38,      /* 3Q26 추정: 회사 "D램 점유율(2Q 38%)과 같은 HBM 점유율 달성", 서울경제 "30% 후반" */
+      hbmW0: 0.23,          /* HBM 점유율 ≈ D램 점유율이라 업계 평균과 같다고 봄 */
+      nv: 0.35,             /* HBM 출하의 약 65%가 엔비디아 밖(구글 TPU·브로드컴·AMD, KB증권 추정) */
       dda: [[4, 7, 10], [6, 11, 15], [8, 15, 20], [11, 20, 27], [13, 24, 34]],
       /* 메모리 외(모바일·가전, 파운드리·시스템LSI, 디스플레이, 하만): 3Q26 DX −0.8·디스플레이 1.1·하만 0.6.
          메모리 값이 내리면 완제품 원가가 줄어 이익이 는다 */
@@ -92,6 +96,10 @@
     stair: 0.66,           /* 계약가격 연간 최대 하락 */
     fxBase: 1335,
     nandContent: 0.05,     /* 낸드는 기기당 용량 증가가 수요에 더해진다 */
+    realloc: 0.5,          /* HBM 점유율을 잃어 남는 웨이퍼 중 범용 D램으로 돌리는 몫(얻을 때는 범용에서 가져옴). TSV·적층 후공정은 놀고, 전환에 2~3분기 */
+    nvMu: 0.80,            /* 마이크론 HBM 중 엔비디아 몫(가정) */
+    ncW: 0.15,             /* 엔비디아 수요 중 네오클라우드 몫: 네오클라우드 = AI 인프라의 약 8%(삼성 김용관 사장, 2026.11.18) ÷ 엔비디아 HBM 비중 약 55% */
+    ncK: 3,                /* 충격 때 네오클라우드 수요 변화가 빅테크의 몇 배인가(가정): 빚으로 산 GPU, 코어위브 차입 470~500억 달러 */
     rCash: 0.03            /* 환원하지 않고 쌓아 둔 이익이 버는 세전 이자율. 환원율을 바꿔도 기존 주주 가치가 거의 같도록(남긴 현금의 이자를 이익에 더함) */
   };
 
@@ -140,15 +148,18 @@
         { tag: "공격적", note: "+2.5%p/년. HBM 진입 가속" },
         { tag: "물량 공세", note: "+4.5%p/년. 범용 D램 저가 공급" }
       ] },
-    { id: "hbm", name: "HBM 경쟁 구도", what: "HBM4 점유율. 하이닉스에 유리하면 삼성에 불리하다",
-      skh: [[0.60, 0.60, 0.58], [0.57, 0.56, 0.55], [0.53, 0.50, 0.48], [0.48, 0.45, 0.42], [0.44, 0.40, 0.36]],
-      sec: [[0.25, 0.24, 0.24], [0.27, 0.27, 0.27], [0.30, 0.31, 0.32], [0.34, 0.36, 0.37], [0.37, 0.39, 0.41]],
+    { id: "hbm", name: "HBM 경쟁 구도", what: "HBM 비트 점유율(2027~29). 출발점은 3Q26 하이닉스 약 50%·삼성 30% 후반. 하이닉스에 유리하면 삼성에 불리하다",
+      /* 중심 근거: UBS(2026.5) 2027 비트 삼성 230억 Gb·하이닉스 231억 Gb → 약 40%:40%:20%(마이크론).
+         번스타인(2026.6) 2027 삼성 46%·하이닉스 37%·마이크론 18%. 삼성 3Q26 실적발표 "D램 점유율(2Q 38%)과 같은 HBM 점유율을 3분기에 달성".
+         UBS: 하이닉스가 고객 요청으로 DDR5·LPDDR5X에 생산능력을 더 배정, 엔비디아 수요 비중 60% → 41%, 구글 18% → 30%, AMD 7% → 13% */
+      skh: [[0.52, 0.52, 0.51], [0.47, 0.46, 0.45], [0.42, 0.41, 0.40], [0.37, 0.36, 0.35], [0.33, 0.31, 0.30]],
+      sec: [[0.33, 0.33, 0.33], [0.36, 0.37, 0.37], [0.40, 0.41, 0.41], [0.45, 0.46, 0.46], [0.48, 0.49, 0.50]],
       levels: [
-        { tag: "하이닉스 독주", note: "하이닉스 60%, 삼성 25%" },
-        { tag: "하이닉스 우위", note: "하이닉스 57%, 삼성 27%" },
-        { tag: "중심", note: "하이닉스 50%대 초반, 삼성 30%(HBM4 공급 확대)" },
-        { tag: "삼성 추격", note: "하이닉스 45%, 삼성 36%" },
-        { tag: "삼성·마이크론 역전", note: "하이닉스 40% 아래" }
+        { tag: "하이닉스 우위 유지", note: "하이닉스 52%, 삼성 33%: 2026 HBM4 엔비디아 물량 하이닉스 55%(대신·카운터포인트)가 그대로 이어짐" },
+        { tag: "하이닉스 근소 우위", note: "하이닉스 47%, 삼성 36%" },
+        { tag: "중심: 대등", note: "2027 하이닉스 42%, 삼성 40%(UBS 비트 기준 약 40:40). 엔비디아 비중 축소·구글 TPU 확대, 하이닉스 범용 배정" },
+        { tag: "삼성 1위", note: "하이닉스 37%, 삼성 45%(번스타인 2027 46:37)" },
+        { tag: "삼성 독주", note: "하이닉스 33%, 삼성 48%. HBM4E에서도 삼성 1c 공정·4나노 로직 다이 우위" }
       ] },
     { id: "lta", name: "장기공급계약", what: "계약 물량·가격 하한이 하락기에 실제로 지켜지는 정도(범용 D램·낸드)",
       on: [true, true, true, true, false], covAdd: [0.10, 0, 0, 0, 0],
@@ -197,7 +208,8 @@
     { id: "central", name: "중심", lv: CENTRAL.slice(), note: "각 변수 중심 단계" },
     { id: "glut", name: "2028 공급 과잉", lv: [2, 2, 4, 2, 2, 2, 2, 1, 3], note: "모건스탠리형: 2027년 말 증설이 2028년에 몰림" },
     { id: "bust", name: "AI 투자 급랭", lv: [4, 3, 3, 2, 2, 3, 0, 2, 4], note: "AI 삭감 + 위험 회피(원화 약세가 일부 상쇄)" },
-    { id: "china", name: "중국 물량 + 관세", lv: [2, 3, 2, 4, 2, 3, 2, 4, 3], note: "CXMT 물량 공세와 휴전 붕괴가 겹침" }
+    { id: "china", name: "중국 물량 + 관세", lv: [2, 3, 2, 4, 2, 3, 2, 4, 3], note: "CXMT 물량 공세와 휴전 붕괴가 겹침" },
+    { id: "nvda", name: "엔비디아·네오클라우드 충격", lv: [3, 2, 2, 1, 3, 2, 2, 1, 3], note: "네오클라우드 자금난·루빈 사양 축소로 AI 투자 둔화, 엔비디아 물량이 구글·AMD로 분산(삼성 1위), 할인율 상승" }
   ];
 
   /* 몬테카를로용 단계 확률(변수마다 1~5단계)과 잠재 변수 상관(양수 = 같이 불리해짐) */
@@ -206,7 +218,7 @@
     [0.08, 0.20, 0.40, 0.22, 0.10],
     [0.05, 0.15, 0.35, 0.30, 0.15],   /* 증설: 2028 하락을 보는 증권사(골드만삭스·모건스탠리·BNK·키움)와 상승을 보는 곳(iM·유안타·KB·DS)이 반반 → 확대·과잉 45% */
     [0.05, 0.40, 0.30, 0.17, 0.08],
-    [0.10, 0.25, 0.35, 0.20, 0.10],
+    [0.08, 0.22, 0.40, 0.22, 0.08],   /* HBM 구도: 중심(대등) 40%, 하이닉스 우위·삼성 1위 쪽이 대칭 */
     [0.10, 0.25, 0.35, 0.20, 0.10],
     [0.15, 0.25, 0.30, 0.20, 0.10],
     [0.10, 0.45, 0.25, 0.12, 0.08],
@@ -273,6 +285,22 @@
   }
 
   /* ---------- 2) 회사 손익과 가치 ---------- */
+  /* 고객 구성: AI 투자 단계가 중심과 다르면 HBM 수요 변화 D를 엔비디아(네오클라우드 포함)와 나머지(구글 TPU·AMD 등)로 나눈다.
+     엔비디아 수요 변화 = (1 − ncW + ncW·ncK)·Dh, 나머지 = Dh, 둘의 가중합 = D. 회사 점유율은 엔비디아 몫(nv)만큼 이 차이를 받는다 */
+  function custMix(lv) {
+    const vA = VARS[IDX.ai], vH = VARS[IDX.hbm], a = lv[IDX.ai], h = lv[IDX.hbm], P = PARAMS, amp = 1 - P.ncW + P.ncW * P.ncK, out = [];
+    let cl = 1, cc = 1;
+    for (let t = 0; t < 3; t++) {
+      cl *= 1 + vA.hbm[a][t]; cc *= 1 + vA.hbm[2][t];
+      const D = cl / cc - 1, sh = { skh: vH.skh[h][t], sec: vH.sec[h][t] }; sh.mu = Math.max(0, 1 - sh.skh - sh.sec);
+      const n = { skh: CO.skh.nv, sec: CO.sec.nv, mu: P.nvMu }, Nm = sh.skh * n.skh + sh.sec * n.sec + sh.mu * n.mu;
+      const Dh = D / (Nm * amp + 1 - Nm), DN = amp * Dh, f = (x) => x * (1 + DN) + (1 - x) * (1 + Dh);
+      const avg = sh.skh * f(n.skh) + sh.sec * f(n.sec) + sh.mu * f(n.mu);
+      out.push({ D: D, DN: DN, DO: Dh, nvMkt: Nm, skh: f(n.skh) / avg, sec: f(n.sec) / avg });
+    }
+    return out;
+  }
+
   function ltaStage(pm) { return pm >= 0.9 ? 1 : pm >= 0.7 ? 2 : pm >= 0.5 ? 3 : 4; }
 
   function evaluate(coKey, lv, opt) {
@@ -283,17 +311,22 @@
     const coe = c.coe + VARS[IDX.disc].dr[lv[IDX.disc]];
     const fxf = vF.rate[lv[IDX.fx]] / P.fxBase * vT.revf[tr];
     const ind = opt.ind || industry(lv);
-    const share = vH[coKey][lv[IDX.hbm]];
+    const share = vH[coKey][lv[IDX.hbm]], mix = custMix(lv);
     const years = [];
     const pcPrev = { conv: 1, nand: 1 }, vol = { conv: 1 / START.runRate.conv, nand: 1 / START.runRate.nand, hbm: 1 / START.runRate.hbm };
     let kept = 0;   /* 2027년부터 쌓인 미환원 이익(조원) */
     for (let t = 0; t < 3; t++) {
       const I = ind[t], qm = vT.qmul[tr][t], row = { year: YEARS[t], prod: {} };
       let rev = 0, cost = 0;
+      /* HBM 물량 = 업계 공급 × (점유율 × 고객 구성 보정 ÷ 출발 점유율). 점유율을 잃어 남는 웨이퍼의 일부는 범용 D램으로 */
+      const shEff = share[t] * mix[t][coKey], rH = shEff / c.hbmShare0, wc = Math.min(0.6, c.hbmW0 * I.w / START.w);
+      const convAdd = P.realloc * wc * (1 - rH) / (1 - wc);
+      Object.assign(row, { hbmShare: shEff, mix: mix[t][coKey], convAdd: convAdd, nvDev: mix[t].DN, otDev: mix[t].DO });
       PRODUCTS.forEach((p) => {
         vol[p] *= 1 + I.s[p];
         let q = vol[p] * qm, pm = I.price[p] * mult, pr = pm, Lk = 0, pc = null;
-        if (p === "hbm") q *= share[t] / c.hbmShare0;
+        if (p === "conv") q *= 1 + convAdd;
+        if (p === "hbm") q *= rH;
         else if (vL.on[T]) {
           /* 계약 물량은 계약가, 나머지는 시장가. 하락기 계약가 = φ·max(계단가, 하한) + (1 − φ)·계단가 */
           const cov = Math.min(0.95, c.lta.cov[t] + vL.covAdd[T]), enf = vL.enf[T][ltaStage(pm)];
@@ -391,5 +424,5 @@
   const code = (lv) => lv.map((k) => k + 1).join("");
 
   return { YEARS, ASOF, PRODUCTS, PNAME, K, BOUND, bounded, ANCHOR, gaps, START, CO, PARAMS, VARS, NV, NL, TOTAL, IDX, CENTRAL, PRESETS, PROB, CORR,
-    priceOfGap, gapOfPrice, industry, evaluate, tornado, implied, chol, ncdf, draws, simulate, decode, encode, code };
+    priceOfGap, gapOfPrice, industry, custMix, evaluate, tornado, implied, chol, ncdf, draws, simulate, decode, encode, code };
 });

@@ -58,7 +58,7 @@
   ul.src { font-size: 13px; line-height: 1.7; color: var(--ink-2); padding-left: 18px; } ul.src a { overflow-wrap: anywhere; }
   #pl-tb th[scope=row], #pl-tb thead th:first-child, #start-tb th[scope=row] { white-space: nowrap; min-width: 150px; } #pl-tb { min-width: 900px; }
   #ev-cal { min-width: 820px; } #ev-cal th[scope=row] { white-space: nowrap; } #ev-tb { min-width: 720px; } #ev-tb th[scope=row] { min-width: 220px; }
-  #fl-tb, #tp-tb, #cmp-tb { min-width: 720px; } #fl-tb th[scope=row], #tp-tb th[scope=row], #cmp-tb th[scope=row] { white-space: nowrap; }
+  #fl-tb, #tp-tb, #cmp-tb, #exp-tb { min-width: 720px; } #fl-tb th[scope=row], #tp-tb th[scope=row], #cmp-tb th[scope=row] { white-space: nowrap; } #exp-tb th[scope=row] { min-width: 230px; }
 </style>
 <title>메모리 사이클 시나리오 가치평가 · 이기표</title>
 <meta name="robots" content="noindex, nofollow">
@@ -169,7 +169,7 @@
     <div class="shade" aria-hidden="true"></div>
     <div class="wrap wide">
       <div class="crumb"><a href="../index.html">홈</a> / 실무 도구 / 메모리 사이클 시나리오 가치평가</div>
-      <div class="rpt-tag">Scenario valuation · v2.2 · 2026.11</div>
+      <div class="rpt-tag">Scenario valuation · v2.3 · 2026.11</div>
       <h1>HBM이 웨이퍼를 삼키는 동안,<br>메모리 값은 어디까지 가나</h1>
       <p class="dek">삼성전자와 SK하이닉스의 2027~2029년 손익과 적정주가를 변수 9개의 조합으로 계산합니다. 범용 D램·HBM·낸드의 수요와 공급을 따로 세우고, HBM이 웨이퍼를 더 쓰면서 범용 D램 공급이 줄어드는 구조, 장기공급계약, 중국 증설, 환율, 할인율을 거쳐 잔여이익모델로 값을 냅니다. 변수끼리 함께 움직이는 관계를 넣은 몬테카를로로 분포를 보고, 지금 주가가 어떤 가격 수준을 전제하는지 거꾸로 풉니다. 적정가는 주가에 맞추지 않고 근거 있는 수급 숫자로 냅니다. 주가와의 괴리는 따로, 수급·심리 일정으로 정리했습니다.</p>
       <div class="rpt-meta"><span>대상<b>SK하이닉스 · 삼성전자</b></span><span>기준주가<b>2026.11.25 종가</b></span><span>실적 출발점<b>2026년 3분기 실적</b></span><span>작성<b>이기표</b></span></div>
@@ -293,6 +293,10 @@
           <p class="muted" style="font-size:13px">KB·IBK·한국투자·iM·하나증권도 목표가를 낮췄다고 보도됐습니다. 하향은 모두 주가가 고점 대비 50~65% 내린 뒤인 11월에 몰렸습니다. 밝힌 근거는 2028년 공급(모건스탠리·골드만삭스·BNK)과 범용 둔화(키움)이고, 2027년 이익 전망을 크게 낮췄다는 내용은 보도에서 확인되지 않았습니다. 시점은 주가를 따라갔고, 근거는 2028년 가정의 변화입니다. 같은 2028년 공급 가정은 이 모형의 '업계 증설' 4~5단계(확률 45%)로 들어 있습니다.</p>
           <h3>하이닉스가 삼성보다 더 크게 오르는 것으로 나오는 이유</h3>
           <div class="tw" role="region" aria-label="하이닉스와 삼성 비교" tabindex="0"><table class="pick" id="cmp-tb"></table></div>
+          <h3>엔비디아·네오클라우드 노출과 HBM 점유율</h3>
+          <p>하이닉스 HBM은 엔비디아 비중이 높아(약 3분의 2) 네오클라우드 자금난이나 엔비디아 사양 변경에 더 노출됩니다. 이 노출을 두 경로로 넣었습니다. ① 고객 구성: AI 투자 단계가 중심보다 나쁘면 엔비디아 수요가 나머지(구글 TPU·AMD 등)보다 더 줄고(네오클라우드 몫 15%가 빅테크의 3배로 줄어든다고 가정), 엔비디아 비중이 큰 회사의 HBM 점유율이 그만큼 내려갑니다. ② 웨이퍼 전환: HBM 점유율을 잃어 남는 웨이퍼의 절반은 범용 D램으로 돌린다고 봤습니다(후공정 설비는 놀고 전환에 2~3분기). 아래 표는 두 경로가 값을 얼마나 바꾸는지 보여 줍니다.</p>
+          <div class="tw" role="region" aria-label="엔비디아와 네오클라우드 노출" tabindex="0"><table class="pick" id="exp-tb"></table></div>
+          <p class="muted" style="font-size:13px">중심의 HBM 점유율은 2027년 하이닉스 42%·삼성 40%로 고쳤습니다(이전 v2.2는 하이닉스 53%·삼성 30%로, 삼성이 3Q26에 이미 30% 후반에 도달한 것을 반영하지 못했습니다). 엔비디아의 HBM 수요 비중은 2026년 60%에서 2027년 41%로, 구글은 18%에서 30%로 바뀐다는 전망(UBS)이 이 변화의 바탕입니다. 엔비디아 칩 판매사가 중국에 연산력을 임대하는 네오클라우드에 공급을 끊은 일(11.26, CNBC)은 물량이 다른 구매자로 옮겨 가는 문제라 수요 감소로는 넣지 않았습니다.</p>
           <p class="muted" style="font-size:13px">증권사 리포트의 목표주가(예: 유안타 삼성 69만 원·하이닉스 370만 원)는 이 모형의 입력으로 쓰지 않았습니다. 증권사 투자의견은 매수 비율이 92~97%로 한쪽에 몰려 있고, 목표가는 주가가 50~65% 내리는 동안 그대로였습니다. 대신 그 리포트들의 수급 표와 가격 전망처럼 검증 가능한 숫자만 썼습니다.</p>
         </section>
 
@@ -303,7 +307,7 @@
             <li><b>공급</b> 업계 D램 비트 공급 S(중심 2027 +23%·2028 +29%: 골드만삭스·iM)에서 웨이퍼 증가율 g = (1 + S) × m(w<sub>t−1</sub>)/m(w<sub>t</sub>) − 1, m(w) = (1 − w) + w/3. 범용 = (1 + g)(1 − w<sub>t</sub>)/(1 − w<sub>t−1</sub>) − 1 + 중국 + 무역, HBM = (1 + g)(w<sub>t</sub>/w<sub>t−1</sub>) − 1.</li>
             <li><b>가격</b> log 가격 = log(2027 중심 닻) − k × (그해 갭 − 중심 2027 갭)을 상·하한(범용 D램 1.8·0.3배, 낸드 1.6·0.3배)에 부드럽게 붙임. 닻: 범용 D램 1.14, 낸드 0.96(TrendForce). k는 Micron 10-K 보정(과잉 7.39, 부족 8.54), 낸드 6.0, HBM 3.0(가정). HBM 2027 = 1 + 세대 교체 인상(중심 +25%) × 갭 보정, 이후 같은 세대 연 −8%.</li>
             <li><b>장기공급계약</b> 범용 D램·낸드의 계약 물량은 계약가를 받습니다. 하락기 계약가 = φ × max(계단가, 하한) + (1 − φ) × 계단가, 계단가 = max(시장가, 전년 계약가 × 0.66). 이행률은 가격 하락 폭에 따라 낮아집니다(30% 하락 70%, 50% 하락 40%, 중심 단계).</li>
-            <li><b>손익</b> 매출 = 4Q26 연환산 제품별 매출 × 가격 × 물량 × 환율/1,335 × 관세계수. 물량 = 업계 공급 누적 ÷ 4분기 출하 수준(범용 1.08, 낸드 1.05, HBM 1.20) × HBM 점유율 변화. 원가 = 4Q26 원가율 × 물량 × 비트당 원가 연 −12%(HBM −8%) + 증설 감가상각. 영업이익 = (매출 − 원가) × (1 − 성과급 10%) + 메모리 외(삼성).</li>
+            <li><b>손익</b> 매출 = 4Q26 연환산 제품별 매출 × 가격 × 물량 × 환율/1,335 × 관세계수. 물량 = 업계 공급 누적 ÷ 4분기 출하 수준(범용 1.08, 낸드 1.05, HBM 1.20) × HBM 점유율 변화(3Q26 대비, 고객 구성 보정 포함). 점유율 변화로 남거나 모자라는 HBM 웨이퍼의 50%는 범용 D램 물량으로 옮깁니다: 범용 물량 × (1 + 0.5 × w × (1 − 점유율 비율)/(1 − w)), w = 자사 D램 웨이퍼 중 HBM 비중(하이닉스 35%·삼성 23%에서 업계 비중을 따라 변함). 원가 = 4Q26 원가율 × 물량 × 비트당 원가 연 −12%(HBM −8%) + 증설 감가상각. 영업이익 = (매출 − 원가) × (1 − 성과급 10%) + 메모리 외(삼성).</li>
             <li><b>환원과 BPS</b> 배당·자사주 소각은 BPS를 줄이지만 기존 주주가 받는 현금과 지분이 같아 가치는 거의 같습니다. 그래서 환원하지 않고 쌓은 이익에 이자(세전 3%)를 붙였고, 환원율 20%↔80%의 가치 차이는 쌓아 둔 현금이 자기자본비용보다 덜 버는 만큼(약 5%)만 남습니다. 'PBR 1배' 같은 장부가치 기준 바닥은 환원 방식에 따라 숫자가 바뀌므로 쓰지 않습니다.</li>
             <li><b>가치</b> 잔여이익모델: 2026E BPS + 2027~29 잔여이익(EPS − 자기자본비용 × 기초 BPS) 현재가치 + 잔존가치(지속계수 0.6). 자기자본비용 하이닉스 11%·삼성 10% ± 할인율 단계.</li>
             <li><b>몬테카를로</b> 변수 9개의 잠재 정규변수에 상관을 걸고(촐레스키 분해) 단계 확률의 누적값으로 단계를 정합니다. 시드 고정 2만 회라 같은 조건이면 같은 결과가 나옵니다.</li>
@@ -312,6 +316,7 @@
           <ul class="src">
             <li>'메모리 업황' 한 변수에 가격·물량 경로를 표로 정해 두던 방식을 없애고, 수요(AI 투자, 범용 수요)와 공급(업계 증설, 중국)을 따로 골라 가격이 계산되게 했습니다.</li>
             <li>범용 D램·HBM·낸드를 나누고 HBM 웨이퍼 잠식, HBM 점유율 경쟁을 넣었습니다. 금리·밸류업은 할인율 한 변수로 합쳤습니다.</li>
+            <li>v2.3: HBM 점유율 중심을 3Q26 실제(하이닉스 약 50%·삼성 30% 후반)와 2027 전망(UBS 40:40, 번스타인 삼성 46%·하이닉스 37%)에 맞췄고, 엔비디아·네오클라우드 고객 구성 보정과 웨이퍼 전환을 넣었습니다. 대표 시나리오에 '엔비디아·네오클라우드 충격'을 더했습니다.</li>
             <li>같은 무게 전수 분포 대신 상관을 넣은 몬테카를로, 대표 시나리오, 주가 역산을 넣었습니다. 기준주가를 2026.11.20 장중 값에서 2026.11.25 종가로 바꿨습니다.</li>
           </ul>
           <h3>한계</h3>
@@ -320,6 +325,7 @@
             <li>재고 순환(고객의 재고 축적·소진)은 수요 단계 안에 뭉뚱그렸습니다. 실제 하강은 재고 소진 때문에 이 모형보다 빠르고 깊을 수 있습니다.</li>
             <li>상관 계수와 단계 확률은 작성자의 판단입니다. 화면에서 상관을 끄고 결과가 얼마나 바뀌는지 확인할 수 있습니다.</li>
             <li>우선주는 보통주와 같은 값으로 셌고, 메모리 외 사업은 단순화했습니다.</li>
+            <li>웨이퍼 전환 비율(50%)과 네오클라우드 배수(3배)는 근거가 약한 가정입니다. 전환이 0%면 HBM 점유율 1단계가 하이닉스 적정가를 약 3% 바꾸고, 100%면 방향이 반대가 됩니다(노출 표 맨 아래 줄). HBM의 장기 고객 관계나 차세대 제품 선점 가치는 넣지 않았습니다.</li>
           </ul>
           <h3>출처</h3>
           <ul class="src" id="src-list">
@@ -328,6 +334,8 @@
             <li>수급: <a href="https://www.trendforce.com/news/2026/09/29/news-samsung-sees-hbm-taking-nearly-30-of-industry-dram-capacity-in-2027-up-from-20-currently/" rel="noopener">HBM 웨이퍼 비중 30%(TrendForce)</a>, <a href="https://456xresearch.substack.com/p/global-memory-strong-in-2027-cautious" rel="noopener">골드만삭스 HBM 공급 부족 추정 요약</a>, <a href="https://www.mt.co.kr/en/stock/2026/11/10/2026111015285893769" rel="noopener">모건스탠리 목표가 하향(머니투데이)</a></li>
             <li>AI 투자: <a href="https://fourweekmba.com/ai-morgan-stanley-pegs-google-2027-capex-at-375b-in-1-6t-call/" rel="noopener">모건스탠리 2027 하이퍼스케일러 설비투자 1.6조 달러</a></li>
             <li>증권사 리포트: iM증권 「반등의 실마리」 2026.11.24(D램 수급 표, PBR 역산, 과거 낙폭), 유안타증권 반도체 업종 Update 2026.11.24(TrendForce 계약가, 일정), 유진투자증권 「중국 리스크 소화 기간」 2026.11.26(수출통제 입법), SK증권 2027 반도체 소부장 전망(웨이퍼 증설 타임라인), 한화투자증권 2026.11.20(신규 팹 일정)</li>
+            <li>HBM 점유율·고객: <a href="https://m.sedaily.com/article/20108024" rel="noopener">삼성 HBM 점유율 40% 육박(서울경제)</a>, <a href="https://www.hankyung.com/article/2026102944201" rel="noopener">삼성 3Q26 실적·HBM4(한국경제)</a>, <a href="https://kr.investing.com/news/stock-market-news/article-1943201" rel="noopener">UBS 2027 HBM 비트 40:40</a>, <a href="https://www.businesspost.co.kr/BP?command=article_view&amp;num=440632" rel="noopener">번스타인 2027 삼성 46%(비즈니스포스트)</a>, <a href="https://www.etoday.co.kr/news/view/2652159" rel="noopener">하이닉스 최대 고객 매출 14.79%(이투데이)</a>, <a href="https://zdnet.co.kr/view/?no=20260327105032" rel="noopener">하이닉스 HBM 출하의 3분의 2가 엔비디아(ZDNet)</a></li>
+            <li>네오클라우드: <a href="https://news.mtn.co.kr/article/2026112515025576841" rel="noopener">네오클라우드 = AI 인프라의 약 8%, 루빈 대역폭 하향(MTN)</a>, <a href="https://www.newspim.com/news/view/20261127000037" rel="noopener">칩 판매사의 중국 임대 네오클라우드 공급 중단(뉴스핌·CNBC)</a></li>
             <li>컨센서스: <a href="https://www.rocketpunch.com/discover/33460" rel="noopener">KB증권 2027 영업이익 전망</a>, 주주환원: <a href="https://www.ddaily.co.kr/page/view/2026081915532359212" rel="noopener">하이닉스 40조 원 자사주 취득·소각</a></li>
             <li>주가·상장주식수: 금융위원회 주식시세정보(공공데이터포털), 2026.11.25 종가. BPS: 메리츠증권(2026.11.6)</li>
           </ul>

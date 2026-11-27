@@ -885,8 +885,19 @@
       const off = C.slice(); off[M.IDX.lta] = 4;
       add(G, "장기공급계약 무력화(5단계)면 범용 D램·낸드 실현가격 = 시장가격, 계약 비중 0", ["skh", "sec"].every((co) => M.evaluate(co, off).years.every((y) => ["conv", "nand"].every((p) => y.prod[p].pr === y.prod[p].pm && y.prod[p].lta === 0))), "");
       const mono = ["ai", "cons", "capex", "cxmt", "disc"].every((id) => ["skh", "sec"].every((co) => { const v = [0, 1, 2, 3, 4].map((k) => { const l = C.slice(); l[M.IDX[id]] = k; return M.evaluate(co, l).value; }); return v.every((x, i) => i === 0 || x <= v[i - 1] + 1e-9); }));
+      const r0 = M.PARAMS.realloc; M.PARAMS.realloc = 0;
       const hb = [0, 1, 2, 3, 4].map((k) => { const l = C.slice(); l[M.IDX.hbm] = k; return [M.evaluate("skh", l).value, M.evaluate("sec", l).value]; });
-      add(G, "AI 투자·범용 수요·증설·중국·할인율이 나빠질수록 두 회사 적정가 하락, HBM 구도는 하이닉스와 삼성에 반대로 작용", mono && hb.every((v, i) => i === 0 || (v[0] < hb[i - 1][0] && v[1] > hb[i - 1][1])), "");
+      M.PARAMS.realloc = r0;
+      const hb1 = [0, 4].map((k) => { const l = C.slice(); l[M.IDX.hbm] = k; return M.evaluate("skh", l).value; });
+      add(G, "AI 투자·범용 수요·증설·중국·할인율이 나빠질수록 두 회사 적정가 하락. HBM 구도는 웨이퍼 전환을 끄면 두 회사에 반대로 작용하고, 켜면(기본 50%) 하이닉스 적정가 폭이 줄어든다", mono && hb.every((v, i) => i === 0 || (v[0] < hb[i - 1][0] && v[1] > hb[i - 1][1])) && Math.abs(hb1[0] - hb1[1]) < hb[0][0] - hb[4][0], "");
+      const bustLv = M.PRESETS.find((p) => p.id === "bust").lv, cmx = M.custMix(bustLv), cmc = M.custMix(C), vH = M.VARS[M.IDX.hbm], h = bustLv[M.IDX.hbm];
+      const mixOk = cmx.every((m, t) => { const s0 = vH.skh[h][t], s1 = vH.sec[h][t], mu = 1 - s0 - s1, amp = 1 - M.PARAMS.ncW + M.PARAMS.ncW * M.PARAMS.ncK;
+        const f = (n) => n * (1 + m.DN) + (1 - n) * (1 + m.DO), avg = s0 * f(M.CO.skh.nv) + s1 * f(M.CO.sec.nv) + mu * f(M.PARAMS.nvMu);
+        return near(m.nvMkt * m.DN + (1 - m.nvMkt) * m.DO, m.D, 1e-12) && near(m.DN, amp * m.DO, 1e-12) && near(s0 * m.skh + s1 * m.sec + mu * f(M.PARAMS.nvMu) / avg, 1, 1e-12); })
+        && cmc.every((m) => m.D === 0 && near(m.skh, 1, 1e-12) && near(m.sec, 1, 1e-12)) && cmx[1].skh < 1 && cmx[1].sec > 1;
+      const ys = M.evaluate("skh", C).years, P0 = M.PARAMS, I0 = M.industry(C);
+      const convOk = ys.every((y, t) => { const wc = Math.min(0.6, M.CO.skh.hbmW0 * I0[t].w / M.START.w); return near(y.convAdd, P0.realloc * wc * (1 - y.hbmShare / M.CO.skh.hbmShare0) / (1 - wc), 1e-12) && near(y.hbmShare, vH.skh[C[M.IDX.hbm]][t], 1e-12); });
+      add(G, "고객 구성: 엔비디아·나머지 수요 변화의 가중합 = 업계 HBM 수요 변화, 엔비디아 = (1 − 네오클라우드 몫 + 몫 × 배수) × 나머지, 보정 후 점유율 합 유지, 중심이면 보정 없음. 남는 HBM 웨이퍼의 50%가 범용 D램 물량으로", mixOk && convOk, "AI 급랭 2028 점유율 배수 " + cmx[1].skh.toFixed(3) + " · " + cmx[1].sec.toFixed(3));
       const a = M.evaluate("skh", C).years[0].op, b = M.evaluate("sec", C).years[0].op;
       add(G, "중심 시나리오 2027 영업이익이 증권가 추정 범위 안(하이닉스 350~500조: KB 389·iM 약 446, 삼성 350~640조: 키움 352·KB 575·iM 약 635)", a > 350 && a < 500 && b > 350 && b < 640, a.toFixed(0) + " / " + b.toFixed(0) + "조");
       const fa = off.slice(), fb = off.slice(); fa[M.IDX.fx] = 0; fb[M.IDX.fx] = 2;
